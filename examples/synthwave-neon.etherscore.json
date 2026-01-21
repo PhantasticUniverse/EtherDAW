@@ -1,0 +1,395 @@
+{
+  "meta": {
+    "title": "Neon Drift",
+    "composer": "Claude",
+    "mood": "nostalgic, driving, cinematic",
+    "genre": "Synthwave",
+    "description": "An authentic 80s synthwave track featuring FM synthesis, driving arpeggios, and lush pads. Captures the essence of midnight drives through neon-lit streets with DX7-style bells and punchy FM bass.",
+    "tags": ["synthwave", "80s", "retro", "electronic", "fm synthesis"]
+  },
+  "settings": {
+    "tempo": 105,
+    "key": "A minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "kick": {
+      "preset": "kick_deep",
+      "volume": 0,
+      "pan": 0,
+      "effects": [
+        { "type": "compressor", "options": { "threshold": -12, "ratio": 4, "attack": 0.003, "release": 0.1 } }
+      ]
+    },
+    "snare": {
+      "preset": "snare_house",
+      "volume": -4,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 0.3 } },
+        { "type": "compressor", "options": { "threshold": -20, "ratio": 8, "attack": 0.001, "release": 0.1 } }
+      ]
+    },
+    "hihat": {
+      "preset": "hihat_closed",
+      "volume": -10,
+      "pan": 0.15,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 6000, "type": "highpass" } }
+      ]
+    },
+    "bass": {
+      "preset": "synthwave_bass",
+      "volume": -2,
+      "pan": 0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 1.5 } },
+        { "type": "distortion", "wet": 0.15, "options": { "amount": 0.2 } }
+      ]
+    },
+    "pad": {
+      "preset": "synthwave_pad",
+      "volume": -8,
+      "pan": 0,
+      "effects": [
+        { "type": "chorus", "wet": 0.5, "options": { "frequency": 0.8, "depth": 0.6 } },
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 3 } }
+      ]
+    },
+    "arp": {
+      "preset": "arp_synth",
+      "volume": -6,
+      "pan": -0.2,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n", "feedback": 0.35 } },
+        { "type": "filter", "options": { "frequency": 4000, "type": "lowpass", "Q": 1.5 } }
+      ]
+    },
+    "lead": {
+      "preset": "synthwave_lead",
+      "volume": -4,
+      "pan": 0.1,
+      "effects": [
+        { "type": "chorus", "wet": 0.3, "options": { "frequency": 1.2, "depth": 0.5 } },
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.3 } },
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 1.5 } }
+      ]
+    },
+    "bell": {
+      "preset": "fm_bell",
+      "volume": -10,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2 } }
+      ]
+    }
+  },
+  "patterns": {
+    "kick_four": {
+      "notes": ["C2:q", "C2:q", "C2:q", "C2:q"]
+    },
+    "kick_half": {
+      "notes": ["C2:q", "r:q", "C2:q", "r:q"]
+    },
+    "kick_driving": {
+      "notes": ["C2:q", "C2:q", "C2:q", "C2:8", "C2:8"]
+    },
+    "snare_backbeat": {
+      "notes": ["r:q", "C4:q", "r:q", "C4:q"]
+    },
+    "snare_fill": {
+      "notes": ["r:q", "C4:q", "C4:8", "C4:8", "C4:q"]
+    },
+    "hihat_8ths": {
+      "notes": ["C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8"]
+    },
+    "hihat_16ths": {
+      "notes": ["C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16"]
+    },
+    "bass_groove_am": {
+      "notes": ["A1:8", "r:8", "A1:16", "A1:16", "r:q", "A1:8", "G1:8"]
+    },
+    "bass_groove_f": {
+      "notes": ["F1:8", "r:8", "F1:16", "F1:16", "r:q", "F1:8", "E1:8"]
+    },
+    "bass_groove_c": {
+      "notes": ["C2:8", "r:8", "C2:16", "C2:16", "r:q", "C2:8", "B1:8"]
+    },
+    "bass_groove_g": {
+      "notes": ["G1:8", "r:8", "G1:16", "G1:16", "r:q", "G1:8", "F1:8"]
+    },
+    "bass_full_progression": {
+      "notes": [
+        "A1:8", "r:8", "A1:16", "A1:16", "r:q", "A1:8", "G1:8",
+        "F1:8", "r:8", "F1:16", "F1:16", "r:q", "F1:8", "E1:8",
+        "C2:8", "r:8", "C2:16", "C2:16", "r:q", "C2:8", "B1:8",
+        "G1:8", "r:8", "G1:16", "G1:16", "r:q", "G1:8", "A1:8"
+      ]
+    },
+    "bass_driving": {
+      "notes": [
+        "A1:8", "A1:16", "A1:16", "r:8", "A1:8", "G1:8", "E1:8",
+        "F1:8", "F1:16", "F1:16", "r:8", "F1:8", "E1:8", "D1:8",
+        "C2:8", "C2:16", "C2:16", "r:8", "C2:8", "B1:8", "A1:8",
+        "G1:8", "G1:16", "G1:16", "r:8", "G1:8", "A1:8", "B1:8"
+      ]
+    },
+    "pad_am": {
+      "chords": ["Am7:w"]
+    },
+    "pad_progression": {
+      "chords": ["Am7:w", "Fmaj7:w", "Cmaj7:w", "G:w"]
+    },
+    "pad_sustained": {
+      "chords": ["Am7:w", "Am7:w", "Am7:w", "Am7:w"]
+    },
+    "arp_am7": {
+      "arpeggio": { "chord": "Am7", "pattern": [1, 3, 5, 7, 5, 3, 1, 3], "duration": "16" }
+    },
+    "arp_fmaj7": {
+      "arpeggio": { "chord": "Fmaj7", "pattern": [1, 3, 5, 7, 5, 3, 1, 3], "duration": "16" }
+    },
+    "arp_cmaj7": {
+      "arpeggio": { "chord": "Cmaj7", "pattern": [1, 3, 5, 7, 5, 3, 1, 3], "duration": "16" }
+    },
+    "arp_g": {
+      "arpeggio": { "chord": "G", "pattern": [1, 3, 5, 3, 1, 3, 5, 3], "duration": "16" }
+    },
+    "arp_progression": {
+      "arpeggio": { "chord": "Am7", "pattern": [1, 3, 5, 7, 5, 3, 1, 3, 1, 3, 5, 7, 5, 3, 1, 3], "duration": "16" }
+    },
+    "arp_full_4bars": {
+      "notes": [
+        "A3:16", "C4:16", "E4:16", "G4:16", "E4:16", "C4:16", "A3:16", "C4:16",
+        "A3:16", "C4:16", "E4:16", "G4:16", "E4:16", "C4:16", "A3:16", "C4:16",
+        "F3:16", "A3:16", "C4:16", "E4:16", "C4:16", "A3:16", "F3:16", "A3:16",
+        "F3:16", "A3:16", "C4:16", "E4:16", "C4:16", "A3:16", "F3:16", "A3:16",
+        "C4:16", "E4:16", "G4:16", "B4:16", "G4:16", "E4:16", "C4:16", "E4:16",
+        "C4:16", "E4:16", "G4:16", "B4:16", "G4:16", "E4:16", "C4:16", "E4:16",
+        "G3:16", "B3:16", "D4:16", "G4:16", "D4:16", "B3:16", "G3:16", "B3:16",
+        "G3:16", "B3:16", "D4:16", "G4:16", "D4:16", "B3:16", "G3:16", "B3:16"
+      ]
+    },
+    "lead_hook": {
+      "notes": ["E5:8", "r:16", "E5:16", "D5:8", "C5:q", "r:8", "A4:8", "C5:q", "D5:8", "E5:h."]
+    },
+    "lead_response": {
+      "notes": ["G5:8", "E5:8", "D5:q", "C5:8", "r:8", "A4:q", "G4:q", "A4:h."]
+    },
+    "lead_full_melody": {
+      "notes": [
+        "E5:8", "r:16", "E5:16", "D5:8", "C5:q", "r:8", "A4:8", "C5:q", "D5:8", "E5:h.",
+        "G5:8", "E5:8", "D5:q", "C5:8", "r:8", "A4:q", "G4:q", "A4:h."
+      ]
+    },
+    "lead_high_hook": {
+      "notes": ["A5:8", "r:16", "A5:16", "G5:8", "E5:q", "r:8", "D5:8", "E5:q", "G5:8", "A5:h."]
+    },
+    "lead_climax": {
+      "notes": [
+        "E5:8", "r:16", "E5:16", "D5:8", "C5:q", "r:8", "A4:8", "C5:q", "D5:8", "E5:h.",
+        "A5:8", "r:16", "A5:16", "G5:8", "E5:q", "r:8", "D5:8", "E5:q", "G5:8", "A5:h."
+      ]
+    },
+    "bell_accent_am": {
+      "notes": ["A5:q", "r:q", "C6:q", "r:q"]
+    },
+    "bell_accent_f": {
+      "notes": ["F5:q", "r:q", "A5:q", "r:q"]
+    },
+    "bell_accent_c": {
+      "notes": ["C6:q", "r:q", "E6:q", "r:q"]
+    },
+    "bell_accent_g": {
+      "notes": ["G5:q", "r:q", "B5:q", "r:q"]
+    },
+    "bell_progression": {
+      "notes": [
+        "A5:q", "r:q", "C6:q", "r:q",
+        "F5:q", "r:q", "A5:q", "r:q",
+        "C6:q", "r:q", "E6:q", "r:q",
+        "G5:q", "r:q", "B5:q", "r:q"
+      ]
+    },
+    "silence_1bar": {
+      "notes": ["r:w"]
+    },
+    "silence_2bar": {
+      "notes": ["r:w", "r:w"]
+    },
+    "silence_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "pad": {
+          "pattern": "pad_sustained",
+          "velocity": 0.4,
+          "humanize": 0.02
+        },
+        "arp": {
+          "patterns": ["silence_4bar", "arp_full_4bars"],
+          "velocity": 0.3,
+          "octave": 0,
+          "repeat": 1
+        }
+      }
+    },
+    "verse_a": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 0.9
+        },
+        "snare": {
+          "pattern": "snare_backbeat",
+          "velocity": 0.75
+        },
+        "hihat": {
+          "pattern": "hihat_8ths",
+          "velocity": 0.5
+        },
+        "bass": {
+          "pattern": "bass_full_progression",
+          "velocity": 0.85
+        },
+        "pad": {
+          "pattern": "pad_progression",
+          "velocity": 0.5,
+          "humanize": 0.02
+        },
+        "arp": {
+          "pattern": "arp_full_4bars",
+          "velocity": 0.45,
+          "octave": 0
+        }
+      }
+    },
+    "chorus_a": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 1.0
+        },
+        "snare": {
+          "pattern": "snare_backbeat",
+          "velocity": 0.85
+        },
+        "hihat": {
+          "pattern": "hihat_8ths",
+          "velocity": 0.6
+        },
+        "bass": {
+          "pattern": "bass_driving",
+          "velocity": 0.95
+        },
+        "pad": {
+          "pattern": "pad_progression",
+          "velocity": 0.6,
+          "humanize": 0.02
+        },
+        "arp": {
+          "pattern": "arp_full_4bars",
+          "velocity": 0.5
+        },
+        "lead": {
+          "pattern": "lead_full_melody",
+          "velocity": 0.75,
+          "humanize": 0.05
+        },
+        "bell": {
+          "pattern": "bell_progression",
+          "velocity": 0.5
+        }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "pad": {
+          "pattern": "pad_progression",
+          "velocity": 0.7,
+          "humanize": 0.02
+        },
+        "arp": {
+          "patterns": ["arp_full_4bars", "silence_4bar"],
+          "velocity": 0.4,
+          "repeat": 1
+        },
+        "hihat": {
+          "patterns": ["hihat_8ths", "hihat_8ths", "hihat_8ths", "hihat_8ths", "silence_1bar", "silence_1bar", "hihat_16ths", "hihat_16ths"],
+          "velocity": 0.4
+        }
+      }
+    },
+    "chorus_b": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_driving",
+          "velocity": 1.0
+        },
+        "snare": {
+          "patterns": ["snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_fill"],
+          "velocity": 0.9
+        },
+        "hihat": {
+          "pattern": "hihat_8ths",
+          "velocity": 0.65
+        },
+        "bass": {
+          "pattern": "bass_driving",
+          "velocity": 1.0
+        },
+        "pad": {
+          "pattern": "pad_progression",
+          "velocity": 0.65,
+          "humanize": 0.02
+        },
+        "arp": {
+          "pattern": "arp_full_4bars",
+          "velocity": 0.55
+        },
+        "lead": {
+          "pattern": "lead_climax",
+          "velocity": 0.85,
+          "humanize": 0.05
+        },
+        "bell": {
+          "pattern": "bell_progression",
+          "velocity": 0.55
+        }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "patterns": ["kick_four", "kick_four", "kick_four", "kick_four", "kick_half", "kick_half", "silence_1bar", "silence_1bar"],
+          "velocity": 0.8
+        },
+        "hihat": {
+          "patterns": ["hihat_8ths", "hihat_8ths", "hihat_8ths", "hihat_8ths", "silence_1bar", "silence_1bar", "silence_1bar", "silence_1bar"],
+          "velocity": 0.4
+        },
+        "pad": {
+          "pattern": "pad_sustained",
+          "velocity": 0.6,
+          "humanize": 0.02
+        },
+        "arp": {
+          "patterns": ["arp_full_4bars", "silence_4bar"],
+          "velocity": 0.35,
+          "repeat": 1
+        }
+      }
+    }
+  },
+  "arrangement": ["intro", "verse_a", "chorus_a", "breakdown", "chorus_b", "outro"]
+}

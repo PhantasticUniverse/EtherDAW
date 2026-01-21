@@ -1,0 +1,299 @@
+{
+  "meta": {
+    "title": "Dusty Crates",
+    "composer": "Claude",
+    "mood": "soulful, nostalgic, head-nodding",
+    "genre": "Boom Bap / Hip-Hop",
+    "description": "A J Dilla-inspired boom bap track with 'drunk' timing feel. Features locked drums providing the pocket while rhodes and bass float with heavy humanization. The contrast between tight drums and loose melodic elements creates that signature Dilla groove.",
+    "tags": ["boom-bap", "hip-hop", "dilla", "soulful", "jazzy"]
+  },
+  "settings": {
+    "tempo": 88,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0.35
+  },
+  "instruments": {
+    "kick": {
+      "preset": "kick_deep",
+      "volume": 0,
+      "pan": 0,
+      "effects": [
+        { "type": "compressor", "options": { "threshold": -10, "ratio": 4, "attack": 0.005, "release": 0.15 } }
+      ]
+    },
+    "snare": {
+      "preset": "snare_tight",
+      "volume": -3,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 0.6 } }
+      ]
+    },
+    "hihat": {
+      "preset": "hihat_closed",
+      "volume": -8,
+      "pan": 0.15,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 6000, "type": "highpass" } }
+      ]
+    },
+    "hihat_open": {
+      "preset": "hihat_open",
+      "volume": -10,
+      "pan": -0.15,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 5000, "type": "highpass" } }
+      ]
+    },
+    "rhodes": {
+      "preset": "electric_piano",
+      "volume": -6,
+      "pan": 0,
+      "effects": [
+        { "type": "chorus", "wet": 0.3, "options": { "frequency": 0.8, "depth": 0.4 } },
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 1.8 } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -4,
+      "pan": 0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 150, "type": "lowpass", "Q": 1.5 } }
+      ]
+    }
+  },
+  "patterns": {
+    "kick_boom": {
+      "notes": ["C2:q", "r:8", "C2:8", "C2:q", "r:q"]
+    },
+    "kick_boom_var": {
+      "notes": ["C2:8", "r:8", "r:8", "C2:8", "r:8", "r:8", "C2:8", "r:8"]
+    },
+    "kick_two_bar": {
+      "notes": ["C2:8", "r:8", "r:8", "C2:8", "r:8", "r:8", "r:8", "r:8", "C2:8", "r:8", "r:8", "C2:8", "r:8", "r:8", "C2:8", "r:8"]
+    },
+    "snare_backbeat": {
+      "notes": ["r:q", "C4:q", "r:q", "C4:q"]
+    },
+    "snare_backbeat_fill": {
+      "notes": ["r:q", "C4:q", "r:8", "C4:8", "C4:16", "C4:16", "r:8"]
+    },
+    "snare_two_bar": {
+      "notes": ["r:q", "C4:q", "r:q", "C4:q", "r:q", "C4:q", "r:q", "C4:q"]
+    },
+    "hat_8ths": {
+      "notes": ["C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8"]
+    },
+    "hat_groove": {
+      "notes": ["C4:8", "C4:16", "C4:16", "C4:8", "C4:8", "C4:8", "C4:16", "C4:16", "C4:8", "C4:8"]
+    },
+    "hat_sparse": {
+      "notes": ["C4:8", "r:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8", "r:8"]
+    },
+    "hat_open_offbeat": {
+      "notes": ["r:8", "D4:8", "r:8", "D4:8", "r:8", "D4:8", "r:8", "D4:8"]
+    },
+    "rhodes_intro": {
+      "chords": ["Dm9@drop2:w", "Dm9@drop2:w", "Dm9@drop2:w", "Dm9@drop2:w"]
+    },
+    "rhodes_main": {
+      "chords": ["Dm9@drop2:h", "Dm9@drop2:h", "Gm7@drop2:h", "Gm7@drop2:h", "Am7@drop2:h", "Am7@drop2:h", "Dm7@drop2:h", "Dm7@drop2:h"]
+    },
+    "rhodes_hook": {
+      "chords": ["Dm9@drop2:w", "Gm7@drop2:w", "Am7@drop2:w", "Dm7@drop2:w"]
+    },
+    "rhodes_break": {
+      "chords": ["Dm9@open:w", "Dm9@open:w", "Am7@open:w", "Dm7@open:w"]
+    },
+    "bass_groove_a": {
+      "notes": ["D2:8", "r:8", "D2:16", "r:16", "r:q", "D2:8", "F2:8"]
+    },
+    "bass_groove_b": {
+      "notes": ["G2:8", "r:8", "G2:16", "r:16", "r:q", "G2:8", "A2:8"]
+    },
+    "bass_groove_c": {
+      "notes": ["A2:8", "r:8", "A2:16", "r:16", "r:q", "A2:8", "G2:8"]
+    },
+    "bass_groove_d": {
+      "notes": ["D2:8", "r:8", "D2:16", "D2:16", "r:q", "A1:8", "D2:8"]
+    },
+    "bass_full": {
+      "notes": ["D2:8", "r:8", "D2:16", "r:16", "r:q", "D2:8", "F2:8", "G2:8", "r:8", "G2:16", "r:16", "r:q", "G2:8", "Bb2:8", "A2:8", "r:8", "A2:16", "r:16", "r:q", "A2:8", "G2:8", "D2:8", "r:8", "D2:16", "D2:16", "r:q", "A1:8", "D2:8"]
+    },
+    "bass_hook": {
+      "notes": ["D2:q", "r:8", "D2:8", "r:q", "D2:8", "r:8"]
+    },
+    "bass_pedal": {
+      "notes": ["D2:w"]
+    },
+    "silence_1bar": {
+      "notes": ["r:w"]
+    },
+    "silence_2bar": {
+      "notes": ["r:w", "r:w"]
+    },
+    "silence_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "rhodes": {
+          "pattern": "rhodes_intro",
+          "velocity": 0.5,
+          "humanize": 0.15
+        }
+      }
+    },
+    "verse_a": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_boom",
+          "velocity": 0.95,
+          "humanize": 0
+        },
+        "snare": {
+          "pattern": "snare_backbeat",
+          "velocity": 0.85,
+          "humanize": 0
+        },
+        "hihat": {
+          "pattern": "hat_8ths",
+          "velocity": 0.6,
+          "humanize": 0.08
+        },
+        "hihat_open": {
+          "pattern": "hat_open_offbeat",
+          "velocity": 0.45,
+          "humanize": 0.05
+        },
+        "rhodes": {
+          "pattern": "rhodes_main",
+          "velocity": 0.7,
+          "humanize": 0.2
+        },
+        "bass": {
+          "pattern": "bass_full",
+          "velocity": 0.85,
+          "humanize": 0.08
+        }
+      }
+    },
+    "hook": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_boom",
+          "velocity": 0.9,
+          "humanize": 0
+        },
+        "snare": {
+          "pattern": "snare_backbeat",
+          "velocity": 0.8,
+          "humanize": 0
+        },
+        "hihat": {
+          "pattern": "hat_sparse",
+          "velocity": 0.5,
+          "humanize": 0.08
+        },
+        "rhodes": {
+          "pattern": "rhodes_hook",
+          "velocity": 0.65,
+          "humanize": 0.18
+        },
+        "bass": {
+          "pattern": "bass_hook",
+          "velocity": 0.8,
+          "humanize": 0.08
+        }
+      }
+    },
+    "verse_b": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "patterns": ["kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_boom_var", "kick_boom_var", "kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_two_bar", "kick_two_bar", "kick_two_bar", "kick_two_bar"],
+          "velocity": 1.0,
+          "humanize": 0
+        },
+        "snare": {
+          "patterns": ["snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat_fill"],
+          "velocity": 0.9,
+          "humanize": 0
+        },
+        "hihat": {
+          "pattern": "hat_groove",
+          "velocity": 0.65,
+          "humanize": 0.08
+        },
+        "hihat_open": {
+          "pattern": "hat_open_offbeat",
+          "velocity": 0.5,
+          "humanize": 0.05
+        },
+        "rhodes": {
+          "pattern": "rhodes_main",
+          "velocity": 0.75,
+          "humanize": 0.22
+        },
+        "bass": {
+          "pattern": "bass_full",
+          "velocity": 0.9,
+          "humanize": 0.1
+        }
+      }
+    },
+    "break": {
+      "bars": 4,
+      "tracks": {
+        "rhodes": {
+          "pattern": "rhodes_break",
+          "velocity": 0.6,
+          "humanize": 0.18
+        },
+        "bass": {
+          "pattern": "bass_pedal",
+          "velocity": 0.7,
+          "humanize": 0.05
+        }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "patterns": ["kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_boom", "kick_boom", "silence_1bar", "silence_1bar"],
+          "velocity": 0.9,
+          "humanize": 0
+        },
+        "snare": {
+          "patterns": ["snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "snare_backbeat", "silence_1bar", "silence_1bar"],
+          "velocity": 0.8,
+          "humanize": 0
+        },
+        "hihat": {
+          "patterns": ["hat_8ths", "hat_8ths", "hat_8ths", "hat_8ths", "hat_sparse", "hat_sparse", "silence_1bar", "silence_1bar"],
+          "velocity": 0.55,
+          "humanize": 0.08
+        },
+        "rhodes": {
+          "pattern": "rhodes_hook",
+          "velocity": 0.55,
+          "humanize": 0.18
+        },
+        "bass": {
+          "patterns": ["bass_hook", "bass_hook", "bass_hook", "bass_hook", "bass_pedal", "bass_pedal", "bass_pedal", "silence_1bar"],
+          "velocity": 0.75,
+          "humanize": 0.08
+        }
+      }
+    }
+  },
+  "arrangement": ["intro", "verse_a", "hook", "verse_b", "break", "outro"]
+}
