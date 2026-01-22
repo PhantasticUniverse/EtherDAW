@@ -759,3 +759,142 @@ export function generateWaveform(
 
   return createPNG(width, height, pixels);
 }
+
+/**
+ * v0.9: Generate ASCII spectrogram from audio samples
+ * Returns a text-based visualization for terminal display
+ */
+export function generateASCIISpectrogram(
+  samples: Float32Array,
+  sampleRate: number,
+  options: {
+    width?: number;
+    height?: number;
+    minFreq?: number;
+    maxFreq?: number;
+  } = {}
+): string {
+  const {
+    width = 60,
+    height = 12,
+    minFreq = 100,
+    maxFreq = 8000,
+  } = options;
+
+  // Compute STFT
+  const spectra = stft(samples, 2048, 512);
+  const normalized = normalizeSpectrogram(spectra);
+
+  if (normalized.length === 0) {
+    return 'No audio data to display';
+  }
+
+  const numFrames = normalized.length;
+  const numBins = normalized[0]?.length || 0;
+  const nyquist = sampleRate / 2;
+  const freqPerBin = nyquist / numBins;
+
+  // Characters for intensity levels (low to high)
+  const chars = ' ░▒▓█';
+
+  // Build the grid
+  const grid: string[][] = Array(height).fill(null).map(() => Array(width).fill(' '));
+
+  // Frequency labels for left side
+  const freqLabels: string[] = [];
+  for (let y = 0; y < height; y++) {
+    const yNorm = 1 - (y / (height - 1));
+    // Log scale frequency mapping
+    const logMin = Math.log10(minFreq);
+    const logMax = Math.log10(maxFreq);
+    const freq = Math.pow(10, logMin + yNorm * (logMax - logMin));
+    freqLabels.push(formatFreq(freq));
+  }
+
+  // Fill the grid
+  for (let x = 0; x < width; x++) {
+    const frameIdx = Math.floor((x / width) * numFrames);
+    const spectrum = normalized[Math.min(frameIdx, numFrames - 1)];
+
+    for (let y = 0; y < height; y++) {
+      const yNorm = 1 - (y / (height - 1));
+
+      // Log scale frequency mapping
+      const logMin = Math.log10(minFreq);
+      const logMax = Math.log10(maxFreq);
+      const freq = Math.pow(10, logMin + yNorm * (logMax - logMin));
+
+      // Map frequency to bin
+      const bin = Math.floor(freq / freqPerBin);
+      const clampedBin = Math.max(0, Math.min(numBins - 1, bin));
+
+      // Get magnitude value (0-1)
+      const value = spectrum?.[clampedBin] || 0;
+
+      // Map to character
+      const charIdx = Math.min(chars.length - 1, Math.floor(value * chars.length));
+      grid[y][x] = chars[charIdx];
+    }
+  }
+
+  // Build output string
+  const lines: string[] = [];
+  lines.push('Spectrogram:');
+  lines.push('');
+
+  // Header with frequency axis label
+  const labelWidth = 6;
+  lines.push(`${'Freq'.padStart(labelWidth)} ┌${'─'.repeat(width)}┐`);
+
+  // Grid rows with frequency labels
+  for (let y = 0; y < height; y++) {
+    const label = freqLabels[y].padStart(labelWidth);
+    lines.push(`${label} │${grid[y].join('')}│`);
+  }
+
+  // Footer with time axis
+  lines.push(`${''.padStart(labelWidth)} └${'─'.repeat(width)}┘`);
+
+  // Time labels
+  const duration = samples.length / sampleRate;
+  const startLabel = '0s';
+  const midLabel = `${(duration / 2).toFixed(1)}s`;
+  const endLabel = `${duration.toFixed(1)}s`;
+
+  const midPos = Math.floor(width / 2) - Math.floor(midLabel.length / 2);
+  const endPos = width - endLabel.length;
+
+  let timeLine = ' '.repeat(labelWidth + 2);
+  timeLine += startLabel;
+  timeLine += ' '.repeat(Math.max(0, midPos - startLabel.length));
+  timeLine += midLabel;
+  timeLine += ' '.repeat(Math.max(0, endPos - midPos - midLabel.length));
+  timeLine += endLabel;
+
+  lines.push(timeLine);
+
+  return lines.join('\n');
+}
+
+/**
+ * Format frequency for display
+ */
+function formatFreq(freq: number): string {
+  if (freq >= 1000) {
+    return `${(freq / 1000).toFixed(0)}k`;
+  }
+  return `${Math.round(freq)}`;
+}
+
+/**
+ * v0.9: Generate spectrogram from audio samples directly (not from file)
+ * Returns PNG buffer
+ */
+export function generateSpectrogramFromSamples(
+  samples: Float32Array,
+  sampleRate: number,
+  options: SpectrogramOptions = {}
+): Buffer {
+  const result = generateSpectrogram(samples, sampleRate, options);
+  return result.image;
+}

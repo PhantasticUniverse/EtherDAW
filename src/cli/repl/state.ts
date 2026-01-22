@@ -365,6 +365,44 @@ export class REPLSession {
   }
 
   /**
+   * v0.9: Get last rendered audio samples for analysis
+   * Returns null if no audio has been rendered yet
+   */
+  getRenderedSamples(): Float32Array | null {
+    return this.player.getLastRenderedSamples();
+  }
+
+  /**
+   * v0.9: Get sample rate of last rendered audio
+   */
+  getRenderedSampleRate(): number {
+    return this.player.getLastRenderedSampleRate();
+  }
+
+  /**
+   * v0.9: Check if rendered audio is available for analysis
+   */
+  hasRenderedAudio(): boolean {
+    return this.player.hasRenderedAudio();
+  }
+
+  /**
+   * v0.9: Render a section to audio samples for analysis
+   * Does not play, just renders and caches
+   */
+  renderSection(sectionName: string): Float32Array {
+    return this.player.renderSection(sectionName);
+  }
+
+  /**
+   * v0.9: Render entire composition to samples for analysis
+   * Does not play, just renders and caches
+   */
+  renderToSamples(): Float32Array {
+    return this.player.renderToSamples();
+  }
+
+  /**
    * Add to command history
    */
   addHistory(command: string): void {

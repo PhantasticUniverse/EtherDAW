@@ -244,6 +244,105 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.9 (2026-01-23) - Perceptual Foundation
+
+**Vision:** Audio analysis infrastructure that allows LLMs to "hear" through visual and textual proxies. Closes the feedback loop: compose → render → analyze → understand → adjust.
+
+**Core Insight:** Composing blind was the biggest limitation. I could structure music but couldn't evaluate how it sounded.
+
+**New Analysis Commands (REPL):**
+| Command | Description |
+|---------|-------------|
+| `analyze [section]` | Full perceptual analysis report |
+| `chroma [section]` | Chromagram (pitch class distribution) |
+| `brightness [section]` | Spectral centroid over time |
+| `energy [section]` | RMS loudness curve |
+| `compare <sec1> <sec2>` | Side-by-side section comparison |
+
+**Perceptual Metrics:**
+| Metric | Description | LLM Utility |
+|--------|-------------|-------------|
+| Chromagram | 12-semitone pitch class distribution | Shows active pitches, infers key |
+| Spectral Centroid | Weighted center of frequency (Hz) | Brightness (warm/bright/harsh) |
+| Spectral Flux | Frame-to-frame spectral change | Onset detection, rhythmic activity |
+| RMS Energy | Root mean square amplitude (dB) | Loudness over time |
+| Zero Crossing Rate | Sign changes per second | Percussive vs tonal character |
+
+**Semantic Descriptions:**
+- Converts numeric metrics to natural language
+- Brightness: "very dark", "warm", "neutral", "bright", "harsh"
+- Texture: "smooth", "rhythmic", "choppy"
+- Energy: "quiet", "moderate", "loud", "intense"
+- Envelope: "building", "decaying", "arc", "steady", "dynamic"
+- Character tags: "warm", "subby", "sustained", "pad-like", "tonal", etc.
+
+**Comprehensive Chord Library (~80 chord types):**
+
+| Category | New Chords |
+|----------|------------|
+| Seventh variations | 7sus4, 7sus2, augmaj7/maj7#5, mM7/minmaj7 |
+| Extended chords | 9sus4, 11sus, 13sus4, mM9 |
+| Lydian chords | 7#11, maj7#11, 9#11, 13#11 |
+| Altered dominants | 7b13, 7b5#9, 7#5b9, 7b9b13, 7#9b13, 7b9#11, 9b5, 9#5, 13b9, 13#9, 7alt |
+| Add chords | add2, add4, madd2, madd4 |
+| Quartal/special | quartal, quartal4, quintal, so_what, mu |
+| Power/dyads | power8, octave |
+| Shell voicings | shell7, shellM7, shellm7 |
+
+**Voicing Expansion:**
+- drop24, spread, rootless_a, rootless_b, quartal, so_what, freddie, gospel
+- Applied to maj7, m7, 7, 9, m9, maj9, dim7, m7b5, 7sus4, 13, 7alt, 7#9, 7b9, add9, 6, m6
+
+**Jazz Progressions (25+ total):**
+| Category | Progressions |
+|----------|--------------|
+| Jazz standards | ii-V-I-7, ii-V-i, rhythm-a, autumn-leaves, coltrane-cycle |
+| Contemporary | neo-soul, gospel-extended, backdoor, tritone-sub |
+| Advanced | lady-bird, tadd-dameron, all-the-things |
+
+**New Files:**
+- `src/analysis/audio-analyzer.ts` - Unified audio buffer access
+- `src/analysis/perceptual.ts` - Perceptual metrics implementation
+- `src/analysis/describe-audio.ts` - Natural language descriptions
+
+**Modified Files:**
+- `src/node/player.ts` - Added buffer caching for analysis
+- `src/cli/repl/state.ts` - Added rendered audio access methods
+- `src/cli/repl/commands.ts` - New analysis commands
+- `src/analysis/spectrogram.ts` - Added ASCII spectrogram output
+- `src/analysis/index.ts` - Added new exports
+- `src/theory/chords.ts` - Expanded chord library (80+ types, 25+ voicings)
+- `src/parser/chord-parser.ts` - Updated regex for new chord formats
+
+**Example Output:**
+```
+ether> analyze awakening
+
+═══════════════════════════════════════════
+Audio Analysis: awakening
+═══════════════════════════════════════════
+
+SPECTRAL PROFILE:
+  Warm (centroid: 680 Hz) - mid-bass focused
+  Smooth (flux: 8%) - sustained, pad-like
+
+CHROMAGRAM:
+   C │████████░░░│  D │██████████│  E │████░░░░░░│
+   F │████████████│ ◄  G │██████░░░░│  A │████████░░│
+
+ENERGY:
+  Moderate (-19 dB) - conversational
+  Envelope: Arc - rises then falls
+
+CHARACTER: warm, sustained, pad-like, tonal
+
+OBSERVATIONS:
+  • Very warm, bass-focused frequency balance
+  • Classic phrase arc - natural musical shape
+```
+
+---
+
 ### v0.83 (2026-01-23) - Pattern Algebra + Album
 
 **Vision:** Full pattern transformation system plus an 8-track album "Threshold" demonstrating all capabilities.

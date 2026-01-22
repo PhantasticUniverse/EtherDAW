@@ -332,6 +332,9 @@ export class NodePlayer {
   private callbacks: NodePlayerCallbacks = {};
   private currentPlayback: PlaybackInstance | null = null;
   private tempWavPath: string | null = null;
+  /** v0.9: Cached rendered samples for analysis */
+  private lastRenderedSamples: Float32Array | null = null;
+  private lastRenderedSampleRate: number = 44100;
 
   /**
    * Set callbacks
@@ -413,6 +416,10 @@ export class NodePlayer {
       // Render to WAV
       const samples = renderTimeline(this.timeline);
 
+      // v0.9: Cache rendered samples for analysis
+      this.lastRenderedSamples = samples;
+      this.lastRenderedSampleRate = 44100;
+
       // Write to temp file
       this.tempWavPath = getTempWavPath();
       writeWavFile(samples, this.tempWavPath);
@@ -458,6 +465,10 @@ export class NodePlayer {
     try {
       // Render pattern
       const samples = renderPattern(this.score, patternName);
+
+      // v0.9: Cache rendered samples for analysis
+      this.lastRenderedSamples = samples;
+      this.lastRenderedSampleRate = 44100;
 
       // Write to temp file
       this.tempWavPath = getTempWavPath();
@@ -551,6 +562,80 @@ export class NodePlayer {
    */
   getDuration(): number {
     return this.timeline?.totalSeconds ?? 0;
+  }
+
+  /**
+   * v0.9: Get last rendered samples for analysis
+   * Returns null if no audio has been rendered yet
+   */
+  getLastRenderedSamples(): Float32Array | null {
+    return this.lastRenderedSamples;
+  }
+
+  /**
+   * v0.9: Get sample rate of last rendered audio
+   */
+  getLastRenderedSampleRate(): number {
+    return this.lastRenderedSampleRate;
+  }
+
+  /**
+   * v0.9: Check if rendered audio is available for analysis
+   */
+  hasRenderedAudio(): boolean {
+    return this.lastRenderedSamples !== null;
+  }
+
+  /**
+   * v0.9: Render a section to audio samples without playing
+   * Returns samples for analysis
+   */
+  renderSection(sectionName: string): Float32Array {
+    if (!this.score) {
+      throw new Error('No composition loaded');
+    }
+
+    const section = this.score.sections[sectionName];
+    if (!section) {
+      throw new Error(`Section not found: ${sectionName}`);
+    }
+
+    // Create minimal score with just this section
+    const sectionScore: EtherScore = {
+      meta: { title: `Section: ${sectionName}` },
+      settings: this.score.settings,
+      instruments: this.score.instruments,
+      patterns: this.score.patterns,
+      sections: { [sectionName]: section },
+      arrangement: [sectionName]
+    };
+
+    const { timeline } = compile(sectionScore);
+    const samples = renderTimeline(timeline);
+
+    // Cache for analysis
+    this.lastRenderedSamples = samples;
+    this.lastRenderedSampleRate = 44100;
+
+    return samples;
+  }
+
+  /**
+   * v0.9: Render entire composition to samples without playing
+   * Returns samples for analysis
+   */
+  renderToSamples(): Float32Array {
+    if (!this.timeline) {
+      throw new Error('No composition loaded');
+    }
+
+    const samples = renderTimeline(this.timeline);
+
+    // Cache for analysis
+    this.lastRenderedSamples = samples;
+    this.lastRenderedSampleRate = 44100;
+
+    return samples;
   }
 
   /**

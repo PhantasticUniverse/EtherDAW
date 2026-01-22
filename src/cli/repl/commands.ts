@@ -8,6 +8,16 @@ import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
 import type { REPLSession, TransformType, TransformRecord } from './state.js';
 
+// v0.9: Perceptual analysis imports
+import { analyzePerceptual, computeChromagram, inferKey } from '../../analysis/perceptual.js';
+import {
+  generateAnalysisReport,
+  formatChromagramASCII,
+  formatEnergyCurveASCII,
+  formatBrightnessCurveASCII,
+  describeAudio,
+} from '../../analysis/describe-audio.js';
+
 /**
  * Command result
  */
@@ -1409,6 +1419,307 @@ export const COMMANDS: CommandDef[] = [
       output += ` - peaks at "${maxEnergySection?.name || 'unknown'}"`;
 
       return { success: true, message: output };
+    },
+  },
+
+  // v0.9: Analyze command - full perceptual analysis on rendered audio
+  {
+    name: 'analyze',
+    aliases: ['ana'],
+    description: 'Full perceptual analysis of rendered audio',
+    usage: 'analyze [section]',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      try {
+        let samples: Float32Array;
+        let sectionName: string | undefined;
+
+        if (args.length > 0) {
+          // Analyze specific section
+          sectionName = args[0];
+          const sections = session.getSections();
+          if (!sections.includes(sectionName)) {
+            return {
+              success: false,
+              message: `Section not found: ${sectionName}\nAvailable: ${sections.join(', ')}`,
+            };
+          }
+          samples = session.renderSection(sectionName);
+        } else {
+          // Analyze full composition or last rendered audio
+          if (session.hasRenderedAudio()) {
+            samples = session.getRenderedSamples()!;
+          } else {
+            samples = session.renderToSamples();
+          }
+        }
+
+        const sampleRate = session.getRenderedSampleRate();
+        const analysis = analyzePerceptual(samples, sampleRate);
+        const report = generateAnalysisReport(analysis, sectionName);
+
+        return { success: true, message: report };
+      } catch (error) {
+        return { success: false, message: `Analysis failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9: Chroma command - chromagram visualization
+  {
+    name: 'chroma',
+    aliases: ['chromagram', 'pitch'],
+    description: 'Show chromagram (pitch class distribution)',
+    usage: 'chroma [section]',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      try {
+        let samples: Float32Array;
+        let sectionName: string | undefined;
+
+        if (args.length > 0) {
+          sectionName = args[0];
+          const sections = session.getSections();
+          if (!sections.includes(sectionName)) {
+            return {
+              success: false,
+              message: `Section not found: ${sectionName}`,
+            };
+          }
+          samples = session.renderSection(sectionName);
+        } else if (session.hasRenderedAudio()) {
+          samples = session.getRenderedSamples()!;
+        } else {
+          samples = session.renderToSamples();
+        }
+
+        const sampleRate = session.getRenderedSampleRate();
+        const chromagram = computeChromagram(samples, sampleRate);
+        const keyInfo = inferKey(chromagram);
+
+        let output = sectionName
+          ? `Chromagram: ${sectionName}\n\n`
+          : 'Chromagram:\n\n';
+
+        output += formatChromagramASCII(chromagram);
+        output += '\n\n';
+        output += `Inferred key: ${keyInfo.key} ${keyInfo.mode} (${Math.round(keyInfo.confidence * 100)}% confidence)`;
+
+        return { success: true, message: output };
+      } catch (error) {
+        return { success: false, message: `Chromagram failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9: Brightness command - spectral centroid over time
+  {
+    name: 'brightness',
+    aliases: ['bright', 'centroid'],
+    description: 'Show spectral centroid (brightness) over time',
+    usage: 'brightness [section]',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      try {
+        let samples: Float32Array;
+        let sectionName: string | undefined;
+
+        if (args.length > 0) {
+          sectionName = args[0];
+          const sections = session.getSections();
+          if (!sections.includes(sectionName)) {
+            return { success: false, message: `Section not found: ${sectionName}` };
+          }
+          samples = session.renderSection(sectionName);
+        } else if (session.hasRenderedAudio()) {
+          samples = session.getRenderedSamples()!;
+        } else {
+          samples = session.renderToSamples();
+        }
+
+        const sampleRate = session.getRenderedSampleRate();
+        const analysis = analyzePerceptual(samples, sampleRate);
+        const description = describeAudio(analysis);
+
+        let output = sectionName
+          ? `Brightness: ${sectionName}\n\n`
+          : 'Brightness:\n\n';
+
+        output += formatBrightnessCurveASCII(analysis.centroidOverTime, analysis.frameTimes);
+        output += '\n\n';
+        output += `Character: ${description.brightnessText}`;
+
+        return { success: true, message: output };
+      } catch (error) {
+        return { success: false, message: `Brightness analysis failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9: Energy command - RMS loudness curve
+  {
+    name: 'energy',
+    aliases: ['rms', 'loudness'],
+    description: 'Show RMS energy (loudness) over time',
+    usage: 'energy [section]',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      try {
+        let samples: Float32Array;
+        let sectionName: string | undefined;
+
+        if (args.length > 0) {
+          sectionName = args[0];
+          const sections = session.getSections();
+          if (!sections.includes(sectionName)) {
+            return { success: false, message: `Section not found: ${sectionName}` };
+          }
+          samples = session.renderSection(sectionName);
+        } else if (session.hasRenderedAudio()) {
+          samples = session.getRenderedSamples()!;
+        } else {
+          samples = session.renderToSamples();
+        }
+
+        const sampleRate = session.getRenderedSampleRate();
+        const analysis = analyzePerceptual(samples, sampleRate);
+        const description = describeAudio(analysis);
+
+        let output = sectionName
+          ? `Energy: ${sectionName}\n\n`
+          : 'Energy:\n\n';
+
+        output += formatEnergyCurveASCII(analysis.rmsOverTime, analysis.frameTimes);
+        output += '\n\n';
+        output += `Average: ${Math.round(analysis.rmsDb)} dB (${description.energy})\n`;
+        output += `Envelope: ${description.envelopeText}`;
+
+        return { success: true, message: output };
+      } catch (error) {
+        return { success: false, message: `Energy analysis failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9: Compare command - compare two sections
+  {
+    name: 'compare',
+    aliases: ['cmp', 'diff-audio'],
+    description: 'Compare perceptual metrics of two sections',
+    usage: 'compare <section1> <section2>',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      if (args.length < 2) {
+        return { success: false, message: 'Usage: compare <section1> <section2>' };
+      }
+
+      const [section1, section2] = args;
+      const sections = session.getSections();
+
+      if (!sections.includes(section1)) {
+        return { success: false, message: `Section not found: ${section1}` };
+      }
+      if (!sections.includes(section2)) {
+        return { success: false, message: `Section not found: ${section2}` };
+      }
+
+      try {
+        const samples1 = session.renderSection(section1);
+        const samples2 = session.renderSection(section2);
+        const sampleRate = session.getRenderedSampleRate();
+
+        const analysis1 = analyzePerceptual(samples1, sampleRate);
+        const analysis2 = analyzePerceptual(samples2, sampleRate);
+
+        const desc1 = describeAudio(analysis1);
+        const desc2 = describeAudio(analysis2);
+
+        // Build comparison table
+        const pad = (s: string, n: number) => s.padEnd(n);
+        const col1 = section1.slice(0, 15);
+        const col2 = section2.slice(0, 15);
+
+        let output = `Comparing sections:\n`;
+        output += `${''.padEnd(18)}${pad(col1, 16)}${pad(col2, 16)}\n`;
+        output += '─'.repeat(50) + '\n';
+
+        // Brightness
+        output += `${pad('Brightness:', 18)}${pad(desc1.brightness, 16)}${pad(desc2.brightness, 16)}\n`;
+        output += `${pad('Centroid:', 18)}${pad(`${Math.round(analysis1.centroid)} Hz`, 16)}${pad(`${Math.round(analysis2.centroid)} Hz`, 16)}\n`;
+
+        // Texture
+        output += `${pad('Texture:', 18)}${pad(desc1.texture, 16)}${pad(desc2.texture, 16)}\n`;
+        output += `${pad('Flux:', 18)}${pad((analysis1.flux * 100).toFixed(0) + '%', 16)}${pad((analysis2.flux * 100).toFixed(0) + '%', 16)}\n`;
+
+        // Energy
+        output += `${pad('Energy:', 18)}${pad(desc1.energy, 16)}${pad(desc2.energy, 16)}\n`;
+        output += `${pad('RMS:', 18)}${pad(`${Math.round(analysis1.rmsDb)} dB`, 16)}${pad(`${Math.round(analysis2.rmsDb)} dB`, 16)}\n`;
+
+        // Envelope
+        output += `${pad('Envelope:', 18)}${pad(desc1.envelope, 16)}${pad(desc2.envelope, 16)}\n`;
+
+        // Tonality
+        const key1 = `${desc1.tonality.key}${desc1.tonality.mode === 'minor' ? 'm' : ''}`;
+        const key2 = `${desc2.tonality.key}${desc2.tonality.mode === 'minor' ? 'm' : ''}`;
+        output += `${pad('Key:', 18)}${pad(key1, 16)}${pad(key2, 16)}\n`;
+
+        output += '─'.repeat(50) + '\n';
+
+        // Differences analysis
+        output += '\nDifferences:\n';
+
+        const centroidDiff = analysis2.centroid - analysis1.centroid;
+        if (Math.abs(centroidDiff) > 200) {
+          const direction = centroidDiff > 0 ? 'BRIGHTER' : 'DARKER';
+          output += `  • ${section2} is ${direction} (${centroidDiff > 0 ? '+' : ''}${Math.round(centroidDiff)} Hz centroid)\n`;
+        }
+
+        const fluxDiff = (analysis2.flux - analysis1.flux) * 100;
+        if (Math.abs(fluxDiff) > 10) {
+          const direction = fluxDiff > 0 ? 'MORE RHYTHMIC' : 'SMOOTHER';
+          output += `  • ${section2} is ${direction} (${fluxDiff > 0 ? '+' : ''}${Math.round(fluxDiff)}% flux)\n`;
+        }
+
+        const energyDiff = analysis2.rmsDb - analysis1.rmsDb;
+        if (Math.abs(energyDiff) > 3) {
+          const direction = energyDiff > 0 ? 'LOUDER' : 'QUIETER';
+          output += `  • ${section2} is ${direction} (${energyDiff > 0 ? '+' : ''}${Math.round(energyDiff)} dB)\n`;
+        }
+
+        if (desc1.tonality.key !== desc2.tonality.key || desc1.tonality.mode !== desc2.tonality.mode) {
+          output += `  • Key change: ${key1} → ${key2}\n`;
+        }
+
+        // Transition assessment
+        output += '\nTransition assessment: ';
+        const totalChange = Math.abs(centroidDiff / 1000) + Math.abs(fluxDiff / 50) + Math.abs(energyDiff / 10);
+        if (totalChange < 0.5) {
+          output += 'Seamless (minimal change)';
+        } else if (totalChange < 1.5) {
+          output += 'Good contrast (noticeable but natural)';
+        } else {
+          output += 'Strong contrast (dramatic shift)';
+        }
+
+        return { success: true, message: output };
+      } catch (error) {
+        return { success: false, message: `Comparison failed: ${(error as Error).message}` };
+      }
     },
   },
 

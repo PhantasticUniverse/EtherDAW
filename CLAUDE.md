@@ -129,6 +129,76 @@ velocity <pattern> 0.8   # Scale velocity to 80%
 
 See [docs/VISION.md](docs/VISION.md) for the long-term architecture.
 
+## Perceptual Analysis (v0.9)
+
+Audio analysis that lets LLMs "hear" through visual and textual proxies. Closes the feedback loop: compose → render → analyze → understand → adjust.
+
+**REPL Analysis Commands:**
+```
+analyze [section]        Full perceptual analysis report
+chroma [section]         Chromagram (pitch class distribution)
+brightness [section]     Spectral centroid over time
+energy [section]         RMS loudness curve
+compare <sec1> <sec2>    Side-by-side section comparison
+```
+
+**Analysis Metrics:**
+| Metric | Description | LLM Utility |
+|--------|-------------|-------------|
+| Chromagram | 12-semitone pitch class distribution | Shows active pitches, infers key |
+| Spectral Centroid | Weighted center of frequency (Hz) | Brightness (warm/bright/harsh) |
+| Spectral Flux | Frame-to-frame spectral change | Onset detection, rhythmic activity |
+| RMS Energy | Root mean square amplitude (dB) | Loudness over time |
+| Zero Crossing Rate | Sign changes per second | Percussive vs tonal character |
+
+**Example Session:**
+```
+ether> load examples/archive/threshold/01-before-dawn.etherscore.json
+Loaded: Before Dawn
+
+ether> play awakening
+Playing...
+
+ether> analyze awakening
+═══════════════════════════════════════════════════════
+Audio Analysis: awakening
+═══════════════════════════════════════════════════════
+
+SPECTRAL PROFILE:
+  Warm (centroid: 680 Hz) - mid-bass focused
+  Smooth (flux: 8%) - sustained, pad-like
+
+CHROMAGRAM:
+   C │████████████████████│ 18%
+  C# │░░░░░░░░░░░░░░░░░░░░│  2%
+   D │██████████████░░░░░░│ 15% ◄
+   ...
+
+OBSERVATIONS:
+  • Very warm, bass-focused frequency balance
+  • Clear harmonic focus - simple, direct tonality
+
+ether> compare awakening emergence
+Comparing sections...
+                   awakening    emergence
+Brightness:        warm         neutral
+Centroid:          680 Hz       1,240 Hz
+...
+
+Differences:
+  • emergence is BRIGHTER (+560 Hz centroid)
+  • emergence is LOUDER (+6 dB)
+
+Transition assessment: Good contrast (noticeable but natural)
+```
+
+**Key Files:**
+| File | Purpose |
+|------|---------|
+| `src/analysis/perceptual.ts` | Perceptual metrics (chromagram, centroid, flux, RMS, ZCR) |
+| `src/analysis/describe-audio.ts` | Natural language descriptions |
+| `src/analysis/audio-analyzer.ts` | Unified audio buffer access |
+
 ## Verification Workflow
 
 1. **Validate**: `npx tsx src/cli.ts validate myfile.etherscore.json`
