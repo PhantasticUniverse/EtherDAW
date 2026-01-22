@@ -53,8 +53,8 @@
 
   "patterns": {
     "// DRUM PATTERNS (COMBINED)": "----------------------------------------",
-    "// NOTE: Patterns array plays sequentially, not simultaneously!",
-    "// All drum layers must be in same hits array to play together.",
+    "// NOTE": "Patterns array plays sequentially, not simultaneously!",
+    "// TIP": "All drum layers must be in same hits array to play together.",
 
     "beat_basic": {
       "drums": {

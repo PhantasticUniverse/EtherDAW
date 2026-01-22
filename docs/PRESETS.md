@@ -334,6 +334,81 @@ Each kit includes these sounds:
 
 ---
 
+## Customizing Presets (v0.5)
+
+### Semantic Parameters
+
+All presets can be customized using semantic parameters - intuitive 0-1 scale values:
+
+```json
+{
+  "instruments": {
+    "lead": {
+      "preset": "fm_epiano",
+      "params": {
+        "brightness": 0.7,
+        "warmth": 0.5,
+        "attack": 0.2,
+        "release": 0.6
+      }
+    }
+  }
+}
+```
+
+| Parameter | Range | Description |
+|-----------|-------|-------------|
+| `brightness` | 0-1 | 0=dark, 1=bright (affects filter, harmonicity, modulation) |
+| `warmth` | 0-1 | 0=cold/digital, 1=warm/analog (affects saturation, filter Q) |
+| `richness` | 0-1 | 0=thin, 1=thick (affects detune, voice layering) |
+| `attack` | 0-1 | 0=instant, 1=slow (mapped to 0.001-2s) |
+| `decay` | 0-1 | 0=short, 1=long (mapped to 0.05-4s) |
+| `sustain` | 0-1 | 0=none, 1=full |
+| `release` | 0-1 | 0=short, 1=long (mapped to 0.1-4s) |
+| `punch` | 0-1 | 0=soft, 1=punchy (transient sharpness) |
+
+### Multi-Instance Presets
+
+Use the same preset with different settings on multiple tracks:
+
+```json
+{
+  "instruments": {
+    "lead_bright": {
+      "preset": "fm_epiano",
+      "params": { "brightness": 0.9, "attack": 0.1 }
+    },
+    "lead_mellow": {
+      "preset": "fm_epiano",
+      "params": { "brightness": 0.3, "warmth": 0.8 }
+    }
+  }
+}
+```
+
+### Direct Tone.js Overrides
+
+For power users who need precise control:
+
+```json
+{
+  "instruments": {
+    "custom": {
+      "type": "fmsynth",
+      "overrides": {
+        "harmonicity": 3.5,
+        "modulationIndex": 10,
+        "envelope": { "attack": 0.05, "decay": 0.3, "sustain": 0.4, "release": 0.5 }
+      }
+    }
+  }
+}
+```
+
+See [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) for complete parameter reference.
+
+---
+
 ## Usage Examples
 
 ### Simple Preset
@@ -388,5 +463,6 @@ Each kit includes these sounds:
 
 ## See Also
 
+- [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) - Complete semantic parameter reference (v0.5)
 - [EFFECTS.md](EFFECTS.md) - Audio effects to enhance presets
 - [ETHERSCORE_FORMAT.md](ETHERSCORE_FORMAT.md) - Complete format specification

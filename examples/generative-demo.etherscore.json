@@ -1,0 +1,190 @@
+{
+  "meta": {
+    "title": "Generative Primitives Demo",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "exploratory, evolving",
+    "genre": "ambient jazz",
+    "description": "A demonstration of EtherDAW v0.6 generative features: Markov chains for bass, density curves for activity, melodic continuation for development, and voice-led chord progressions.",
+    "tags": ["v0.6", "generative", "markov", "density", "demo"]
+  },
+  "settings": {
+    "tempo": 90,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0.15
+  },
+  "instruments": {
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass" } }
+      ]
+    },
+    "chords": {
+      "preset": "fm_epiano",
+      "volume": -9,
+      "params": { "warmth": 0.7, "brightness": 0.5 },
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2 } },
+        { "type": "chorus", "wet": 0.2 }
+      ]
+    },
+    "melody": {
+      "preset": "soft_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.35 },
+        { "type": "delay", "wet": 0.25, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    },
+    "pad": {
+      "preset": "ambient_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// MARKOV BASS": "Walking bass generated from Markov chain transitions",
+    "markov_bass": {
+      "markov": {
+        "states": ["1", "3", "5", "7", "approach"],
+        "transitions": {
+          "1": { "3": 0.25, "5": 0.35, "7": 0.2, "approach": 0.2 },
+          "3": { "1": 0.3, "5": 0.35, "7": 0.15, "approach": 0.2 },
+          "5": { "1": 0.35, "3": 0.25, "7": 0.2, "approach": 0.2 },
+          "7": { "1": 0.4, "3": 0.2, "5": 0.2, "approach": 0.2 },
+          "approach": { "1": 0.5, "5": 0.3, "3": 0.2 }
+        },
+        "initialState": "1",
+        "steps": 32,
+        "duration": "q",
+        "octave": 2,
+        "seed": 42
+      }
+    },
+
+    "// VOICE-LED CHORDS": "Smooth voice leading through ii-V-i progression",
+    "voiced_progression": {
+      "voiceLead": {
+        "progression": ["Dm7", "G7", "Cmaj7", "Fmaj7", "Bm7b5", "E7", "Am7", "A7"],
+        "voices": 4,
+        "constraints": ["smooth_motion", "avoid_voice_crossing"],
+        "style": "jazz"
+      }
+    },
+
+    "// MOTIF AND CONTINUATION": "Subject and its development",
+    "motif": {
+      "notes": ["D4:8", "F4:8", "A4:q", "G4:8", "F4:8", "E4:h"]
+    },
+    "developed_motif": {
+      "continuation": {
+        "source": "motif",
+        "technique": "descending_sequence",
+        "steps": 3,
+        "interval": -2
+      }
+    },
+    "fragmented_motif": {
+      "continuation": {
+        "source": "motif",
+        "technique": "fragmentation",
+        "steps": 4
+      }
+    },
+
+    "// SUPPORTING PATTERNS": "Traditional patterns for context",
+    "dm_pad": {
+      "chords": ["Dm:w", "Dm:w", "Am:w", "Gm:w"]
+    },
+    "dm_simple": {
+      "chords": ["Dm7:w", "Gm7:w", "Am7:w", "Gm7:w"]
+    },
+    "melodic_fill": {
+      "notes": [
+        "A4:8?0.8", "G4:8?0.7", "F4:q?0.8", "r:q",
+        "E4:8?0.6", "F4:8?0.7", "G4:q?0.6", "A4:q?0.5"
+      ]
+    }
+  },
+  "sections": {
+    "// INTRO": "Sparse opening with pad and hints of melody",
+    "intro": {
+      "bars": 8,
+      "density": {
+        "start": 0.3,
+        "end": 0.6,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "pad": { "pattern": "dm_pad", "repeat": 2, "velocity": 0.4 },
+        "melody": { "pattern": "melodic_fill", "repeat": 4, "velocity": 0.5, "humanize": 0.1 }
+      }
+    },
+
+    "// VERSE": "Introduce Markov bass, building density",
+    "verse_a": {
+      "bars": 16,
+      "density": {
+        "start": 0.5,
+        "end": 0.85,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "bass": { "pattern": "markov_bass", "repeat": 2, "velocity": 0.7, "humanize": 0.08 },
+        "chords": { "pattern": "dm_simple", "repeat": 4, "velocity": 0.55, "humanize": 0.1 },
+        "pad": { "pattern": "dm_pad", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "// DEVELOPMENT": "Voice-led progression with melodic development",
+    "development": {
+      "bars": 16,
+      "tracks": {
+        "bass": { "pattern": "markov_bass", "repeat": 2, "velocity": 0.75, "humanize": 0.1 },
+        "chords": { "pattern": "voiced_progression", "repeat": 2, "velocity": 0.6, "humanize": 0.08 },
+        "melody": { "pattern": "developed_motif", "velocity": 0.65, "humanize": 0.12 }
+      }
+    },
+
+    "// CLIMAX": "Full density, all elements",
+    "climax": {
+      "bars": 8,
+      "density": {
+        "start": 0.9,
+        "end": 1.0,
+        "curve": "linear"
+      },
+      "tracks": {
+        "bass": { "pattern": "markov_bass", "velocity": 0.8, "humanize": 0.1 },
+        "chords": { "pattern": "voiced_progression", "velocity": 0.7, "humanize": 0.08 },
+        "melody": { "pattern": "fragmented_motif", "velocity": 0.7, "humanize": 0.1 },
+        "pad": { "pattern": "dm_pad", "repeat": 2, "velocity": 0.45 }
+      }
+    },
+
+    "// OUTRO": "Density curve down, sparse ending",
+    "outro": {
+      "bars": 8,
+      "density": {
+        "start": 0.8,
+        "end": 0.2,
+        "curve": "sine"
+      },
+      "tracks": {
+        "pad": { "pattern": "dm_pad", "repeat": 2, "velocity": 0.4 },
+        "melody": { "pattern": "motif", "velocity": 0.45, "humanize": 0.05 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "verse_a",
+    "development",
+    "climax",
+    "outro"
+  ]
+}

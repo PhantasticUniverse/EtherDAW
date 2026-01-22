@@ -112,7 +112,7 @@
         "vapor_keys": { "pattern": "keys_main", "repeat": 2, "velocity": 0.55, "humanize": 0.1 },
         "vapor_pad": { "pattern": "pad_drift", "repeat": 2, "velocity": 0.5 },
         "vapor_bass": { "pattern": "bass_walk", "repeat": 4, "velocity": 0.5 },
-        "vapor_bell": { "pattern": "bell_shimmer", "repeat": 4, "velocity": 0.3 }
+        "vapor_bell": { "pattern": "bell_shimmer", "repeat": 8, "velocity": 0.3 }
       }
     },
     "verse_b": {

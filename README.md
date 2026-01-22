@@ -86,35 +86,48 @@ The browser player includes WAV audio export functionality:
 - File size is approximately 10MB per minute of audio
 - Export timing matches real-time playback
 
-## Architecture (v0.45)
+## Architecture (v0.5)
 
-EtherDAW v0.45 introduces a shared codebase between Node.js and browser:
+EtherDAW v0.5 features a unified codebase between Node.js and browser with bundled Tone.js:
 
 ```
 src/
 ├── config/
-│   └── constants.ts    # Single source of truth for all magic numbers
+│   └── constants.ts        # Single source of truth for all magic numbers
 ├── browser/
-│   └── index.ts        # Browser bundle entry point
-├── parser/             # Note, chord, pattern parsing
-├── engine/             # Compilation and timeline building
-├── theory/             # Music theory (scales, chords, rhythm)
-├── synthesis/          # Tone.js instruments and effects
-└── output/             # MIDI, WAV, ABC export
+│   ├── index.ts            # Browser bundle entry point
+│   └── player.ts           # Player class API (v0.5)
+├── parser/                 # Note, chord, pattern parsing
+│   └── json-preprocessor.ts # Comment stripping (v0.5)
+├── engine/                 # Compilation and timeline building
+│   └── automation.ts       # Parameter automation (v0.5)
+├── theory/                 # Music theory (scales, chords, rhythm)
+├── synthesis/              # Tone.js instruments and effects
+│   ├── presets.ts          # Declarative preset definitions (v0.5)
+│   ├── semantic-params.ts  # Semantic parameter mappings (v0.5)
+│   └── instrument-factory.ts # Synth creation from definitions (v0.5)
+└── output/                 # MIDI, WAV, ABC export
 
 dist/
-├── *.js                # Node.js compiled output
-└── etherdaw-browser.js # Browser bundle (~78KB)
+├── *.js                    # Node.js compiled output
+├── etherdaw-browser.js     # Browser bundle (~850KB, includes Tone.js)
+└── manifest.json           # Auto-generated composition list (v0.5)
 ```
 
 ### Development Workflow
 
 ```bash
+# Build everything (TypeScript + browser bundle + manifest)
+npm run build:all
+
 # Build TypeScript for Node.js
 npm run build
 
-# Build browser bundle (after source changes)
+# Build browser bundle (includes Tone.js)
 npm run build:browser
+
+# Generate composition manifest from examples/
+npm run build:manifest
 
 # Run tests
 npm run test:run
@@ -812,6 +825,7 @@ Comprehensive documentation is available in the `docs/` directory:
 |----------|-------------|
 | [QUICKSTART.md](docs/QUICKSTART.md) | Get started creating music quickly |
 | [ETHERSCORE_FORMAT.md](docs/ETHERSCORE_FORMAT.md) | Complete format specification |
+| [SYNTH_PARAMETERS.md](docs/SYNTH_PARAMETERS.md) | Semantic parameter reference for sound shaping (v0.5) |
 | [PRESETS.md](docs/PRESETS.md) | All instrument presets with descriptions |
 | [PATTERNS.md](docs/PATTERNS.md) | Pattern syntax reference |
 | [EFFECTS.md](docs/EFFECTS.md) | Audio effects and parameters |
@@ -822,7 +836,33 @@ Comprehensive documentation is available in the `docs/` directory:
 
 # Development Status
 
-## v0.45 Features (Latest)
+## v0.6 Features (Latest) - "Generative Primitives"
+
+| Feature | Description |
+|---------|-------------|
+| **Markov Chain Patterns** | Probabilistic sequence generation with state machines and optional seeding |
+| **Density Curves** | Section-level activity control with interpolated density values (linear, exponential, logarithmic, sine) |
+| **Melodic Continuation** | Generate continuations from motifs (ascending/descending sequence, extension, fragmentation) |
+| **Voice Leading** | Constraint-based chord voicing with style presets (bach, jazz, pop) |
+| **LLM Feedback Primer** | Documentation for gathering feedback from other LLMs |
+| **Generative Demo** | New example showcasing all v0.6 features |
+
+## v0.5 Features - "The LLM Composer Release"
+
+| Feature | Description |
+|---------|-------------|
+| **Semantic Synth Parameters** | LLM-friendly 0-1 scale params: `brightness`, `warmth`, `attack`, `decay`, etc. |
+| **Multi-Instance Presets** | Same preset on multiple tracks with different params |
+| **Direct Tone.js Overrides** | Power user access to raw synth parameters |
+| **Parallel Patterns** | `parallel: ["kick", "hihat", "clap"]` - patterns play simultaneously |
+| **Multi-Line Step Notation** | `lines: { kick: "x...", hihat: "..x." }` - visual drum programming |
+| **Pattern Probability** | `probability: 0.3` + `fallback: "main"` - generative variation |
+| **Section Automation** | Filter sweeps, brightness ramps, parameter changes over time |
+| **Comment Support** | `"// comment": "..."` keys stripped during parsing |
+| **Auto-Discovery** | `dist/manifest.json` - no manual dropdown updates |
+| **Browser Architecture** | player.html reduced from 3006 to 589 lines, uses bundled Tone.js |
+
+## v0.45 Features
 
 | Feature | Description |
 |---------|-------------|
@@ -885,6 +925,13 @@ The browser player (`player.html`) now supports **100% of the EtherScore format*
 | Scale constraint (v0.3) | Auto-snap out-of-key notes with `constrainToScale: true` |
 | Pattern transforms (v0.3) | Invert, retrograde, augment, diminish, transpose, octave operations |
 | WAV audio export | Offline rendering to 44.1kHz 16-bit stereo WAV files |
+| Semantic synth params (v0.5) | LLM-friendly instrument customization via `params` |
+| Parallel patterns (v0.5) | Simultaneous pattern playback for layered drums |
+| Multi-line steps (v0.5) | Visual drum programming with `lines` property |
+| Pattern probability (v0.5) | Generative variation with fallback patterns |
+| Section automation (v0.5) | Dynamic parameter changes over time |
+| Comment stripping (v0.5) | `"// comment"` keys ignored in parsing |
+| Auto-discovery (v0.5) | Compositions loaded from `dist/manifest.json` |
 
 ---
 

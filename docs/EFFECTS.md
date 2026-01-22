@@ -365,6 +365,92 @@ Effects process in the order listed. Common chains:
 ]
 ```
 
+## Effect Automation (v0.5)
+
+Automate effect parameters within sections for dynamic builds and drops:
+
+```json
+{
+  "sections": {
+    "buildup": {
+      "bars": 16,
+      "tracks": { ... },
+      "automation": {
+        "bass.filter.frequency": {
+          "start": 200,
+          "end": 5000,
+          "curve": "exponential"
+        }
+      }
+    }
+  }
+}
+```
+
+### Automation Paths
+
+| Path Format | Example | Description |
+|-------------|---------|-------------|
+| `instrument.effect.param` | `bass.filter.frequency` | Direct effect parameter |
+| `instrument.params.semantic` | `lead.params.brightness` | Semantic parameter (v0.5) |
+| `instrument.volume` | `bass.volume` | Channel volume |
+| `instrument.pan` | `lead.pan` | Channel pan |
+
+### Curve Types
+
+| Curve | Use Case |
+|-------|----------|
+| `linear` | Steady, even change (default) |
+| `exponential` | Frequency sweeps (sounds more natural) |
+| `sine` | Smooth ease-in-out |
+| `step` | Instant change at midpoint |
+
+### Custom Curves
+
+For complex automation, use `points`:
+
+```json
+{
+  "automation": {
+    "bass.filter.frequency": {
+      "start": 200,
+      "end": 5000,
+      "points": [
+        { "time": 0, "value": 200 },
+        { "time": 0.5, "value": 4000 },
+        { "time": 0.75, "value": 1000 },
+        { "time": 1, "value": 5000 }
+      ]
+    }
+  }
+}
+```
+
+### Semantic Parameter Automation
+
+Automate semantic params (0-1 scale) for LLM-friendly dynamic changes:
+
+```json
+{
+  "automation": {
+    "lead.params.brightness": {
+      "start": 0.2,
+      "end": 0.9,
+      "curve": "linear"
+    },
+    "pad.params.attack": {
+      "start": 0.8,
+      "end": 0.1,
+      "curve": "sine"
+    }
+  }
+}
+```
+
+See [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) for all semantic parameters.
+
+---
+
 ## Tips
 
 1. **Start subtle** - Begin with low wet values and increase as needed
@@ -375,5 +461,6 @@ Effects process in the order listed. Common chains:
 
 ## See Also
 
+- [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) - Semantic parameter reference (v0.5)
 - [PRESETS.md](PRESETS.md) - Instrument presets
 - [ETHERSCORE_FORMAT.md](ETHERSCORE_FORMAT.md) - Complete format specification

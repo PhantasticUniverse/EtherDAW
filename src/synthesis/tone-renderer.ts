@@ -42,11 +42,26 @@ interface CachedDrumSynth {
 }
 
 /**
+ * Pool of drum synths for handling simultaneous hits
+ * This is the proper solution - monophonic synths like NoiseSynth/MetalSynth
+ * can't be triggered twice at the same time, so we need multiple instances
+ */
+interface DrumSynthPool {
+  synths: CachedDrumSynth[];
+  nextIndex: number;
+  type: 'membrane' | 'noise' | 'metal';
+  pitch?: string;
+}
+
+// Pool size for each drum type - allows this many simultaneous hits
+const DRUM_POOL_SIZE = 4;
+
+/**
  * ToneRenderer class for audio playback and rendering
  */
 export class ToneRenderer {
   private instruments: Map<string, ActiveInstrument> = new Map();
-  private drumSynths: Map<string, CachedDrumSynth> = new Map();
+  private drumPools: Map<string, DrumSynthPool> = new Map();
   private scheduledEvents: number[] = [];
   private isPlaying = false;
 
@@ -91,15 +106,15 @@ export class ToneRenderer {
   }
 
   /**
-   * Get or create a drum synth for a specific drum/kit combination
-   * Matches the working implementation in player.html
+   * Get or create a drum synth pool for a specific drum/kit combination.
+   * Uses a pool of synths to handle simultaneous hits (round-robin allocation).
    */
-  private getOrCreateDrumSynth(drumName: DrumType, kitName: KitName): CachedDrumSynth | null {
+  private getOrCreateDrumPool(drumName: DrumType, kitName: KitName): DrumSynthPool | null {
     const key = `${drumName}@${kitName}`;
 
-    // Return cached synth if exists
-    if (this.drumSynths.has(key)) {
-      return this.drumSynths.get(key)!;
+    // Return cached pool if exists
+    if (this.drumPools.has(key)) {
+      return this.drumPools.get(key)!;
     }
 
     // Get synth parameters from drum kit
@@ -109,21 +124,40 @@ export class ToneRenderer {
       return null;
     }
 
-    // Create the synth and volume node (matching player.html pattern)
-    const synth = createDrumSynth(params);
-    const volume = new Tone.Volume(params.volume ?? 0);
-    synth.connect(volume);
-    volume.toDestination();
+    // Create a pool of synths for handling simultaneous hits
+    const synths: CachedDrumSynth[] = [];
+    for (let i = 0; i < DRUM_POOL_SIZE; i++) {
+      const synth = createDrumSynth(params);
+      const volume = new Tone.Volume(params.volume ?? 0);
+      synth.connect(volume);
+      volume.toDestination();
 
-    const cached: CachedDrumSynth = {
-      synth,
-      volume,
+      synths.push({
+        synth,
+        volume,
+        type: params.type,
+        pitch: params.pitch,
+      });
+    }
+
+    const pool: DrumSynthPool = {
+      synths,
+      nextIndex: 0,
       type: params.type,
       pitch: params.pitch,
     };
 
-    this.drumSynths.set(key, cached);
-    return cached;
+    this.drumPools.set(key, pool);
+    return pool;
+  }
+
+  /**
+   * Get the next available synth from a drum pool (round-robin)
+   */
+  private getNextDrumSynth(pool: DrumSynthPool): CachedDrumSynth {
+    const synth = pool.synths[pool.nextIndex];
+    pool.nextIndex = (pool.nextIndex + 1) % pool.synths.length;
+    return synth;
   }
 
   /**
@@ -199,6 +233,31 @@ export class ToneRenderer {
           high: (options.high as number) ?? EFFECT_DEFAULTS.eq.high,
         });
 
+      case 'phaser': {
+        const phaser = new Tone.Phaser({
+          frequency: (options.frequency as number) ?? EFFECT_DEFAULTS.phaser.frequency,
+          octaves: (options.octaves as number) ?? EFFECT_DEFAULTS.phaser.octaves,
+          baseFrequency: (options.baseFrequency as number) ?? EFFECT_DEFAULTS.phaser.baseFrequency,
+          wet,
+        });
+        return phaser;
+      }
+
+      case 'vibrato': {
+        const vibrato = new Tone.Vibrato({
+          frequency: (options.frequency as number) ?? EFFECT_DEFAULTS.vibrato.frequency,
+          depth: (options.depth as number) ?? EFFECT_DEFAULTS.vibrato.depth,
+          wet,
+        });
+        return vibrato;
+      }
+
+      case 'bitcrusher': {
+        const crusher = new Tone.BitCrusher((options.bits as number) ?? EFFECT_DEFAULTS.bitcrusher.bits);
+        crusher.wet.value = wet;
+        return crusher;
+      }
+
       default:
         console.warn(`Unknown effect type: ${def.type}`);
         return null;
@@ -220,17 +279,19 @@ export class ToneRenderer {
       const drumInfo = parseDrumPitch(note.pitch);
 
       if (drumInfo) {
-        // Handle drum notes
-        const drumSynth = this.getOrCreateDrumSynth(drumInfo.drumName, drumInfo.kitName);
-        if (!drumSynth) {
-          console.warn(`Could not create drum synth for: ${note.pitch}`);
+        // Handle drum notes - use pool for simultaneous hit support
+        const pool = this.getOrCreateDrumPool(drumInfo.drumName, drumInfo.kitName);
+        if (!pool) {
+          console.warn(`Could not create drum pool for: ${note.pitch}`);
           continue;
         }
+
+        // Get next available synth from pool (round-robin)
+        const drumSynth = this.getNextDrumSynth(pool);
 
         const eventId = Tone.getTransport().schedule((time) => {
           // Trigger based on synth type
           if (drumSynth.type === 'membrane') {
-            // MembraneSynth needs a pitch
             (drumSynth.synth as Tone.MembraneSynth).triggerAttackRelease(
               drumSynth.pitch || 'C2',
               note.durationSeconds,
@@ -238,14 +299,12 @@ export class ToneRenderer {
               note.velocity
             );
           } else if (drumSynth.type === 'noise') {
-            // NoiseSynth doesn't use pitch
             (drumSynth.synth as Tone.NoiseSynth).triggerAttackRelease(
               note.durationSeconds,
               time,
               note.velocity
             );
           } else if (drumSynth.type === 'metal') {
-            // MetalSynth doesn't use pitch in triggerAttackRelease
             (drumSynth.synth as Tone.MetalSynth).triggerAttackRelease(
               note.durationSeconds,
               time,
@@ -334,7 +393,7 @@ export class ToneRenderer {
     return await Tone.Offline(async ({ transport }) => {
       // Recreate instruments in offline context
       const offlineInstruments = new Map<string, Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth>();
-      const offlineDrumSynths = new Map<string, CachedDrumSynth>();
+      const offlineDrumPools = new Map<string, DrumSynthPool>();
 
       for (const name of timeline.instruments) {
         const synth = createInstrument('synth');
@@ -342,30 +401,41 @@ export class ToneRenderer {
         offlineInstruments.set(name, synth);
       }
 
-      // Helper to get or create drum synth for offline rendering
-      const getOfflineDrumSynth = (drumName: DrumType, kitName: KitName): CachedDrumSynth | null => {
+      // Helper to get or create drum pool for offline rendering
+      const getOfflineDrumPool = (drumName: DrumType, kitName: KitName): DrumSynthPool | null => {
         const key = `${drumName}@${kitName}`;
-        if (offlineDrumSynths.has(key)) {
-          return offlineDrumSynths.get(key)!;
+        if (offlineDrumPools.has(key)) {
+          return offlineDrumPools.get(key)!;
         }
 
         const params = getDrumSynthParams(kitName, drumName);
         if (!params) return null;
 
-        const synth = createDrumSynth(params);
-        const volume = new Tone.Volume(params.volume ?? 0);
-        synth.connect(volume);
-        volume.toDestination();
+        // Create pool of synths for offline rendering
+        const synths: CachedDrumSynth[] = [];
+        for (let i = 0; i < DRUM_POOL_SIZE; i++) {
+          const synth = createDrumSynth(params);
+          const volume = new Tone.Volume(params.volume ?? 0);
+          synth.connect(volume);
+          volume.toDestination();
 
-        const cached: CachedDrumSynth = {
-          synth,
-          volume,
+          synths.push({
+            synth,
+            volume,
+            type: params.type,
+            pitch: params.pitch,
+          });
+        }
+
+        const pool: DrumSynthPool = {
+          synths,
+          nextIndex: 0,
           type: params.type,
           pitch: params.pitch,
         };
 
-        offlineDrumSynths.set(key, cached);
-        return cached;
+        offlineDrumPools.set(key, pool);
+        return pool;
       };
 
       // Set tempo
@@ -373,13 +443,18 @@ export class ToneRenderer {
 
       // Schedule notes
       const notes = getAllNotes(timeline);
+
       for (const note of notes) {
         const drumInfo = parseDrumPitch(note.pitch);
 
         if (drumInfo) {
           // Handle drum notes
-          const drumSynth = getOfflineDrumSynth(drumInfo.drumName, drumInfo.kitName);
-          if (!drumSynth) continue;
+          const pool = getOfflineDrumPool(drumInfo.drumName, drumInfo.kitName);
+          if (!pool) continue;
+
+          // Get next synth from pool (round-robin)
+          const drumSynth = pool.synths[pool.nextIndex];
+          pool.nextIndex = (pool.nextIndex + 1) % pool.synths.length;
 
           transport.schedule((time) => {
             if (drumSynth.type === 'membrane') {
@@ -510,13 +585,16 @@ export class ToneRenderer {
       channel.dispose();
     }
 
-    for (const { synth, volume } of this.drumSynths.values()) {
-      synth.dispose();
-      volume.dispose();
+    // Dispose all synths in all pools
+    for (const pool of this.drumPools.values()) {
+      for (const { synth, volume } of pool.synths) {
+        synth.dispose();
+        volume.dispose();
+      }
     }
 
     this.instruments.clear();
-    this.drumSynths.clear();
+    this.drumPools.clear();
   }
 
   /**

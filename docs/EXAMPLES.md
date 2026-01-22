@@ -6,7 +6,10 @@ EtherDAW includes several example compositions demonstrating different features 
 
 | Example | Genre | Key Features |
 |---------|-------|--------------|
-| `emergence` | Ambient | Original composition, v0.4 expression |
+| `techno-machine-state` | Minimal Techno | v0.5 step notation, 909 kit |
+| `lofi-study` | Lo-fi Hip Hop | v0.5 euclidean rhythms, swing |
+| `convergence` | Minimalist Ambient | v0.5 long-form, meditative |
+| `emergence` | Ambient | v0.4 expression, probability |
 | `dynamics-showcase` | Showcase | v0.4 expression features |
 | `fm-showcase` | Showcase | FM synthesis presets |
 | `ambient-journey` | Ambient | Pads, slow arpeggios, reverb |
@@ -20,8 +23,47 @@ EtherDAW includes several example compositions demonstrating different features 
 | `vaporwave-plaza` | Vaporwave | Slow, dreamy, detuned |
 | `jazz-standard` | Jazz | ii-V-I, walking bass |
 | `fugue-d-minor` | Classical | Counterpoint, Bach-style |
-| `reflections-reprise` | Neo-Soul | Complex chords, groove |
+| `reflections-reprise` | Ambient | Complex chords, introspection |
 | `llm-composition` | Mixed | Full LLM-generated piece |
+
+---
+
+## v0.5 Compositions
+
+### techno-machine-state.etherscore.json
+**Genre:** Minimal Techno | **Tempo:** 128 BPM | **Key:** A minor
+
+A minimal techno track exploring step notation and the 909 drum kit. Session #003 stress test.
+
+**v0.5 features used:**
+- Multi-line step notation (`lines`) for drums
+- 909 drum kit with four-on-the-floor kicks
+- Offbeat hi-hats and hypnotic repetition
+
+---
+
+### lofi-study.etherscore.json
+**Genre:** Lo-fi Hip Hop | **Tempo:** 75 BPM | **Key:** C minor
+
+A rhythm-focused lo-fi beat designed to stress-test EtherDAW's drum patterns, euclidean rhythms, and swing.
+
+**v0.5 features used:**
+- Euclidean rhythms for natural groove
+- Lofi drum kit
+- Heavy swing feel
+- Perfect for studying or late-night vibes
+
+---
+
+### convergence.etherscore.json
+**Genre:** Minimalist Ambient | **Tempo:** 66 BPM | **Key:** D minor
+
+Multiple independent melodic lines begin scattered and gradually converge toward unity, then dissolve again. A meditation on how meaning emerges from chaos.
+
+**v0.5 features used:**
+- Extended 8+ minute form
+- Generative probability elements
+- Meditative, slow-evolving textures
 
 ---
 

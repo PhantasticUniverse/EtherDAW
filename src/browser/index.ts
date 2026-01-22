@@ -31,6 +31,12 @@ export type {
   ParsedChord,
   Articulation,
   ArticulationModifiers,
+  // v0.5: Semantic synth params and automation
+  SemanticSynthParams,
+  ToneJsOverrides,
+  AutomationCurve,
+  AutomationPoint,
+  AutomationConfig,
 } from '../schema/types.js';
 
 export { DURATION_MAP } from '../schema/types.js';
@@ -93,6 +99,13 @@ export {
   type ExpandedPattern,
   type PatternContext,
 } from '../parser/pattern-expander.js';
+
+// v0.5: JSON preprocessing (comment support)
+export {
+  stripComments,
+  parseWithComments,
+  isCommentKey,
+} from '../parser/json-preprocessor.js';
 
 // ============ Music Theory ============
 export {
@@ -177,6 +190,17 @@ export {
   type PatternResolutionContext,
 } from '../engine/pattern-resolver.js';
 
+// v0.5: Automation
+export {
+  parseAutomationPath,
+  resolveSemanticParam,
+  getAutomationValue,
+  resolveAutomations,
+  generateAutomationEvents,
+  type ParsedAutomationPath,
+  type ResolvedAutomation,
+} from '../engine/automation.js';
+
 // ============ Synthesis (Data Only) ============
 // Note: Tone.js-dependent functions (createInstrument, createDrumSynth) are not
 // exported here because Tone.js is loaded as a global in the browser.
@@ -200,5 +224,14 @@ export {
   type StepHit,
 } from '../synthesis/drum-kits.js';
 
+// ============ Browser Player (v0.5) ============
+export {
+  Player,
+  createPlayer,
+  type PlayerState,
+  type PlayerCallbacks,
+  type SectionInfo,
+} from './player.js';
+
 // ============ Version ============
-export const VERSION = '0.49.0';
+export const VERSION = '0.50.0';

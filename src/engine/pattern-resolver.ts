@@ -2,9 +2,10 @@
  * Pattern resolver - expands pattern definitions into note events
  */
 
-import type { Pattern, Track, EtherScoreSettings } from '../schema/types.js';
+import type { Pattern, Track, EtherScoreSettings, DensityConfig } from '../schema/types.js';
 import { expandPattern, type ExpandedPattern, type PatternContext } from '../parser/pattern-expander.js';
 import { applySwing, humanizeTiming, humanizeVelocity, humanizeDuration } from '../theory/rhythm.js';
+import { getDensityAtBeat, shouldPlayNote } from '../generative/density.js';
 
 export interface ResolvedNote {
   pitch: string;
@@ -23,10 +24,14 @@ export interface PatternResolutionContext {
   settings: EtherScoreSettings;
   sectionKey?: string;
   sectionTempo?: number;
+  // NEW v0.6: Section-level density curve
+  density?: DensityConfig;
+  sectionBeats?: number;  // Total beats in section for density calculation
 }
 
 /**
  * Resolve a track to an array of notes
+ * v0.5: Supports parallel patterns and probability
  */
 export function resolveTrack(
   track: Track,
@@ -36,6 +41,23 @@ export function resolveTrack(
     return [];
   }
 
+  // v0.5: Handle probability - check at resolution time
+  if (track.probability !== undefined) {
+    if (Math.random() > track.probability) {
+      // Probability check failed - use fallback if provided
+      if (track.fallback) {
+        return resolveTrack({ ...track, pattern: track.fallback, probability: undefined, fallback: undefined }, ctx);
+      }
+      return [];
+    }
+  }
+
+  // v0.5: Handle parallel patterns (play simultaneously at beat 0)
+  if (track.parallel && track.parallel.length > 0) {
+    return resolveParallelPatterns(track, ctx);
+  }
+
+  // Original sequential pattern handling
   const patternNames = track.patterns || (track.pattern ? [track.pattern] : []);
 
   if (patternNames.length === 0) {
@@ -76,6 +98,69 @@ export function resolveTrack(
 
       results.push(...processedNotes);
       currentBeat += expanded.totalBeats;
+    }
+  }
+
+  return results;
+}
+
+/**
+ * v0.5: Resolve parallel patterns - all play simultaneously from beat 0
+ */
+function resolveParallelPatterns(
+  track: Track,
+  ctx: PatternResolutionContext
+): ResolvedNote[] {
+  const results: ResolvedNote[] = [];
+  const repeatCount = track.repeat || 1;
+
+  // First pass: expand all patterns and find the max length
+  // This ensures we know the pattern length before calculating offsets
+  const expandedPatterns: { expanded: ExpandedPattern; patternCtx: PatternContext }[] = [];
+  let maxPatternLength = 0;
+
+  for (const patternName of track.parallel!) {
+    const pattern = ctx.patterns[patternName];
+
+    if (!pattern) {
+      console.warn(`Pattern not found: ${patternName}`);
+      continue;
+    }
+
+    const patternCtx: PatternContext = {
+      key: ctx.sectionKey || ctx.settings.key,
+      tempo: ctx.sectionTempo || ctx.settings.tempo,
+      velocity: track.velocity,
+      octaveOffset: track.octave,
+      transpose: track.transpose,
+    };
+
+    const expanded = expandPattern(pattern, patternCtx);
+    expandedPatterns.push({ expanded, patternCtx });
+
+    // Track the longest pattern
+    if (expanded.totalBeats > maxPatternLength) {
+      maxPatternLength = expanded.totalBeats;
+    }
+  }
+
+  // Round maxPatternLength up to bar boundary for proper alignment
+  maxPatternLength = Math.ceil(maxPatternLength / 4) * 4;
+
+  // Second pass: process all patterns for each repeat
+  for (let r = 0; r < repeatCount; r++) {
+    const repeatOffset = r * maxPatternLength;
+
+    for (const { expanded } of expandedPatterns) {
+      // Process notes with proper offset, preserving timing metadata
+      const processedNotes = processExpandedNotes(
+        expanded,
+        repeatOffset,
+        track.humanize || 0,
+        ctx.settings.swing || 0
+      );
+
+      results.push(...processedNotes);
     }
   }
 
@@ -128,6 +213,7 @@ function processExpandedNotes(
 
 /**
  * Resolve all tracks in a section
+ * v0.6: Supports density curves to control overall activity
  */
 export function resolveSection(
   tracks: Record<string, Track>,
@@ -138,16 +224,43 @@ export function resolveSection(
   const beatsPerBar = getBeatsPerBar(ctx.settings.timeSignature || '4/4');
   const sectionBeats = bars * beatsPerBar;
 
+  // v0.6: Pass section beats for density calculation
+  const enrichedCtx = {
+    ...ctx,
+    sectionBeats,
+  };
+
   for (const [instrumentName, track] of Object.entries(tracks)) {
-    const notes = resolveTrack(track, ctx);
+    let notes = resolveTrack(track, enrichedCtx);
 
     // Repeat patterns to fill section if needed
-    const filledNotes = fillToLength(notes, sectionBeats);
+    notes = fillToLength(notes, sectionBeats);
 
-    result.set(instrumentName, filledNotes);
+    // v0.6: Apply density curve if specified
+    if (ctx.density) {
+      notes = applyDensityCurve(notes, ctx.density, sectionBeats);
+    }
+
+    result.set(instrumentName, notes);
   }
 
   return result;
+}
+
+/**
+ * v0.6: Apply density curve to notes
+ * Notes with probability check failures are filtered out
+ */
+function applyDensityCurve(
+  notes: ResolvedNote[],
+  density: DensityConfig,
+  sectionBeats: number
+): ResolvedNote[] {
+  return notes.filter(note => {
+    const densityAtBeat = getDensityAtBeat(density, note.startBeat, sectionBeats);
+    // Combine note probability with density
+    return shouldPlayNote(note.probability, densityAtBeat);
+  });
 }
 
 /**
@@ -171,7 +284,13 @@ function fillToLength(notes: ResolvedNote[], targetBeats: number): ResolvedNote[
   if (notes.length === 0) return [];
 
   // Find the length of the original pattern
-  const patternLength = Math.max(...notes.map(n => n.startBeat + n.durationBeats), 1);
+  // We need to find the END of the last note, then round UP to the nearest bar
+  const rawPatternLength = Math.max(...notes.map(n => n.startBeat + n.durationBeats), 1);
+
+  // Round up to the nearest bar (4 beats in 4/4 time)
+  // This ensures proper looping - a pattern with notes ending at beat 3.75
+  // should still be treated as a 4-beat (1-bar) pattern
+  const patternLength = Math.ceil(rawPatternLength / 4) * 4;
 
   // If pattern is longer than target, truncate
   if (patternLength >= targetBeats) {

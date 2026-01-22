@@ -96,6 +96,8 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
       settings,
       sectionKey,
       sectionTempo,
+      // v0.6: Pass density curve if specified
+      density: section.density,
     };
 
     const resolvedTracks = resolveSection(section.tracks, section.bars, ctx);

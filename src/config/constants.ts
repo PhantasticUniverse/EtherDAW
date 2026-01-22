@@ -93,6 +93,17 @@ export const EFFECT_DEFAULTS = {
     bits: 8,
     wet: 0.5,
   },
+  phaser: {
+    frequency: 0.5,
+    octaves: 3,
+    baseFrequency: 350,
+    wet: 0.5,
+  },
+  vibrato: {
+    frequency: 5,
+    depth: 0.1,
+    wet: 0.5,
+  },
   compressor: {
     threshold: -24,
     ratio: 4,

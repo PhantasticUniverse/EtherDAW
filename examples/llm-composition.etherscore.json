@@ -134,44 +134,44 @@
       "bars": 8,
       "tracks": {
         "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.4 },
-        "pulse": { "pattern": "pulse_pattern", "repeat": 4, "velocity": 0.3, "humanize": 0.05 }
+        "pulse": { "pattern": "pulse_pattern", "repeat": 8, "velocity": 0.3, "humanize": 0.05 }
       }
     },
     "question": {
       "bars": 16,
       "tracks": {
-        "atmosphere": { "pattern": "progression_a", "repeat": 2, "velocity": 0.5 },
-        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 4, "velocity": 0.4, "humanize": 0.08 },
-        "voice": { "patterns": ["melody_question", "melody_answer"], "velocity": 0.55, "humanize": 0.12 },
-        "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.5 }
+        "atmosphere": { "pattern": "progression_a", "repeat": 4, "velocity": 0.5 },
+        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 8, "velocity": 0.4, "humanize": 0.08 },
+        "voice": { "patterns": ["melody_question", "melody_answer"], "repeat": 2, "velocity": 0.55, "humanize": 0.12 },
+        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.5 }
       }
     },
     "exploration": {
       "bars": 16,
       "tracks": {
-        "atmosphere": { "pattern": "progression_b", "repeat": 2, "velocity": 0.55 },
-        "pulse": { "pattern": "arp_em", "repeat": 8, "velocity": 0.35, "octave": 1 },
-        "voice": { "patterns": ["melody_develop", "melody_answer"], "velocity": 0.6, "humanize": 0.1 },
-        "bass": { "pattern": "bass_move", "repeat": 4, "velocity": 0.55, "humanize": 0.08 },
-        "bells": { "pattern": "bells_shimmer", "repeat": 16, "velocity": 0.25 }
+        "atmosphere": { "pattern": "progression_b", "repeat": 4, "velocity": 0.55 },
+        "pulse": { "pattern": "arp_em", "repeat": 32, "velocity": 0.35, "octave": 1 },
+        "voice": { "patterns": ["melody_develop", "melody_answer"], "repeat": 2, "velocity": 0.6, "humanize": 0.1 },
+        "bass": { "pattern": "bass_move", "repeat": 8, "velocity": 0.55, "humanize": 0.08 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 32, "velocity": 0.25 }
       }
     },
     "culmination": {
       "bars": 16,
       "tracks": {
-        "atmosphere": { "patterns": ["progression_a", "progression_b"], "velocity": 0.6 },
-        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 4, "velocity": 0.45, "humanize": 0.1 },
-        "voice": { "patterns": ["melody_develop", "melody_resolve"], "velocity": 0.65, "humanize": 0.1 },
-        "bass": { "pattern": "bass_walk", "repeat": 4, "velocity": 0.6, "humanize": 0.1 },
-        "bells": { "pattern": "bells_answer", "repeat": 8, "velocity": 0.3 }
+        "atmosphere": { "patterns": ["progression_a", "progression_b"], "repeat": 2, "velocity": 0.6 },
+        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 8, "velocity": 0.45, "humanize": 0.1 },
+        "voice": { "patterns": ["melody_develop", "melody_resolve"], "repeat": 2, "velocity": 0.65, "humanize": 0.1 },
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.6, "humanize": 0.1 },
+        "bells": { "pattern": "bells_answer", "repeat": 16, "velocity": 0.3 }
       }
     },
     "resolution": {
       "bars": 8,
       "tracks": {
         "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.45 },
-        "voice": { "pattern": "melody_resolve", "velocity": 0.5, "humanize": 0.05 },
-        "bells": { "pattern": "bells_shimmer", "repeat": 8, "velocity": 0.2 }
+        "voice": { "pattern": "melody_resolve", "repeat": 2, "velocity": 0.5, "humanize": 0.05 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 16, "velocity": 0.2 }
       }
     },
     "fade": {

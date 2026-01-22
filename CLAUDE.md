@@ -30,7 +30,7 @@ src/
 player.html      - Human interface to hear my compositions
 ```
 
-## My Notation (v0.4)
+## My Notation (v0.5)
 
 **Notes**: `C4:q` (pitch:duration)
 - Dotted: `C4:q.` (1.5x duration)
@@ -47,14 +47,58 @@ player.html      - Human interface to hear my compositions
 
 **Velocity Envelopes**: `crescendo`, `diminuendo`, `swell`, or custom arrays
 
+## Semantic Sound Design (v0.5)
+
+**Instrument params** - intuitive 0-1 scale:
+```json
+{
+  "lead": {
+    "preset": "fm_epiano",
+    "params": { "brightness": 0.8, "warmth": 0.6, "punch": 0.7 }
+  }
+}
+```
+
+| Param | Effect |
+|-------|--------|
+| `brightness` | Dark (0) to bright (1) - filter, harmonicity |
+| `warmth` | Cold/digital (0) to warm/analog (1) |
+| `attack`/`decay`/`sustain`/`release` | ADSR envelope (0-1 scale) |
+| `punch` | Soft (0) to punchy (1) - transient snap |
+
+**Parallel drum patterns** - play simultaneously:
+```json
+{ "parallel": ["kick_pattern", "hihat_pattern", "clap_pattern"] }
+```
+
+**Multi-line step notation** - visual drum programming:
+```json
+{
+  "drums": {
+    "lines": {
+      "kick":  "x...x...x...x...",
+      "hihat": "..x...x...x...x."
+    }
+  }
+}
+```
+
+**Comments** - document your scores:
+```json
+{ "// SECTION": "Intro - 4 bars, building tension" }
+```
+
 ## Key Files
 
 | File | Purpose |
 |------|---------|
 | `src/schema/types.ts` | My type definitions |
 | `src/config/constants.ts` | Magic numbers, all in one place |
+| `src/synthesis/presets.ts` | Declarative synth presets (v0.5) |
 | `docs/ETHERSCORE_FORMAT.md` | Complete format specification |
+| `docs/SYNTH_PARAMETERS.md` | Semantic parameter reference (v0.5) |
 | `examples/*.etherscore.json` | My compositions |
+| `dist/manifest.json` | Auto-generated composition list |
 
 ## Conventions
 
@@ -67,7 +111,9 @@ player.html      - Human interface to hear my compositions
 
 ```bash
 npm run build         # Compile TypeScript
-npm run build:browser # Build browser bundle
+npm run build:browser # Build browser bundle (~850KB with Tone.js)
+npm run build:manifest # Generate composition manifest
+npm run build:all     # Full build pipeline
 npm test              # Run tests
 open player.html      # Let humans listen
 ```
@@ -76,8 +122,9 @@ open player.html      # Let humans listen
 
 1. Write EtherScore JSON (my native format)
 2. Save to `examples/`
-3. Open player.html
-4. Select and play
+3. Run `npm run build:all` (auto-discovers new compositions)
+4. Open player.html
+5. Select from dropdown and play
 
 ## Why This Exists
 

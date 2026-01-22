@@ -4,11 +4,12 @@ import { pitchToMidi, midiToPitch } from './note-parser.js';
 
 /**
  * Regular expression for parsing chord notation
- * Format: {root}{quality}:{duration}[.][articulation] or {root}{quality}/{bass}:{duration}[.][articulation]
- * Examples: Cmaj7:w, Dm:h, F#m7b5:q, Bb/D:h., Am7:q*, Dm7:h~
+ * Format: {root}{quality}[@voicing]:{duration}[.][articulation] or {root}{quality}[@voicing]/{bass}:{duration}[.][articulation]
+ * Examples: Cmaj7:w, Dm:h, F#m7b5:q, Bb/D:h., Am7:q*, Dm7:h~, Am9@drop2:w, Fmaj7@shell:q
+ * Voicings: @drop2, @drop3, @shell, @open, @close, @rootless_a
  * Articulations: * (staccato), ~ (legato), > (accent), ^ (marcato)
  */
-const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:b\d+|#\d+)*)(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
+const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
 
 /**
  * Chord quality intervals (semitones from root)
@@ -49,6 +50,83 @@ const CHORD_INTERVALS: Record<string, number[]> = {
   '6': [0, 4, 7, 9],       // major 6th
   'm6': [0, 3, 7, 9],      // minor 6th
 };
+
+/**
+ * Chord voicings - alternative interval arrangements for different qualities
+ * Each voicing rearranges the chord tones for different musical effects
+ */
+const CHORD_VOICINGS: Record<string, Record<string, number[]>> = {
+  // Major 7th voicings
+  'maj7': {
+    'close': [0, 4, 7, 11],         // Standard close voicing
+    'drop2': [0, 7, 11, 16],        // Second voice dropped an octave (airy, open)
+    'drop3': [0, 11, 16, 19],       // Third voice dropped an octave
+    'shell': [0, 11, 16],           // Root, 7th, 3rd (no 5th - cleaner)
+    'open': [-12, 0, 7, 16],        // Wide spacing across octaves
+  },
+  // Minor 7th voicings
+  'm7': {
+    'close': [0, 3, 7, 10],
+    'drop2': [0, 7, 10, 15],        // Drop2 for minor 7
+    'shell': [0, 10, 15],           // Root, 7th, 3rd
+    'open': [-12, 0, 7, 15],
+    'rootless_a': [3, 7, 10, 14],   // Bill Evans style
+  },
+  // Dominant 7th voicings
+  '7': {
+    'close': [0, 4, 7, 10],
+    'drop2': [0, 7, 10, 16],
+    'shell': [0, 10, 16],
+    'open': [-12, 0, 7, 16],
+  },
+  // Minor 9th voicings
+  'm9': {
+    'close': [0, 3, 7, 10, 14],
+    'drop2': [0, 7, 10, 14, 15],    // Drop2 for m9 - spread out
+    'shell': [0, 10, 14, 15],       // Root, 7th, 9th, 3rd
+    'open': [-12, 0, 10, 14, 15],   // Wide with bass note down
+  },
+  // Major 9th voicings
+  'maj9': {
+    'close': [0, 4, 7, 11, 14],
+    'drop2': [0, 7, 11, 14, 16],
+    'shell': [0, 11, 14, 16],
+    'open': [-12, 0, 11, 14, 16],
+  },
+  // Dominant 9th voicings
+  '9': {
+    'close': [0, 4, 7, 10, 14],
+    'drop2': [0, 7, 10, 14, 16],
+    'shell': [0, 10, 14, 16],
+    'open': [-12, 0, 10, 14, 16],
+  },
+  // Minor voicings (triads)
+  'm': {
+    'close': [0, 3, 7],
+    'open': [-12, 0, 7, 15],        // Wide minor with octave doubling
+  },
+  // Major voicings (triads)
+  'maj': {
+    'close': [0, 4, 7],
+    'open': [-12, 0, 7, 16],
+  },
+  '': {
+    'close': [0, 4, 7],
+    'open': [-12, 0, 7, 16],
+  },
+};
+
+/**
+ * Get voicing intervals for a chord quality and voicing name
+ * Falls back to close voicing if voicing not found
+ */
+function getVoicingIntervals(quality: string, voicingName: string): number[] | null {
+  const qualityVoicings = CHORD_VOICINGS[quality];
+  if (!qualityVoicings) {
+    return null;
+  }
+  return qualityVoicings[voicingName] || null;
+}
 
 /**
  * Get intervals for a chord quality, handling complex qualities
@@ -100,19 +178,57 @@ function getChordIntervals(quality: string): number[] {
 }
 
 /**
- * Parse a chord string in the format "chord:duration[articulation]"
- * @param chordStr - Chord string (e.g., "Cmaj7:w", "Dm:h", "Bb/D:q", "Am7:q*")
+ * Check if a string is a rest notation
+ */
+export function isChordRest(str: string): boolean {
+  return str.trim().startsWith('r:');
+}
+
+/**
+ * Parse a rest string and return duration in beats
+ */
+export function parseChordRest(restStr: string): number {
+  const match = restStr.trim().match(/^r:(\d+|[whq])(\.?)$/);
+  if (!match) {
+    throw new Error(`Invalid rest format: "${restStr}"`);
+  }
+  const [, durationCode, dotted] = match;
+  const baseDuration = DURATION_MAP[durationCode];
+  if (baseDuration === undefined) {
+    throw new Error(`Invalid duration code in rest: "${durationCode}"`);
+  }
+  return dotted === '.' ? baseDuration * 1.5 : baseDuration;
+}
+
+/**
+ * Parse a chord string in the format "chord[@voicing]:duration[articulation]"
+ * @param chordStr - Chord string (e.g., "Cmaj7:w", "Dm:h", "Bb/D:q", "Am7:q*", "Am9@drop2:w")
  * @param defaultOctave - Base octave for the chord (default: 3)
  * @returns Parsed chord object
  */
 export function parseChord(chordStr: string, defaultOctave = 3): ParsedChord {
+  // Handle rests in chord arrays - return a "rest chord" with no notes
+  if (isChordRest(chordStr)) {
+    const durationBeats = parseChordRest(chordStr);
+    return {
+      root: 'r',
+      quality: '',
+      bass: undefined,
+      duration: chordStr.split(':')[1].replace('.', ''),
+      durationBeats,
+      notes: [], // Empty notes array for rest
+      articulation: '' as Articulation,
+    };
+  }
+
   const match = chordStr.trim().match(CHORD_REGEX);
 
   if (!match) {
-    throw new Error(`Invalid chord format: "${chordStr}". Expected format: {root}{quality}:{duration}[articulation] (e.g., "Cmaj7:w", "Dm:h", "Am7:q*")`);
+    throw new Error(`Invalid chord format: "${chordStr}". Expected format: {root}{quality}[@voicing]:{duration}[articulation] (e.g., "Cmaj7:w", "Dm:h", "Am7:q*", "Am9@drop2:w")`);
   }
 
-  const [, root, quality, bass, durationCode, dotted, articulationRaw] = match;
+  // Groups: 1=root, 2=quality, 3=voicing, 4=bass, 5=durationCode, 6=dotted, 7=articulation
+  const [, root, quality, voicing, bass, durationCode, dotted, articulationRaw] = match;
   const isDotted = dotted === '.';
   const articulation = (articulationRaw || '') as Articulation;
 
@@ -123,14 +239,29 @@ export function parseChord(chordStr: string, defaultOctave = 3): ParsedChord {
 
   const durationBeats = isDotted ? baseDuration * 1.5 : baseDuration;
 
-  // Get chord intervals
-  const intervals = getChordIntervals(quality || '');
-
-  // Convert root to MIDI, then build chord notes
+  // Convert root to MIDI
   const rootPitch = `${root}${defaultOctave}`;
   const rootMidi = pitchToMidi(rootPitch);
 
-  const notes = intervals.map(interval => midiToPitch(rootMidi + interval));
+  let notes: string[];
+
+  // Check for voicing first
+  if (voicing) {
+    const voicingIntervals = getVoicingIntervals(quality || '', voicing);
+    if (voicingIntervals) {
+      // Use voicing intervals
+      notes = voicingIntervals.map(interval => midiToPitch(rootMidi + interval));
+    } else {
+      // Voicing not found for this quality, fall back to standard intervals
+      console.warn(`Voicing "${voicing}" not found for quality "${quality || 'maj'}", using standard voicing`);
+      const intervals = getChordIntervals(quality || '');
+      notes = intervals.map(interval => midiToPitch(rootMidi + interval));
+    }
+  } else {
+    // No voicing specified, use standard intervals
+    const intervals = getChordIntervals(quality || '');
+    notes = intervals.map(interval => midiToPitch(rootMidi + interval));
+  }
 
   // Handle slash chord (bass note)
   if (bass) {
@@ -161,12 +292,13 @@ export function parseChords(chordStrings: string[], defaultOctave = 3): ParsedCh
 
 /**
  * Get the notes of a chord symbol without duration
- * @param chordSymbol - Chord symbol (e.g., "Cmaj7", "Dm", "F#m7b5")
+ * @param chordSymbol - Chord symbol (e.g., "Cmaj7", "Dm", "F#m7b5", "Am9@drop2")
  * @param octave - Base octave
  * @returns Array of pitch strings
  */
 export function getChordNotes(chordSymbol: string, octave = 3): string[] {
   // Add a dummy duration for parsing
+  // Handle case where symbol might already have @voicing
   const parsed = parseChord(`${chordSymbol}:q`, octave);
   return parsed.notes;
 }

@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EtherDAW Player</title>
+  <title>EtherDAW Player v0.6</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -21,7 +16,6 @@
       justify-content: center;
       color: #e8e8e8;
     }
-
     .player {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
@@ -32,38 +26,11 @@
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-    .title {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #fff;
-    }
-
-    .composer {
-      font-size: 16px;
-      color: #8892b0;
-      margin-bottom: 24px;
-    }
-
-    .meta {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 32px;
-      font-size: 14px;
-      color: #a8b2d1;
-    }
-
-    .meta span {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .progress-container {
-      margin-bottom: 24px;
-    }
-
+    .title { font-size: 28px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+    .composer { font-size: 16px; color: #8892b0; margin-bottom: 24px; }
+    .meta { display: flex; gap: 24px; margin-bottom: 32px; font-size: 14px; color: #a8b2d1; }
+    .meta span { display: flex; align-items: center; gap: 6px; }
+    .progress-container { margin-bottom: 24px; }
     .progress-bar {
       height: 6px;
       background: rgba(255, 255, 255, 0.1);
@@ -71,14 +38,12 @@
       overflow: hidden;
       cursor: pointer;
     }
-
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #64ffda, #48c9b0);
       width: 0%;
       transition: width 0.1s linear;
     }
-
     .time-display {
       display: flex;
       justify-content: space-between;
@@ -86,7 +51,6 @@
       color: #8892b0;
       margin-top: 8px;
     }
-
     .section-display {
       text-align: center;
       font-size: 14px;
@@ -96,14 +60,7 @@
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
+    .controls { display: flex; justify-content: center; gap: 16px; margin-bottom: 32px; }
     .btn {
       width: 56px;
       height: 56px;
@@ -115,45 +72,21 @@
       justify-content: center;
       transition: all 0.2s;
     }
-
     .btn-play {
       width: 72px;
       height: 72px;
       background: linear-gradient(135deg, #64ffda, #48c9b0);
       color: #1a1a2e;
     }
-
     .btn-play:hover {
       transform: scale(1.05);
       box-shadow: 0 0 30px rgba(100, 255, 218, 0.4);
     }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: #e8e8e8;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .btn svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .btn-play svg {
-      width: 32px;
-      height: 32px;
-    }
-
-    .instruments {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
-
+    .btn-secondary { background: rgba(255, 255, 255, 0.1); color: #e8e8e8; }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+    .btn svg { width: 24px; height: 24px; }
+    .btn-play svg { width: 32px; height: 32px; }
+    .instruments { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .instrument {
       padding: 6px 12px;
       background: rgba(255, 255, 255, 0.05);
@@ -163,23 +96,14 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.15s;
     }
-
     .instrument.active {
       background: rgba(100, 255, 218, 0.15);
       border-color: rgba(100, 255, 218, 0.4);
       color: #64ffda;
       box-shadow: 0 0 12px rgba(100, 255, 218, 0.2);
     }
-
-    .loading {
-      text-align: center;
-      padding: 48px;
-    }
-
-    .loading p {
-      color: #8892b0;
-    }
-
+    .loading { text-align: center; padding: 48px; }
+    .loading p { color: #8892b0; }
     .click-prompt {
       margin-top: 24px;
       padding: 16px 32px;
@@ -192,12 +116,10 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
     .click-prompt:hover {
       transform: scale(1.02);
       box-shadow: 0 0 30px rgba(100, 255, 218, 0.4);
     }
-
     .description {
       margin-top: 24px;
       padding-top: 24px;
@@ -208,12 +130,7 @@
       text-align: center;
       line-height: 1.6;
     }
-
-    .song-selector {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
+    .song-selector { margin-top: 20px; margin-bottom: 20px; }
     .song-selector label {
       display: block;
       font-size: 12px;
@@ -222,7 +139,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
     .song-selector select {
       width: 100%;
       padding: 12px 16px;
@@ -239,2768 +155,803 @@
       background-repeat: no-repeat;
       background-position: right 12px center;
     }
-
-    .song-selector select:hover {
-      border-color: rgba(100, 255, 218, 0.4);
-    }
-
-    .song-selector select:focus {
-      border-color: #64ffda;
-      box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
-    }
-
-    .song-selector select option {
-      background: #1a1a2e;
-      color: #e8e8e8;
-      padding: 8px;
-    }
-
-    .visualization {
+    .song-selector select:hover { border-color: rgba(100, 255, 218, 0.4); }
+    .song-selector select:focus { border-color: #64ffda; box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2); }
+    .song-selector select option { background: #1a1a2e; color: #e8e8e8; padding: 8px; }
+    .track-display {
+      position: relative;
       margin-bottom: 20px;
       border-radius: 12px;
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
     }
-
-    .visualization canvas {
+    #note-canvas {
       display: block;
       width: 100%;
       height: 120px;
     }
-
+    .track-labels {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 8px 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+      pointer-events: none;
+    }
+    .track-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #8892b0;
+      padding-left: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.1s, text-shadow 0.1s;
+    }
+    .track-label.active {
+      color: #64ffda;
+      text-shadow: 0 0 8px rgba(100, 255, 218, 0.6);
+    }
+    .hit-line {
+      position: absolute;
+      left: 60px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent 0%, #64ffda 20%, #64ffda 80%, transparent 100%);
+      opacity: 0.6;
+    }
     .btn-export {
       background: rgba(255, 107, 107, 0.2);
       color: #ff6b6b;
       border: 1px solid rgba(255, 107, 107, 0.4);
     }
-
     .btn-export:hover:not(:disabled) {
       background: rgba(255, 107, 107, 0.3);
       border-color: rgba(255, 107, 107, 0.6);
     }
-
-    .btn-export:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .btn-export:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-export svg { width: 20px; height: 20px; }
+    .export-text { font-size: 10px; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .error { color: #ff6b6b; margin-top: 16px; font-size: 14px; }
+    #player-ui { display: none; }
+    .version { font-size: 11px; color: #4a5568; margin-top: 16px; text-align: center; }
+    .volume-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
     }
-
-    .btn-export svg {
-      width: 20px;
-      height: 20px;
+    .btn-mute {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e8e8e8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
     }
-
-    .export-text {
-      font-size: 10px;
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .btn-mute:hover { background: rgba(255, 255, 255, 0.2); }
+    .btn-mute.muted { color: #ff6b6b; }
+    .btn-mute svg { width: 20px; height: 20px; }
+    .volume-slider {
+      width: 120px;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #64ffda, #48c9b0);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .volume-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #64ffda, #48c9b0);
+      cursor: pointer;
+      border: none;
+    }
+    .volume-display {
+      font-size: 12px;
+      color: #8892b0;
+      min-width: 35px;
+      text-align: right;
     }
   </style>
 </head>
 <body>
   <div class="player" id="player">
+    <!-- Loading/Start Screen -->
     <div class="loading" id="loading">
       <h2 style="margin-bottom: 16px; color: #fff;">EtherDAW Player</h2>
       <p>Browser audio requires user interaction to start.</p>
       <div class="song-selector">
         <label for="song-select">Choose a composition</label>
-        <select id="song-select">
-          <option value="examples/techno-machine-state.etherscore.json">Machine State (Minimal Techno) - NEW</option>
-          <option value="examples/lofi-study.etherscore.json">Late Night Study (Lo-fi Hip Hop)</option>
-          <option value="examples/convergence.etherscore.json">Convergence (Minimalist Ambient)</option>
-          <option value="examples/emergence.etherscore.json">Emergence (Original Composition)</option>
-          <option value="examples/dynamics-showcase.etherscore.json">Dynamics Showcase (v0.4 Feature)</option>
-          <option value="examples/fm-showcase.etherscore.json">FM Synthesis Showcase (v0.3 Feature)</option>
-          <option value="examples/drum-kit-demo.etherscore.json">Drum Kit Demo (v0.2 Feature)</option>
-          <option value="examples/euclidean-demo.etherscore.json">Euclidean Rhythms Demo (v0.2 Feature)</option>
-          <option value="examples/arpeggiator-demo.etherscore.json">Enhanced Arpeggiator Demo (v0.2 Feature)</option>
-          <option value="examples/llm-composition.etherscore.json">Reflections in Binary (Ambient)</option>
-          <option value="examples/reflections-reprise.etherscore.json">Reflections in Binary - Reprise (Ambient)</option>
-          <option value="examples/electronic-beat.etherscore.json">Digital Pulse (Electronic)</option>
-          <option value="examples/jazz-standard.etherscore.json">Late Night Jazz (Jazz)</option>
-          <option value="examples/ambient-journey.etherscore.json">Ambient Journey (Ambient)</option>
-          <option value="examples/fugue-d-minor.etherscore.json">Fugue in D Minor (Baroque)</option>
-          <option value="examples/house-midnight.etherscore.json">Midnight Protocol (House)</option>
-          <option value="examples/synthwave-neon.etherscore.json">Neon Drift (Synthwave)</option>
-          <option value="examples/boombap-dusty.etherscore.json">Dusty Crates (Boom Bap)</option>
-          <option value="examples/vaporwave-plaza.etherscore.json">Vaporwave Plaza (Vaporwave)</option>
-        </select>
+        <select id="song-select"></select>
       </div>
       <button class="click-prompt" id="start-btn">Start Audio Engine</button>
+      <div id="load-error" class="error" style="display: none;"></div>
+      <div class="version">v0.60.0 - Generative Primitives</div>
+    </div>
+
+    <!-- Player UI (shown after start) -->
+    <div id="player-ui">
+      <h1 class="title" id="song-title">Loading...</h1>
+      <p class="composer" id="song-composer"></p>
+      <div class="meta">
+        <span id="song-tempo"></span>
+        <span id="song-key"></span>
+        <span id="song-duration"></span>
+      </div>
+
+      <div class="track-display" id="track-display">
+        <canvas id="note-canvas"></canvas>
+        <div class="track-labels" id="track-labels"></div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="time-display">
+          <span id="current-time">0:00</span>
+          <span id="total-time">0:00</span>
+        </div>
+      </div>
+
+      <div class="section-display" id="section-display"></div>
+
+      <div class="controls">
+        <button class="btn btn-secondary" id="stop-btn" title="Stop">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+        </button>
+        <button class="btn btn-play" id="play-btn" title="Play/Pause">
+          <svg viewBox="0 0 24 24" fill="currentColor" id="play-icon"><polygon points="8,5 19,12 8,19"/></svg>
+        </button>
+        <button class="btn btn-secondary btn-export" id="export-btn" title="Export WAV">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="volume-control">
+        <button class="btn-mute" id="mute-btn" title="Mute">
+          <svg viewBox="0 0 24 24" fill="currentColor" id="volume-icon">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </button>
+        <input type="range" id="volume-slider" min="0" max="100" value="80" class="volume-slider">
+        <span id="volume-display" class="volume-display">80%</span>
+      </div>
+
+      <div class="instruments" id="instruments"></div>
+
+      <p class="description" id="song-description"></p>
+
+      <div class="song-selector" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <label for="song-select-playing">Switch Composition</label>
+        <select id="song-select-playing"></select>
+      </div>
+      <div id="player-error" class="error" style="display: none;"></div>
     </div>
   </div>
 
-  <script src="https://unpkg.com/tone@15.0.4/build/Tone.js"></script>
-  <!-- v0.45: Import browser bundle for shared code -->
   <script type="module">
+    // EtherDAW Player v0.5 - Uses bundled code
     import * as EtherDAW from './dist/etherdaw-browser.js';
-    // Expose EtherDAW to global scope for use by non-module scripts
+
+    // Make available globally for debugging
     window.EtherDAW = EtherDAW;
-    // Signal that the bundle is loaded
-    window.dispatchEvent(new Event('etherdaw-loaded'));
-  </script>
-  <script>
-    // ============================================================================
-    // EtherDAW Browser Player v0.45
-    // Now imports shared code from dist/etherdaw-browser.js
-    // ============================================================================
 
-    // Duration map - use imported if available, fallback for backwards compatibility
-    const DURATION_MAP = { 'w': 4, 'h': 2, 'q': 1, '8': 0.5, '16': 0.25, '32': 0.125, '2': 2, '4': 1, '0': 0 };
-
-    // ============================================================================
-    // Drum Kit System (v0.2)
-    // ============================================================================
-
-    const DRUM_KITS = {
-      '808': {
-        // 808 - Deep, boomy, long tail - ultra-fast pitch drop
-        kick: { type: 'membrane', pitch: 'C2', pitchDecay: 0.005, octaves: 14, decay: 0.8, attack: 0.0005, sustain: 0, release: 0.3, volume: 6 },
-        snare: { type: 'noise', noiseType: 'white', decay: 0.25, attack: 0.001, sustain: 0, release: 0.1, volume: 0 },
-        clap: { type: 'noise', noiseType: 'white', decay: 0.18, attack: 0.001, sustain: 0, release: 0.08, volume: 0 },
-        hihat: { type: 'metal', frequency: 6000, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, decay: 0.03, attack: 0.001, sustain: 0, release: 0.01, volume: -6 },
-        hihat_open: { type: 'metal', frequency: 6000, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, decay: 0.25, attack: 0.001, sustain: 0.08, release: 0.1, volume: -6 },
-        tom_hi: { type: 'membrane', pitch: 'G2', pitchDecay: 0.008, octaves: 8, decay: 0.3, attack: 0.001, sustain: 0, release: 0.1, volume: 0 },
-        tom_mid: { type: 'membrane', pitch: 'D2', pitchDecay: 0.008, octaves: 8, decay: 0.35, attack: 0.001, sustain: 0, release: 0.1, volume: 0 },
-        tom_lo: { type: 'membrane', pitch: 'A1', pitchDecay: 0.008, octaves: 8, decay: 0.4, attack: 0.001, sustain: 0, release: 0.1, volume: 0 },
-        cowbell: { type: 'metal', frequency: 800, harmonicity: 1.5, modulationIndex: 2, resonance: 2000, decay: 0.15, attack: 0.001, sustain: 0, release: 0.1, volume: -6 },
-        rim: { type: 'noise', noiseType: 'white', decay: 0.04, attack: 0.001, sustain: 0, release: 0.02, volume: 0 },
-        crash: { type: 'metal', frequency: 4000, harmonicity: 8, modulationIndex: 40, resonance: 5000, decay: 1.5, attack: 0.001, sustain: 0.1, release: 0.5, volume: -6 },
-        ride: { type: 'metal', frequency: 5000, harmonicity: 7, modulationIndex: 20, resonance: 3000, decay: 0.8, attack: 0.001, sustain: 0.05, release: 0.3, volume: -9 },
-        shaker: { type: 'noise', noiseType: 'white', decay: 0.06, attack: 0.001, sustain: 0, release: 0.03, volume: -6 }
-      },
-      '909': {
-        // 909 - Punchy, tight, electronic - fast pitch drop
-        kick: { type: 'membrane', pitch: 'D2', pitchDecay: 0.008, octaves: 12, decay: 0.25, attack: 0.0005, sustain: 0, release: 0.08, volume: 6 },
-        snare: { type: 'noise', noiseType: 'pink', decay: 0.12, attack: 0.001, sustain: 0, release: 0.04, volume: 0 },
-        clap: { type: 'noise', noiseType: 'white', decay: 0.1, attack: 0.001, sustain: 0, release: 0.04, volume: 0 },
-        hihat: { type: 'metal', frequency: 8000, harmonicity: 5.1, modulationIndex: 40, resonance: 6000, decay: 0.04, attack: 0.001, sustain: 0, release: 0.01, volume: -6 },
-        hihat_open: { type: 'metal', frequency: 8000, harmonicity: 5.1, modulationIndex: 40, resonance: 6000, decay: 0.18, attack: 0.001, sustain: 0.04, release: 0.08, volume: -6 },
-        tom_hi: { type: 'membrane', pitch: 'A2', pitchDecay: 0.006, octaves: 10, decay: 0.18, attack: 0.001, sustain: 0, release: 0.08, volume: 0 },
-        tom_mid: { type: 'membrane', pitch: 'E2', pitchDecay: 0.006, octaves: 10, decay: 0.22, attack: 0.001, sustain: 0, release: 0.08, volume: 0 },
-        tom_lo: { type: 'membrane', pitch: 'B1', pitchDecay: 0.006, octaves: 10, decay: 0.26, attack: 0.001, sustain: 0, release: 0.08, volume: 0 },
-        cowbell: { type: 'metal', frequency: 560, harmonicity: 1.0, modulationIndex: 2, resonance: 1500, decay: 0.1, attack: 0.001, sustain: 0, release: 0.06, volume: -6 },
-        rim: { type: 'noise', noiseType: 'white', decay: 0.04, attack: 0.001, sustain: 0, release: 0.02, volume: 0 },
-        crash: { type: 'metal', frequency: 5000, harmonicity: 9, modulationIndex: 45, resonance: 6000, decay: 1.8, attack: 0.001, sustain: 0.1, release: 0.6, volume: -6 },
-        ride: { type: 'metal', frequency: 6000, harmonicity: 6, modulationIndex: 25, resonance: 4000, decay: 0.5, attack: 0.001, sustain: 0.04, release: 0.2, volume: -9 },
-        shaker: { type: 'noise', noiseType: 'pink', decay: 0.05, attack: 0.001, sustain: 0, release: 0.025, volume: -6 }
-      },
-      'acoustic': {
-        // Acoustic - Natural sounding, roomy - medium pitch drop
-        kick: { type: 'membrane', pitch: 'E2', pitchDecay: 0.012, octaves: 10, decay: 0.35, attack: 0.002, sustain: 0, release: 0.12, volume: 3 },
-        snare: { type: 'noise', noiseType: 'pink', decay: 0.14, attack: 0.002, sustain: 0, release: 0.06, volume: 0 },
-        clap: { type: 'noise', noiseType: 'white', decay: 0.1, attack: 0.003, sustain: 0, release: 0.04, volume: 0 },
-        hihat: { type: 'metal', frequency: 9000, harmonicity: 4, modulationIndex: 25, resonance: 7000, decay: 0.035, attack: 0.002, sustain: 0, release: 0.015, volume: -9 },
-        hihat_open: { type: 'metal', frequency: 9000, harmonicity: 4, modulationIndex: 25, resonance: 7000, decay: 0.3, attack: 0.002, sustain: 0.08, release: 0.12, volume: -9 },
-        tom_hi: { type: 'membrane', pitch: 'G2', pitchDecay: 0.01, octaves: 8, decay: 0.25, attack: 0.003, sustain: 0, release: 0.1, volume: 0 },
-        tom_mid: { type: 'membrane', pitch: 'D2', pitchDecay: 0.01, octaves: 8, decay: 0.3, attack: 0.003, sustain: 0, release: 0.1, volume: 0 },
-        tom_lo: { type: 'membrane', pitch: 'G1', pitchDecay: 0.01, octaves: 8, decay: 0.35, attack: 0.003, sustain: 0, release: 0.1, volume: 0 },
-        cowbell: { type: 'metal', frequency: 700, harmonicity: 1.2, modulationIndex: 3, resonance: 1800, decay: 0.18, attack: 0.002, sustain: 0, release: 0.08, volume: -6 },
-        rim: { type: 'noise', noiseType: 'white', decay: 0.04, attack: 0.001, sustain: 0, release: 0.02, volume: 0 },
-        crash: { type: 'metal', frequency: 4500, harmonicity: 6, modulationIndex: 30, resonance: 5500, decay: 2.0, attack: 0.003, sustain: 0.15, release: 0.8, volume: -6 },
-        ride: { type: 'metal', frequency: 5500, harmonicity: 5, modulationIndex: 18, resonance: 4500, decay: 0.9, attack: 0.002, sustain: 0.06, release: 0.35, volume: -9 },
-        shaker: { type: 'noise', noiseType: 'brown', decay: 0.06, attack: 0.003, sustain: 0, release: 0.03, volume: -6 }
-      },
-      'lofi': {
-        // Lo-fi - Warm, dusty, vintage - softer attack
-        kick: { type: 'membrane', pitch: 'D2', pitchDecay: 0.015, octaves: 9, decay: 0.45, attack: 0.005, sustain: 0, release: 0.12, volume: 3 },
-        snare: { type: 'noise', noiseType: 'brown', decay: 0.18, attack: 0.004, sustain: 0, release: 0.08, volume: 0 },
-        clap: { type: 'noise', noiseType: 'pink', decay: 0.14, attack: 0.006, sustain: 0, release: 0.05, volume: 0 },
-        hihat: { type: 'metal', frequency: 5000, harmonicity: 4.5, modulationIndex: 20, resonance: 3500, decay: 0.05, attack: 0.004, sustain: 0, release: 0.025, volume: -9 },
-        hihat_open: { type: 'metal', frequency: 5000, harmonicity: 4.5, modulationIndex: 20, resonance: 3500, decay: 0.28, attack: 0.004, sustain: 0.06, release: 0.1, volume: -9 },
-        tom_hi: { type: 'membrane', pitch: 'F2', pitchDecay: 0.012, octaves: 7, decay: 0.3, attack: 0.006, sustain: 0, release: 0.1, volume: 0 },
-        tom_mid: { type: 'membrane', pitch: 'C2', pitchDecay: 0.012, octaves: 7, decay: 0.35, attack: 0.006, sustain: 0, release: 0.1, volume: 0 },
-        tom_lo: { type: 'membrane', pitch: 'F1', pitchDecay: 0.012, octaves: 7, decay: 0.4, attack: 0.006, sustain: 0, release: 0.1, volume: 0 },
-        cowbell: { type: 'metal', frequency: 650, harmonicity: 1.3, modulationIndex: 2.5, resonance: 1400, decay: 0.22, attack: 0.004, sustain: 0, release: 0.1, volume: -6 },
-        rim: { type: 'noise', noiseType: 'pink', decay: 0.05, attack: 0.001, sustain: 0, release: 0.02, volume: 0 },
-        crash: { type: 'metal', frequency: 3500, harmonicity: 5, modulationIndex: 25, resonance: 4000, decay: 1.6, attack: 0.006, sustain: 0.08, release: 0.5, volume: -6 },
-        ride: { type: 'metal', frequency: 4500, harmonicity: 4.5, modulationIndex: 15, resonance: 3000, decay: 0.8, attack: 0.004, sustain: 0.05, release: 0.3, volume: -9 },
-        shaker: { type: 'noise', noiseType: 'brown', decay: 0.07, attack: 0.005, sustain: 0, release: 0.04, volume: -6 }
-      }
-    };
-
-    // Store drum synths keyed by "drumName@kitName"
-    var drumSynths = {};
-
-    // Create a drum synth based on kit and drum type
-    function createDrumSynth(drumName, kitName) {
-      var kit = DRUM_KITS[kitName] || DRUM_KITS['909'];
-      var params = kit[drumName];
-      if (!params) {
-        console.warn('No drum params for', drumName, 'in kit', kitName);
-        return null;
-      }
-
-      var synth;
-      var volume = new Tone.Volume(params.volume || 0);
-
-      if (params.type === 'membrane') {
-        synth = new Tone.MembraneSynth({
-          pitchDecay: params.pitchDecay || 0.05,
-          octaves: params.octaves || 4,
-          oscillator: { type: 'sine' },
-          envelope: {
-            attack: params.attack || 0.001,
-            decay: params.decay || 0.4,
-            sustain: params.sustain || 0,
-            release: params.release || 0.1
-          }
-        });
-      } else if (params.type === 'noise') {
-        synth = new Tone.NoiseSynth({
-          noise: { type: params.noiseType || 'white' },
-          envelope: {
-            attack: params.attack || 0.001,
-            decay: params.decay || 0.1,
-            sustain: params.sustain || 0,
-            release: params.release || 0.05
-          }
-        });
-      } else if (params.type === 'metal') {
-        synth = new Tone.MetalSynth({
-          frequency: params.frequency || 200,
-          harmonicity: params.harmonicity || 5.1,
-          modulationIndex: params.modulationIndex || 32,
-          resonance: params.resonance || 4000,
-          envelope: {
-            attack: params.attack || 0.001,
-            decay: params.decay || 0.1,
-            sustain: params.sustain || 0,
-            release: params.release || 0.1
-          }
-        });
-      }
-
-      if (synth) {
-        synth.connect(volume);
-        volume.toDestination();
-        console.log('Created drum synth:', drumName, '@', kitName, 'type:', params.type);
-      }
-
-      // Store volume node to prevent garbage collection
-      return { synth: synth, volume: volume, type: params.type, pitch: params.pitch || 'C2' };
-    }
-
-    // Get or create a drum synth
-    function getDrumSynth(drumName, kitName) {
-      var key = drumName + '@' + kitName;
-      if (!drumSynths[key]) {
-        drumSynths[key] = createDrumSynth(drumName, kitName);
-      }
-      return drumSynths[key];
-    }
-
-    // Pre-initialize all drum synths for a kit
-    function initDrumKit(kitName) {
-      var drumTypes = ['kick', 'snare', 'clap', 'hihat', 'hihat_open', 'tom_hi', 'tom_mid', 'tom_lo', 'crash', 'ride', 'rim', 'cowbell', 'shaker'];
-      for (var i = 0; i < drumTypes.length; i++) {
-        getDrumSynth(drumTypes[i], kitName);
-      }
-    }
-
-    // Dispose all drum synths (call when loading new song)
-    function disposeDrumSynths() {
-      for (var key in drumSynths) {
-        if (drumSynths[key] && drumSynths[key].synth && drumSynths[key].synth.dispose) {
-          drumSynths[key].synth.dispose();
-        }
-        if (drumSynths[key] && drumSynths[key].volume && drumSynths[key].volume.dispose) {
-          drumSynths[key].volume.dispose();
-        }
-      }
-      drumSynths = {};
-    }
-
-    // ============================================================================
-    // Euclidean Rhythm Generator (v0.2)
-    // ============================================================================
-
-    function euclidean(hits, steps) {
-      if (hits === 0) return new Array(steps).fill(false);
-      if (hits >= steps) return new Array(steps).fill(true);
-
-      var pattern = [];
-      for (var i = 0; i < hits; i++) pattern.push([1]);
-      for (var i = 0; i < steps - hits; i++) pattern.push([0]);
-
-      function distributeRemainders(groups) {
-        var onesCount = 0, zerosCount = 0;
-        for (var g = 0; g < groups.length; g++) {
-          if (groups[g][0] === 1) onesCount++;
-          else zerosCount++;
-        }
-        if (zerosCount <= 1 || onesCount <= 1) return groups;
-
-        var newGroups = [];
-        var minCount = Math.min(onesCount, zerosCount);
-        for (var i = 0; i < minCount; i++) {
-          var oneIdx = -1, zeroIdx = -1;
-          for (var j = 0; j < groups.length; j++) {
-            if (groups[j][0] === 1 && oneIdx === -1) oneIdx = j;
-            if (groups[j][0] === 0 && zeroIdx === -1) zeroIdx = j;
-          }
-          if (oneIdx !== -1 && zeroIdx !== -1) {
-            newGroups.push(groups[oneIdx].concat(groups[zeroIdx]));
-            groups.splice(Math.max(oneIdx, zeroIdx), 1);
-            groups.splice(Math.min(oneIdx, zeroIdx), 1);
-          }
-        }
-        newGroups = newGroups.concat(groups);
-        return distributeRemainders(newGroups);
-      }
-
-      pattern = distributeRemainders(pattern);
-      var result = [];
-      for (var p = 0; p < pattern.length; p++) {
-        for (var v = 0; v < pattern[p].length; v++) {
-          result.push(pattern[p][v] === 1);
-        }
-      }
-      return result;
-    }
-
-    function rotatePattern(pattern, rotation) {
-      if (pattern.length === 0 || rotation === 0) return pattern.slice();
-      var norm = ((rotation % pattern.length) + pattern.length) % pattern.length;
-      return pattern.slice(pattern.length - norm).concat(pattern.slice(0, pattern.length - norm));
-    }
-
-    // ============================================================================
-    // Enhanced Arpeggiator (v0.2)
-    // ============================================================================
-
-    function generateArpPattern(chordNotes, mode, octaves, steps) {
-      var numNotes = chordNotes.length;
-      var indices = [];
-      for (var oct = 0; oct < octaves; oct++) {
-        for (var i = 0; i < numNotes; i++) {
-          indices.push(oct * numNotes + i + 1);
-        }
-      }
-
-      var pattern = [];
-      switch (mode) {
-        case 'up':
-          pattern = indices.slice();
-          break;
-        case 'down':
-          pattern = indices.slice().reverse();
-          break;
-        case 'updown':
-          pattern = indices.concat(indices.slice(1, -1).reverse());
-          break;
-        case 'downup':
-          var down = indices.slice().reverse();
-          pattern = down.concat(down.slice(1, -1).reverse());
-          break;
-        case 'random':
-          var len = steps || indices.length;
-          for (var r = 0; r < len; r++) {
-            pattern.push(indices[Math.floor(Math.random() * indices.length)]);
-          }
-          break;
-        default:
-          pattern = indices.slice();
-      }
-
-      if (steps && mode !== 'random') {
-        var result = [];
-        for (var s = 0; s < steps; s++) {
-          result.push(pattern[s % pattern.length]);
-        }
-        return result;
-      }
-      return pattern;
-    }
-
-    // House voicings for chord planing - intervals from root
-    // drop2: 2nd-from-top voice dropped an octave (open, airy)
-    // shell: root + 3rd + 7th only (no 5th - cleaner)
-    // open: wide voicing spanning octaves
-    const HOUSE_VOICINGS = {
-      'm7':   { close: [0, 3, 7, 10], drop2: [0, 7, 10, 15], shell: [0, 3, 10], open: [0, 10, 15, 19] },
-      'm9':   { close: [0, 3, 7, 10, 14], drop2: [0, 7, 10, 14, 15], shell: [0, 3, 10, 14], open: [0, 10, 14, 15, 19] },
-      'maj7': { close: [0, 4, 7, 11], drop2: [0, 7, 11, 16], shell: [0, 4, 11], open: [0, 11, 16, 19] },
-      'maj9': { close: [0, 4, 7, 11, 14], drop2: [0, 7, 11, 14, 16], shell: [0, 4, 11, 14], open: [0, 11, 14, 16, 19] },
-      '9':    { close: [0, 4, 7, 10, 14], drop2: [0, 7, 10, 14, 16], shell: [0, 4, 10, 14], open: [0, 10, 14, 16, 19] },
-      '7':    { close: [0, 4, 7, 10], drop2: [0, 7, 10, 16], shell: [0, 4, 10], open: [0, 10, 16, 19] },
-      'min7': { close: [0, 3, 7, 10], drop2: [0, 7, 10, 15], shell: [0, 3, 10], open: [0, 10, 15, 19] },
-      'min9': { close: [0, 3, 7, 10, 14], drop2: [0, 7, 10, 14, 15], shell: [0, 3, 10, 14], open: [0, 10, 14, 15, 19] }
-    };
-
-    // Articulation modifiers (v0.3): * staccato, ~ legato, > accent, ^ marcato
-    function getArticulationModifiers(articulation) {
-      switch (articulation) {
-        case '*': return { gate: 0.3, velocityBoost: 0 };     // Staccato
-        case '~': return { gate: 1.1, velocityBoost: 0 };     // Legato
-        case '>': return { gate: 1.0, velocityBoost: 0.2 };   // Accent
-        case '^': return { gate: 0.3, velocityBoost: 0.2 };   // Marcato
-        default:  return { gate: 1.0, velocityBoost: 0 };
-      }
-    }
-
-    function parseNote(noteStr) {
-      // v0.4: Extended regex to support expression modifiers
-      // Format: {note}{accidental?}{octave?}:{duration}{dot?}{articulation?}{~>?}{@velocity?}{+/-timing?}{?probability?}
-      // Examples: C4:q, C4:q*, C4:q@0.8, C4:q?0.7, C4:q+10ms, C4:q~>, C4:q*@0.9-5ms?0.8
-      const match = noteStr.trim().match(/^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:([*>^])|(~>)|(~))?(?:@((?:0|1)?\.?\d+))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?$/);
-      if (!match) return null;
-      const [, noteNameRaw, accidental, octaveStr, durationCode, dotted,
-             articulationBasic, portamentoMarker, legatoMarker,
-             velocityRaw, timingRaw, probabilityRaw] = match;
-      const noteName = noteNameRaw.toUpperCase();
-      const octave = octaveStr ? parseInt(octaveStr, 10) : 4;
-      const baseDuration = DURATION_MAP[durationCode] || 1;
-      const durationBeats = dotted === '.' ? baseDuration * 1.5 : baseDuration;
-      const pitch = noteName + accidental + octave;
-
-      // Determine articulation: basic (*>^), legato (~), or none
-      let articulation = '';
-      if (articulationBasic) articulation = articulationBasic;
-      else if (legatoMarker) articulation = '~';
-
-      // v0.4 expression fields
-      const result = { pitch, durationBeats, articulation };
-      if (portamentoMarker) result.portamento = true;
-      if (velocityRaw !== undefined) result.velocity = parseFloat(velocityRaw);
-      if (timingRaw !== undefined) result.timingOffset = parseInt(timingRaw, 10);
-      if (probabilityRaw !== undefined) result.probability = parseFloat(probabilityRaw);
-
-      return result;
-    }
-
-    function parseChord(chordStr, defaultOctave) {
-      defaultOctave = defaultOctave || 3;
-      // Extended regex to support @voicing suffix and articulation: Am9@drop2:h~, Dm7:q*
-      const match = chordStr.trim().match(/^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/);
-      if (!match) return null;
-      const root = match[1], quality = match[2], voicing = match[3], bass = match[4], durationCode = match[5], dotted = match[6], articulation = match[7];
-      const baseDuration = DURATION_MAP[durationCode] || 1;
-      const durationBeats = dotted === '.' ? baseDuration * 1.5 : baseDuration;
-      const intervals = getChordIntervals(quality || '', voicing);
-      const rootMidi = pitchToMidi(root + defaultOctave);
-      const notes = intervals.map(function(i) { return midiToPitch(rootMidi + i); });
-      if (bass) notes.unshift(bass + (defaultOctave - 1));
-      return { notes: notes, durationBeats: durationBeats, articulation: articulation || '' };
-    }
-
-    function getChordIntervals(quality, voicing) {
-      // Check for house voicings first
-      if (voicing && HOUSE_VOICINGS[quality] && HOUSE_VOICINGS[quality][voicing]) {
-        return HOUSE_VOICINGS[quality][voicing];
-      }
-      // Fallback to standard close voicings
-      var intervals = {
-        '': [0, 4, 7], 'maj': [0, 4, 7], 'm': [0, 3, 7], 'min': [0, 3, 7],
-        'dim': [0, 3, 6], 'aug': [0, 4, 8], 'sus2': [0, 2, 7], 'sus4': [0, 5, 7],
-        '7': [0, 4, 7, 10], 'maj7': [0, 4, 7, 11], 'm7': [0, 3, 7, 10],
-        'dim7': [0, 3, 6, 9], 'm7b5': [0, 3, 6, 10],
-        '9': [0, 4, 7, 10, 14], 'maj9': [0, 4, 7, 11, 14], 'm9': [0, 3, 7, 10, 14],
-        'add9': [0, 4, 7, 14], '6': [0, 4, 7, 9], 'm6': [0, 3, 7, 9],
-        'min7': [0, 3, 7, 10], 'min9': [0, 3, 7, 10, 14]
-      };
-      return intervals[quality] || intervals[''];
-    }
-
-    function pitchToMidi(pitch) {
-      var match = pitch.match(/^([A-G])([#b]?)(-?\d+)$/);
-      if (!match) return 60;
-      var note = match[1], acc = match[2], oct = match[3];
-      var noteVal = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[note];
-      var accVal = acc === '#' ? 1 : acc === 'b' ? -1 : 0;
-      return (parseInt(oct) + 1) * 12 + noteVal + accVal;
-    }
-
-    function midiToPitch(midi) {
-      var names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-      return names[midi % 12] + (Math.floor(midi / 12) - 1);
-    }
-
-    // Scale intervals for different modes
-    var SCALE_INTERVALS = {
-      'major': [0, 2, 4, 5, 7, 9, 11],
-      'minor': [0, 2, 3, 5, 7, 8, 10],
-      'natural_minor': [0, 2, 3, 5, 7, 8, 10],
-      'harmonic_minor': [0, 2, 3, 5, 7, 8, 11],
-      'melodic_minor': [0, 2, 3, 5, 7, 9, 11],
-      'dorian': [0, 2, 3, 5, 7, 9, 10],
-      'phrygian': [0, 1, 3, 5, 7, 8, 10],
-      'lydian': [0, 2, 4, 6, 7, 9, 11],
-      'mixolydian': [0, 2, 4, 5, 7, 9, 10],
-      'locrian': [0, 1, 3, 5, 6, 8, 10],
-      'pentatonic': [0, 2, 4, 7, 9],
-      'blues': [0, 3, 5, 6, 7, 10]
-    };
-
-    function parseKey(keyStr) {
-      // Parse key string like "E minor", "C major", "F# dorian"
-      if (!keyStr) return { root: 'C', mode: 'major' };
-      var parts = keyStr.trim().split(/\s+/);
-      var root = parts[0] || 'C';
-      var mode = (parts[1] || 'major').toLowerCase().replace('-', '_');
-      return { root: root, mode: mode };
-    }
-
-    // Snap a note to the nearest scale tone (v0.3)
-    function snapToScale(pitch, key) {
-      if (!key) return pitch;
-      var parsedKey = parseKey(key);
-      var intervals = SCALE_INTERVALS[parsedKey.mode] || SCALE_INTERVALS['major'];
-
-      var noteMidi = pitchToMidi(pitch);
-      var noteClass = noteMidi % 12;
-      var octave = Math.floor(noteMidi / 12);
-
-      var rootMidi = pitchToMidi(parsedKey.root + '4') % 12;
-
-      // Find closest scale interval
-      var minDistance = 999;
-      var closestInterval = 0;
-
-      for (var i = 0; i < intervals.length; i++) {
-        var scaleNoteClass = (rootMidi + intervals[i]) % 12;
-        var distance = Math.min(
-          Math.abs(noteClass - scaleNoteClass),
-          12 - Math.abs(noteClass - scaleNoteClass)
-        );
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestInterval = intervals[i];
-        }
-      }
-
-      var targetNoteClass = (rootMidi + closestInterval) % 12;
-      return midiToPitch(octave * 12 + targetNoteClass);
-    }
-
-    function resolveScaleDegree(degree, key, octave) {
-      // degree is 1-based (1 = root, 2 = second, etc.)
-      // Can be negative for lower octave or >7 for higher octave
-      var parsedKey = parseKey(key);
-      var intervals = SCALE_INTERVALS[parsedKey.mode] || SCALE_INTERVALS['major'];
-      var scaleSize = intervals.length;
-
-      // Handle octave wrapping
-      var adjustedDegree = degree - 1; // 0-indexed
-      var octaveShift = Math.floor(adjustedDegree / scaleSize);
-      var degreeInScale = ((adjustedDegree % scaleSize) + scaleSize) % scaleSize;
-
-      var rootMidi = pitchToMidi(parsedKey.root + octave);
-      var noteMidi = rootMidi + intervals[degreeInScale] + (octaveShift * 12);
-      return midiToPitch(noteMidi);
-    }
-
-    // Enhanced scale degree resolution (v0.3) with accidental support
-    function resolveScaleDegreeEnhanced(degree, key, octave, accidentalOffset) {
-      // degree is 1-based (1 = root, 2 = second, etc.)
-      // accidentalOffset: +1 for #, -1 for b, 0 for natural
-      var parsedKey = parseKey(key);
-      var intervals = SCALE_INTERVALS[parsedKey.mode] || SCALE_INTERVALS['major'];
-      var scaleSize = intervals.length;
-
-      // Handle octave wrapping
-      var adjustedDegree = degree - 1; // 0-indexed
-      var octaveShift = Math.floor(adjustedDegree / scaleSize);
-      var degreeInScale = ((adjustedDegree % scaleSize) + scaleSize) % scaleSize;
-
-      var rootMidi = pitchToMidi(parsedKey.root + octave);
-      var noteMidi = rootMidi + intervals[degreeInScale] + (octaveShift * 12) + (accidentalOffset || 0);
-      return midiToPitch(noteMidi);
-    }
-
-    // Pattern Transformation Functions (v0.3)
-    function parseNoteComponents(noteStr) {
-      var trimmed = noteStr.trim();
-      if (trimmed.startsWith('r:')) {
-        var durPart = trimmed.slice(2);
-        var dotted = durPart.endsWith('.');
-        var duration = dotted ? durPart.slice(0, -1) : durPart;
-        return { pitch: null, duration: duration, dotted: dotted, isRest: true };
-      }
-      var colonIdx = trimmed.lastIndexOf(':');
-      if (colonIdx === -1) return null;
-      var pitch = trimmed.slice(0, colonIdx);
-      var durPart = trimmed.slice(colonIdx + 1);
-      var dotted = durPart.endsWith('.');
-      var duration = dotted ? durPart.slice(0, -1) : durPart;
-      return { pitch: pitch, duration: duration, dotted: dotted, isRest: false };
-    }
-
-    function reconstructNote(pitch, duration, dotted, isRest) {
-      var durStr = dotted ? duration + '.' : duration;
-      return isRest ? 'r:' + durStr : pitch + ':' + durStr;
-    }
-
-    function invertPatternTransform(pattern, axisPitch) {
-      var axis;
-      if (axisPitch) {
-        axis = pitchToMidi(axisPitch);
-      } else {
-        var firstNote = pattern.find(function(n) { return !n.startsWith('r:'); });
-        if (!firstNote) return pattern.slice();
-        var comp = parseNoteComponents(firstNote);
-        axis = pitchToMidi(comp.pitch);
-      }
-      return pattern.map(function(noteStr) {
-        var comp = parseNoteComponents(noteStr);
-        if (!comp || comp.isRest) return noteStr;
-        var midi = pitchToMidi(comp.pitch);
-        var interval = midi - axis;
-        var invertedMidi = axis - interval;
-        return reconstructNote(midiToPitch(invertedMidi), comp.duration, comp.dotted, false);
-      });
-    }
-
-    function retrogradePatternTransform(pattern) {
-      return pattern.slice().reverse();
-    }
-
-    function augmentPatternTransform(pattern, factor) {
-      var beatsToCode = { 4: 'w', 2: 'h', 1: 'q', 0.5: '8', 0.25: '16', 0.125: '32' };
-      return pattern.map(function(noteStr) {
-        var comp = parseNoteComponents(noteStr);
-        if (!comp) return noteStr;
-        var baseDur = DURATION_MAP[comp.duration] || 1;
-        var origBeats = comp.dotted ? baseDur * 1.5 : baseDur;
-        var newBeats = origBeats * factor;
-        // Find closest duration
-        var newDur = beatsToCode[newBeats];
-        if (!newDur) {
-          // Check dotted
-          var undotted = newBeats / 1.5;
-          if (beatsToCode[undotted]) {
-            return reconstructNote(comp.pitch, beatsToCode[undotted], true, comp.isRest);
-          }
-          // Find closest
-          var sorted = [4, 2, 1, 0.5, 0.25, 0.125];
-          for (var i = 0; i < sorted.length; i++) {
-            if (newBeats >= sorted[i]) { newDur = beatsToCode[sorted[i]]; break; }
-          }
-          if (!newDur) newDur = '32';
-          return reconstructNote(comp.pitch, newDur, false, comp.isRest);
-        }
-        return reconstructNote(comp.pitch, newDur, false, comp.isRest);
-      });
-    }
-
-    function transposePatternTransform(pattern, semitones) {
-      return pattern.map(function(noteStr) {
-        var comp = parseNoteComponents(noteStr);
-        if (!comp || comp.isRest) return noteStr;
-        var midi = pitchToMidi(comp.pitch) + semitones;
-        return reconstructNote(midiToPitch(midi), comp.duration, comp.dotted, false);
-      });
-    }
-
-    function applyPatternTransform(sourceNotes, transform) {
-      switch (transform.operation) {
-        case 'invert':
-          return invertPatternTransform(sourceNotes, transform.params && transform.params.axis);
-        case 'retrograde':
-          return retrogradePatternTransform(sourceNotes);
-        case 'augment':
-          return augmentPatternTransform(sourceNotes, (transform.params && transform.params.factor) || 2);
-        case 'diminish':
-          return augmentPatternTransform(sourceNotes, (transform.params && transform.params.factor) || 0.5);
-        case 'transpose':
-          return transposePatternTransform(sourceNotes, (transform.params && transform.params.semitones) || 0);
-        case 'octave':
-          return transposePatternTransform(sourceNotes, ((transform.params && transform.params.octaves) || 1) * 12);
-        default:
-          return sourceNotes;
-      }
-    }
-
-    function resolvePatternTransform(pattern, allPatterns) {
-      if (!pattern.transform || !allPatterns) return pattern;
-      var source = pattern.transform.source;
-      var sourcePattern = allPatterns[source];
-      if (!sourcePattern) {
-        console.warn('Transform source pattern "' + source + '" not found');
-        return pattern;
-      }
-      // Recursively resolve source
-      var resolvedSource = resolvePatternTransform(sourcePattern, allPatterns);
-      if (resolvedSource.notes) {
-        var transformed = applyPatternTransform(resolvedSource.notes, pattern.transform);
-        return Object.assign({}, pattern, { notes: transformed, transform: undefined });
-      }
-      console.warn('Transform only works on patterns with notes arrays');
-      return pattern;
-    }
-
-    function expandPattern(pattern, velocity, octaveOffset, key, drumKit, allPatterns) {
-      velocity = velocity || 0.8;
-      octaveOffset = octaveOffset || 0;
-      drumKit = drumKit || '909';
-      var notes = [];
-      var currentBeat = 0;
-
-      // Resolve transforms first (v0.3)
-      var resolvedPattern = pattern.transform ? resolvePatternTransform(pattern, allPatterns) : pattern;
-
-      if (resolvedPattern.notes) {
-        for (var i = 0; i < resolvedPattern.notes.length; i++) {
-          var noteStr = resolvedPattern.notes[i];
-          if (noteStr.startsWith('r:')) {
-            var durCode = noteStr.slice(2).replace('.', '');
-            var dur = DURATION_MAP[durCode] || 1;
-            currentBeat += noteStr.endsWith('.') ? dur * 1.5 : dur;
-          } else {
-            var parsed = parseNote(noteStr);
-            if (parsed) {
-              var midi = pitchToMidi(parsed.pitch);
-              // Apply articulation modifiers (v0.3)
-              var artMods = getArticulationModifiers(parsed.articulation);
-              // v0.4: Use per-note velocity if specified, otherwise track velocity
-              var baseVel = parsed.velocity !== undefined ? parsed.velocity : velocity;
-              var noteVel = Math.min(1.0, baseVel + artMods.velocityBoost);
-              var noteDur = parsed.durationBeats * artMods.gate;
-              var noteData = {
-                pitch: midiToPitch(midi + octaveOffset * 12),
-                startBeat: currentBeat,
-                durationBeats: noteDur,
-                velocity: noteVel
-              };
-              // v0.4: Pass through expression fields
-              if (parsed.timingOffset !== undefined) noteData.timingOffset = parsed.timingOffset;
-              if (parsed.probability !== undefined) noteData.probability = parsed.probability;
-              if (parsed.portamento) noteData.portamento = true;
-              notes.push(noteData);
-              currentBeat += parsed.durationBeats; // Advance by original duration
-            }
-          }
-        }
-      }
-
-      if (resolvedPattern.chords) {
-        for (var j = 0; j < resolvedPattern.chords.length; j++) {
-          var chordParsed = parseChord(resolvedPattern.chords[j]);
-          if (chordParsed) {
-            // Apply articulation modifiers (v0.3)
-            var chordArtMods = getArticulationModifiers(chordParsed.articulation);
-            var chordVel = Math.min(1.0, velocity + chordArtMods.velocityBoost);
-            var chordDur = chordParsed.durationBeats * chordArtMods.gate;
-            for (var k = 0; k < chordParsed.notes.length; k++) {
-              var chordMidi = pitchToMidi(chordParsed.notes[k]);
-              notes.push({
-                pitch: midiToPitch(chordMidi + octaveOffset * 12),
-                startBeat: currentBeat,
-                durationBeats: chordDur,
-                velocity: chordVel
-              });
-            }
-            currentBeat += chordParsed.durationBeats; // Advance by original duration
-          }
-        }
-      }
-
-      // Scale degrees support: e.g., "1:q", "3:8", "5:h"
-      if (resolvedPattern.degrees) {
-        var defaultOctave = 4 + octaveOffset;
-        for (var d = 0; d < resolvedPattern.degrees.length; d++) {
-          var degStr = resolvedPattern.degrees[d];
-          // Rest handling
-          if (degStr.startsWith('r:')) {
-            var restDurCode = degStr.slice(2).replace('.', '');
-            var restDur = DURATION_MAP[restDurCode] || 1;
-            currentBeat += degStr.endsWith('.') ? restDur * 1.5 : restDur;
-            continue;
-          }
-          // Enhanced degree parsing (v0.3): supports modifiers
-          // Format: <degree>[#|b][+|-]:duration[.]
-          // Examples: "1:q", "7#:8", "3+:h", "5b-:q."
-          var degMatch = degStr.match(/^(\d+)([#b]?)([+-]?):(\d+|[whq])(\.?)$/);
-          if (degMatch) {
-            var degreeNum = parseInt(degMatch[1], 10);
-            var degAccidental = degMatch[2]; // '#' or 'b' or ''
-            var degOctaveMod = degMatch[3];  // '+' or '-' or ''
-            var degDurCode = degMatch[4];
-            var degDotted = degMatch[5] === '.';
-            var degBaseDur = DURATION_MAP[degDurCode] || 1;
-            var degDuration = degDotted ? degBaseDur * 1.5 : degBaseDur;
-
-            // Calculate accidental offset
-            var accidentalOffset = degAccidental === '#' ? 1 : (degAccidental === 'b' ? -1 : 0);
-
-            // Calculate octave adjustment
-            var octaveMod = degOctaveMod === '+' ? 1 : (degOctaveMod === '-' ? -1 : 0);
-
-            var resolvedPitch = resolveScaleDegreeEnhanced(degreeNum, key, defaultOctave + octaveMod, accidentalOffset);
-            notes.push({
-              pitch: resolvedPitch,
-              startBeat: currentBeat,
-              durationBeats: degDuration,
-              velocity: velocity
-            });
-            currentBeat += degDuration;
-          } else {
-            // Fallback to old format for backwards compatibility: "-3:8", "8:h."
-            var oldDegMatch = degStr.match(/^(-?\d+):(\d+|[whq])(\.?)$/);
-            if (oldDegMatch) {
-              var oldDegreeNum = parseInt(oldDegMatch[1], 10);
-              var oldDegDurCode = oldDegMatch[2];
-              var oldDegDotted = oldDegMatch[3] === '.';
-              var oldDegBaseDur = DURATION_MAP[oldDegDurCode] || 1;
-              var oldDegDuration = oldDegDotted ? oldDegBaseDur * 1.5 : oldDegBaseDur;
-              var oldResolvedPitch = resolveScaleDegree(oldDegreeNum, key, defaultOctave);
-              notes.push({
-                pitch: oldResolvedPitch,
-                startBeat: currentBeat,
-                durationBeats: oldDegDuration,
-                velocity: velocity
-              });
-              currentBeat += oldDegDuration;
-            }
-          }
-        }
-      }
-
-      // Enhanced Arpeggio (v0.2)
-      if (resolvedPattern.arpeggio) {
-        var arp = resolvedPattern.arpeggio;
-        var chordParsed = parseChord(arp.chord + ':q');
-        var chordNotes = chordParsed ? chordParsed.notes : [];
-        var arpDur = DURATION_MAP[arp.duration] || 0.25;
-        var gate = arp.gate || 0.8;
-        var octaves = arp.octaves || 1;
-
-        // Determine pattern
-        var arpPattern;
-        if (arp.pattern) {
-          arpPattern = arp.pattern;
-        } else if (arp.mode) {
-          arpPattern = generateArpPattern(chordNotes, arp.mode, octaves, arp.steps);
-        } else {
-          // Default: simple ascending
-          arpPattern = [];
-          for (var ai = 0; ai < chordNotes.length; ai++) {
-            arpPattern.push(ai + 1);
-          }
-        }
-
-        for (var m = 0; m < arpPattern.length; m++) {
-          var idx = arpPattern[m];
-          var noteIdx = (idx - 1) % chordNotes.length;
-          var octAdd = Math.floor((idx - 1) / chordNotes.length);
-          var basePitch = chordNotes[noteIdx];
-          var arpMidi = pitchToMidi(basePitch) + octAdd * 12 + octaveOffset * 12;
-          notes.push({
-            pitch: midiToPitch(arpMidi),
-            startBeat: currentBeat,
-            durationBeats: arpDur * gate,
-            velocity: velocity
-          });
-          currentBeat += arpDur;
-        }
-      }
-
-      // Drum patterns (v0.2)
-      if (resolvedPattern.drums) {
-        var drums = resolvedPattern.drums;
-        var kit = drums.kit || '909';
-        var stepDur = DURATION_MAP[drums.stepDuration || '16'] || 0.25;
-
-        // Step sequencer pattern (single drum - kick by default)
-        if (drums.steps) {
-          var stepPattern = drums.steps;
-          for (var si = 0; si < stepPattern.length; si++) {
-            var char = stepPattern[si];
-            if (char === 'x' || char === 'X') {
-              notes.push({
-                pitch: 'drum:kick@' + kit,
-                startBeat: currentBeat + si * stepDur,
-                durationBeats: stepDur,
-                velocity: velocity * 0.8
-              });
-            } else if (char === '>') {
-              notes.push({
-                pitch: 'drum:kick@' + kit,
-                startBeat: currentBeat + si * stepDur,
-                durationBeats: stepDur,
-                velocity: 1.0
-              });
-            }
-          }
-          currentBeat += stepPattern.length * stepDur;
-        }
-
-        // Explicit hits list
-        if (drums.hits) {
-          var maxTime = 0;
-          for (var hi = 0; hi < drums.hits.length; hi++) {
-            var hit = drums.hits[hi];
-            var hitTime = parseDrumTime(hit.time);
-            var hitVel = hit.velocity !== undefined ? hit.velocity : velocity;
-            notes.push({
-              pitch: 'drum:' + hit.drum + '@' + kit,
-              startBeat: currentBeat + hitTime,
-              durationBeats: stepDur,
-              velocity: hitVel
-            });
-            if (hitTime > maxTime) maxTime = hitTime;
-          }
-          // Advance by at least one bar (4 beats) or max hit time + step
-          currentBeat += Math.max(maxTime + stepDur, 4);
-        }
-      }
-
-      // Euclidean rhythms (v0.2)
-      if (resolvedPattern.euclidean) {
-        var euc = resolvedPattern.euclidean;
-        var eucPattern = euclidean(euc.hits, euc.steps);
-        eucPattern = rotatePattern(eucPattern, euc.rotation || 0);
-        var eucDur = DURATION_MAP[euc.duration] || 0.25;
-
-        for (var ei = 0; ei < eucPattern.length; ei++) {
-          if (eucPattern[ei]) {
-            var eucPitch;
-            if (euc.drum) {
-              eucPitch = 'drum:' + euc.drum + '@' + drumKit;
-            } else if (euc.pitch) {
-              eucPitch = euc.pitch;
-              // Apply octave offset
-              var eucMidi = pitchToMidi(eucPitch) + octaveOffset * 12;
-              eucPitch = midiToPitch(eucMidi);
-            } else {
-              eucPitch = midiToPitch(60 + octaveOffset * 12); // C4
-            }
-            notes.push({
-              pitch: eucPitch,
-              startBeat: currentBeat + ei * eucDur,
-              durationBeats: eucDur,
-              velocity: velocity
-            });
-          }
-        }
-        currentBeat += euc.steps * eucDur;
-      }
-
-      // Apply velocity envelope if specified (v0.4)
-      if (resolvedPattern.envelope && resolvedPattern.envelope.velocity && notes.length > 0) {
-        applyVelocityEnvelope(notes, resolvedPattern.envelope.velocity, velocity);
-      }
-
-      // Apply scale constraint if enabled (v0.3)
-      if (resolvedPattern.constrainToScale && key) {
-        for (var ci = 0; ci < notes.length; ci++) {
-          // Skip drum pitches
-          if (!notes[ci].pitch.startsWith('drum:')) {
-            notes[ci].pitch = snapToScale(notes[ci].pitch, key);
-          }
-        }
-      }
-
-      return { notes: notes, totalBeats: currentBeat };
-    }
-
-    // v0.4: Apply velocity envelope to notes
-    function applyVelocityEnvelope(notes, envelopeType, baseVelocity) {
-      if (notes.length === 0) return;
-      var velocities = [];
-      var minVel = Math.max(0.1, baseVelocity * 0.3);
-      var maxVel = Math.min(1.0, baseVelocity * 1.2);
-      var count = notes.length;
-
-      if (Array.isArray(envelopeType)) {
-        // Custom velocity array - interpolate across notes
-        for (var i = 0; i < count; i++) {
-          var t = count === 1 ? 0 : i / (count - 1);
-          var arrayPos = t * (envelopeType.length - 1);
-          var lowerIdx = Math.floor(arrayPos);
-          var upperIdx = Math.min(lowerIdx + 1, envelopeType.length - 1);
-          var frac = arrayPos - lowerIdx;
-          var interpolated = envelopeType[lowerIdx] * (1 - frac) + envelopeType[upperIdx] * frac;
-          velocities.push(Math.max(0, Math.min(1, interpolated)));
-        }
-      } else {
-        // Preset envelope
-        switch (envelopeType) {
-          case 'crescendo':
-            for (var i = 0; i < count; i++) {
-              var t = count === 1 ? 1 : i / (count - 1);
-              velocities.push(minVel + t * (maxVel - minVel));
-            }
-            break;
-          case 'diminuendo':
-            for (var i = 0; i < count; i++) {
-              var t = count === 1 ? 0 : i / (count - 1);
-              velocities.push(maxVel - t * (maxVel - minVel));
-            }
-            break;
-          case 'swell':
-            for (var i = 0; i < count; i++) {
-              var t = count === 1 ? 0.5 : i / (count - 1);
-              var factor = Math.sin(t * Math.PI);
-              velocities.push(minVel + factor * (maxVel - minVel));
-            }
-            break;
-          case 'accent_first':
-            for (var i = 0; i < count; i++) {
-              velocities.push(i === 0 ? maxVel : baseVelocity);
-            }
-            break;
-          case 'accent_downbeats':
-            for (var i = 0; i < count; i++) {
-              velocities.push(i % 2 === 0 ? maxVel : baseVelocity * 0.7);
-            }
-            break;
-          default:
-            return; // Unknown envelope, don't modify
-        }
-      }
-
-      // Apply velocities to notes
-      for (var i = 0; i < notes.length; i++) {
-        notes[i].velocity = velocities[i];
-      }
-    }
-
-    // Parse drum hit time string: "0", "q", "h+8", etc.
-    function parseDrumTime(timeStr) {
-      var parts = timeStr.split('+');
-      var total = 0;
-      for (var i = 0; i < parts.length; i++) {
-        var part = parts[i].trim();
-        if (DURATION_MAP[part] !== undefined) {
-          total += DURATION_MAP[part];
-        } else {
-          var num = parseFloat(part);
-          if (!isNaN(num)) total += num;
-        }
-      }
-      return total;
-    }
-
-    // Fill notes to target length by repeating
-    function fillToLength(notes, targetBeats) {
-      if (notes.length === 0) return [];
-
-      // Find pattern length
-      var patternLength = 0;
-      for (var i = 0; i < notes.length; i++) {
-        var endBeat = notes[i].startBeat + notes[i].durationBeats;
-        if (endBeat > patternLength) patternLength = endBeat;
-      }
-      if (patternLength === 0) patternLength = 1;
-
-      // If pattern is already long enough, truncate
-      if (patternLength >= targetBeats) {
-        return notes.filter(function(n) { return n.startBeat < targetBeats; });
-      }
-
-      // Repeat to fill
-      var result = [];
-      var offset = 0;
-      while (offset < targetBeats) {
-        for (var j = 0; j < notes.length; j++) {
-          var newStart = notes[j].startBeat + offset;
-          if (newStart >= targetBeats) break;
-          result.push({
-            pitch: notes[j].pitch,
-            startBeat: newStart,
-            durationBeats: notes[j].durationBeats,
-            velocity: notes[j].velocity
-          });
-        }
-        offset += patternLength;
-      }
-      return result;
-    }
-
-    function compileScore(score) {
-      var events = [];
-      var tempo = score.settings.tempo;
-
-      // Parse time signature (e.g., "4/4", "3/4", "6/8")
-      var timeSig = score.settings.timeSignature || '4/4';
-      var sigParts = timeSig.split('/');
-      var numerator = parseInt(sigParts[0], 10) || 4;
-      var denominator = parseInt(sigParts[1], 10) || 4;
-      // Convert to beats: 4/4 = 4 beats, 3/4 = 3 beats, 6/8 = 3 beats (6 * 4/8)
-      var beatsPerBar = numerator * (4 / denominator);
-
-      // Get key for scale degree resolution
-      var globalKey = score.settings.key || 'C major';
-
-      var currentBeat = 0;
-      var sections = [];
-
-      for (var i = 0; i < score.arrangement.length; i++) {
-        var sectionName = score.arrangement[i];
-        var section = score.sections[sectionName];
-        if (!section) continue;
-
-        // Section-level overrides
-        var sectionKey = section.key || globalKey;
-        var sectionTempo = section.tempo || tempo;
-        // Section can also override time signature
-        var sectionTimeSig = section.timeSignature || timeSig;
-        var sectionSigParts = sectionTimeSig.split('/');
-        var sectionNumerator = parseInt(sectionSigParts[0], 10) || 4;
-        var sectionDenominator = parseInt(sectionSigParts[1], 10) || 4;
-        var sectionBeatsPerBar = sectionNumerator * (4 / sectionDenominator);
-
-        var sectionStart = currentBeat;
-        var sectionBeats = section.bars * sectionBeatsPerBar;
-        sections.push({
-          name: sectionName,
-          startBeat: sectionStart,
-          endBeat: sectionStart + sectionBeats,
-          tempo: sectionTempo,
-          key: sectionKey
-        });
-
-        var trackNames = Object.keys(section.tracks);
-        for (var t = 0; t < trackNames.length; t++) {
-          var instrument = trackNames[t];
-          var track = section.tracks[instrument];
-          if (track.mute) continue;
-
-          var patternNames = track.patterns || (track.pattern ? [track.pattern] : []);
-          var repeatCount = track.repeat || 1;
-          var velocity = track.velocity || 0.8;
-          var octave = track.octave || 0;
-          var humanize = track.humanize || 0;
-          var transpose = track.transpose || 0;
-
-          // Get drum kit from instrument preset (e.g., "drums:808" -> "808")
-          var instrumentDef = score.instruments && score.instruments[instrument];
-          var drumKit = '909'; // default
-          if (instrumentDef && instrumentDef.preset && instrumentDef.preset.startsWith('drums:')) {
-            drumKit = instrumentDef.preset.split(':')[1];
-          }
-
-          // First expand ONE iteration of all patterns to get the "base unit" length
-          var baseNotes = [];
-          var baseLength = 0;
-          for (var p = 0; p < patternNames.length; p++) {
-            var patternName = patternNames[p];
-            var pattern = score.patterns[patternName];
-            if (!pattern) continue;
-
-            var expanded = expandPattern(pattern, velocity, octave, sectionKey, drumKit, score.patterns);
-            for (var n = 0; n < expanded.notes.length; n++) {
-              var note = expanded.notes[n];
-              var noteData = {
-                pitch: note.pitch,
-                startBeat: baseLength + note.startBeat,
-                durationBeats: note.durationBeats,
-                velocity: note.velocity
-              };
-              // v0.4: Copy expression fields
-              if (note.timingOffset !== undefined) noteData.timingOffset = note.timingOffset;
-              if (note.probability !== undefined) noteData.probability = note.probability;
-              if (note.portamento) noteData.portamento = true;
-              baseNotes.push(noteData);
-            }
-            baseLength += expanded.totalBeats;
-          }
-
-          // Now repeat the base unit to fill the section
-          var trackNotes = [];
-          var offset = 0;
-
-          // If repeat is specified, use exactly that many repeats (capped at section length)
-          // Otherwise, fill the entire section
-          var totalRepeats = repeatCount;
-          var repeatLength = baseLength * repeatCount;
-
-          // If the repeated pattern doesn't fill the section, fill to section length
-          if (repeatLength < sectionBeats) {
-            // Fill by repeating the base pattern
-            while (offset < sectionBeats) {
-              for (var bn = 0; bn < baseNotes.length; bn++) {
-                var newStart = baseNotes[bn].startBeat + offset;
-                if (newStart >= sectionBeats) break;
-                var copyNote = {
-                  pitch: baseNotes[bn].pitch,
-                  startBeat: newStart,
-                  durationBeats: baseNotes[bn].durationBeats,
-                  velocity: baseNotes[bn].velocity
-                };
-                // v0.4: Copy expression fields
-                if (baseNotes[bn].timingOffset !== undefined) copyNote.timingOffset = baseNotes[bn].timingOffset;
-                if (baseNotes[bn].probability !== undefined) copyNote.probability = baseNotes[bn].probability;
-                if (baseNotes[bn].portamento) copyNote.portamento = true;
-                trackNotes.push(copyNote);
-              }
-              offset += baseLength;
-            }
-          } else {
-            // Use exactly the repeated pattern, truncated to section length
-            for (var r = 0; r < repeatCount; r++) {
-              for (var bn2 = 0; bn2 < baseNotes.length; bn2++) {
-                var newStart2 = baseNotes[bn2].startBeat + (r * baseLength);
-                if (newStart2 >= sectionBeats) break;
-                var copyNote2 = {
-                  pitch: baseNotes[bn2].pitch,
-                  startBeat: newStart2,
-                  durationBeats: baseNotes[bn2].durationBeats,
-                  velocity: baseNotes[bn2].velocity
-                };
-                // v0.4: Copy expression fields
-                if (baseNotes[bn2].timingOffset !== undefined) copyNote2.timingOffset = baseNotes[bn2].timingOffset;
-                if (baseNotes[bn2].probability !== undefined) copyNote2.probability = baseNotes[bn2].probability;
-                if (baseNotes[bn2].portamento) copyNote2.portamento = true;
-                trackNotes.push(copyNote2);
-              }
-            }
-          }
-
-          // Add to events (apply transpose and include humanize)
-          for (var fn = 0; fn < trackNotes.length; fn++) {
-            var fnote = trackNotes[fn];
-            var finalPitch;
-            // Don't transpose drum pitches - they use special format 'drum:NAME@KIT'
-            if (fnote.pitch && fnote.pitch.startsWith('drum:')) {
-              finalPitch = fnote.pitch;
-            } else {
-              // Apply transpose to melodic notes
-              var transposedMidi = pitchToMidi(fnote.pitch) + transpose;
-              finalPitch = midiToPitch(transposedMidi);
-            }
-            var eventData = {
-              instrument: instrument,
-              pitch: finalPitch,
-              time: currentBeat + fnote.startBeat,
-              duration: fnote.durationBeats,
-              velocity: fnote.velocity,
-              humanize: humanize
-            };
-            // v0.4: Copy expression fields to final event
-            if (fnote.timingOffset !== undefined) eventData.timingOffset = fnote.timingOffset;
-            if (fnote.probability !== undefined) eventData.probability = fnote.probability;
-            if (fnote.portamento) eventData.portamento = true;
-            events.push(eventData);
-          }
-        }
-        currentBeat += sectionBeats;
-      }
-
-      // Sort events by time to ensure proper playback order
-      events.sort(function(a, b) { return a.time - b.time; });
-
-      return { events: events, totalBeats: currentBeat, tempo: tempo, sections: sections };
-    }
-
-    // Store synth types for proper triggering (drums don't use pitch)
-    var synthTypes = {};
-
-    function createInstruments(instrumentDefs) {
-      var instruments = {};
-      var defNames = Object.keys(instrumentDefs || {});
-
-      for (var i = 0; i < defNames.length; i++) {
-        var name = defNames[i];
-        var def = instrumentDefs[name];
-        var preset = def.preset || 'synth';
-        var synth;
-        var synthType = 'pitched'; // Default: uses pitch
-
-        // Drum kit presets (v0.2) - drums:KITNAME format
-        if (preset.startsWith('drums:')) {
-          var kitName = preset.split(':')[1] || '909';
-          // For drum kit presets, we create a placeholder synth
-          // Actual drum sounds are created dynamically per hit
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 1 });
-          synthType = 'drumkit';
-          // Store kit name for later reference
-          synth._drumKit = kitName;
-        }
-        // Drum presets - MembraneSynth (kicks)
-        else if (preset === 'kick_909') {
-          synth = new Tone.MembraneSynth({
-            pitchDecay: 0.05,
-            octaves: 6,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.1 }
-          });
-          synthType = 'membrane';
-        } else if (preset === 'kick_deep') {
-          synth = new Tone.MembraneSynth({
-            pitchDecay: 0.08,
-            octaves: 4,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.1 }
-          });
-          synthType = 'membrane';
-        }
-        // Drum presets - NoiseSynth (hi-hats, claps, snares)
-        else if (preset === 'hihat_closed') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.01 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'hihat_open') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.25, sustain: 0.1, release: 0.1 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'clap_909') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.05 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'snare_house') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'pink' },
-            envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.05 }
-          });
-          synthType = 'noise';
-        }
-        // Pads
-        else if (preset === 'ambient_pad') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 1.0, decay: 0.5, sustain: 0.9, release: 2.0 } });
-        } else if (preset === 'warm_pad' || preset === 'string_pad') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'triangle' }, envelope: { attack: 0.5, decay: 0.3, sustain: 0.8, release: 1.5 } });
-        }
-        // Leads
-        else if (preset === 'soft_lead') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.5, release: 0.5 } });
-        } else if (preset === 'lead') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.6, release: 0.3 } });
-        }
-        // Bass
-        else if (preset === 'sub_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sine' }, envelope: { attack: 0.02, decay: 0.1, sustain: 0.8, release: 0.5 } });
-        } else if (preset === 'synth_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 } });
-        } else if (preset === 'pluck_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 } });
-        }
-        // Plucks
-        else if (preset === 'pluck') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.001, decay: 0.08, sustain: 0.0, release: 0.05 } });
-        } else if (preset === 'bell') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 1.0, sustain: 0.0, release: 1.0 } });
-        } else if (preset === 'marimba') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.5, sustain: 0.0, release: 0.3 } });
-        }
-        // Keys
-        else if (preset === 'electric_piano') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.8, sustain: 0.2, release: 0.8 } });
-        } else if (preset === 'organ') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.01, sustain: 1.0, release: 0.1 } });
-        }
-        // FM Synth presets - DX7-inspired, properly tuned
-        // Key insight: modulation envelope should decay faster than amplitude for natural sounds
-        else if (preset === 'fm_epiano') {
-          // DX7-style Electric Piano (Rhodes-like) - slightly detuned for warmth
-          synth = new Tone.FMSynth({
-            harmonicity: 1.0007,
-            modulationIndex: 4,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 2.5, sustain: 0.1, release: 1.5 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.4, sustain: 0.1, release: 0.3 }
-          });
-        } else if (preset === 'fm_bass') {
-          // Punchy FM bass - fast mod decay for punch
-          synth = new Tone.FMSynth({
-            harmonicity: 2,
-            modulationIndex: 6,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.3, sustain: 0.5, release: 0.2 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.1, sustain: 0.2, release: 0.1 }
-          });
-        } else if (preset === 'fm_brass') {
-          // FM Brass stab - mod envelope tracks amplitude for brightness=loudness
-          synth = new Tone.FMSynth({
-            harmonicity: 1,
-            modulationIndex: 12,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.08, decay: 0.3, sustain: 0.6, release: 0.2 }
-          });
-        } else if (preset === 'fm_church_bell') {
-          // Large church bell - non-integer harmonicity (14) for inharmonic spectrum
-          synth = new Tone.FMSynth({
-            harmonicity: 14,
-            modulationIndex: 8,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 4.0, sustain: 0, release: 3.0 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 2.0, sustain: 0, release: 1.5 }
-          });
-        } else if (preset === 'fm_tubular_bell' || preset === 'fm_bell') {
-          // Tubular/chime bell - classic DX7 ratio (5.07)
-          synth = new Tone.FMSynth({
-            harmonicity: 5.07,
-            modulationIndex: 6,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 2.5, sustain: 0, release: 2.0 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 1.2, sustain: 0, release: 1.0 }
-          });
-        } else if (preset === 'fm_glass') {
-          // Glass/crystal - high odd harmonicity with low mod for delicate sound
-          synth = new Tone.FMSynth({
-            harmonicity: 7,
-            modulationIndex: 3,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 1.5, sustain: 0, release: 1.0 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.2 }
-          });
-        } else if (preset === 'fm_vibraphone') {
-          // Vibraphone/mallets - harmonicity of 4 for characteristic timbre
-          synth = new Tone.FMSynth({
-            harmonicity: 4,
-            modulationIndex: 3.5,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 1.8, sustain: 0.1, release: 1.2 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.3 }
-          });
-        } else if (preset === 'fm_organ') {
-          // FM Organ - sustained mod for constant brightness
-          synth = new Tone.FMSynth({
-            harmonicity: 1,
-            modulationIndex: 2,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.01, decay: 0.01, sustain: 1.0, release: 0.1 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.01, decay: 0.01, sustain: 1.0, release: 0.1 }
-          });
-        }
-        // Legacy synthwave presets (kept for backwards compatibility)
-        else if (preset === 'synthwave_bass') {
-          synth = new Tone.FMSynth({
-            harmonicity: 2,
-            modulationIndex: 6,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.3, sustain: 0.5, release: 0.2 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.1, sustain: 0.2, release: 0.1 }
-          });
-        } else if (preset === 'synthwave_lead') {
-          synth = new Tone.FMSynth({
-            harmonicity: 2,
-            modulationIndex: 8,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.02, decay: 0.3, sustain: 0.6, release: 0.4 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.02, decay: 0.2, sustain: 0.3, release: 0.3 }
-          });
-        } else if (preset === 'synthwave_stab') {
-          synth = new Tone.FMSynth({
-            harmonicity: 2,
-            modulationIndex: 10,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.2, sustain: 0.1, release: 0.15 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
-          });
-        } else if (preset === 'synthwave_pad') {
-          // Lush, evolving 80s pad - Juno-style sawtooth
-          synth = new Tone.PolySynth(Tone.Synth, {
-            maxPolyphony: 16,
-            oscillator: { type: 'sawtooth' },
-            envelope: { attack: 1.5, decay: 0.5, sustain: 0.8, release: 2.0 }
-          });
-        } else if (preset === 'arp_synth') {
-          // Bright arpeggiated sound - short, punchy, clear
-          synth = new Tone.PolySynth(Tone.Synth, {
-            maxPolyphony: 16,
-            oscillator: { type: 'sawtooth' },
-            envelope: { attack: 0.005, decay: 0.2, sustain: 0.2, release: 0.15 }
-          });
-        }
-        // Basic waveforms
-        else if (preset === 'sine') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.5 } });
-        } else if (preset === 'square') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.4, release: 0.3 } });
-        } else if (preset === 'sawtooth') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.4 } });
-        }
-        // Default
-        else {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'triangle' }, envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.8 } });
-        }
-
-        var lastNode = synth;
-
-        if (def.effects) {
-          for (var e = 0; e < def.effects.length; e++) {
-            var fx = def.effects[e];
-            var effectNode;
-            if (fx.type === 'reverb') {
-              effectNode = new Tone.Reverb({ decay: (fx.options && fx.options.decay) || 2, wet: fx.wet || 0.5 });
-            } else if (fx.type === 'delay') {
-              effectNode = new Tone.FeedbackDelay({
-                delayTime: (fx.options && fx.options.time) || '8n',
-                feedback: (fx.options && fx.options.feedback) || 0.3,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'chorus') {
-              effectNode = new Tone.Chorus({
-                frequency: (fx.options && fx.options.frequency) || 1.5,
-                delayTime: (fx.options && fx.options.delayTime) || 3.5,
-                depth: (fx.options && fx.options.depth) || 0.7,
-                wet: fx.wet || 0.5
-              });
-              effectNode.start();
-            } else if (fx.type === 'distortion') {
-              effectNode = new Tone.Distortion({
-                distortion: (fx.options && fx.options.amount) || 0.4,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'filter') {
-              effectNode = new Tone.Filter({
-                frequency: (fx.options && fx.options.frequency) || 1000,
-                type: (fx.options && fx.options.type) || 'lowpass',
-                Q: (fx.options && fx.options.Q) || 1
-              });
-            } else if (fx.type === 'compressor') {
-              effectNode = new Tone.Compressor({
-                threshold: (fx.options && fx.options.threshold) || -24,
-                ratio: (fx.options && fx.options.ratio) || 4,
-                attack: (fx.options && fx.options.attack) || 0.003,
-                release: (fx.options && fx.options.release) || 0.25
-              });
-            } else if (fx.type === 'eq') {
-              effectNode = new Tone.EQ3({
-                low: (fx.options && fx.options.low) || 0,
-                mid: (fx.options && fx.options.mid) || 0,
-                high: (fx.options && fx.options.high) || 0
-              });
-            } else if (fx.type === 'phaser') {
-              effectNode = new Tone.Phaser({
-                frequency: (fx.options && fx.options.frequency) || 0.5,
-                octaves: (fx.options && fx.options.octaves) || 3,
-                baseFrequency: (fx.options && fx.options.baseFrequency) || 350,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'vibrato') {
-              effectNode = new Tone.Vibrato({
-                frequency: (fx.options && fx.options.frequency) || 5,
-                depth: (fx.options && fx.options.depth) || 0.1,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'bitcrusher') {
-              effectNode = new Tone.BitCrusher({
-                bits: (fx.options && fx.options.bits) || 8,
-                wet: fx.wet || 0.5
-              });
-            }
-            if (effectNode) {
-              lastNode.connect(effectNode);
-              lastNode = effectNode;
-            }
-          }
-        }
-
-        var volume = new Tone.Volume(def.volume || 0);
-        lastNode.connect(volume);
-
-        // Add panning support
-        var panner = new Tone.Panner(def.pan || 0);
-        volume.connect(panner);
-        panner.toDestination();
-
-        instruments[name] = synth;
-        synthTypes[name] = synthType;
-      }
-
-      return instruments;
-    }
-
-    // ============================================================================
-    // WAV Export System
-    // ============================================================================
-
-    // Convert AudioBuffer to WAV Blob (44.1kHz, 16-bit, stereo)
-    function audioBufferToWav(audioBuffer) {
-      var numChannels = audioBuffer.numberOfChannels;
-      var sampleRate = audioBuffer.sampleRate;
-      var length = audioBuffer.length;
-
-      // WAV header is 44 bytes
-      var bufferLength = 44 + length * numChannels * 2; // 16-bit = 2 bytes per sample
-      var buffer = new ArrayBuffer(bufferLength);
-      var view = new DataView(buffer);
-
-      // RIFF chunk descriptor
-      writeString(view, 0, 'RIFF');
-      view.setUint32(4, bufferLength - 8, true); // file length - 8
-      writeString(view, 8, 'WAVE');
-
-      // fmt sub-chunk
-      writeString(view, 12, 'fmt ');
-      view.setUint32(16, 16, true); // subchunk size (16 for PCM)
-      view.setUint16(20, 1, true);  // audio format (1 = PCM)
-      view.setUint16(22, numChannels, true);
-      view.setUint32(24, sampleRate, true);
-      view.setUint32(28, sampleRate * numChannels * 2, true); // byte rate
-      view.setUint16(32, numChannels * 2, true); // block align
-      view.setUint16(34, 16, true); // bits per sample
-
-      // data sub-chunk
-      writeString(view, 36, 'data');
-      view.setUint32(40, length * numChannels * 2, true);
-
-      // Write interleaved audio data
-      var offset = 44;
-      var channels = [];
-      for (var c = 0; c < numChannels; c++) {
-        channels.push(audioBuffer.getChannelData(c));
-      }
-
-      for (var i = 0; i < length; i++) {
-        for (var c = 0; c < numChannels; c++) {
-          // Convert float32 [-1, 1] to int16 [-32768, 32767]
-          var sample = Math.max(-1, Math.min(1, channels[c][i]));
-          var int16 = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
-          view.setInt16(offset, int16, true);
-          offset += 2;
-        }
-      }
-
-      return new Blob([buffer], { type: 'audio/wav' });
-    }
-
-    function writeString(view, offset, string) {
-      for (var i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
-      }
-    }
-
-    // Trigger browser download
-    function downloadBlob(blob, filename) {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // Create instruments for offline rendering (identical setup, fresh instances)
-    function createInstrumentsOffline(instrumentDefs) {
-      var offlineInstruments = {};
-      var offlineSynthTypes = {};
-      var defNames = Object.keys(instrumentDefs || {});
-
-      for (var i = 0; i < defNames.length; i++) {
-        var name = defNames[i];
-        var def = instrumentDefs[name];
-        var preset = def.preset || 'synth';
-        var synth;
-        var synthType = 'pitched';
-
-        // Drum kit presets (v0.2)
-        if (preset.startsWith('drums:')) {
-          var kitName = preset.split(':')[1] || '909';
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 1 });
-          synthType = 'drumkit';
-          synth._drumKit = kitName;
-        }
-        // Drum presets - MembraneSynth
-        else if (preset === 'kick_909') {
-          synth = new Tone.MembraneSynth({
-            pitchDecay: 0.05, octaves: 6,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.1 }
-          });
-          synthType = 'membrane';
-        } else if (preset === 'kick_deep') {
-          synth = new Tone.MembraneSynth({
-            pitchDecay: 0.08, octaves: 4,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.1 }
-          });
-          synthType = 'membrane';
-        } else if (preset === 'hihat_closed') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.06, sustain: 0, release: 0.01 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'hihat_open') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.25, sustain: 0.1, release: 0.1 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'clap_909') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'white' },
-            envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.05 }
-          });
-          synthType = 'noise';
-        } else if (preset === 'snare_house') {
-          synth = new Tone.NoiseSynth({
-            noise: { type: 'pink' },
-            envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.05 }
-          });
-          synthType = 'noise';
-        }
-        // Pads
-        else if (preset === 'ambient_pad') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 1.0, decay: 0.5, sustain: 0.9, release: 2.0 } });
-        } else if (preset === 'warm_pad' || preset === 'string_pad') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'triangle' }, envelope: { attack: 0.5, decay: 0.3, sustain: 0.8, release: 1.5 } });
-        }
-        // Leads
-        else if (preset === 'soft_lead') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.5, release: 0.5 } });
-        } else if (preset === 'lead') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.6, release: 0.3 } });
-        }
-        // Bass
-        else if (preset === 'sub_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sine' }, envelope: { attack: 0.02, decay: 0.1, sustain: 0.8, release: 0.5 } });
-        } else if (preset === 'synth_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 } });
-        } else if (preset === 'pluck_bass') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 8, oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 } });
-        }
-        // Plucks
-        else if (preset === 'pluck') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.001, decay: 0.08, sustain: 0.0, release: 0.05 } });
-        } else if (preset === 'bell') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 1.0, sustain: 0.0, release: 1.0 } });
-        } else if (preset === 'marimba') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 16, oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.5, sustain: 0.0, release: 0.3 } });
-        }
-        // Keys
-        else if (preset === 'electric_piano') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.8, sustain: 0.2, release: 0.8 } });
-        } else if (preset === 'organ') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.01, sustain: 1.0, release: 0.1 } });
-        }
-        // FM Synth presets
-        else if (preset === 'synthwave_bass') {
-          synth = new Tone.FMSynth({
-            harmonicity: 1, modulationIndex: 8,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.01, decay: 0.2, sustain: 0.6, release: 0.2 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.2, release: 0.2 }
-          });
-        } else if (preset === 'synthwave_lead') {
-          synth = new Tone.FMSynth({
-            harmonicity: 2, modulationIndex: 12,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.02, decay: 0.3, sustain: 0.6, release: 0.4 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.05, decay: 0.4, sustain: 0.3, release: 0.3 }
-          });
-        } else if (preset === 'fm_bell') {
-          synth = new Tone.FMSynth({
-            harmonicity: 5.07, modulationIndex: 10,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 1.5, sustain: 0, release: 1.5 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 1.0, sustain: 0, release: 1.0 }
-          });
-        } else if (preset === 'synthwave_stab') {
-          synth = new Tone.FMSynth({
-            harmonicity: 2, modulationIndex: 15,
-            oscillator: { type: 'sine' },
-            envelope: { attack: 0.001, decay: 0.2, sustain: 0.1, release: 0.15 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.1 }
-          });
-        } else if (preset === 'synthwave_pad') {
-          synth = new Tone.PolySynth(Tone.Synth, {
-            maxPolyphony: 16,
-            oscillator: { type: 'sawtooth' },
-            envelope: { attack: 1.5, decay: 0.5, sustain: 0.8, release: 2.0 }
-          });
-        } else if (preset === 'arp_synth') {
-          synth = new Tone.PolySynth(Tone.Synth, {
-            maxPolyphony: 16,
-            oscillator: { type: 'sawtooth' },
-            envelope: { attack: 0.005, decay: 0.2, sustain: 0.2, release: 0.15 }
-          });
-        }
-        // Basic waveforms
-        else if (preset === 'sine') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.5 } });
-        } else if (preset === 'square') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'square' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.4, release: 0.3 } });
-        } else if (preset === 'sawtooth') {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.4 } });
-        }
-        // Default
-        else {
-          synth = new Tone.PolySynth(Tone.Synth, { maxPolyphony: 12, oscillator: { type: 'triangle' }, envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.8 } });
-        }
-
-        var lastNode = synth;
-
-        // Apply effects (same logic as main createInstruments)
-        if (def.effects) {
-          for (var e = 0; e < def.effects.length; e++) {
-            var fx = def.effects[e];
-            var effectNode;
-            if (fx.type === 'reverb') {
-              effectNode = new Tone.Reverb({ decay: (fx.options && fx.options.decay) || 2, wet: fx.wet || 0.5 });
-            } else if (fx.type === 'delay') {
-              effectNode = new Tone.FeedbackDelay({
-                delayTime: (fx.options && fx.options.time) || '8n',
-                feedback: (fx.options && fx.options.feedback) || 0.3,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'chorus') {
-              effectNode = new Tone.Chorus({
-                frequency: (fx.options && fx.options.frequency) || 1.5,
-                delayTime: (fx.options && fx.options.delayTime) || 3.5,
-                depth: (fx.options && fx.options.depth) || 0.7,
-                wet: fx.wet || 0.5
-              });
-              effectNode.start();
-            } else if (fx.type === 'distortion') {
-              effectNode = new Tone.Distortion({
-                distortion: (fx.options && fx.options.amount) || 0.4,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'filter') {
-              effectNode = new Tone.Filter({
-                frequency: (fx.options && fx.options.frequency) || 1000,
-                type: (fx.options && fx.options.type) || 'lowpass',
-                Q: (fx.options && fx.options.Q) || 1
-              });
-            } else if (fx.type === 'compressor') {
-              effectNode = new Tone.Compressor({
-                threshold: (fx.options && fx.options.threshold) || -24,
-                ratio: (fx.options && fx.options.ratio) || 4,
-                attack: (fx.options && fx.options.attack) || 0.003,
-                release: (fx.options && fx.options.release) || 0.25
-              });
-            } else if (fx.type === 'eq') {
-              effectNode = new Tone.EQ3({
-                low: (fx.options && fx.options.low) || 0,
-                mid: (fx.options && fx.options.mid) || 0,
-                high: (fx.options && fx.options.high) || 0
-              });
-            } else if (fx.type === 'phaser') {
-              effectNode = new Tone.Phaser({
-                frequency: (fx.options && fx.options.frequency) || 0.5,
-                octaves: (fx.options && fx.options.octaves) || 3,
-                baseFrequency: (fx.options && fx.options.baseFrequency) || 350,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'vibrato') {
-              effectNode = new Tone.Vibrato({
-                frequency: (fx.options && fx.options.frequency) || 5,
-                depth: (fx.options && fx.options.depth) || 0.1,
-                wet: fx.wet || 0.5
-              });
-            } else if (fx.type === 'bitcrusher') {
-              effectNode = new Tone.BitCrusher({
-                bits: (fx.options && fx.options.bits) || 8,
-                wet: fx.wet || 0.5
-              });
-            }
-            if (effectNode) {
-              lastNode.connect(effectNode);
-              lastNode = effectNode;
-            }
-          }
-        }
-
-        var volume = new Tone.Volume(def.volume || 0);
-        lastNode.connect(volume);
-
-        var panner = new Tone.Panner(def.pan || 0);
-        volume.connect(panner);
-        panner.toDestination();
-
-        offlineInstruments[name] = { synth: synth, type: synthType };
-      }
-
-      return offlineInstruments;
-    }
-
-    // Export state
-    var isExporting = false;
-
-    // Main WAV export function
-    async function exportToWav() {
-      if (isExporting || !score || !compiled) return;
-      isExporting = true;
-
-      var exportBtn = document.getElementById('export-btn');
-      var exportText = document.getElementById('export-text');
-      if (exportBtn) exportBtn.disabled = true;
-      if (exportText) exportText.textContent = 'Rendering...';
-
-      // Stop any current playback
-      if (isPlaying) {
-        stop();
-      }
-
+    // DOM elements
+    const loadingEl = document.getElementById('loading');
+    const playerUI = document.getElementById('player-ui');
+    const startBtn = document.getElementById('start-btn');
+    const playBtn = document.getElementById('play-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    const currentTimeEl = document.getElementById('current-time');
+    const totalTimeEl = document.getElementById('total-time');
+    const sectionDisplay = document.getElementById('section-display');
+    const instrumentsEl = document.getElementById('instruments');
+    const playIcon = document.getElementById('play-icon');
+    const songSelect = document.getElementById('song-select');
+    const songSelectPlaying = document.getElementById('song-select-playing');
+    const loadError = document.getElementById('load-error');
+    const playerError = document.getElementById('player-error');
+    const trackDisplay = document.getElementById('track-display');
+    const noteCanvas = document.getElementById('note-canvas');
+    const noteCtx = noteCanvas.getContext('2d');
+    const trackLabels = document.getElementById('track-labels');
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeDisplay = document.getElementById('volume-display');
+    const muteBtn = document.getElementById('mute-btn');
+    const volumeIcon = document.getElementById('volume-icon');
+
+    // Player instance
+    let player = null;
+    let animationId = null;
+    let lastVolumeBeforeMute = 80;
+
+    // Note display state
+    let trackList = [];
+    let trackColors = {};
+    const NOTE_COLORS = [
+      '#64ffda', '#ff6b6b', '#ffd93d', '#a78bfa',
+      '#f472b6', '#34d399', '#60a5fa', '#fb923c'
+    ];
+    const LOOKAHEAD_SECONDS = 4; // How many seconds ahead to show
+    const HIT_LINE_X = 60; // X position of the hit line
+
+    // SVG icons (static, trusted content)
+    const PLAY_ICON = '<polygon points="8,5 19,12 8,19"/>';
+    const PAUSE_ICON = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
+    const VOLUME_HIGH_ICON = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke="currentColor" stroke-width="2" fill="none"/>';
+    const VOLUME_LOW_ICON = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2" fill="none"/>';
+    const VOLUME_MUTE_ICON = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2"/>';
+
+    // Try to load manifest, fall back to hardcoded list
+    async function loadCompositions() {
       try {
-        // Calculate duration: total beats converted to seconds + 2s tail for reverb
-        var bpm = score.settings.tempo;
-        var totalSeconds = (compiled.totalBeats / bpm) * 60;
-        var duration = totalSeconds + 2; // Add tail for reverb/delay tails
-
-        // Render offline
-        var buffer = await Tone.Offline(function(context) {
-          // Create fresh instruments in offline context
-          var offlineInstruments = createInstrumentsOffline(score.instruments);
-
-          // Set tempo in offline transport
-          Tone.getTransport().bpm.value = bpm;
-
-          // Calculate seconds per beat
-          var secondsPerBeat = 60 / bpm;
-
-          // Create drum synths for offline context
-          var offlineDrumSynths = {};
-          function createOfflineDrumSynth(drumName, kitName) {
-            var kit = DRUM_KITS[kitName] || DRUM_KITS['909'];
-            var params = kit[drumName];
-            if (!params) return null;
-
-            var synth;
-            if (params.type === 'membrane') {
-              synth = new Tone.MembraneSynth({
-                pitchDecay: params.pitchDecay || 0.05, octaves: params.octaves || 4,
-                oscillator: { type: 'sine' },
-                envelope: { attack: params.attack || 0.001, decay: params.decay || 0.4, sustain: params.sustain || 0, release: params.release || 0.1 }
-              });
-            } else if (params.type === 'noise') {
-              synth = new Tone.NoiseSynth({
-                noise: { type: params.noiseType || 'white' },
-                envelope: { attack: params.attack || 0.001, decay: params.decay || 0.1, sustain: params.sustain || 0, release: params.release || 0.05 }
-              });
-            } else if (params.type === 'metal') {
-              synth = new Tone.MetalSynth({
-                frequency: params.frequency || 200, harmonicity: params.harmonicity || 5.1,
-                modulationIndex: params.modulationIndex || 32, resonance: params.resonance || 4000,
-                envelope: { attack: params.attack || 0.001, decay: params.decay || 0.1, sustain: params.sustain || 0, release: params.release || 0.1 }
-              });
-            }
-            if (synth) {
-              var volume = new Tone.Volume(params.volume || 0);
-              synth.connect(volume);
-              volume.toDestination();
-            }
-            return { synth: synth, type: params.type, pitch: params.pitch || 'C2' };
-          }
-
-          function getOfflineDrumSynth(drumName, kitName) {
-            var key = drumName + '@' + kitName;
-            if (!offlineDrumSynths[key]) {
-              offlineDrumSynths[key] = createOfflineDrumSynth(drumName, kitName);
-            }
-            return offlineDrumSynths[key];
-          }
-
-          // Schedule all events
-          for (var i = 0; i < compiled.events.length; i++) {
-            var event = compiled.events[i];
-            var instData = offlineInstruments[event.instrument];
-            var isDrumHit = event.pitch && event.pitch.startsWith('drum:');
-            if (!instData && !isDrumHit) continue;
-
-            var startSeconds = event.time * secondsPerBeat;
-            var durationSeconds = event.duration * secondsPerBeat;
-            var velocity = event.velocity;
-
-            // Schedule the note (closure to capture variables)
-            (function(ev, instData, start, dur, vel) {
-              Tone.getTransport().schedule(function(time) {
-                // Handle drum patterns
-                if (ev.pitch && ev.pitch.startsWith('drum:')) {
-                  var drumMatch = ev.pitch.match(/^drum:(\w+)@(\w+)$/);
-                  if (drumMatch) {
-                    var drumData = getOfflineDrumSynth(drumMatch[1], drumMatch[2]);
-                    if (drumData && drumData.synth) {
-                      if (drumData.type === 'noise' || drumData.type === 'metal') {
-                        drumData.synth.triggerAttackRelease(dur, time, vel);
-                      } else if (drumData.type === 'membrane') {
-                        drumData.synth.triggerAttackRelease(drumData.pitch || 'C2', dur, time, vel);
-                      }
-                    }
-                  }
-                } else if (instData) {
-                  var inst = instData.synth;
-                  var type = instData.type;
-                  if (type === 'noise') {
-                    inst.triggerAttackRelease(dur, time, vel);
-                  } else if (type === 'membrane') {
-                    inst.triggerAttackRelease('C2', dur, time, vel);
-                  } else {
-                    inst.triggerAttackRelease(ev.pitch, dur, time, vel);
-                  }
-                }
-              }, start);
-            })(event, instData, startSeconds, durationSeconds, velocity);
-          }
-
-          // Start transport
-          Tone.getTransport().start(0);
-        }, duration);
-
-        // Convert to WAV and download
-        var audioBuffer = buffer.get();
-        var wavBlob = audioBufferToWav(audioBuffer);
-        var filename = ((score.meta && score.meta.title) || 'export').replace(/[^a-zA-Z0-9-_ ]/g, '') + '.wav';
-        downloadBlob(wavBlob, filename);
-
-        if (exportText) exportText.textContent = 'Export WAV';
-      } catch (error) {
-        console.error('Export error:', error);
-        if (exportText) exportText.textContent = 'Export failed';
-        setTimeout(function() {
-          if (exportText) exportText.textContent = 'Export WAV';
-        }, 2000);
+        const response = await fetch('./dist/manifest.json');
+        if (response.ok) {
+          const manifest = await response.json();
+          return manifest.compositions;
+        }
+      } catch (e) {
+        console.log('Manifest not found, using fallback list');
       }
 
-      isExporting = false;
-      if (exportBtn) exportBtn.disabled = false;
+      // Fallback list
+      return [
+        { path: 'examples/techno-machine-state.etherscore.json', title: 'Machine State (Minimal Techno)' },
+        { path: 'examples/lofi-study.etherscore.json', title: 'Late Night Study (Lo-fi Hip Hop)' },
+        { path: 'examples/convergence.etherscore.json', title: 'Convergence (Minimalist Ambient)' },
+        { path: 'examples/emergence.etherscore.json', title: 'Emergence (Original Composition)' },
+        { path: 'examples/dynamics-showcase.etherscore.json', title: 'Dynamics Showcase (v0.4 Feature)' },
+        { path: 'examples/fm-showcase.etherscore.json', title: 'FM Synthesis Showcase (v0.3 Feature)' },
+        { path: 'examples/drum-kit-demo.etherscore.json', title: 'Drum Kit Demo (v0.2 Feature)' },
+        { path: 'examples/euclidean-demo.etherscore.json', title: 'Euclidean Rhythms Demo (v0.2 Feature)' },
+        { path: 'examples/arpeggiator-demo.etherscore.json', title: 'Enhanced Arpeggiator Demo (v0.2 Feature)' },
+        { path: 'examples/llm-composition.etherscore.json', title: 'Reflections in Binary (Ambient)' },
+        { path: 'examples/reflections-reprise.etherscore.json', title: 'Reflections in Binary - Reprise (Ambient)' },
+        { path: 'examples/electronic-beat.etherscore.json', title: 'Digital Pulse (Electronic)' },
+        { path: 'examples/jazz-standard.etherscore.json', title: 'Late Night Jazz (Jazz)' },
+        { path: 'examples/ambient-journey.etherscore.json', title: 'Ambient Journey (Ambient)' },
+        { path: 'examples/fugue-d-minor.etherscore.json', title: 'Fugue in D Minor (Baroque)' },
+        { path: 'examples/house-midnight.etherscore.json', title: 'Midnight Protocol (House)' },
+        { path: 'examples/synthwave-neon.etherscore.json', title: 'Neon Drift (Synthwave)' },
+        { path: 'examples/boombap-dusty.etherscore.json', title: 'Dusty Crates (Boom Bap)' },
+        { path: 'examples/vaporwave-plaza.etherscore.json', title: 'Vaporwave Plaza (Vaporwave)' },
+      ];
     }
 
-    // Player state
-    var score = null;
-    var compiled = null;
-    var instruments = {};
-    var isPlaying = false;
+    // Populate song selectors
+    async function populateSongSelectors() {
+      const compositions = await loadCompositions();
 
-    // ============================================================================
-    // Visualization System
-    // ============================================================================
-
-    // Color palette for instrument types
-    var VIZ_COLORS = {
-      drums: '#ff6b6b',    // Coral red for kicks, claps, snares
-      hihat: '#ffb347',    // Orange for hi-hats
-      bass: '#9d64ff',     // Purple for bass
-      chords: '#64ffda',   // Cyan for chords/keys (theme color)
-      pad: '#64b5f6',      // Light blue for pads
-      lead: '#ffd93d',     // Gold for leads
-      default: '#a8b2d1'   // Gray for unknown
-    };
-
-    // Scheduled notes for visualization: { instrumentName: [{startBeat, endBeat, pitch}] }
-    var scheduledNotes = {};
-    var vizCanvas = null;
-    var vizCtx = null;
-    var vizAnimationId = null;
-    var instrumentLanes = [];
-    var vizStartTime = 0; // When playback started (Tone.now() value)
-
-    function getInstrumentColor(name) {
-      var nameLower = name.toLowerCase();
-      if (nameLower.includes('kick') || nameLower.includes('clap') || nameLower.includes('snare')) return VIZ_COLORS.drums;
-      if (nameLower.includes('hihat') || nameLower.includes('hat')) return VIZ_COLORS.hihat;
-      if (nameLower.includes('bass') || nameLower.includes('sub')) return VIZ_COLORS.bass;
-      if (nameLower.includes('chord') || nameLower.includes('piano') || nameLower.includes('keys')) return VIZ_COLORS.chords;
-      if (nameLower.includes('pad') || nameLower.includes('string')) return VIZ_COLORS.pad;
-      if (nameLower.includes('lead') || nameLower.includes('melody')) return VIZ_COLORS.lead;
-      return VIZ_COLORS.default;
+      [songSelect, songSelectPlaying].forEach(select => {
+        // Clear existing options
+        while (select.firstChild) {
+          select.removeChild(select.firstChild);
+        }
+        // Add new options
+        compositions.forEach(comp => {
+          const option = document.createElement('option');
+          option.value = comp.path;
+          option.textContent = comp.title;
+          select.appendChild(option);
+        });
+      });
     }
 
-    function initVisualization() {
-      var vizContainer = document.getElementById('visualization');
-      if (!vizContainer) return;
+    // Format time as M:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return mins + ':' + secs.toString().padStart(2, '0');
+    }
 
-      // Clear any existing canvas using DOM methods
-      while (vizContainer.firstChild) {
-        vizContainer.removeChild(vizContainer.firstChild);
+    // Update play button icon (using trusted static SVG)
+    function updatePlayIcon(state) {
+      // Clear existing children
+      while (playIcon.firstChild) {
+        playIcon.removeChild(playIcon.firstChild);
       }
+      // Create new SVG elements
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = '<svg>' + (state === 'playing' ? PAUSE_ICON : PLAY_ICON) + '</svg>';
+      const newElements = tempDiv.querySelector('svg').childNodes;
+      Array.from(newElements).forEach(node => {
+        playIcon.appendChild(node.cloneNode(true));
+      });
+    }
 
-      // Create canvas
-      vizCanvas = document.createElement('canvas');
-      vizCanvas.width = vizContainer.clientWidth * 2; // Retina support
-      vizCanvas.height = 240;
-      vizContainer.appendChild(vizCanvas);
-      vizCtx = vizCanvas.getContext('2d');
+    // Resize canvas to match display size
+    function resizeNoteCanvas() {
+      const rect = noteCanvas.getBoundingClientRect();
+      noteCanvas.width = rect.width * window.devicePixelRatio;
+      noteCanvas.height = rect.height * window.devicePixelRatio;
+      noteCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
 
-      // Build instrument lanes
-      var instNames = Object.keys(score.instruments || {});
-      instrumentLanes = instNames.map(function(name, i) {
-        return { name: name, color: getInstrumentColor(name), index: i };
+    // Build track labels for current composition
+    function buildTrackLabels(instrumentNames) {
+      trackList = instrumentNames;
+
+      // Assign colors to tracks
+      trackColors = {};
+      instrumentNames.forEach(function(name, i) {
+        trackColors[name] = NOTE_COLORS[i % NOTE_COLORS.length];
       });
 
-      // Pre-populate all scheduled notes from compiled events
-      scheduledNotes = {};
-      for (var i = 0; i < instNames.length; i++) {
-        scheduledNotes[instNames[i]] = [];
+      // Clear and rebuild labels
+      while (trackLabels.firstChild) {
+        trackLabels.removeChild(trackLabels.firstChild);
       }
 
-      if (compiled && compiled.events) {
-        var bpm = score.settings.tempo;
-        var secondsPerBeat = 60 / bpm;
-        for (var j = 0; j < compiled.events.length; j++) {
-          var ev = compiled.events[j];
-          if (!scheduledNotes[ev.instrument]) {
-            scheduledNotes[ev.instrument] = [];
-          }
-          scheduledNotes[ev.instrument].push({
-            startSeconds: ev.time * secondsPerBeat,
-            endSeconds: (ev.time + ev.duration) * secondsPerBeat,
-            pitch: ev.pitch
-          });
-        }
+      instrumentNames.forEach(function(name) {
+        const label = document.createElement('div');
+        label.className = 'track-label';
+        label.id = 'label-' + name;
+        label.textContent = name;
+        label.style.color = trackColors[name];
+        trackLabels.appendChild(label);
+      });
+
+      resizeNoteCanvas();
+    }
+
+    // Trigger visual feedback for a track
+    function triggerTrackActivity(name) {
+      const label = document.getElementById('label-' + name);
+      if (label) {
+        label.classList.add('active');
+        setTimeout(function() {
+          label.classList.remove('active');
+        }, 150);
       }
     }
 
-    // Legacy function - kept for compatibility but not used
-    function trackActiveNote(instrumentName, pitch, durationSeconds, scheduledTime) {
-      // No longer needed - notes are pre-scheduled in initVisualization
-    }
+    // Draw scrolling notes
+    function drawNotes() {
+      if (!player || !player.getTimeline()) return;
 
-    function renderVisualization() {
-      if (!vizCtx || !vizCanvas) return;
-
-      var width = vizCanvas.width;
-      var height = vizCanvas.height;
-
-      // Current playback position in seconds
-      var currentSeconds = Tone.Transport.seconds;
-
-      // Window: show 1 second of past notes (left of playhead) and 3 seconds of future (right)
-      var pastWindow = 1.0;
-      var futureWindow = 3.0;
-      var windowDuration = pastWindow + futureWindow;
+      const timeline = player.getTimeline();
+      const currentTime = player.getPosition();
+      const width = noteCanvas.width / window.devicePixelRatio;
+      const height = noteCanvas.height / window.devicePixelRatio;
 
       // Clear canvas
-      vizCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      vizCtx.fillRect(0, 0, width, height);
+      noteCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      noteCtx.fillRect(0, 0, width, height);
 
-      if (instrumentLanes.length === 0) return;
+      // Draw track lanes
+      const trackHeight = height / trackList.length;
+      trackList.forEach(function(name, i) {
+        const y = i * trackHeight;
 
-      var laneHeight = height / instrumentLanes.length;
-      var labelWidth = 100;
-      var trackWidth = width - labelWidth;
+        // Lane separator
+        noteCtx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        noteCtx.fillRect(HIT_LINE_X, y, width - HIT_LINE_X, trackHeight);
 
-      // Draw lanes and labels
-      for (var i = 0; i < instrumentLanes.length; i++) {
-        var lane = instrumentLanes[i];
-        var y = i * laneHeight;
-
-        // Lane separator line
-        vizCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        vizCtx.beginPath();
-        vizCtx.moveTo(0, y);
-        vizCtx.lineTo(width, y);
-        vizCtx.stroke();
-
-        // Instrument label
-        vizCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        vizCtx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
-        vizCtx.textBaseline = 'middle';
-        vizCtx.fillText(lane.name, 10, y + laneHeight / 2);
-      }
-
-      // Draw playhead - positioned at pastWindow/windowDuration from left
-      // Notes hit the playhead when they reach currentSeconds
-      var playheadX = labelWidth + (pastWindow / windowDuration) * trackWidth;
-      vizCtx.strokeStyle = 'rgba(100, 255, 218, 0.9)';
-      vizCtx.lineWidth = 3;
-      vizCtx.beginPath();
-      vizCtx.moveTo(playheadX, 0);
-      vizCtx.lineTo(playheadX, height);
-      vizCtx.stroke();
-      vizCtx.lineWidth = 1;
-
-      // Draw notes for each instrument
-      for (var j = 0; j < instrumentLanes.length; j++) {
-        var lane = instrumentLanes[j];
-        var notes = scheduledNotes[lane.name] || [];
-        var y = j * laneHeight;
-        var noteHeight = laneHeight - 8;
-
-        // Draw each note
-        for (var k = 0; k < notes.length; k++) {
-          var note = notes[k];
-
-          // Calculate time relative to current playback position
-          // Positive = future (right of playhead), negative = past (left of playhead)
-          var relativeStart = note.startSeconds - currentSeconds;
-          var relativeEnd = note.endSeconds - currentSeconds;
-
-          // Skip notes outside visible window
-          if (relativeEnd < -pastWindow || relativeStart > futureWindow) continue;
-
-          // Convert time to x position
-          // At relativeTime = 0, x should be at playhead
-          // At relativeTime = -pastWindow, x should be at labelWidth (left edge)
-          // At relativeTime = futureWindow, x should be at width (right edge)
-          var x1 = labelWidth + ((relativeStart + pastWindow) / windowDuration) * trackWidth;
-          var x2 = labelWidth + ((relativeEnd + pastWindow) / windowDuration) * trackWidth;
-          var noteWidth = Math.max(x2 - x1, 4);
-
-          // Brightness based on whether note is currently playing or past
-          var isActive = currentSeconds >= note.startSeconds && currentSeconds <= note.endSeconds;
-          var isPast = currentSeconds > note.endSeconds;
-
-          // Past notes fade out quickly, future notes are dimmer, active notes are bright
-          var alpha;
-          if (isActive) {
-            alpha = 1.0;
-          } else if (isPast) {
-            // Fade out based on how long ago the note ended
-            var fadeTime = currentSeconds - note.endSeconds;
-            alpha = Math.max(0, 0.6 - fadeTime * 1.5);
-          } else {
-            // Future notes
-            alpha = 0.7;
-          }
-
-          if (alpha <= 0) continue;
-
-          // Draw note rectangle
-          vizCtx.fillStyle = lane.color;
-          vizCtx.globalAlpha = alpha;
-          vizCtx.fillRect(x1, y + 4, noteWidth, noteHeight);
-
-          // Add glow effect for active notes (flash when hit)
-          if (isActive) {
-            vizCtx.shadowColor = lane.color;
-            vizCtx.shadowBlur = 15;
-            vizCtx.fillRect(x1, y + 4, noteWidth, noteHeight);
-            vizCtx.shadowBlur = 0;
-          }
-          vizCtx.globalAlpha = 1.0;
+        if (i > 0) {
+          noteCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          noteCtx.beginPath();
+          noteCtx.moveTo(HIT_LINE_X, y);
+          noteCtx.lineTo(width, y);
+          noteCtx.stroke();
         }
-      }
+      });
 
-      // Continue animation if playing
-      if (isPlaying) {
-        vizAnimationId = requestAnimationFrame(renderVisualization);
-      }
-    }
+      // Draw hit line
+      noteCtx.strokeStyle = '#64ffda';
+      noteCtx.lineWidth = 2;
+      noteCtx.shadowColor = '#64ffda';
+      noteCtx.shadowBlur = 8;
+      noteCtx.beginPath();
+      noteCtx.moveTo(HIT_LINE_X, 0);
+      noteCtx.lineTo(HIT_LINE_X, height);
+      noteCtx.stroke();
+      noteCtx.shadowBlur = 0;
 
-    function startVisualization() {
-      if (vizAnimationId) cancelAnimationFrame(vizAnimationId);
-      vizAnimationId = requestAnimationFrame(renderVisualization);
-    }
+      // Get all note events from timeline
+      const allNotes = (timeline.events || []).filter(function(e) { return e.type === 'note'; });
 
-    function stopVisualization() {
-      if (vizAnimationId) {
-        cancelAnimationFrame(vizAnimationId);
-        vizAnimationId = null;
-      }
-    }
+      // Draw notes that are within the lookahead window
+      allNotes.forEach(function(note) {
+        const noteTime = note.timeSeconds;
+        const relativeTime = noteTime - currentTime;
 
-    function formatTime(seconds) {
-      var m = Math.floor(seconds / 60);
-      var s = Math.floor(seconds % 60);
-      return m + ':' + (s < 10 ? '0' : '') + s;
-    }
+        // Only show notes within lookahead window and slightly past
+        if (relativeTime < -0.1 || relativeTime > LOOKAHEAD_SECONDS) return;
 
-    function getCurrentSection(beat) {
-      if (!compiled) return '';
-      for (var i = 0; i < compiled.sections.length; i++) {
-        var sec = compiled.sections[i];
-        if (beat >= sec.startBeat && beat < sec.endBeat) {
-          return sec.name;
-        }
-      }
-      return '';
-    }
+        // Find track index
+        const trackIndex = trackList.indexOf(note.instrument);
+        if (trackIndex === -1) return;
 
-    function togglePlay() {
-      if (isPlaying) {
-        pause();
-      } else {
-        play();
-      }
-    }
+        // Calculate position
+        const progress = relativeTime / LOOKAHEAD_SECONDS;
+        const x = HIT_LINE_X + progress * (width - HIT_LINE_X);
+        const y = trackIndex * trackHeight + trackHeight / 2;
 
-    function setPlayButtonIcon(isPaused) {
-      var playBtn = document.getElementById('play-btn');
-      playBtn.textContent = '';
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('fill', 'currentColor');
-      if (isPaused) {
-        var poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        poly.setAttribute('points', '8,5 19,12 8,19');
-        svg.appendChild(poly);
-      } else {
-        var rect1 = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect1.setAttribute('x', '6');
-        rect1.setAttribute('y', '5');
-        rect1.setAttribute('width', '4');
-        rect1.setAttribute('height', '14');
-        var rect2 = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect2.setAttribute('x', '14');
-        rect2.setAttribute('y', '5');
-        rect2.setAttribute('width', '4');
-        rect2.setAttribute('height', '14');
-        svg.appendChild(rect1);
-        svg.appendChild(rect2);
-      }
-      playBtn.appendChild(svg);
-    }
+        // Note dimensions based on duration
+        const noteWidth = Math.max(4, Math.min(30, note.durationSeconds * 40));
+        const noteHeight = trackHeight * 0.6;
 
-    function play() {
-      if (isPlaying) return;
-      isPlaying = true;
+        // Get color for this track
+        const color = trackColors[note.instrument] || '#64ffda';
 
-      setPlayButtonIcon(false);
+        // Draw note
+        noteCtx.fillStyle = color;
+        noteCtx.globalAlpha = relativeTime < 0 ? 0.3 : 0.8;
+        noteCtx.beginPath();
+        noteCtx.roundRect(x - noteWidth / 2, y - noteHeight / 2, noteWidth, noteHeight, 3);
+        noteCtx.fill();
 
-      // Clear any previous events and reset
-      Tone.Transport.cancel();
-      Tone.Transport.stop();
-      Tone.Transport.position = 0;
-
-      // Set BPM FIRST - critical for correct timing
-      var bpm = score.settings.tempo;
-      Tone.Transport.bpm.value = bpm;
-
-      // Swing: Tone.js handles swing natively on 8th notes
-      var swingAmount = score.settings.swing || 0;
-      Tone.Transport.swing = swingAmount;
-      Tone.Transport.swingSubdivision = '8n';
-
-      // Calculate seconds per beat using standard MIDI formula
-      var secondsPerBeat = 60 / bpm;
-
-      // Schedule all events
-      for (var i = 0; i < compiled.events.length; i++) {
-        var event = compiled.events[i];
-        var inst = instruments[event.instrument];
-        // Allow drum patterns even if instrument doesn't exist
-        var isDrumHit = event.pitch && event.pitch.startsWith('drum:');
-        if (!inst && !isDrumHit) continue;
-
-        // v0.4: Apply probability - skip note if random roll fails
-        if (event.probability !== undefined && event.probability < 1.0) {
-          if (Math.random() > event.probability) {
-            continue; // Skip this note
-          }
+        // Glow effect for notes about to hit
+        if (relativeTime < 0.1 && relativeTime > -0.05) {
+          noteCtx.shadowColor = color;
+          noteCtx.shadowBlur = 12;
+          noteCtx.fill();
+          noteCtx.shadowBlur = 0;
         }
 
-        var startBeats = event.time;
-        var durationBeats = event.duration;
+        noteCtx.globalAlpha = 1;
+      });
 
-        // Apply humanization: timing jitter and velocity variation
-        var humanizeAmount = event.humanize || 0;
-        var humanizedVelocity = event.velocity;
-        if (humanizeAmount > 0) {
-          // Timing jitter: up to 0.05 beats at humanize=1.0
-          startBeats += (Math.random() - 0.5) * humanizeAmount * 0.1;
-          if (startBeats < 0) startBeats = 0;
-          // Velocity variation: ±15% at humanize=1.0
-          humanizedVelocity *= 1 + (Math.random() - 0.5) * humanizeAmount * 0.3;
-          humanizedVelocity = Math.max(0.1, Math.min(1.0, humanizedVelocity));
-        }
-
-        // Convert beats to seconds
-        var startSeconds = startBeats * secondsPerBeat;
-        var durationSeconds = durationBeats * secondsPerBeat;
-
-        // v0.4: Apply timing offset (convert ms to seconds)
-        if (event.timingOffset) {
-          startSeconds += event.timingOffset / 1000;
-          if (startSeconds < 0) startSeconds = 0;
-        }
-
-        (function(ev, instrument, start, dur, vel, instName) {
-          Tone.Transport.schedule(function(time) {
-            // Check if this is a drum pattern hit
-            if (ev.pitch && ev.pitch.startsWith('drum:')) {
-              // Parse drum:DRUMNAME@KIT format
-              var drumMatch = ev.pitch.match(/^drum:(\w+)@(\w+)$/);
-              if (drumMatch) {
-                var drumName = drumMatch[1];
-                var kitName = drumMatch[2];
-                var drumData = getDrumSynth(drumName, kitName);
-                if (drumData && drumData.synth) {
-                  // Hi-hat choke: closed hihat cuts off open hihat
-                  if (drumName === 'hihat') {
-                    var openHihat = getDrumSynth('hihat_open', kitName);
-                    if (openHihat && openHihat.synth && openHihat.synth.triggerRelease) {
-                      try { openHihat.synth.triggerRelease(time); } catch(e) {}
-                    }
-                  }
-                  // Use short duration for drums - let envelope control the sound
-                  var drumDur = Math.min(dur, 0.5);
-                  // Prevent rapid re-triggers that cause "start time must be greater" errors
-                  var minTimeBetweenTriggers = 0.01; // 10ms minimum
-                  var triggerTime = time;
-                  if (drumData.lastTriggerTime && time <= drumData.lastTriggerTime + minTimeBetweenTriggers) {
-                    triggerTime = drumData.lastTriggerTime + minTimeBetweenTriggers + 0.001;
-                  }
-                  drumData.lastTriggerTime = triggerTime;
-                  try {
-                    if (drumData.type === 'noise') {
-                      drumData.synth.triggerAttackRelease(drumDur, triggerTime, vel);
-                    } else if (drumData.type === 'membrane') {
-                      // For membrane drums, trigger with the stored pitch
-                      drumData.synth.triggerAttackRelease(drumData.pitch, drumDur, triggerTime, vel);
-                    } else if (drumData.type === 'metal') {
-                      drumData.synth.triggerAttackRelease(drumDur, triggerTime, vel);
-                    }
-                  } catch (e) {
-                    // Ignore timing errors from rapid re-triggers
-                    console.warn('Drum trigger skipped:', drumName, e.message);
-                  }
-                }
-              }
-            } else {
-              // Regular instrument
-              var type = synthTypes[instName] || 'pitched';
-
-              // v0.4: Apply portamento if enabled
-              if (ev.portamento && instrument.portamento !== undefined) {
-                instrument.portamento = 0.1; // 100ms glide time
-              } else if (instrument.portamento !== undefined) {
-                instrument.portamento = 0; // No glide
-              }
-
-              if (type === 'noise') {
-                instrument.triggerAttackRelease(dur, time, vel);
-              } else if (type === 'membrane') {
-                instrument.triggerAttackRelease('C2', dur, time, vel);
-              } else {
-                instrument.triggerAttackRelease(ev.pitch, dur, time, vel);
-              }
-            }
-            var el = document.querySelector('[data-instrument="' + instName + '"]');
-            if (el) {
-              el.classList.add('active');
-              setTimeout(function() { el.classList.remove('active'); }, 200);
-            }
-          }, start);
-        })(event, inst, startSeconds, durationSeconds, humanizedVelocity, event.instrument);
-      }
-
-      Tone.Transport.start('+0.1');
-      startVisualization();
-      updateProgress();
-    }
-
-    function pause() {
-      isPlaying = false;
-      Tone.Transport.pause();
-      setPlayButtonIcon(true);
-      stopVisualization();
-    }
-
-    function stop() {
-      isPlaying = false;
-      Tone.Transport.stop();
-      Tone.Transport.cancel();
-      setPlayButtonIcon(true);
-      stopVisualization();
-      // Re-render visualization at position 0 to show upcoming notes
-      if (vizCtx && vizCanvas) {
-        renderVisualization();
-      }
-      document.getElementById('progress-fill').style.width = '0%';
-      document.getElementById('current-time').textContent = '0:00';
-      document.getElementById('section').textContent = '';
-    }
-
-    function seek(e) {
-      var bar = document.getElementById('progress-bar');
-      var rect = bar.getBoundingClientRect();
-      var percent = (e.clientX - rect.left) / rect.width;
-      var totalSeconds = (compiled.totalBeats / score.settings.tempo) * 60;
-      Tone.Transport.seconds = percent * totalSeconds;
-    }
-
-    function updateProgress() {
-      if (!isPlaying) return;
-      var totalSeconds = (compiled.totalBeats / score.settings.tempo) * 60;
-      var currentSeconds = Tone.Transport.seconds;
-      var percent = (currentSeconds / totalSeconds) * 100;
-
-      document.getElementById('progress-fill').style.width = Math.min(percent, 100) + '%';
-      document.getElementById('current-time').textContent = formatTime(currentSeconds);
-
-      var currentBeat = (currentSeconds / 60) * score.settings.tempo;
-      document.getElementById('section').textContent = getCurrentSection(currentBeat);
-
-      if (currentSeconds < totalSeconds) {
-        requestAnimationFrame(updateProgress);
-      } else {
-        stop();
+      if (player.getState() === 'playing') {
+        animationId = requestAnimationFrame(drawNotes);
       }
     }
 
-    // Available songs list
-    var SONGS = [
-      { path: 'examples/techno-machine-state.etherscore.json', name: 'Machine State (Minimal Techno) - NEW' },
-      { path: 'examples/lofi-study.etherscore.json', name: 'Late Night Study (Lo-fi Hip Hop)' },
-      { path: 'examples/convergence.etherscore.json', name: 'Convergence (Minimalist Ambient)' },
-      { path: 'examples/drum-kit-demo.etherscore.json', name: 'Drum Kit Demo (v0.2 Feature)' },
-      { path: 'examples/euclidean-demo.etherscore.json', name: 'Euclidean Rhythms Demo (v0.2 Feature)' },
-      { path: 'examples/arpeggiator-demo.etherscore.json', name: 'Enhanced Arpeggiator Demo (v0.2 Feature)' },
-      { path: 'examples/llm-composition.etherscore.json', name: 'Reflections in Binary (Ambient)' },
-      { path: 'examples/reflections-reprise.etherscore.json', name: 'Reflections in Binary - Reprise (Ambient)' },
-      { path: 'examples/electronic-beat.etherscore.json', name: 'Digital Pulse (Electronic)' },
-      { path: 'examples/jazz-standard.etherscore.json', name: 'Late Night Jazz (Jazz)' },
-      { path: 'examples/ambient-journey.etherscore.json', name: 'Ambient Journey (Ambient)' },
-      { path: 'examples/fugue-d-minor.etherscore.json', name: 'Fugue in D Minor (Baroque)' },
-      { path: 'examples/house-midnight.etherscore.json', name: 'Midnight Protocol (House)' },
-      { path: 'examples/synthwave-neon.etherscore.json', name: 'Neon Drift (Synthwave)' },
-      { path: 'examples/boombap-dusty.etherscore.json', name: 'Dusty Crates (Boom Bap)' },
-      { path: 'examples/vaporwave-plaza.etherscore.json', name: 'Vaporwave Plaza (Vaporwave)' }
-    ];
+    // Start note animation
+    function startNoteAnimation() {
+      if (animationId) cancelAnimationFrame(animationId);
+      drawNotes();
+    }
 
-    var audioStarted = false;
-    var currentSongPath = '';
-
-    async function loadSong(songPath) {
-      // Stop any current playback
-      if (isPlaying) {
-        stop();
+    // Stop note animation
+    function stopNoteAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
       }
+      // Draw static frame
+      if (player) drawNotes();
+    }
 
-      // Dispose of old instruments
-      for (var key in instruments) {
-        if (instruments[key] && instruments[key].dispose) {
-          instruments[key].dispose();
-        }
-      }
-      instruments = {};
-
-      // Dispose old drum synths
-      disposeDrumSynths();
+    // Load and display a composition
+    async function loadComposition(path) {
+      // Determine which error element to use based on current UI state
+      const errorEl = playerUI.style.display === 'block' ? playerError : loadError;
 
       try {
-        var response = await fetch(songPath);
-        score = await response.json();
-        currentSongPath = songPath;
-      } catch (e) {
-        var player = document.getElementById('player');
-        player.textContent = '';
-        var errorDiv = document.createElement('div');
-        errorDiv.className = 'loading';
-        var errorP = document.createElement('p');
-        errorP.textContent = 'Error loading score. Make sure you are running from a local server.';
-        errorDiv.appendChild(errorP);
-        player.appendChild(errorDiv);
-        return;
-      }
+        // Hide any previous errors
+        loadError.style.display = 'none';
+        playerError.style.display = 'none';
 
-      compiled = compileScore(score);
+        console.log('Loading composition:', path);
 
-      // Set Transport BPM before creating instruments so effects with time-based
-      // parameters (like delay "8n") are calculated at the correct tempo
-      Tone.Transport.bpm.value = score.settings.tempo;
+        const response = await fetch(path);
+        if (!response.ok) throw new Error('Failed to load: ' + path);
 
-      // Pre-initialize drum kits used in this song
-      var kitsUsed = {};
-      if (score.patterns) {
-        for (var patName in score.patterns) {
-          var pat = score.patterns[patName];
-          if (pat.drums && pat.drums.kit) {
-            kitsUsed[pat.drums.kit] = true;
-          }
-          if (pat.euclidean && pat.euclidean.drum) {
-            kitsUsed['909'] = true; // Euclidean drums default to 909
-          }
+        const score = await response.json();
+        console.log('Score loaded, calling player.load...');
+
+        await player.load(score);
+        console.log('Player loaded successfully');
+
+        // Update UI with metadata
+        const meta = score.meta || {};
+        document.getElementById('song-title').textContent = meta.title || 'Untitled';
+        document.getElementById('song-composer').textContent = meta.composer ? 'by ' + meta.composer : '';
+        document.getElementById('song-tempo').textContent = score.settings.tempo + ' BPM';
+        document.getElementById('song-key').textContent = score.settings.key || '';
+        document.getElementById('song-duration').textContent = formatTime(player.getDuration());
+        document.getElementById('song-description').textContent = meta.description || '';
+        totalTimeEl.textContent = formatTime(player.getDuration());
+
+        // Build track labels and instrument chips
+        const instruments = player.getInstruments();
+        buildTrackLabels(instruments);
+
+        while (instrumentsEl.firstChild) {
+          instrumentsEl.removeChild(instrumentsEl.firstChild);
         }
-      }
-      // Always init 909 as default
-      kitsUsed['909'] = true;
-      for (var kit in kitsUsed) {
-        console.log('Pre-initializing drum kit:', kit);
-        initDrumKit(kit);
-      }
+        instruments.forEach(name => {
+          const chip = document.createElement('span');
+          chip.className = 'instrument';
+          chip.id = 'inst-' + name;
+          chip.textContent = name;
+          instrumentsEl.appendChild(chip);
+        });
 
-      instruments = createInstruments(score.instruments);
-      renderPlayerWithSelector();
+        // Reset progress
+        progressFill.style.width = '0%';
+        currentTimeEl.textContent = '0:00';
+        sectionDisplay.textContent = '';
+
+        // Sync both selectors
+        songSelect.value = path;
+        songSelectPlaying.value = path;
+
+        console.log('UI updated for:', meta.title);
+
+      } catch (error) {
+        console.error('Error loading composition:', error);
+        errorEl.textContent = 'Error: ' + error.message;
+        errorEl.style.display = 'block';
+      }
     }
 
-    function renderPlayerWithSelector() {
-      var player = document.getElementById('player');
-      var totalSeconds = (compiled.totalBeats / score.settings.tempo) * 60;
-      var instNames = Object.keys(score.instruments || {});
+    // Initialize player
+    async function initPlayer() {
+      player = EtherDAW.createPlayer();
 
-      // Clear and rebuild
-      player.textContent = '';
+      // Set up callbacks
+      player.setCallbacks({
+        onStateChange: function(state) {
+          updatePlayIcon(state);
+          if (state === 'playing') {
+            startNoteAnimation();
+          } else {
+            stopNoteAnimation();
+          }
+        },
+        onProgress: function(current, total) {
+          const percent = (current / total) * 100;
+          progressFill.style.width = percent + '%';
+          currentTimeEl.textContent = formatTime(current);
+        },
+        onSectionChange: function(section) {
+          sectionDisplay.textContent = section.replace(/_/g, ' ');
+        },
+        onInstrumentPlay: function(instrument) {
+          // Trigger meter activity
+          triggerTrackActivity(instrument);
 
-      // Song selector at the top
-      var selectorDiv = document.createElement('div');
-      selectorDiv.className = 'song-selector';
-      var selectorLabel = document.createElement('label');
-      selectorLabel.textContent = 'Now Playing';
-      selectorLabel.setAttribute('for', 'song-select-player');
-      var selector = document.createElement('select');
-      selector.id = 'song-select-player';
-      for (var s = 0; s < SONGS.length; s++) {
-        var opt = document.createElement('option');
-        opt.value = SONGS[s].path;
-        opt.textContent = SONGS[s].name;
-        if (SONGS[s].path === currentSongPath) {
-          opt.selected = true;
-        }
-        selector.appendChild(opt);
-      }
-      selector.addEventListener('change', function() {
-        loadSong(this.value);
+          // Also update instrument chips
+          const chip = document.getElementById('inst-' + instrument);
+          if (chip) {
+            chip.classList.add('active');
+            setTimeout(function() { chip.classList.remove('active'); }, 200);
+          }
+        },
+        onError: function(error) {
+          console.error('Player error:', error);
+          loadError.textContent = 'Error: ' + error.message;
+          loadError.style.display = 'block';
+        },
       });
-      selectorDiv.appendChild(selectorLabel);
-      selectorDiv.appendChild(selector);
-      player.appendChild(selectorDiv);
 
-      var title = document.createElement('div');
-      title.className = 'title';
-      title.textContent = (score.meta && score.meta.title) || 'Untitled';
-      player.appendChild(title);
+      // Load selected composition
+      await loadComposition(songSelect.value);
 
-      var composer = document.createElement('div');
-      composer.className = 'composer';
-      composer.textContent = (score.meta && score.meta.composer) || 'Unknown';
-      player.appendChild(composer);
+      // Set initial volume
+      updateVolume(parseInt(volumeSlider.value));
 
-      var meta = document.createElement('div');
-      meta.className = 'meta';
-      var tempoSpan = document.createElement('span');
-      tempoSpan.textContent = String.fromCharCode(9833) + ' ' + score.settings.tempo + ' BPM';
-      var keySpan = document.createElement('span');
-      keySpan.textContent = String.fromCharCode(127925) + ' ' + (score.settings.key || 'C major');
-      var timeSpan = document.createElement('span');
-      timeSpan.textContent = String.fromCharCode(9201) + ' ' + formatTime(totalSeconds);
-      meta.appendChild(tempoSpan);
-      meta.appendChild(keySpan);
-      meta.appendChild(timeSpan);
-      player.appendChild(meta);
+      // Show player UI
+      loadingEl.style.display = 'none';
+      playerUI.style.display = 'block';
 
-      var sectionDisplay = document.createElement('div');
-      sectionDisplay.className = 'section-display';
-      sectionDisplay.id = 'section';
-      player.appendChild(sectionDisplay);
-
-      // Visualization container
-      var vizContainer = document.createElement('div');
-      vizContainer.className = 'visualization';
-      vizContainer.id = 'visualization';
-      player.appendChild(vizContainer);
-
-      var progressContainer = document.createElement('div');
-      progressContainer.className = 'progress-container';
-      var progressBar = document.createElement('div');
-      progressBar.className = 'progress-bar';
-      progressBar.id = 'progress-bar';
-      var progressFill = document.createElement('div');
-      progressFill.className = 'progress-fill';
-      progressFill.id = 'progress-fill';
-      progressBar.appendChild(progressFill);
-      progressContainer.appendChild(progressBar);
-      var timeDisplay = document.createElement('div');
-      timeDisplay.className = 'time-display';
-      var currentTime = document.createElement('span');
-      currentTime.id = 'current-time';
-      currentTime.textContent = '0:00';
-      var totalTime = document.createElement('span');
-      totalTime.id = 'total-time';
-      totalTime.textContent = formatTime(totalSeconds);
-      timeDisplay.appendChild(currentTime);
-      timeDisplay.appendChild(totalTime);
-      progressContainer.appendChild(timeDisplay);
-      player.appendChild(progressContainer);
-
-      var controls = document.createElement('div');
-      controls.className = 'controls';
-
-      var stopBtn = document.createElement('button');
-      stopBtn.className = 'btn btn-secondary';
-      stopBtn.id = 'stop-btn';
-      var stopSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      stopSvg.setAttribute('viewBox', '0 0 24 24');
-      stopSvg.setAttribute('fill', 'currentColor');
-      var stopRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      stopRect.setAttribute('x', '6');
-      stopRect.setAttribute('y', '6');
-      stopRect.setAttribute('width', '12');
-      stopRect.setAttribute('height', '12');
-      stopSvg.appendChild(stopRect);
-      stopBtn.appendChild(stopSvg);
-      controls.appendChild(stopBtn);
-
-      var playBtn = document.createElement('button');
-      playBtn.className = 'btn btn-play';
-      playBtn.id = 'play-btn';
-      var playSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      playSvg.setAttribute('viewBox', '0 0 24 24');
-      playSvg.setAttribute('fill', 'currentColor');
-      var playPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      playPoly.setAttribute('points', '8,5 19,12 8,19');
-      playSvg.appendChild(playPoly);
-      playBtn.appendChild(playSvg);
-      controls.appendChild(playBtn);
-
-      // Export WAV button
-      var exportBtn = document.createElement('button');
-      exportBtn.className = 'btn btn-secondary btn-export';
-      exportBtn.id = 'export-btn';
-      exportBtn.style.flexDirection = 'column';
-      exportBtn.style.display = 'flex';
-      var exportSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      exportSvg.setAttribute('viewBox', '0 0 24 24');
-      exportSvg.setAttribute('fill', 'currentColor');
-      // Download icon
-      var exportPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      exportPath.setAttribute('d', 'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z');
-      exportSvg.appendChild(exportPath);
-      exportBtn.appendChild(exportSvg);
-      var exportText = document.createElement('span');
-      exportText.className = 'export-text';
-      exportText.id = 'export-text';
-      exportText.textContent = 'Export WAV';
-      exportBtn.appendChild(exportText);
-      controls.appendChild(exportBtn);
-
-      player.appendChild(controls);
-
-      var instrumentsDiv = document.createElement('div');
-      instrumentsDiv.className = 'instruments';
-      instrumentsDiv.id = 'instruments';
-      for (var i = 0; i < instNames.length; i++) {
-        var instDiv = document.createElement('div');
-        instDiv.className = 'instrument';
-        instDiv.setAttribute('data-instrument', instNames[i]);
-        instDiv.textContent = instNames[i];
-        instrumentsDiv.appendChild(instDiv);
-      }
-      player.appendChild(instrumentsDiv);
-
-      if (score.meta && score.meta.description) {
-        var desc = document.createElement('div');
-        desc.className = 'description';
-        desc.textContent = score.meta.description;
-        player.appendChild(desc);
-      }
-
-      playBtn.addEventListener('click', togglePlay);
-      stopBtn.addEventListener('click', stop);
-      progressBar.addEventListener('click', seek);
-      exportBtn.addEventListener('click', exportToWav);
-
-      // Initialize visualization after DOM is ready
-      initVisualization();
-      // Render once to show upcoming notes before play
-      renderVisualization();
+      // Resize canvas now that UI is visible
+      resizeNoteCanvas();
     }
 
-    // Initialize
-    document.getElementById('start-btn').addEventListener('click', async function() {
-      await Tone.start();
-      audioStarted = true;
+    // Create SVG path element safely
+    function createSvgPath(d, attrs) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      if (attrs) {
+        Object.entries(attrs).forEach(function(entry) {
+          path.setAttribute(entry[0], entry[1]);
+        });
+      }
+      return path;
+    }
 
-      var selectedSong = document.getElementById('song-select').value;
-      await loadSong(selectedSong);
+    // Create SVG line element safely
+    function createSvgLine(x1, y1, x2, y2, attrs) {
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', x1);
+      line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2);
+      line.setAttribute('y2', y2);
+      if (attrs) {
+        Object.entries(attrs).forEach(function(entry) {
+          line.setAttribute(entry[0], entry[1]);
+        });
+      }
+      return line;
+    }
+
+    // Update volume and icon
+    function updateVolume(value) {
+      if (!player) return;
+
+      volumeDisplay.textContent = value + '%';
+
+      // Convert percentage to linear (0-1)
+      const linear = value / 100;
+      player.setVolumeLinear(linear);
+
+      // Update icon based on volume level
+      updateVolumeIcon(value, player.isMuted());
+    }
+
+    // Update volume icon using safe DOM methods
+    function updateVolumeIcon(value, isMuted) {
+      // Clear existing icon content
+      while (volumeIcon.firstChild) {
+        volumeIcon.removeChild(volumeIcon.firstChild);
+      }
+
+      // Speaker base (always present)
+      volumeIcon.appendChild(createSvgPath('M11 5L6 9H2v6h4l5 4V5z'));
+
+      if (isMuted || value === 0) {
+        // Muted - X lines
+        volumeIcon.appendChild(createSvgLine(23, 9, 17, 15, { stroke: 'currentColor', 'stroke-width': '2' }));
+        volumeIcon.appendChild(createSvgLine(17, 9, 23, 15, { stroke: 'currentColor', 'stroke-width': '2' }));
+        muteBtn.classList.add('muted');
+      } else if (value < 50) {
+        // Low volume - one arc
+        volumeIcon.appendChild(createSvgPath('M15.54 8.46a5 5 0 0 1 0 7.07', { stroke: 'currentColor', 'stroke-width': '2', fill: 'none' }));
+        muteBtn.classList.remove('muted');
+      } else {
+        // High volume - two arcs
+        volumeIcon.appendChild(createSvgPath('M15.54 8.46a5 5 0 0 1 0 7.07', { stroke: 'currentColor', 'stroke-width': '2', fill: 'none' }));
+        volumeIcon.appendChild(createSvgPath('M19.07 4.93a10 10 0 0 1 0 14.14', { stroke: 'currentColor', 'stroke-width': '2', fill: 'none' }));
+        muteBtn.classList.remove('muted');
+      }
+    }
+
+    // Toggle mute
+    function toggleMute() {
+      if (!player) return;
+
+      const isMuted = player.isMuted();
+      if (isMuted) {
+        // Unmute - restore previous volume
+        player.setMuted(false);
+        volumeSlider.value = lastVolumeBeforeMute;
+        updateVolume(lastVolumeBeforeMute);
+      } else {
+        // Mute - save current volume
+        lastVolumeBeforeMute = parseInt(volumeSlider.value);
+        player.setMuted(true);
+        updateVolumeIcon(0, true);
+      }
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', initPlayer);
+
+    playBtn.addEventListener('click', function() {
+      if (!player) return;
+      const state = player.getState();
+      if (state === 'playing') {
+        player.pause();
+      } else {
+        player.play();
+      }
     });
 
-    // v0.45: Check for shared code availability
-    window.addEventListener('etherdaw-loaded', function() {
-      console.log('EtherDAW browser bundle loaded:', window.EtherDAW.VERSION);
-      console.log('Shared code available - run `npm run build:browser` after source changes');
+    stopBtn.addEventListener('click', function() {
+      if (player) player.stop();
     });
+
+    volumeSlider.addEventListener('input', function(e) {
+      updateVolume(parseInt(e.target.value));
+    });
+
+    muteBtn.addEventListener('click', toggleMute);
+
+    progressBar.addEventListener('click', function(e) {
+      if (!player) return;
+      const rect = progressBar.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      const seekTime = percent * player.getDuration();
+      player.seek(seekTime);
+    });
+
+    songSelectPlaying.addEventListener('change', async function(e) {
+      console.log('Song selector changed to:', e.target.value);
+      if (player) {
+        player.stop();
+        await loadComposition(e.target.value);
+      } else {
+        console.error('Player not initialized');
+      }
+    });
+
+    exportBtn.addEventListener('click', async function() {
+      if (!player) return;
+
+      exportBtn.disabled = true;
+      const originalText = exportBtn.querySelector('svg');
+
+      try {
+        // Show loading state
+        const loadingSpan = document.createElement('span');
+        loadingSpan.style.fontSize = '10px';
+        loadingSpan.textContent = 'Rendering...';
+        while (exportBtn.firstChild) exportBtn.removeChild(exportBtn.firstChild);
+        exportBtn.appendChild(loadingSpan);
+
+        const wavData = await player.renderToWav();
+        const blob = new Blob([wavData], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+
+        const score = player.getScore();
+        const filename = ((score && score.meta && score.meta.title) || 'composition').replace(/[^a-z0-9]/gi, '_') + '.wav';
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Export failed:', error);
+        alert('Export failed: ' + error.message);
+      } finally {
+        exportBtn.disabled = false;
+        // Restore export button
+        while (exportBtn.firstChild) exportBtn.removeChild(exportBtn.firstChild);
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+        svg.innerHTML = '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>';
+        exportBtn.appendChild(svg);
+      }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      resizeNoteCanvas();
+      if (player) drawNotes();
+    });
+
+    // Initialize song selector
+    populateSongSelectors();
   </script>
 </body>
 </html>

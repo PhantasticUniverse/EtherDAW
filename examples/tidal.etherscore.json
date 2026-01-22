@@ -1,0 +1,569 @@
+{
+  "meta": {
+    "title": "Tidal",
+    "composer": "Claude (Opus 4.5)",
+    "genre": "Ambient Electronic",
+    "mood": "Meditative, Cyclical, Expansive",
+    "description": "A meditation on cyclical motion - the pull of moon on water, patterns that phase and realign, textures that breathe. Extended form allowing ideas to develop slowly, like watching tides.",
+    "tags": ["ambient", "electronic", "meditative", "extended", "tidal", "phasing"]
+  },
+
+  "settings": {
+    "tempo": 62,
+    "key": "F minor",
+    "timeSignature": "4/4",
+    "swing": 0.08
+  },
+
+  "// INSTRUMENTS": "===================================================",
+
+  "instruments": {
+    "// Harmonic Foundation": "",
+    "deep_pad": {
+      "preset": "warm_pad",
+      "params": {
+        "brightness": 0.25,
+        "warmth": 0.85,
+        "attack": 0.9,
+        "release": 0.95
+      },
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } },
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 0.5 } }
+      ]
+    },
+
+    "shimmer_pad": {
+      "preset": "ambient_pad",
+      "params": {
+        "brightness": 0.6,
+        "warmth": 0.4,
+        "attack": 0.85,
+        "release": 0.9
+      },
+      "volume": -12,
+      "effects": [
+        { "type": "chorus", "wet": 0.4, "options": { "frequency": 0.3, "depth": 0.6 } },
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 8 } }
+      ]
+    },
+
+    "// Melodic Voices": "",
+    "tide_piano": {
+      "preset": "fm_epiano",
+      "params": {
+        "brightness": 0.4,
+        "warmth": 0.7,
+        "attack": 0.15,
+        "release": 0.7
+      },
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "wet": 0.25 },
+        { "type": "delay", "wet": 0.35, "options": { "time": "4n.", "feedback": 0.4 } },
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 4 } }
+      ]
+    },
+
+    "glass_bells": {
+      "preset": "fm_glass",
+      "params": {
+        "brightness": 0.55,
+        "warmth": 0.3,
+        "attack": 0.05,
+        "release": 0.8
+      },
+      "volume": -14,
+      "effects": [
+        { "type": "reverb", "wet": 0.65, "options": { "decay": 5 } },
+        { "type": "delay", "wet": 0.3, "options": { "time": "2n", "feedback": 0.35 } }
+      ]
+    },
+
+    "// Bass": "",
+    "tide_bass": {
+      "preset": "sub_bass",
+      "params": {
+        "warmth": 0.9,
+        "attack": 0.3,
+        "release": 0.6
+      },
+      "volume": -4,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 200, "type": "lowpass", "Q": 0.7 } },
+        { "type": "reverb", "wet": 0.15, "options": { "decay": 2 } }
+      ]
+    },
+
+    "// Rhythm": "",
+    "soft_drums": {
+      "preset": "drums:lofi",
+      "volume": -10,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 4000, "type": "lowpass" } },
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 3 } }
+      ]
+    }
+  },
+
+  "// PATTERNS": "=====================================================",
+
+  "patterns": {
+    "// Pad Patterns - The Harmonic Tide": "",
+
+    "pad_i": {
+      "chords": ["Fm9:w", "Fm9:w"]
+    },
+
+    "pad_iv_i": {
+      "chords": ["Bbm7:w", "Fm9:w"]
+    },
+
+    "pad_vi_v": {
+      "chords": ["Dbmaj7:w", "Cm7:w"]
+    },
+
+    "pad_progression_full": {
+      "chords": ["Fm9:w", "Dbmaj7:w", "Bbm7:w", "Cm7:w"]
+    },
+
+    "shimmer_high": {
+      "chords": ["Fm:w", "Fm:w"],
+      "constrainToScale": true
+    },
+
+    "shimmer_move": {
+      "chords": ["Dbmaj7:w", "Cm7:w"]
+    },
+
+    "// Melodic Fragments - Tide Piano": "",
+
+    "tide_motif_a": {
+      "notes": [
+        "r:h", "F4:q@0.5", "Ab4:q@0.55",
+        "C5:h.@0.6", "Bb4:q@0.5",
+        "Ab4:w@0.45"
+      ],
+      "envelope": { "velocity": "swell" }
+    },
+
+    "tide_motif_b": {
+      "notes": [
+        "Eb5:q@0.5", "Db5:q@0.55", "C5:h@0.6",
+        "r:q", "Ab4:q@0.5", "Bb4:h@0.55",
+        "C5:w@0.5"
+      ]
+    },
+
+    "tide_motif_c": {
+      "notes": [
+        "F5:h@0.55", "Eb5:q@0.5", "Db5:q@0.5",
+        "C5:h@0.55", "Bb4:h@0.5",
+        "Ab4:h@0.45", "r:h"
+      ]
+    },
+
+    "tide_deep": {
+      "notes": [
+        "F3:h@0.45", "Ab3:q@0.4", "C4:q@0.45",
+        "Bb3:h.@0.5", "Ab3:q@0.45",
+        "F3:w@0.4"
+      ],
+      "envelope": { "velocity": "diminuendo" }
+    },
+
+    "tide_rising": {
+      "notes": [
+        "C4:q@0.4", "Eb4:q@0.45", "F4:q@0.5", "Ab4:q@0.55",
+        "Bb4:h@0.6", "C5:h@0.65",
+        "Db5:q@0.7", "Eb5:q@0.7", "F5:h@0.65"
+      ],
+      "envelope": { "velocity": "crescendo" }
+    },
+
+    "// Glass Bell Accents": "",
+
+    "bells_sparse": {
+      "notes": [
+        "r:w",
+        "C6:q@0.35?0.6", "r:h.",
+        "r:w",
+        "Ab5:q@0.3?0.5", "r:h."
+      ]
+    },
+
+    "bells_answer": {
+      "notes": [
+        "F6:q@0.3?0.7", "r:h.",
+        "r:w",
+        "r:h", "Eb6:q@0.35?0.6", "r:q",
+        "r:w"
+      ]
+    },
+
+    "bells_full": {
+      "notes": [
+        "C6:q@0.4", "r:q", "Ab5:q@0.35", "r:q",
+        "F5:q@0.3", "r:q", "Eb5:q@0.35", "r:q",
+        "Db5:h@0.4", "r:h",
+        "r:w"
+      ]
+    },
+
+    "// Bass Patterns - The Undertow": "",
+
+    "bass_root": {
+      "notes": [
+        "F1:h", "r:q", "F1:q",
+        "r:h", "F1:h"
+      ]
+    },
+
+    "bass_move": {
+      "notes": [
+        "F1:h", "r:h",
+        "Db1:h", "r:q", "Db1:q",
+        "Bb0:h", "r:h",
+        "C1:h", "r:h"
+      ]
+    },
+
+    "bass_pulse": {
+      "notes": [
+        "F1:q", "r:8", "F1:8", "r:q", "F1:q",
+        "r:q", "F1:q", "r:h"
+      ]
+    },
+
+    "bass_breathing": {
+      "notes": [
+        "F1:w",
+        "r:h", "Ab1:h",
+        "Bb1:w",
+        "r:h", "C2:h"
+      ],
+      "envelope": { "velocity": "swell" }
+    },
+
+    "// Drum Patterns - Soft Pulse": "",
+
+    "drums_minimal": {
+      "drums": {
+        "kit": "lofi",
+        "lines": {
+          "kick":   "x.......x.......",
+          "shaker": "..x...x...x...x."
+        }
+      }
+    },
+
+    "drums_breathing": {
+      "drums": {
+        "kit": "lofi",
+        "lines": {
+          "kick":       "x.......x.....x.",
+          "rim":        "....x.......x...",
+          "shaker":     "..x...x...x...x.",
+          "hihat":      "x...x...x...x..."
+        }
+      }
+    },
+
+    "drums_full": {
+      "drums": {
+        "kit": "lofi",
+        "lines": {
+          "kick":       "x.......x.....x.",
+          "snare":      "....x.......x...",
+          "hihat":      "x.x.x.x.x.x.x.x.",
+          "hihat_open": "..............x.",
+          "shaker":     "..x...x...x...x."
+        }
+      }
+    },
+
+    "drums_receding": {
+      "drums": {
+        "kit": "lofi",
+        "lines": {
+          "kick":   "x...............x...............",
+          "shaker": "..x.....x.....x.....x.....x....."
+        }
+      }
+    },
+
+    "// Silence": "",
+    "rest_1bar": { "rest": "w" },
+    "rest_2bars": { "notes": ["r:w", "r:w"] },
+    "rest_4bars": { "notes": ["r:w", "r:w", "r:w", "r:w"] }
+  },
+
+  "// SECTIONS": "=====================================================",
+
+  "sections": {
+    "// Opening - Emergence from Silence": "",
+
+    "silence": {
+      "bars": 4,
+      "tracks": {
+        "deep_pad": { "pattern": "rest_4bars" }
+      }
+    },
+
+    "first_breath": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_i", "repeat": 4, "velocity": 0.4 }
+      },
+      "automation": {
+        "deep_pad.params.brightness": {
+          "start": 0.1,
+          "end": 0.3,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "awakening": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_i", "repeat": 4, "velocity": 0.5 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "// First Swell - Adding Layers": "",
+
+    "gathering": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_iv_i", "repeat": 4, "velocity": 0.55 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.55 },
+        "soft_drums": { "pattern": "drums_minimal", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "first_voice": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_iv_i", "repeat": 4, "velocity": 0.6 },
+        "tide_piano": { "pattern": "tide_motif_a", "repeat": 2, "velocity": 0.5 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.6 },
+        "soft_drums": { "pattern": "drums_minimal", "repeat": 4, "velocity": 0.45 }
+      }
+    },
+
+    "rising_tide": {
+      "bars": 16,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_progression_full", "repeat": 4, "velocity": 0.65 },
+        "shimmer_pad": { "pattern": "shimmer_high", "repeat": 8, "velocity": 0.35 },
+        "tide_piano": { "patterns": ["tide_motif_a", "tide_motif_b", "tide_motif_a", "tide_motif_b"], "velocity": 0.55 },
+        "glass_bells": { "pattern": "bells_sparse", "repeat": 4, "velocity": 0.3 },
+        "tide_bass": { "pattern": "bass_move", "repeat": 4, "velocity": 0.65 },
+        "soft_drums": { "pattern": "drums_breathing", "repeat": 8, "velocity": 0.5 }
+      },
+      "automation": {
+        "tide_piano.params.brightness": {
+          "start": 0.4,
+          "end": 0.6,
+          "curve": "linear"
+        },
+        "shimmer_pad.volume": {
+          "start": -16,
+          "end": -10,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "// Peak - Full Texture": "",
+
+    "high_tide": {
+      "bars": 16,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_progression_full", "repeat": 4, "velocity": 0.7 },
+        "shimmer_pad": { "pattern": "shimmer_move", "repeat": 8, "velocity": 0.45 },
+        "tide_piano": { "patterns": ["tide_rising", "tide_motif_c", "tide_motif_b", "tide_motif_c"], "velocity": 0.65 },
+        "glass_bells": { "patterns": ["bells_answer", "bells_sparse", "bells_full", "bells_answer"], "velocity": 0.4 },
+        "tide_bass": { "pattern": "bass_breathing", "repeat": 4, "velocity": 0.7 },
+        "soft_drums": { "pattern": "drums_full", "repeat": 8, "velocity": 0.55 }
+      },
+      "automation": {
+        "deep_pad.params.brightness": {
+          "start": 0.25,
+          "end": 0.45,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "sustained": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_vi_v", "repeat": 4, "velocity": 0.7 },
+        "shimmer_pad": { "pattern": "shimmer_high", "repeat": 4, "velocity": 0.5 },
+        "tide_piano": { "patterns": ["tide_motif_c", "tide_deep"], "velocity": 0.6 },
+        "glass_bells": { "pattern": "bells_full", "repeat": 2, "velocity": 0.45 },
+        "tide_bass": { "pattern": "bass_pulse", "repeat": 4, "velocity": 0.7 },
+        "soft_drums": { "pattern": "drums_full", "repeat": 4, "velocity": 0.55 }
+      }
+    },
+
+    "// Recession - Stripping Back": "",
+
+    "receding": {
+      "bars": 16,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_iv_i", "repeat": 8, "velocity": 0.6 },
+        "shimmer_pad": { "pattern": "shimmer_high", "repeat": 8, "velocity": 0.35 },
+        "tide_piano": { "patterns": ["tide_motif_a", "rest_2bars", "tide_deep", "rest_2bars"], "velocity": 0.5 },
+        "glass_bells": { "pattern": "bells_sparse", "repeat": 4, "velocity": 0.25 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.55 },
+        "soft_drums": { "pattern": "drums_receding", "repeat": 4, "velocity": 0.4 }
+      },
+      "automation": {
+        "tide_piano.params.brightness": {
+          "start": 0.6,
+          "end": 0.35,
+          "curve": "linear"
+        },
+        "deep_pad.params.warmth": {
+          "start": 0.85,
+          "end": 0.95,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "low_tide": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_i", "repeat": 4, "velocity": 0.5 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.45 },
+        "soft_drums": { "pattern": "drums_minimal", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "// Second Swell - Return, Transformed": "",
+
+    "second_gathering": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_vi_v", "repeat": 4, "velocity": 0.55 },
+        "shimmer_pad": { "pattern": "shimmer_move", "repeat": 4, "velocity": 0.3 },
+        "tide_piano": { "pattern": "tide_deep", "repeat": 2, "velocity": 0.45 },
+        "tide_bass": { "pattern": "bass_breathing", "repeat": 2, "velocity": 0.55 },
+        "soft_drums": { "pattern": "drums_breathing", "repeat": 4, "velocity": 0.45 }
+      }
+    },
+
+    "second_rising": {
+      "bars": 16,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_progression_full", "repeat": 4, "velocity": 0.65 },
+        "shimmer_pad": { "pattern": "shimmer_move", "repeat": 8, "velocity": 0.4 },
+        "tide_piano": { "patterns": ["tide_motif_b", "tide_rising", "tide_motif_c", "tide_motif_a"], "velocity": 0.6 },
+        "glass_bells": { "patterns": ["bells_answer", "bells_full", "bells_sparse", "bells_answer"], "velocity": 0.35 },
+        "tide_bass": { "pattern": "bass_move", "repeat": 4, "velocity": 0.65 },
+        "soft_drums": { "pattern": "drums_full", "repeat": 8, "velocity": 0.5 }
+      },
+      "automation": {
+        "shimmer_pad.params.brightness": {
+          "start": 0.5,
+          "end": 0.7,
+          "curve": "linear"
+        }
+      }
+    },
+
+    "second_peak": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_vi_v", "repeat": 4, "velocity": 0.7 },
+        "shimmer_pad": { "pattern": "shimmer_high", "repeat": 4, "velocity": 0.5 },
+        "tide_piano": { "patterns": ["tide_rising", "tide_motif_c"], "velocity": 0.65 },
+        "glass_bells": { "pattern": "bells_full", "repeat": 2, "velocity": 0.45 },
+        "tide_bass": { "pattern": "bass_pulse", "repeat": 4, "velocity": 0.7 },
+        "soft_drums": { "pattern": "drums_full", "repeat": 4, "velocity": 0.55 }
+      }
+    },
+
+    "// Resolution - Settling": "",
+
+    "settling": {
+      "bars": 16,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_iv_i", "repeat": 8, "velocity": 0.55 },
+        "shimmer_pad": { "pattern": "shimmer_high", "repeat": 8, "velocity": 0.3 },
+        "tide_piano": { "patterns": ["tide_motif_a", "tide_deep", "rest_2bars", "tide_deep"], "velocity": 0.45 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.5 },
+        "soft_drums": { "pattern": "drums_minimal", "repeat": 8, "velocity": 0.35 }
+      },
+      "automation": {
+        "tide_piano.params.brightness": {
+          "start": 0.5,
+          "end": 0.3,
+          "curve": "sine"
+        },
+        "soft_drums.volume": {
+          "start": -10,
+          "end": -18,
+          "curve": "linear"
+        }
+      }
+    },
+
+    "final_breath": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_i", "repeat": 4, "velocity": 0.45 },
+        "tide_bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.35 }
+      },
+      "automation": {
+        "deep_pad.params.brightness": {
+          "start": 0.3,
+          "end": 0.15,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "return_to_silence": {
+      "bars": 8,
+      "tracks": {
+        "deep_pad": { "pattern": "pad_i", "repeat": 4, "velocity": 0.3 }
+      },
+      "automation": {
+        "deep_pad.volume": {
+          "start": -8,
+          "end": -30,
+          "curve": "exponential"
+        }
+      }
+    }
+  },
+
+  "// ARRANGEMENT": "=================================================",
+  "// Total duration: approximately 11 minutes at 62 BPM": "",
+
+  "arrangement": [
+    "silence",
+    "first_breath",
+    "awakening",
+    "gathering",
+    "first_voice",
+    "rising_tide",
+    "high_tide",
+    "sustained",
+    "receding",
+    "low_tide",
+    "second_gathering",
+    "second_rising",
+    "second_peak",
+    "settling",
+    "final_breath",
+    "return_to_silence"
+  ]
+}

@@ -212,6 +212,48 @@ The simplest possible EtherScore:
 }
 ```
 
+### Customizing Sounds with Semantic Params (v0.5)
+
+Tweak presets using intuitive 0-1 scale parameters:
+
+```json
+{
+  "instruments": {
+    "lead": {
+      "preset": "fm_epiano",
+      "params": {
+        "brightness": 0.7,
+        "warmth": 0.5,
+        "attack": 0.2
+      }
+    }
+  }
+}
+```
+
+Available params: `brightness`, `warmth`, `richness`, `attack`, `decay`, `sustain`, `release`, `punch`
+
+### Multi-Line Drum Beats (v0.5)
+
+Write full beats visually:
+
+```json
+{
+  "patterns": {
+    "full_beat": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "hihat": "..x...x...x...x.",
+          "clap":  "....x.......x..."
+        }
+      }
+    }
+  }
+}
+```
+
 ### Using Arpeggios
 
 ```json
@@ -328,10 +370,20 @@ The simplest possible EtherScore:
 
 ## Playback
 
-Save your file with `.etherscore.json` extension and open it in the EtherDAW player (player.html).
+1. Save your file with `.etherscore.json` extension in the `examples/` directory
+2. Run `npm run build:all` to rebuild and update the manifest
+3. Open `player.html` in your browser
+4. Your composition appears in the dropdown automatically (v0.5 auto-discovery)
+
+**Quick testing:**
+```bash
+python3 -m http.server 8000
+# Open http://localhost:8000/player.html
+```
 
 ## Next Steps
 
+- [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) - Sound shaping with semantic params (v0.5)
 - [PRESETS.md](PRESETS.md) - Explore all available instruments
 - [PATTERNS.md](PATTERNS.md) - Learn advanced pattern syntax
 - [EFFECTS.md](EFFECTS.md) - Add effects to your sounds

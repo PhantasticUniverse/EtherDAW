@@ -1,9 +1,12 @@
-import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset } from '../schema/types.js';
+import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset, MarkovConfig, ContinuationConfig, VoiceLeadConfig } from '../schema/types.js';
 import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers } from './note-parser.js';
 import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
 import { snapToScale, parseKey } from '../theory/scales.js';
 import { invertPattern, retrogradePattern, augmentPattern, transposePattern, shiftOctave } from '../theory/transformations.js';
+import { generateMarkovPattern } from '../generative/markov.js';
+import { generateContinuation } from '../generative/continuation.js';
+import { generateVoiceLeading } from '../theory/voice-leading.js';
 import { DURATIONS, DOTTED_MULTIPLIER, VELOCITY_ENVELOPE, SCALE_INTERVALS, NOTE_VALUES, NOTE_NAMES, MIDI, ARPEGGIATOR, DRUM_SEQUENCER } from '../config/constants.js';
 
 export interface ExpandedPattern {
@@ -352,6 +355,42 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
     currentBeat += expanded.totalBeats;
   }
 
+  // Handle Markov chain patterns (v0.6)
+  if (resolvedPattern.markov) {
+    const expanded = expandMarkov(resolvedPattern.markov, context, velocity);
+    for (const note of expanded.notes) {
+      notes.push({
+        ...note,
+        startBeat: currentBeat + note.startBeat,
+      });
+    }
+    currentBeat += expanded.totalBeats;
+  }
+
+  // Handle melodic continuation (v0.6)
+  if (resolvedPattern.continuation && context.allPatterns) {
+    const expanded = expandContinuation(resolvedPattern.continuation, context, octaveOffset, transpose, velocity);
+    for (const note of expanded.notes) {
+      notes.push({
+        ...note,
+        startBeat: currentBeat + note.startBeat,
+      });
+    }
+    currentBeat += expanded.totalBeats;
+  }
+
+  // Handle voice leading (v0.6)
+  if (resolvedPattern.voiceLead) {
+    const expanded = expandVoiceLead(resolvedPattern.voiceLead, octaveOffset, transpose, velocity);
+    for (const note of expanded.notes) {
+      notes.push({
+        ...note,
+        startBeat: currentBeat + note.startBeat,
+      });
+    }
+    currentBeat += expanded.totalBeats;
+  }
+
   // Handle rest pattern
   if (resolvedPattern.rest) {
     currentBeat += parseRest(resolvedPattern.rest);
@@ -680,13 +719,54 @@ function parseDrumTime(timeStr: string): number {
 /**
  * Expand a drum pattern into notes
  * Drum notes use the format "drum:DRUMNAME" as pitch for identification
+ * v0.5: Supports multi-line step notation via `lines` property
  */
 export function expandDrumPattern(drums: DrumPattern, velocity: number): ExpandedPattern {
   const notes: ExpandedPattern['notes'] = [];
   const kit = drums.kit || '909';
   const stepDuration = parseDurationString(drums.stepDuration || DRUM_SEQUENCER.DEFAULT_STEP_DURATION);
 
-  // Handle step sequencer pattern
+  // v0.5: Handle multi-line step notation
+  // Format: { "kick": "x...x...", "hihat": "..x...x." }
+  if (drums.lines) {
+    let maxLength = 0;
+
+    for (const [drumName, pattern] of Object.entries(drums.lines)) {
+      if (typeof pattern !== 'string') continue;
+
+      for (let i = 0; i < pattern.length; i++) {
+        const char = pattern[i];
+        if (char === 'x' || char === 'X') {
+          notes.push({
+            pitch: `drum:${drumName}@${kit}`,
+            startBeat: i * stepDuration,
+            durationBeats: stepDuration,
+            velocity: velocity * DRUM_SEQUENCER.DEFAULT_VELOCITY,
+          });
+        } else if (char === '>') {
+          notes.push({
+            pitch: `drum:${drumName}@${kit}`,
+            startBeat: i * stepDuration,
+            durationBeats: stepDuration,
+            velocity: DRUM_SEQUENCER.ACCENT_VELOCITY,
+          });
+        }
+        // '.' is rest, skip
+      }
+
+      if (pattern.length > maxLength) {
+        maxLength = pattern.length;
+      }
+    }
+
+    // Calculate total beats from longest line, or use explicit bars if set
+    const totalBeats = drums.bars !== undefined
+      ? drums.bars * 4  // 4 beats per bar
+      : maxLength * stepDuration;
+    return { notes, totalBeats };
+  }
+
+  // Handle single-line step sequencer pattern (legacy, defaults to kick)
   if (drums.steps) {
     const pattern = drums.steps;
     for (let i = 0; i < pattern.length; i++) {
@@ -726,13 +806,20 @@ export function expandDrumPattern(drums: DrumPattern, velocity: number): Expande
   }
 
   // Calculate total beats
+  // Match old player.html behavior: use max of (last hit time + step) OR 4 beats (1 bar)
   let totalBeats = 0;
-  if (drums.steps) {
+
+  if (drums.bars !== undefined) {
+    // Explicit bar count takes precedence
+    totalBeats = drums.bars * 4; // 4 beats per bar (assumes 4/4)
+  } else if (drums.steps) {
+    // Steps: calculate from string length
     totalBeats = drums.steps.length * stepDuration;
-  }
-  if (drums.hits && drums.hits.length > 0) {
+  } else if (drums.hits && drums.hits.length > 0) {
+    // Hits: use max of (last hit time + step duration) OR 4 beats
+    // This matches the old player.html behavior and ensures proper looping
     const maxTime = Math.max(...drums.hits.map(h => parseDrumTime(h.time)));
-    totalBeats = Math.max(totalBeats, maxTime + stepDuration);
+    totalBeats = Math.max(maxTime + stepDuration, 4);
   }
 
   return {
@@ -788,4 +875,145 @@ export function expandEuclidean(
     notes,
     totalBeats: steps * durationBeats,
   };
+}
+
+// ============================================================================
+// Markov Chain Expansion (v0.6)
+// ============================================================================
+
+/**
+ * Expand a Markov chain configuration into notes
+ */
+function expandMarkov(
+  config: MarkovConfig,
+  context: PatternContext,
+  velocity: number
+): ExpandedPattern {
+  const key = context.key || 'C major';
+  const tempo = context.tempo;
+
+  const generatedNotes = generateMarkovPattern(config, { key, tempo });
+
+  const notes: ExpandedPattern['notes'] = generatedNotes.map(n => ({
+    pitch: n.pitch,
+    startBeat: n.startBeat,
+    durationBeats: n.durationBeats,
+    velocity: n.velocity * velocity,
+  }));
+
+  const totalBeats = generatedNotes.length > 0
+    ? Math.max(...generatedNotes.map(n => n.startBeat + n.durationBeats))
+    : 0;
+
+  return { notes, totalBeats };
+}
+
+// ============================================================================
+// Melodic Continuation Expansion (v0.6)
+// ============================================================================
+
+/**
+ * Expand a melodic continuation configuration into notes
+ */
+function expandContinuation(
+  config: ContinuationConfig,
+  context: PatternContext,
+  octaveOffset: number,
+  transpose: number,
+  velocity: number
+): ExpandedPattern {
+  // Get source pattern
+  const sourcePattern = context.allPatterns?.[config.source];
+  if (!sourcePattern || !sourcePattern.notes) {
+    console.warn(`Continuation source pattern "${config.source}" not found or has no notes`);
+    return { notes: [], totalBeats: 0 };
+  }
+
+  const sourceNotes = sourcePattern.notes;
+  const continuedNotes = generateContinuation(config, sourceNotes, context.key);
+
+  // Now expand the continued notes as a normal notes array
+  const notes: ExpandedPattern['notes'] = [];
+  let currentBeat = 0;
+
+  for (const noteStr of continuedNotes) {
+    if (isRest(noteStr)) {
+      currentBeat += parseRest(noteStr);
+    } else {
+      const parsed = parseNote(noteStr);
+      const adjustedOctave = parsed.octave + octaveOffset;
+      const adjustedPitch = applyTransposeInternal(`${parsed.noteName}${parsed.accidental}${adjustedOctave}`, transpose);
+
+      const articulationMods = getArticulationModifiers(parsed.articulation);
+      const noteVelocity = Math.min(1.0, velocity + articulationMods.velocityBoost);
+      const noteDuration = parsed.durationBeats * articulationMods.gate;
+
+      notes.push({
+        pitch: adjustedPitch,
+        startBeat: currentBeat,
+        durationBeats: noteDuration,
+        velocity: noteVelocity,
+      });
+
+      currentBeat += parsed.durationBeats;
+    }
+  }
+
+  return { notes, totalBeats: currentBeat };
+}
+
+/**
+ * Internal transpose helper for continuation
+ */
+function applyTransposeInternal(pitch: string, semitones: number): string {
+  if (semitones === 0) return pitch;
+
+  const match = pitch.match(/^([A-G][#b]?)(-?\d+)$/);
+  if (!match) return pitch;
+
+  const midi = noteNameToMidi(match[1], parseInt(match[2], 10));
+  return midiToPitchName(midi + semitones);
+}
+
+// ============================================================================
+// Voice Leading Expansion (v0.6)
+// ============================================================================
+
+/**
+ * Expand a voice leading configuration into notes
+ * Each chord becomes a simultaneous chord event with the voiced notes
+ */
+function expandVoiceLead(
+  config: VoiceLeadConfig,
+  octaveOffset: number,
+  transpose: number,
+  velocity: number
+): ExpandedPattern {
+  const result = generateVoiceLeading(config);
+  const notes: ExpandedPattern['notes'] = [];
+  let currentBeat = 0;
+
+  // Default to whole note duration for each chord
+  const chordDuration = 4; // 1 bar
+
+  for (const voicing of result.voicings) {
+    for (const pitch of voicing.notes) {
+      // Apply octave offset and transpose
+      const match = pitch.match(/^([A-G][#b]?)(-?\d+)$/);
+      if (!match) continue;
+
+      const adjustedOctave = parseInt(match[2], 10) + octaveOffset;
+      const adjustedPitch = applyTransposeInternal(`${match[1]}${adjustedOctave}`, transpose);
+
+      notes.push({
+        pitch: adjustedPitch,
+        startBeat: currentBeat,
+        durationBeats: chordDuration,
+        velocity,
+      });
+    }
+    currentBeat += chordDuration;
+  }
+
+  return { notes, totalBeats: currentBeat };
 }

@@ -26,7 +26,7 @@ export interface EtherScoreSettings {
 // Instruments & Effects
 // ============================================================================
 
-export type EffectType = 'reverb' | 'delay' | 'chorus' | 'distortion' | 'filter' | 'compressor' | 'eq';
+export type EffectType = 'reverb' | 'delay' | 'chorus' | 'distortion' | 'filter' | 'compressor' | 'eq' | 'phaser' | 'vibrato' | 'bitcrusher';
 
 export interface Effect {
   type: EffectType;
@@ -34,11 +34,66 @@ export interface Effect {
   options?: Record<string, unknown>;
 }
 
+/**
+ * Semantic synth parameters (v0.5)
+ * All values are 0-1 scale for LLM-friendly usage
+ */
+export interface SemanticSynthParams {
+  // Timbre
+  brightness?: number;  // 0=dark, 1=bright
+  warmth?: number;      // 0=cold/digital, 1=warm/analog
+  richness?: number;    // 0=thin, 1=thick
+
+  // Envelope (mapped to sensible time ranges)
+  attack?: number;      // 0=instant, 1=slow
+  decay?: number;       // 0=short, 1=long
+  sustain?: number;     // 0=none, 1=full
+  release?: number;     // 0=short, 1=long
+
+  // Character
+  punch?: number;       // 0=soft, 1=punchy
+  movement?: number;    // 0=static, 1=evolving
+  space?: number;       // 0=dry, 1=wet
+}
+
+/**
+ * Direct Tone.js parameter overrides (v0.5)
+ * For power users who need precise control
+ */
+export interface ToneJsOverrides {
+  oscillator?: { type?: 'sine' | 'triangle' | 'square' | 'sawtooth' };
+  envelope?: { attack?: number; decay?: number; sustain?: number; release?: number };
+  filterEnvelope?: {
+    attack?: number; decay?: number; sustain?: number; release?: number;
+    baseFrequency?: number; octaves?: number;
+  };
+  harmonicity?: number;
+  modulationIndex?: number;
+  modulationEnvelope?: { attack?: number; decay?: number; sustain?: number; release?: number };
+}
+
+/**
+ * Instrument definition (v0.5 - supports semantic params)
+ */
 export interface Instrument {
-  preset: string;
-  volume?: number;
-  pan?: number;
+  // Preset-based (recommended)
+  preset?: string;  // e.g., "fm_epiano", "warm_pad"
+
+  // Direct type (power users)
+  type?: 'synth' | 'monosynth' | 'fmsynth' | 'polysynth';
+
+  // Semantic parameters (LLM-friendly, 0-1 scale)
+  params?: SemanticSynthParams;
+
+  // Direct Tone.js overrides (power users)
+  overrides?: ToneJsOverrides;
+
+  // Audio chain
+  volume?: number;  // dB
+  pan?: number;     // -1 to 1
   effects?: Effect[];
+
+  // Legacy (deprecated, use params/overrides instead)
   options?: Record<string, unknown>;
 }
 
@@ -86,6 +141,10 @@ export interface DrumPattern {
   steps?: string;     // "x...x...x...x..." (x=hit, .=rest, >=accent)
   hits?: DrumHit[];   // Explicit hit list
   stepDuration?: string; // Duration per step for steps pattern (default: "16")
+  // NEW v0.5: Multi-line step notation for multiple drums in one pattern
+  lines?: Record<DrumName, string>;  // { "kick": "x...x...", "hihat": "..x...x." }
+  // NEW v0.5: Explicit pattern length in bars (default: 1 for hits, auto for steps/lines)
+  bars?: number;
 }
 
 // NEW v0.2: Euclidean rhythm config
@@ -112,6 +171,57 @@ export interface PatternTransform {
   };
 }
 
+// ============================================================================
+// NEW v0.6: Generative Primitives
+// ============================================================================
+
+/**
+ * Markov Chain Configuration (v0.6)
+ * Generate sequences based on probabilistic state transitions
+ */
+export interface MarkovConfig {
+  states: string[];                              // State names (scale degrees, pitches, or 'rest'/'approach')
+  transitions: Record<string, Record<string, number>>; // Probability matrix (each row sums to 1.0)
+  initialState?: string;                         // Starting state (default: first state)
+  steps: number;                                 // Number of notes to generate
+  duration: string | string[];                   // Note duration(s)
+  octave?: number;                               // Base octave for scale degrees (default: 3)
+  seed?: number;                                 // Random seed for reproducibility
+}
+
+/**
+ * Density Curve Configuration (v0.6)
+ * Control overall activity level across a section
+ */
+export interface DensityConfig {
+  start: number;                                 // Starting density 0.0-1.0
+  end: number;                                   // Ending density 0.0-1.0
+  curve?: 'linear' | 'exponential' | 'logarithmic' | 'sine'; // Interpolation curve (default: linear)
+}
+
+/**
+ * Melodic Continuation Configuration (v0.6)
+ * Generate melodic continuations from source motifs
+ */
+export interface ContinuationConfig {
+  source: string;                                // Pattern name to continue from
+  technique: 'ascending_sequence' | 'descending_sequence' | 'extension' | 'fragmentation' | 'development';
+  steps?: number;                                // Number of sequence repetitions
+  interval?: number;                             // Transposition per step (in scale degrees)
+}
+
+/**
+ * Voice Leading Constraint Configuration (v0.6)
+ * Generate voice-led chord progressions with constraints
+ */
+export interface VoiceLeadConfig {
+  progression: string[];                         // Chord symbols to voice
+  voices: number;                                // Number of voices (2-6)
+  constraints: string[];                         // Constraint names or 'custom'
+  voiceRanges?: Record<string, [string, string]>; // Voice name -> [low, high] pitch range
+  style?: 'bach' | 'jazz' | 'pop' | 'custom';   // Preset constraint set
+}
+
 // NEW v0.4: Velocity envelope types
 // Presets: 'crescendo', 'diminuendo', 'swell', 'accent_first', 'accent_downbeats'
 // Custom: array of velocity values [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -136,6 +246,10 @@ export interface Pattern {
   transform?: PatternTransform; // Generate from transforming another pattern
   // NEW v0.4
   envelope?: VelocityEnvelope; // Apply velocity curve across pattern's notes
+  // NEW v0.6: Generative primitives
+  markov?: MarkovConfig;       // Generate from Markov chain
+  continuation?: ContinuationConfig; // Generate melodic continuation
+  voiceLead?: VoiceLeadConfig; // Generate voice-led progression
 }
 
 // ============================================================================
@@ -145,12 +259,35 @@ export interface Pattern {
 export interface Track {
   pattern?: string;
   patterns?: string[];
+  // NEW v0.5: Parallel patterns play simultaneously (not sequentially)
+  parallel?: string[];
   velocity?: number;
   repeat?: number;
   humanize?: number;
   octave?: number;
   transpose?: number;
   mute?: boolean;
+  // NEW v0.5: Pattern probability - pattern plays with this probability (0-1)
+  probability?: number;
+  // NEW v0.5: Fallback pattern if probability check fails
+  fallback?: string;
+}
+
+// NEW v0.5: Automation curve types
+export type AutomationCurve = 'linear' | 'exponential' | 'sine' | 'step';
+
+// NEW v0.5: Automation point (for custom curves)
+export interface AutomationPoint {
+  time: number;    // 0-1 normalized time within section
+  value: number;
+}
+
+// NEW v0.5: Automation configuration
+export interface AutomationConfig {
+  start: number;
+  end: number;
+  curve?: AutomationCurve;  // Default: linear
+  points?: AutomationPoint[];  // Custom curve points (overrides start/end/curve)
 }
 
 export interface Section {
@@ -158,6 +295,14 @@ export interface Section {
   tracks: Record<string, Track>;
   tempo?: number;
   key?: string;
+  // NEW v0.5: Section-level automation
+  // Keys can be:
+  //   - "instrument.params.brightness" (semantic params)
+  //   - "instrument.filter.frequency" (effect params)
+  //   - "instrument.volume" (channel params)
+  automation?: Record<string, AutomationConfig>;
+  // NEW v0.6: Density curve - controls overall activity level
+  density?: DensityConfig;
 }
 
 // ============================================================================

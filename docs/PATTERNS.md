@@ -351,6 +351,42 @@ Quick pattern entry using characters:
 | `>` | Accent (louder) |
 | `o` | Ghost note (softer) |
 
+### Multi-Line Step Notation (v0.5)
+
+Write full drum beats visually with the `lines` property - each drum type on its own line:
+
+```json
+{
+  "drums": {
+    "kit": "909",
+    "lines": {
+      "kick":  "x...x...x...x...",
+      "hihat": "..x...x...x...x.",
+      "clap":  "....x.......x..."
+    }
+  }
+}
+```
+
+All lines must be the same length. Each line plays its drum on the same grid. This is cleaner than hit arrays for complex beats.
+
+**Example - 909 house beat:**
+```json
+{
+  "house_full": {
+    "drums": {
+      "kit": "909",
+      "lines": {
+        "kick":       "x...x...x...x...",
+        "clap":       "....x.......x...",
+        "hihat":      "..x...x...x...x.",
+        "hihat_open": "..............x."
+      }
+    }
+  }
+}
+```
+
 ### Hit Array
 Precise timing and velocity control:
 
@@ -728,6 +764,46 @@ Patterns are assigned to tracks in sections:
   }
 }
 ```
+
+### Parallel Patterns (v0.5)
+
+Use `parallel` when patterns should play simultaneously, not sequentially:
+
+```json
+{
+  "sections": {
+    "main": {
+      "bars": 4,
+      "tracks": {
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern", "clap_pattern"],
+          "velocity": 0.9
+        }
+      }
+    }
+  }
+}
+```
+
+This is essential for layered drum patterns where kick, hihat, and clap need to play at the same time. Without `parallel`, `patterns: ["a", "b", "c"]` would play a, then b, then c sequentially.
+
+### Pattern Probability (v0.5)
+
+Create variation with probability-based pattern selection:
+
+```json
+{
+  "tracks": {
+    "drums": {
+      "pattern": "fill_variation",
+      "probability": 0.3,
+      "fallback": "drums_main"
+    }
+  }
+}
+```
+
+The fill plays 30% of the time; otherwise, the main pattern plays. Great for generative variation without manually arranging different sections.
 
 ## See Also
 
