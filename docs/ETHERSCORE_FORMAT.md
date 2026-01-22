@@ -904,6 +904,18 @@ Keys starting with `//` are stripped during parsing. The value can be anything (
 }
 ```
 
+## Known Limitations
+
+Some musical expressions are not yet supported:
+
+| Limitation | Example | Workaround |
+|------------|---------|------------|
+| **Rests don't support modifiers** | `r:h?0.5` fails | Use plain rests: `r:h` |
+| **Combined chord qualities** | `B7sus4`, `Dm7b5#9` | Use simpler chords: `Bsus4`, `Dm7b5` |
+| **Compound time signatures** | `6/8`, `12/8` display | Use `4/4` with triplet feel via swing |
+
+These may be addressed in future versions.
+
 ## See Also
 
 - [PRESETS.md](PRESETS.md) - Available instrument presets
