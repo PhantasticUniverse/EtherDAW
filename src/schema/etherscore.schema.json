@@ -1,0 +1,365 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://etherdaw.io/etherscore.schema.json",
+  "title": "EtherScore",
+  "description": "A pattern-based, declarative music notation format designed for LLMs",
+  "type": "object",
+  "required": ["settings", "patterns", "sections", "arrangement"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "description": "Metadata about the composition",
+      "properties": {
+        "title": { "type": "string" },
+        "composer": { "type": "string" },
+        "mood": { "type": "string" },
+        "genre": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Global composition settings",
+      "required": ["tempo"],
+      "properties": {
+        "tempo": {
+          "type": "number",
+          "minimum": 20,
+          "maximum": 400,
+          "description": "Tempo in BPM"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^[A-G][#b]?\\s*(major|minor|maj|min|m|M|dorian|phrygian|lydian|mixolydian|aeolian|locrian)?$",
+          "description": "Key signature (e.g., 'C major', 'F# minor', 'Bb dorian')"
+        },
+        "timeSignature": {
+          "type": "string",
+          "pattern": "^[0-9]+/[0-9]+$",
+          "default": "4/4",
+          "description": "Time signature (e.g., '4/4', '3/4', '6/8')"
+        },
+        "swing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "description": "Swing amount (0 = straight, 1 = full triplet swing)"
+        }
+      }
+    },
+    "instruments": {
+      "type": "object",
+      "description": "Instrument definitions",
+      "additionalProperties": {
+        "$ref": "#/definitions/instrument"
+      }
+    },
+    "patterns": {
+      "type": "object",
+      "description": "Reusable musical patterns",
+      "additionalProperties": {
+        "$ref": "#/definitions/pattern"
+      }
+    },
+    "sections": {
+      "type": "object",
+      "description": "Named sections of the composition",
+      "additionalProperties": {
+        "$ref": "#/definitions/section"
+      }
+    },
+    "arrangement": {
+      "type": "array",
+      "description": "Order of sections in the final composition",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  },
+  "definitions": {
+    "instrument": {
+      "type": "object",
+      "required": ["preset"],
+      "properties": {
+        "preset": {
+          "type": "string",
+          "description": "Instrument preset name"
+        },
+        "volume": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 6,
+          "default": 0,
+          "description": "Volume in dB"
+        },
+        "pan": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0,
+          "description": "Stereo pan (-1 = left, 0 = center, 1 = right)"
+        },
+        "effects": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/effect" }
+        },
+        "options": {
+          "type": "object",
+          "description": "Preset-specific options"
+        }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["reverb", "delay", "chorus", "distortion", "filter", "compressor", "eq", "phaser", "vibrato", "bitcrusher"]
+        },
+        "wet": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5
+        },
+        "options": {
+          "type": "object",
+          "description": "Effect-specific parameters"
+        }
+      }
+    },
+    "pattern": {
+      "type": "object",
+      "description": "A reusable musical pattern",
+      "properties": {
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of notes in pitch:duration format (e.g., 'C4:q', 'Eb3:8')"
+        },
+        "chords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of chords in symbol:duration format (e.g., 'Cmaj7:w', 'Dm:h')"
+        },
+        "degrees": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "string" }
+            ]
+          },
+          "description": "Scale degrees (1-7) that resolve to notes based on key"
+        },
+        "arpeggio": {
+          "type": "object",
+          "required": ["chord", "duration"],
+          "properties": {
+            "chord": { "type": "string", "description": "Chord symbol (e.g., 'Am7', 'Cmaj9')" },
+            "duration": { "type": "string", "description": "Duration of each note (e.g., '16', '8', 'q')" },
+            "pattern": {
+              "type": "array",
+              "items": { "type": "integer" },
+              "description": "Explicit chord tone indices (1=root, 3=third, 5=fifth, etc.)"
+            },
+            "octaveSpan": { "type": "integer", "default": 1, "description": "Legacy: octaves to span" },
+            "mode": {
+              "type": "string",
+              "enum": ["up", "down", "updown", "downup", "random"],
+              "description": "Arpeggio direction mode"
+            },
+            "octaves": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4,
+              "default": 1,
+              "description": "Number of octaves to span"
+            },
+            "gate": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 1,
+              "default": 0.8,
+              "description": "Note length ratio (0.1-1.0)"
+            },
+            "steps": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Total number of steps to generate"
+            }
+          }
+        },
+        "drums": {
+          "type": "object",
+          "description": "Drum pattern with semantic drum names",
+          "properties": {
+            "kit": {
+              "type": "string",
+              "enum": ["808", "909", "acoustic", "lofi"],
+              "default": "909",
+              "description": "Drum kit preset"
+            },
+            "steps": {
+              "type": "string",
+              "pattern": "^[x.>]+$",
+              "description": "Step sequencer pattern (x=hit, .=rest, >=accent)"
+            },
+            "hits": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/drumHit" },
+              "description": "Explicit drum hit list"
+            },
+            "stepDuration": {
+              "type": "string",
+              "default": "16",
+              "description": "Duration per step for steps pattern"
+            }
+          }
+        },
+        "euclidean": {
+          "type": "object",
+          "required": ["hits", "steps", "duration"],
+          "description": "Euclidean rhythm generator",
+          "properties": {
+            "hits": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of pulses to distribute"
+            },
+            "steps": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Total number of steps"
+            },
+            "rotation": {
+              "type": "integer",
+              "default": 0,
+              "description": "Rotate pattern by N steps"
+            },
+            "duration": {
+              "type": "string",
+              "description": "Duration of each step (e.g., '16', '8')"
+            },
+            "pitch": {
+              "type": "string",
+              "description": "Pitch for melodic patterns (e.g., 'E2')"
+            },
+            "drum": {
+              "type": "string",
+              "enum": ["kick", "snare", "clap", "hihat", "hihat_open", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "rim", "cowbell", "shaker"],
+              "description": "Drum type for drum patterns"
+            }
+          }
+        },
+        "rhythm": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Rhythm pattern for degrees or arpeggios"
+        },
+        "rest": {
+          "type": "string",
+          "description": "A rest pattern (e.g., 'r:w' for whole rest)"
+        }
+      }
+    },
+    "drumHit": {
+      "type": "object",
+      "required": ["drum", "time"],
+      "properties": {
+        "drum": {
+          "type": "string",
+          "enum": ["kick", "snare", "clap", "hihat", "hihat_open", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "rim", "cowbell", "shaker"],
+          "description": "Drum type"
+        },
+        "time": {
+          "type": "string",
+          "description": "Time position (e.g., '0', 'q', 'h+8')"
+        },
+        "velocity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.8,
+          "description": "Hit velocity"
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "required": ["bars", "tracks"],
+      "properties": {
+        "bars": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of bars in this section"
+        },
+        "tracks": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/track"
+          }
+        },
+        "tempo": {
+          "type": "number",
+          "description": "Optional tempo override for this section"
+        },
+        "key": {
+          "type": "string",
+          "description": "Optional key override for this section"
+        }
+      }
+    },
+    "track": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "Reference to a named pattern"
+        },
+        "patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sequence of patterns to play"
+        },
+        "velocity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.8,
+          "description": "Note velocity (0-1)"
+        },
+        "repeat": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of times to repeat the pattern"
+        },
+        "humanize": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "description": "Amount of timing/velocity randomization"
+        },
+        "octave": {
+          "type": "integer",
+          "description": "Octave offset for all notes"
+        },
+        "transpose": {
+          "type": "integer",
+          "description": "Semitone transposition"
+        },
+        "mute": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}

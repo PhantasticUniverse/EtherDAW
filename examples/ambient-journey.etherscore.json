@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "title": "Ambient Journey",
+    "composer": "EtherDAW",
+    "mood": "ethereal",
+    "genre": "ambient",
+    "description": "A peaceful ambient piece exploring lush pads and gentle melodies"
+  },
+  "settings": {
+    "tempo": 68,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "pad": {
+      "preset": "ambient_pad",
+      "volume": -3,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 4 } },
+        { "type": "chorus", "wet": 0.3 }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -6
+    },
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -9,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n", "feedback": 0.3 } },
+        { "type": "reverb", "wet": 0.5 }
+      ]
+    },
+    "bells": {
+      "preset": "bell",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.8 }
+      ]
+    }
+  },
+  "patterns": {
+    "pad_intro": {
+      "chords": ["Dm:w", "Am:w"]
+    },
+    "pad_main": {
+      "chords": ["Dm:w", "Am:w", "Bb:w", "Gm:w"]
+    },
+    "pad_outro": {
+      "chords": ["Dm:w"]
+    },
+    "bass_pulse": {
+      "notes": ["D2:h", "r:q", "D2:q", "A1:h", "r:q", "A1:q"]
+    },
+    "bass_movement": {
+      "notes": ["D2:q", "F2:q", "A2:q", "D3:q", "A2:q", "F2:q", "D2:h"]
+    },
+    "lead_melody": {
+      "notes": [
+        "A4:h", "G4:q", "F4:q",
+        "E4:h.", "D4:q",
+        "F4:h", "E4:q", "D4:q",
+        "A3:w"
+      ]
+    },
+    "lead_variation": {
+      "notes": [
+        "D5:q", "C5:q", "A4:h",
+        "G4:h", "F4:h",
+        "E4:q", "D4:q", "E4:q", "F4:q",
+        "D4:w"
+      ]
+    },
+    "bells_shimmer": {
+      "notes": ["D6:8", "r:8", "A5:8", "r:8", "F5:8", "r:8", "D5:8", "r:8"]
+    },
+    "bells_accent": {
+      "notes": ["A5:q", "r:h.", "D6:q", "r:h."]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_intro", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+    "buildup": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_main", "repeat": 2, "velocity": 0.5 },
+        "bass": { "pattern": "bass_pulse", "velocity": 0.5, "humanize": 0.05 }
+      }
+    },
+    "main_a": {
+      "bars": 16,
+      "tracks": {
+        "pad": { "pattern": "pad_main", "repeat": 4, "velocity": 0.6 },
+        "bass": { "pattern": "bass_movement", "repeat": 4, "velocity": 0.65, "humanize": 0.1 },
+        "lead": { "pattern": "lead_melody", "repeat": 2, "velocity": 0.55, "humanize": 0.15 }
+      }
+    },
+    "main_b": {
+      "bars": 16,
+      "tracks": {
+        "pad": { "pattern": "pad_main", "repeat": 4, "velocity": 0.6 },
+        "bass": { "pattern": "bass_movement", "repeat": 4, "velocity": 0.65, "humanize": 0.1 },
+        "lead": { "pattern": "lead_variation", "repeat": 2, "velocity": 0.55, "humanize": 0.15 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 8, "velocity": 0.3, "octave": 0 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_intro", "repeat": 4, "velocity": 0.45 },
+        "bells": { "pattern": "bells_accent", "repeat": 4, "velocity": 0.25 }
+      }
+    },
+    "finale": {
+      "bars": 16,
+      "tracks": {
+        "pad": { "pattern": "pad_main", "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_movement", "repeat": 4, "velocity": 0.7, "humanize": 0.1 },
+        "lead": { "pattern": "lead_melody", "velocity": 0.6, "humanize": 0.1 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 8, "velocity": 0.35 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_outro", "repeat": 8, "velocity": 0.4 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "buildup",
+    "main_a",
+    "main_b",
+    "breakdown",
+    "finale",
+    "outro"
+  ]
+}

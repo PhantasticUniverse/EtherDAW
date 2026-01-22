@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "title": "Vaporwave Plaza",
+    "composer": "EtherDAW",
+    "mood": "nostalgic",
+    "genre": "vaporwave",
+    "description": "A dreamy vaporwave piece with lush electric piano, warm pads, and lo-fi textures"
+  },
+  "settings": {
+    "tempo": 78,
+    "key": "F major",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "vapor_keys": {
+      "preset": "electric_piano",
+      "volume": -3,
+      "pan": 0.1,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } },
+        { "type": "chorus", "wet": 0.5, "options": { "frequency": 0.3 } },
+        { "type": "phaser", "wet": 0.4, "options": { "frequency": 0.2, "octaves": 3, "baseFrequency": 350 } },
+        { "type": "filter", "options": { "frequency": 2500, "type": "lowpass" } }
+      ]
+    },
+    "vapor_pad": {
+      "preset": "warm_pad",
+      "volume": -6,
+      "pan": -0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 5 } },
+        { "type": "vibrato", "wet": 0.3, "options": { "frequency": 2, "depth": 0.08 } },
+        { "type": "filter", "options": { "frequency": 1800, "type": "lowpass" } },
+        { "type": "bitcrusher", "wet": 0.15, "options": { "bits": 12 } }
+      ]
+    },
+    "vapor_bass": {
+      "preset": "sub_bass",
+      "volume": -8,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 200, "type": "lowpass" } },
+        { "type": "bitcrusher", "wet": 0.1, "options": { "bits": 10 } }
+      ]
+    },
+    "vapor_bell": {
+      "preset": "fm_bell",
+      "volume": -15,
+      "pan": 0.25,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 4 } },
+        { "type": "phaser", "wet": 0.3, "options": { "frequency": 0.15 } }
+      ]
+    }
+  },
+  "patterns": {
+    "keys_main": {
+      "chords": ["Fmaj7:w", "Dm9:w", "Bbmaj7:w", "C9:w"]
+    },
+    "keys_intro": {
+      "chords": ["Fmaj7:w", "Dm9:w"]
+    },
+    "keys_variation": {
+      "chords": ["Dm9:w", "Gm7:w", "Cmaj7:w", "Fmaj7:w"]
+    },
+    "pad_sustain": {
+      "chords": ["Fmaj7:w", "Fmaj7:w", "Dm9:w", "Dm9:w"]
+    },
+    "pad_drift": {
+      "chords": ["Bbmaj7:w", "C9:w", "Fmaj7:w", "Dm9:w"]
+    },
+    "pad_outro": {
+      "chords": ["Fmaj7:w"]
+    },
+    "bass_pulse": {
+      "notes": ["F2:h", "r:h", "D2:h", "r:h"]
+    },
+    "bass_walk": {
+      "notes": ["F2:q", "r:q", "A2:q", "r:q", "D2:q", "r:q", "F2:q", "r:q"]
+    },
+    "bass_sparse": {
+      "notes": ["F2:w", "r:w", "D2:w", "r:w"]
+    },
+    "bell_shimmer": {
+      "notes": ["A5:8", "r:8", "C6:8", "r:8", "r:q", "F5:8", "r:8", "r:q"]
+    },
+    "bell_accent": {
+      "notes": ["r:h", "A5:q", "r:q", "r:h", "C6:q", "r:q"]
+    },
+    "bell_sparse": {
+      "notes": ["F6:q", "r:h.", "r:w", "A5:q", "r:h."]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "vapor_pad": { "pattern": "pad_sustain", "repeat": 2, "velocity": 0.35 }
+      }
+    },
+    "verse_a": {
+      "bars": 16,
+      "tracks": {
+        "vapor_keys": { "pattern": "keys_main", "repeat": 4, "velocity": 0.5, "humanize": 0.1 },
+        "vapor_pad": { "pattern": "pad_sustain", "repeat": 4, "velocity": 0.4 },
+        "vapor_bass": { "pattern": "bass_sparse", "repeat": 4, "velocity": 0.45 }
+      }
+    },
+    "chorus": {
+      "bars": 8,
+      "tracks": {
+        "vapor_keys": { "pattern": "keys_main", "repeat": 2, "velocity": 0.55, "humanize": 0.1 },
+        "vapor_pad": { "pattern": "pad_drift", "repeat": 2, "velocity": 0.5 },
+        "vapor_bass": { "pattern": "bass_walk", "repeat": 4, "velocity": 0.5 },
+        "vapor_bell": { "pattern": "bell_shimmer", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+    "verse_b": {
+      "bars": 16,
+      "tracks": {
+        "vapor_keys": { "pattern": "keys_variation", "repeat": 4, "velocity": 0.5, "humanize": 0.15 },
+        "vapor_pad": { "pattern": "pad_drift", "repeat": 4, "velocity": 0.45 },
+        "vapor_bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.45 },
+        "vapor_bell": { "pattern": "bell_accent", "repeat": 8, "velocity": 0.25 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "vapor_pad": { "pattern": "pad_sustain", "repeat": 2, "velocity": 0.5 },
+        "vapor_bell": { "pattern": "bell_sparse", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "vapor_keys": { "pattern": "keys_intro", "repeat": 4, "velocity": 0.4, "humanize": 0.1 },
+        "vapor_pad": { "pattern": "pad_outro", "repeat": 8, "velocity": 0.35 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "verse_a",
+    "chorus",
+    "verse_b",
+    "breakdown",
+    "outro"
+  ]
+}

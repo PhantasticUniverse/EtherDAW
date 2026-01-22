@@ -1,0 +1,807 @@
+{
+  "meta": {
+    "title": "Fugue in D Minor for Four Synthetic Voices",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "grave, dramatic",
+    "genre": "baroque counterpoint / electronic",
+    "description": "An extended 4-voice fugue demonstrating rigorous Baroque counterpoint realized through synthesized timbres. Features exposition, episodes, middle entries, stretto, and coda.",
+    "tags": ["fugue", "counterpoint", "baroque", "d-minor", "four-voice", "synthetic"]
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "soprano": {
+      "preset": "bell",
+      "volume": -6,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2.5 } },
+        { "type": "delay", "wet": 0.15, "options": { "time": "8n", "feedback": 0.2 } }
+      ]
+    },
+    "alto": {
+      "preset": "electric_piano",
+      "volume": -4,
+      "pan": -0.25,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2 } },
+        { "type": "chorus", "wet": 0.15, "options": { "frequency": 1.2, "depth": 0.5 } }
+      ]
+    },
+    "tenor": {
+      "preset": "soft_lead",
+      "volume": -5,
+      "pan": 0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.2 } }
+      ]
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -3,
+      "pan": 0.0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 600, "type": "lowpass", "Q": 1 } }
+      ]
+    }
+  },
+  "patterns": {
+    "_comment_primary": "=== PRIMARY THEMATIC MATERIAL (each 8 beats = 2 bars) ===",
+
+    "subject_d": {
+      "notes": [
+        "D4:q", "A4:q", "F4:8", "E4:8", "D4:q",
+        "C#4:8", "D4:8", "E4:q", "F4:8", "G4:8", "A4:q"
+      ]
+    },
+
+    "answer_a": {
+      "notes": [
+        "A4:q", "D5:q", "C5:8", "B4:8", "A4:q",
+        "G#4:8", "A4:8", "B4:q", "C5:8", "D5:8", "E5:q"
+      ]
+    },
+
+    "countersubject": {
+      "notes": [
+        "r:8", "A3:8", "B3:8", "C4:8", "D4:q", "E4:8", "D4:8",
+        "C4:q", "B3:8", "A3:8", "G3:8", "F3:8", "E3:q"
+      ]
+    },
+
+    "countersubject_high": {
+      "notes": [
+        "r:8", "A4:8", "B4:8", "C5:8", "D5:q", "E5:8", "D5:8",
+        "C5:q", "B4:8", "A4:8", "G4:8", "F4:8", "E4:q"
+      ]
+    },
+
+    "_comment_exposition": "=== EXPOSITION MATERIAL (Bars 1-17) ===",
+
+    "subject_soprano": {
+      "notes": [
+        "D5:q", "A5:q", "F5:8", "E5:8", "D5:q",
+        "C#5:8", "D5:8", "E5:q", "F5:8", "G5:8", "A5:q"
+      ]
+    },
+
+    "answer_alto": {
+      "notes": [
+        "A4:q", "D5:q", "C5:8", "B4:8", "A4:q",
+        "G#4:8", "A4:8", "B4:q", "C5:8", "D5:8", "E5:q"
+      ]
+    },
+
+    "subject_tenor": {
+      "notes": [
+        "D4:q", "A4:q", "F4:8", "E4:8", "D4:q",
+        "C#4:8", "D4:8", "E4:q", "F4:8", "G4:8", "A4:q"
+      ]
+    },
+
+    "answer_bass": {
+      "notes": [
+        "A2:q", "D3:q", "C3:8", "B2:8", "A2:q",
+        "G#2:8", "A2:8", "B2:q", "C3:8", "D3:8", "E3:q"
+      ]
+    },
+
+    "cs_alto_bars34": {
+      "notes": [
+        "r:8", "E4:8", "F4:8", "G4:8", "A4:q", "B4:8", "A4:8",
+        "G4:q", "F4:8", "E4:8", "D4:8", "C4:8", "B3:q"
+      ]
+    },
+
+    "cs_soprano_bars56": {
+      "notes": [
+        "r:8", "A5:8", "B5:8", "C6:8", "D6:q", "E6:8", "D6:8",
+        "C6:q", "B5:8", "A5:8", "G5:8", "F5:8", "E5:q"
+      ]
+    },
+
+    "cs_alto_bars56": {
+      "notes": [
+        "r:8", "E4:8", "F4:8", "G4:8", "A4:q", "B4:8", "A4:8",
+        "G4:q", "F4:8", "E4:8", "D4:8", "C4:8", "B3:q"
+      ]
+    },
+
+    "free_cp_soprano_bars34": {
+      "notes": [
+        "E5:h", "D5:q", "C#5:q",
+        "D5:h", "E5:h"
+      ]
+    },
+
+    "free_cp_soprano_bars78": {
+      "notes": [
+        "F5:q", "E5:q", "D5:q", "C#5:q",
+        "D5:h.", "r:q"
+      ]
+    },
+
+    "free_cp_alto_bars78": {
+      "notes": [
+        "A4:q", "G4:8", "F4:8", "E4:q", "D4:q",
+        "C#4:q", "D4:q", "E4:h"
+      ]
+    },
+
+    "free_cp_tenor_bars78": {
+      "notes": [
+        "D4:h", "A3:h",
+        "Bb3:q", "A3:q", "G3:h"
+      ]
+    },
+
+    "codetta_soprano": {
+      "notes": [
+        "D5:q", "E5:8", "F5:8", "G5:q", "F5:q",
+        "E5:h", "D5:h",
+        "C#5:q", "D5:q", "E5:h",
+        "F5:w"
+      ]
+    },
+
+    "codetta_alto": {
+      "notes": [
+        "A4:h", "Bb4:h",
+        "A4:q", "G4:q", "F4:h",
+        "E4:h", "A4:h",
+        "A4:w"
+      ]
+    },
+
+    "codetta_tenor": {
+      "notes": [
+        "F4:h", "E4:q", "D4:q",
+        "C4:h", "D4:h",
+        "A3:h", "C#4:h",
+        "D4:w"
+      ]
+    },
+
+    "codetta_bass": {
+      "notes": [
+        "D3:h", "G3:h",
+        "A3:h", "Bb3:h",
+        "A3:h", "A2:h",
+        "D3:w"
+      ]
+    },
+
+    "bridge_soprano": {
+      "notes": [
+        "A5:q", "G5:q", "F5:q", "E5:q",
+        "D5:h", "C5:h",
+        "Bb4:q", "A4:q", "G4:q", "F4:q",
+        "E4:h", "F4:h",
+        "G4:w"
+      ]
+    },
+
+    "bridge_alto": {
+      "notes": [
+        "F5:h", "D5:h",
+        "A4:h", "G4:h",
+        "F4:h", "E4:h",
+        "D4:q", "C4:q", "Bb3:h",
+        "C4:w"
+      ]
+    },
+
+    "bridge_tenor": {
+      "notes": [
+        "D4:h", "A3:h",
+        "F3:q", "G3:q", "A3:h",
+        "D4:h", "C4:h",
+        "Bb3:h", "G3:h",
+        "E3:w"
+      ]
+    },
+
+    "bridge_bass": {
+      "notes": [
+        "D3:h", "D3:h",
+        "D3:q", "E3:q", "F3:h",
+        "Bb2:h", "C3:h",
+        "D3:h", "E3:h",
+        "C3:w"
+      ]
+    },
+
+    "_comment_episode1": "=== EPISODE 1: Modulation to F Major (8 bars = 32 beats) ===",
+
+    "ep1_sequence_soprano": {
+      "notes": [
+        "F5:q", "C6:q", "A5:8", "G5:8", "F5:q",
+        "E5:q", "Bb5:q", "G5:8", "F5:8", "E5:q",
+        "D5:q", "A5:q", "F5:8", "E5:8", "D5:q",
+        "C5:q", "G5:q", "E5:8", "D5:8", "C5:q",
+        "D5:h", "E5:h",
+        "F5:w",
+        "G5:h", "A5:h",
+        "Bb5:h", "A5:h"
+      ]
+    },
+
+    "ep1_sequence_alto": {
+      "notes": [
+        "A4:h", "C5:h",
+        "G4:h", "Bb4:h",
+        "F4:h", "A4:h",
+        "E4:h", "G4:h",
+        "F4:h", "G4:h",
+        "A4:w",
+        "Bb4:h", "C5:h",
+        "D5:h", "C5:h"
+      ]
+    },
+
+    "ep1_bass_rising": {
+      "notes": [
+        "D3:h", "E3:h",
+        "F3:h", "G3:h",
+        "A3:h", "Bb3:h",
+        "C4:h", "Bb3:h",
+        "A3:h", "G3:h",
+        "F3:w",
+        "E3:h", "F3:h",
+        "G3:h", "F3:h"
+      ]
+    },
+
+    "ep1_tenor": {
+      "notes": [
+        "F4:q", "E4:q", "D4:h",
+        "E4:q", "D4:q", "C4:h",
+        "D4:q", "C4:q", "Bb3:h",
+        "C4:q", "Bb3:q", "A3:h",
+        "Bb3:h", "C4:h",
+        "C4:w",
+        "C4:h", "C4:h",
+        "Bb3:h", "A3:h"
+      ]
+    },
+
+    "_comment_middle1": "=== MIDDLE ENTRIES I: F Major (8 bars) ===",
+
+    "subject_f_alto": {
+      "notes": [
+        "F4:q", "C5:q", "A4:8", "G4:8", "F4:q",
+        "E4:8", "F4:8", "G4:q", "A4:8", "Bb4:8", "C5:q"
+      ]
+    },
+
+    "cs_f_soprano": {
+      "notes": [
+        "r:8", "C5:8", "D5:8", "E5:8", "F5:q", "G5:8", "F5:8",
+        "E5:q", "D5:8", "C5:8", "Bb4:8", "A4:8", "G4:q"
+      ]
+    },
+
+    "free_f_tenor": {
+      "notes": [
+        "A3:h", "G3:h",
+        "A3:q", "Bb3:q", "C4:h"
+      ]
+    },
+
+    "free_f_bass": {
+      "notes": [
+        "F3:h", "E3:h",
+        "F3:h", "C3:h"
+      ]
+    },
+
+    "middle1_soprano_34": {
+      "notes": [
+        "A5:q", "G5:q", "F5:h",
+        "G5:q", "F5:q", "E5:h",
+        "F5:h", "G5:h",
+        "A5:w"
+      ]
+    },
+
+    "middle1_alto_34": {
+      "notes": [
+        "C5:h", "D5:h",
+        "E5:q", "D5:q", "C5:h",
+        "D5:h", "E5:h",
+        "F5:w"
+      ]
+    },
+
+    "middle1_tenor_34": {
+      "notes": [
+        "F4:h", "Bb3:h",
+        "C4:h", "G3:h",
+        "A3:h", "C4:h",
+        "C4:w"
+      ]
+    },
+
+    "middle1_bass_34": {
+      "notes": [
+        "F3:h", "G3:h",
+        "A3:h", "Bb3:h",
+        "A3:h", "G3:h",
+        "F3:w"
+      ]
+    },
+
+    "_comment_episode2": "=== EPISODE 2: Modulation to G Minor (8 bars = 32 beats) ===",
+
+    "ep2_inversion_soprano": {
+      "notes": [
+        "D5:q", "G4:q", "Bb4:8", "C5:8", "D5:q",
+        "Eb5:8", "D5:8", "C5:q", "Bb4:8", "A4:8", "G4:q",
+        "A4:q", "Bb4:q", "C5:h",
+        "D5:h", "Eb5:h",
+        "D5:q", "C5:q", "Bb4:h",
+        "A4:h", "G4:h",
+        "F#4:h", "G4:h",
+        "A4:w"
+      ]
+    },
+
+    "ep2_alto": {
+      "notes": [
+        "Bb4:h", "G4:h",
+        "C5:h", "Bb4:h",
+        "F4:h", "G4:h",
+        "A4:h", "Bb4:h",
+        "A4:h", "G4:h",
+        "F4:h", "Eb4:h",
+        "D4:h", "D4:h",
+        "D4:w"
+      ]
+    },
+
+    "ep2_tenor": {
+      "notes": [
+        "G4:h", "D4:h",
+        "Eb4:h", "D4:h",
+        "C4:h", "Bb3:h",
+        "A3:h", "G3:h",
+        "F#3:h", "G3:h",
+        "A3:h", "Bb3:h",
+        "A3:h", "Bb3:h",
+        "F#3:w"
+      ]
+    },
+
+    "ep2_bass": {
+      "notes": [
+        "G3:h", "G3:h",
+        "G3:h", "G3:h",
+        "F3:h", "Eb3:h",
+        "D3:h", "C3:h",
+        "D3:h", "Eb3:h",
+        "D3:h", "C3:h",
+        "D3:w",
+        "D3:w"
+      ]
+    },
+
+    "_comment_middle2": "=== MIDDLE ENTRIES II: G Minor (8 bars) ===",
+
+    "subject_g_soprano": {
+      "notes": [
+        "G5:q", "D6:q", "Bb5:8", "A5:8", "G5:q",
+        "F#5:8", "G5:8", "A5:q", "Bb5:8", "C6:8", "D6:q"
+      ]
+    },
+
+    "cs_g_alto": {
+      "notes": [
+        "r:8", "D5:8", "Eb5:8", "F5:8", "G5:q", "A5:8", "G5:8",
+        "F5:q", "Eb5:8", "D5:8", "C5:8", "Bb4:8", "A4:q"
+      ]
+    },
+
+    "free_g_tenor": {
+      "notes": [
+        "Bb4:h", "A4:h",
+        "Bb4:q", "C5:q", "D5:h"
+      ]
+    },
+
+    "free_g_bass": {
+      "notes": [
+        "G3:h", "F#3:h",
+        "G3:h", "D3:h"
+      ]
+    },
+
+    "middle2_soprano_34": {
+      "notes": [
+        "C6:q", "Bb5:q", "A5:h",
+        "Bb5:q", "A5:q", "G5:h",
+        "A5:h", "Bb5:h",
+        "A5:w"
+      ]
+    },
+
+    "middle2_alto_34": {
+      "notes": [
+        "G5:h", "F5:h",
+        "Eb5:h", "D5:h",
+        "C5:h", "D5:h",
+        "D5:w"
+      ]
+    },
+
+    "middle2_tenor_34": {
+      "notes": [
+        "Eb4:h", "D4:h",
+        "C4:h", "Bb3:h",
+        "A3:h", "G3:h",
+        "F#3:w"
+      ]
+    },
+
+    "middle2_bass_34": {
+      "notes": [
+        "C3:h", "D3:h",
+        "Eb3:h", "G3:h",
+        "F#3:h", "G3:h",
+        "D3:w"
+      ]
+    },
+
+    "_comment_stretto": "=== STRETTO: Return to D Minor (8 bars) ===",
+
+    "stretto_bass_entry": {
+      "notes": [
+        "D3:q", "A3:q", "F3:8", "E3:8", "D3:q",
+        "C#3:8", "D3:8", "E3:q", "F3:8", "G3:8", "A3:q"
+      ]
+    },
+
+    "stretto_tenor_entry": {
+      "notes": [
+        "r:w",
+        "A3:q", "D4:q", "C4:8", "B3:8", "A3:q",
+        "G#3:8", "A3:8", "B3:q", "C4:8", "D4:8", "E4:q"
+      ]
+    },
+
+    "stretto_alto_entry": {
+      "notes": [
+        "r:w",
+        "r:w",
+        "D4:q", "A4:q", "F4:8", "E4:8", "D4:q",
+        "C#4:8", "D4:8", "E4:q", "F4:8", "G4:8", "A4:q"
+      ]
+    },
+
+    "stretto_soprano_entry": {
+      "notes": [
+        "r:w",
+        "r:w",
+        "r:w",
+        "A4:q", "D5:q", "C5:8", "B4:8", "A4:q",
+        "G#4:8", "A4:8", "B4:q", "C5:8", "D5:8", "E5:q"
+      ]
+    },
+
+    "stretto_continuation_bass": {
+      "notes": [
+        "G3:h", "F3:h",
+        "E3:h", "D3:h",
+        "C#3:h", "D3:h",
+        "A2:w"
+      ]
+    },
+
+    "stretto_continuation_tenor": {
+      "notes": [
+        "D4:h", "C4:h",
+        "B3:h", "A3:h",
+        "G3:h", "F3:h",
+        "E3:w"
+      ]
+    },
+
+    "stretto_continuation_alto": {
+      "notes": [
+        "A4:h", "G4:h",
+        "F4:h", "E4:h",
+        "D4:q", "E4:q", "F4:h",
+        "E4:w"
+      ]
+    },
+
+    "stretto_continuation_soprano": {
+      "notes": [
+        "F5:q", "E5:q", "D5:h",
+        "C#5:h", "D5:h",
+        "E5:h", "F5:h",
+        "E5:w"
+      ]
+    },
+
+    "_comment_coda": "=== CODA (5 bars = 20 beats) ===",
+
+    "coda_bass_augmented": {
+      "notes": [
+        "D3:h", "A3:h",
+        "F3:q", "E3:q", "D3:h",
+        "C#3:q", "D3:q", "E3:h",
+        "F3:h", "G3:h",
+        "D3:w"
+      ]
+    },
+
+    "coda_tenor": {
+      "notes": [
+        "F3:h", "E3:h",
+        "D3:h", "A3:h",
+        "A3:h", "G3:h",
+        "A3:h", "Bb3:h",
+        "A3:w"
+      ]
+    },
+
+    "coda_alto": {
+      "notes": [
+        "A4:h", "A4:h",
+        "A4:h", "F4:h",
+        "E4:h", "E4:h",
+        "D4:h", "D4:h",
+        "F#4:w"
+      ]
+    },
+
+    "coda_soprano": {
+      "notes": [
+        "D5:h", "C#5:h",
+        "D5:h", "D5:h",
+        "C#5:h", "A4:h",
+        "A4:h", "G4:h",
+        "A4:w"
+      ]
+    },
+
+    "_comment_rests": "=== REST PATTERNS ===",
+
+    "rest_2bars": {
+      "notes": ["r:w", "r:w"]
+    },
+
+    "rest_4bars": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "rest_5bars": {
+      "notes": ["r:w", "r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "rest_8bars": {
+      "notes": ["r:w", "r:w", "r:w", "r:w", "r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+
+  "sections": {
+    "exposition_12": {
+      "bars": 2,
+      "tracks": {
+        "soprano": { "pattern": "subject_soprano", "velocity": 0.75, "humanize": 0.08 }
+      }
+    },
+
+    "exposition_34": {
+      "bars": 2,
+      "tracks": {
+        "soprano": { "pattern": "free_cp_soprano_bars34", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "answer_alto", "velocity": 0.75, "humanize": 0.08 }
+      }
+    },
+
+    "exposition_56": {
+      "bars": 2,
+      "tracks": {
+        "soprano": { "pattern": "cs_soprano_bars56", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "cs_alto_bars56", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "subject_tenor", "velocity": 0.75, "humanize": 0.08 }
+      }
+    },
+
+    "exposition_78": {
+      "bars": 2,
+      "tracks": {
+        "soprano": { "pattern": "free_cp_soprano_bars78", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "free_cp_alto_bars78", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "free_cp_tenor_bars78", "velocity": 0.65, "humanize": 0.08 },
+        "bass": { "pattern": "answer_bass", "velocity": 0.8, "humanize": 0.06 }
+      }
+    },
+
+    "codetta": {
+      "bars": 4,
+      "tracks": {
+        "soprano": { "pattern": "codetta_soprano", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "codetta_alto", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "codetta_tenor", "velocity": 0.65, "humanize": 0.08 },
+        "bass": { "pattern": "codetta_bass", "velocity": 0.7, "humanize": 0.06 }
+      }
+    },
+
+    "bridge": {
+      "bars": 5,
+      "tracks": {
+        "soprano": { "pattern": "bridge_soprano", "velocity": 0.6, "humanize": 0.1 },
+        "alto": { "pattern": "bridge_alto", "velocity": 0.6, "humanize": 0.1 },
+        "tenor": { "pattern": "bridge_tenor", "velocity": 0.6, "humanize": 0.1 },
+        "bass": { "pattern": "bridge_bass", "velocity": 0.65, "humanize": 0.08 }
+      }
+    },
+
+    "episode1": {
+      "bars": 8,
+      "key": "F major",
+      "tracks": {
+        "soprano": { "pattern": "ep1_sequence_soprano", "velocity": 0.65, "humanize": 0.1 },
+        "alto": { "pattern": "ep1_sequence_alto", "velocity": 0.6, "humanize": 0.1 },
+        "tenor": { "pattern": "ep1_tenor", "velocity": 0.6, "humanize": 0.1 },
+        "bass": { "pattern": "ep1_bass_rising", "velocity": 0.7, "humanize": 0.08 }
+      }
+    },
+
+    "middle_entries_1a": {
+      "bars": 2,
+      "key": "F major",
+      "tracks": {
+        "soprano": { "pattern": "cs_f_soprano", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "subject_f_alto", "velocity": 0.75, "humanize": 0.08 },
+        "tenor": { "pattern": "free_f_tenor", "velocity": 0.6, "humanize": 0.08 },
+        "bass": { "pattern": "free_f_bass", "velocity": 0.7, "humanize": 0.06 }
+      }
+    },
+
+    "middle_entries_1b": {
+      "bars": 4,
+      "key": "F major",
+      "tracks": {
+        "soprano": { "pattern": "middle1_soprano_34", "velocity": 0.65, "humanize": 0.08 },
+        "alto": { "pattern": "middle1_alto_34", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "middle1_tenor_34", "velocity": 0.65, "humanize": 0.08 },
+        "bass": { "pattern": "middle1_bass_34", "velocity": 0.7, "humanize": 0.06 }
+      }
+    },
+
+    "middle_entries_1c": {
+      "bars": 2,
+      "key": "F major",
+      "tracks": {
+        "soprano": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "alto": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "tenor": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "bass": { "pattern": "rest_2bars", "velocity": 0.65 }
+      }
+    },
+
+    "episode2": {
+      "bars": 8,
+      "key": "G minor",
+      "tracks": {
+        "soprano": { "pattern": "ep2_inversion_soprano", "velocity": 0.7, "humanize": 0.1 },
+        "alto": { "pattern": "ep2_alto", "velocity": 0.65, "humanize": 0.1 },
+        "tenor": { "pattern": "ep2_tenor", "velocity": 0.65, "humanize": 0.1 },
+        "bass": { "pattern": "ep2_bass", "velocity": 0.7, "humanize": 0.08 }
+      }
+    },
+
+    "middle_entries_2a": {
+      "bars": 2,
+      "key": "G minor",
+      "tracks": {
+        "soprano": { "pattern": "subject_g_soprano", "velocity": 0.75, "humanize": 0.08 },
+        "alto": { "pattern": "cs_g_alto", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "free_g_tenor", "velocity": 0.6, "humanize": 0.08 },
+        "bass": { "pattern": "free_g_bass", "velocity": 0.7, "humanize": 0.06 }
+      }
+    },
+
+    "middle_entries_2b": {
+      "bars": 4,
+      "key": "G minor",
+      "tracks": {
+        "soprano": { "pattern": "middle2_soprano_34", "velocity": 0.7, "humanize": 0.08 },
+        "alto": { "pattern": "middle2_alto_34", "velocity": 0.65, "humanize": 0.08 },
+        "tenor": { "pattern": "middle2_tenor_34", "velocity": 0.65, "humanize": 0.08 },
+        "bass": { "pattern": "middle2_bass_34", "velocity": 0.7, "humanize": 0.06 }
+      }
+    },
+
+    "middle_entries_2c": {
+      "bars": 2,
+      "key": "G minor",
+      "tracks": {
+        "soprano": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "alto": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "tenor": { "pattern": "rest_2bars", "velocity": 0.6 },
+        "bass": { "pattern": "rest_2bars", "velocity": 0.65 }
+      }
+    },
+
+    "stretto": {
+      "bars": 4,
+      "key": "D minor",
+      "tracks": {
+        "soprano": { "pattern": "stretto_soprano_entry", "velocity": 0.75, "humanize": 0.06 },
+        "alto": { "pattern": "stretto_alto_entry", "velocity": 0.75, "humanize": 0.06 },
+        "tenor": { "pattern": "stretto_tenor_entry", "velocity": 0.75, "humanize": 0.06 },
+        "bass": { "pattern": "stretto_bass_entry", "velocity": 0.8, "humanize": 0.05 }
+      }
+    },
+
+    "stretto_continuation": {
+      "bars": 4,
+      "key": "D minor",
+      "tracks": {
+        "soprano": { "pattern": "stretto_continuation_soprano", "velocity": 0.75, "humanize": 0.06 },
+        "alto": { "pattern": "stretto_continuation_alto", "velocity": 0.7, "humanize": 0.06 },
+        "tenor": { "pattern": "stretto_continuation_tenor", "velocity": 0.7, "humanize": 0.06 },
+        "bass": { "pattern": "stretto_continuation_bass", "velocity": 0.75, "humanize": 0.05 }
+      }
+    },
+
+    "coda": {
+      "bars": 5,
+      "key": "D minor",
+      "tracks": {
+        "soprano": { "pattern": "coda_soprano", "velocity": 0.7, "humanize": 0.05 },
+        "alto": { "pattern": "coda_alto", "velocity": 0.65, "humanize": 0.05 },
+        "tenor": { "pattern": "coda_tenor", "velocity": 0.65, "humanize": 0.05 },
+        "bass": { "pattern": "coda_bass_augmented", "velocity": 0.75, "humanize": 0.04 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "exposition_12",
+    "exposition_34",
+    "exposition_56",
+    "exposition_78",
+    "codetta",
+    "bridge",
+    "episode1",
+    "middle_entries_1a",
+    "middle_entries_1b",
+    "middle_entries_1c",
+    "episode2",
+    "middle_entries_2a",
+    "middle_entries_2b",
+    "middle_entries_2c",
+    "stretto",
+    "stretto_continuation",
+    "coda"
+  ]
+}

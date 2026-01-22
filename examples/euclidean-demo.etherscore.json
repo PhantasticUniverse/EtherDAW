@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "title": "Euclidean Rhythms Demo",
+    "composer": "EtherDAW",
+    "mood": "hypnotic",
+    "genre": "world electronic",
+    "description": "Demonstrates v0.2 Euclidean rhythm generator with traditional patterns from around the world",
+    "tags": ["euclidean", "polyrhythm", "demo", "v0.2"]
+  },
+  "settings": {
+    "tempo": 110,
+    "key": "E minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": { "preset": "drums:808", "volume": 0 },
+    "bass": { "preset": "sub_bass", "volume": -6 },
+    "lead": { "preset": "soft_lead", "volume": -9, "effects": [{ "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.4 } }] },
+    "pad": { "preset": "ambient_pad", "volume": -12, "effects": [{ "type": "reverb", "wet": 0.6, "options": { "decay": 3 } }] }
+  },
+  "patterns": {
+    "tresillo_kick": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "drum": "kick"
+      }
+    },
+    "cinquillo_hihat": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+    "son_clave_rim": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 16,
+        "rotation": 2,
+        "duration": "16",
+        "drum": "rim"
+      }
+    },
+    "bossa_snare": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 16,
+        "duration": "16",
+        "drum": "snare"
+      }
+    },
+    "aksak_cowbell": {
+      "euclidean": {
+        "hits": 9,
+        "steps": 16,
+        "duration": "16",
+        "drum": "cowbell"
+      }
+    },
+    "tresillo_bass": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "pitch": "E2"
+      }
+    },
+    "polyrhythm_lead_5": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 16,
+        "duration": "16",
+        "pitch": "B3"
+      }
+    },
+    "polyrhythm_lead_7": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 16,
+        "duration": "16",
+        "pitch": "E4"
+      }
+    },
+    "fume_fume_shaker": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 12,
+        "duration": "8",
+        "drum": "shaker"
+      }
+    },
+    "bembe_hihat": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 12,
+        "duration": "8",
+        "drum": "hihat_open"
+      }
+    },
+    "four_floor_kick": {
+      "euclidean": {
+        "hits": 4,
+        "steps": 16,
+        "duration": "16",
+        "drum": "kick"
+      }
+    },
+    "offbeat_clap": {
+      "euclidean": {
+        "hits": 4,
+        "steps": 16,
+        "rotation": 4,
+        "duration": "16",
+        "drum": "clap"
+      }
+    },
+    "em_pad": {
+      "chords": ["Em:w"]
+    },
+    "am_pad": {
+      "chords": ["Am:w"]
+    },
+    "bm_pad": {
+      "chords": ["Bm:w"]
+    },
+    "d_pad": {
+      "chords": ["D:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "patterns": ["em_pad", "em_pad", "am_pad", "am_pad"] }
+      }
+    },
+    "tresillo_groove": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["tresillo_kick", "tresillo_kick"] },
+        "bass": { "pattern": "tresillo_bass" },
+        "pad": { "patterns": ["em_pad", "am_pad", "em_pad", "bm_pad"] }
+      }
+    },
+    "afro_cuban": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["tresillo_kick", "cinquillo_hihat", "son_clave_rim"] },
+        "bass": { "pattern": "tresillo_bass" },
+        "pad": { "patterns": ["em_pad", "am_pad", "d_pad", "bm_pad"] }
+      }
+    },
+    "bossa_section": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["four_floor_kick", "bossa_snare"] },
+        "bass": { "pattern": "tresillo_bass" },
+        "lead": { "pattern": "polyrhythm_lead_5" },
+        "pad": { "patterns": ["em_pad", "am_pad", "em_pad", "bm_pad"] }
+      }
+    },
+    "polyrhythm_peak": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["tresillo_kick", "aksak_cowbell", "cinquillo_hihat"] },
+        "bass": { "pattern": "tresillo_bass" },
+        "lead": { "patterns": ["polyrhythm_lead_5", "polyrhythm_lead_7"] },
+        "pad": { "patterns": ["em_pad", "am_pad", "d_pad", "bm_pad"] }
+      }
+    },
+    "african_12_8": {
+      "bars": 3,
+      "timeSignature": "12/8",
+      "tracks": {
+        "drums": { "patterns": ["fume_fume_shaker", "bembe_hihat"] },
+        "pad": { "patterns": ["em_pad", "am_pad", "bm_pad"] }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["four_floor_kick", "offbeat_clap"] },
+        "bass": { "pattern": "tresillo_bass" },
+        "pad": { "patterns": ["em_pad", "em_pad", "am_pad", "em_pad"] }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "tresillo_groove",
+    "afro_cuban",
+    "bossa_section",
+    "polyrhythm_peak",
+    "african_12_8",
+    "outro"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "etherdaw",
+  "version": "0.1.0",
+  "description": "A DAW designed for LLMs to compose music using the EtherScore JSON format",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "etherdaw": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && cp src/schema/etherscore.schema.json dist/schema/",
+    "watch": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "daw",
+    "music",
+    "composition",
+    "llm",
+    "audio",
+    "midi",
+    "synthesis"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@tonejs/midi": "^2.0.28",
+    "ajv": "^8.17.1",
+    "commander": "^12.1.0",
+    "tonal": "^6.3.0",
+    "tone": "^15.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Drum Kit Demo",
+    "composer": "EtherDAW",
+    "mood": "energetic",
+    "genre": "electronic",
+    "description": "Demonstrates the v0.2 drum kit system with 808, 909, acoustic, and lofi kits",
+    "tags": ["drums", "demo", "v0.2"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": { "preset": "drums:909", "volume": 0 },
+    "bass": { "preset": "synth_bass", "volume": -6 }
+  },
+  "patterns": {
+    "four_on_floor": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "kick", "time": "q" },
+          { "drum": "kick", "time": "h" },
+          { "drum": "kick", "time": "h+q" }
+        ]
+      }
+    },
+    "house_beat": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "hihat", "time": "0" },
+          { "drum": "hihat", "time": "8" },
+          { "drum": "kick", "time": "q" },
+          { "drum": "hihat", "time": "q" },
+          { "drum": "clap", "time": "q" },
+          { "drum": "hihat", "time": "q+8" },
+          { "drum": "kick", "time": "h" },
+          { "drum": "hihat", "time": "h" },
+          { "drum": "hihat", "time": "h+8" },
+          { "drum": "kick", "time": "h+q" },
+          { "drum": "hihat", "time": "h+q" },
+          { "drum": "clap", "time": "h+q" },
+          { "drum": "hihat", "time": "h+q+8" }
+        ]
+      }
+    },
+    "boom_bap": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.6 },
+          { "drum": "hihat", "time": "8", "velocity": 0.4 },
+          { "drum": "snare", "time": "q", "velocity": 0.85 },
+          { "drum": "hihat", "time": "q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.8 },
+          { "drum": "hihat", "time": "h", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.4 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.85 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.6 },
+          { "drum": "hihat_open", "time": "h+q+8", "velocity": 0.5 }
+        ]
+      }
+    },
+    "trap_hats": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 1.0 },
+          { "drum": "hihat", "time": "0" },
+          { "drum": "hihat", "time": "16" },
+          { "drum": "hihat", "time": "8" },
+          { "drum": "hihat", "time": "8+16" },
+          { "drum": "snare", "time": "q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "q" },
+          { "drum": "hihat", "time": "q+16" },
+          { "drum": "hihat", "time": "q+8" },
+          { "drum": "hihat", "time": "q+8+16" },
+          { "drum": "hihat", "time": "h" },
+          { "drum": "hihat", "time": "h+16" },
+          { "drum": "kick", "time": "h+8", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+8" },
+          { "drum": "hihat", "time": "h+8+16" },
+          { "drum": "snare", "time": "h+q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+q" },
+          { "drum": "hihat", "time": "h+q+16" },
+          { "drum": "hihat_open", "time": "h+q+8", "velocity": 0.7 }
+        ]
+      }
+    },
+    "acoustic_groove": {
+      "drums": {
+        "kit": "acoustic",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "hihat", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.4 },
+          { "drum": "snare", "time": "q" },
+          { "drum": "hihat", "time": "q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h" },
+          { "drum": "kick", "time": "h+8", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.4 },
+          { "drum": "snare", "time": "h+q" },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.5 },
+          { "drum": "hihat_open", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    },
+    "step_kick": {
+      "drums": {
+        "kit": "909",
+        "steps": "x...x...x...x..."
+      }
+    },
+    "bass_line": {
+      "notes": ["C2:8", "C2:8", "r:8", "C2:8", "Eb2:8", "r:8", "G2:8", "r:8"]
+    }
+  },
+  "sections": {
+    "intro_909": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "house_beat" }
+      }
+    },
+    "verse_lofi": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "boom_bap" },
+        "bass": { "pattern": "bass_line", "octave": -1 }
+      }
+    },
+    "drop_808": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "trap_hats" },
+        "bass": { "pattern": "bass_line" }
+      }
+    },
+    "breakdown_acoustic": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "acoustic_groove" }
+      }
+    },
+    "outro_minimal": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "step_kick" }
+      }
+    }
+  },
+  "arrangement": [
+    "intro_909",
+    "verse_lofi",
+    "drop_808",
+    "breakdown_acoustic",
+    "outro_minimal"
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "title": "Enhanced Arpeggiator Demo",
+    "composer": "EtherDAW",
+    "mood": "energetic",
+    "genre": "synthwave",
+    "description": "Demonstrates v0.2 enhanced arpeggiator with mode-based pattern generation",
+    "tags": ["arpeggiator", "demo", "v0.2", "synthwave"]
+  },
+  "settings": {
+    "tempo": 128,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "arp_up": { "preset": "arp_synth", "volume": -9, "effects": [{ "type": "delay", "wet": 0.25, "options": { "time": "8n", "feedback": 0.3 } }] },
+    "arp_down": { "preset": "arp_synth", "volume": -9, "pan": -0.3, "effects": [{ "type": "delay", "wet": 0.25, "options": { "time": "8n.", "feedback": 0.3 } }] },
+    "arp_random": { "preset": "fm_bell", "volume": -12, "pan": 0.3, "effects": [{ "type": "reverb", "wet": 0.5, "options": { "decay": 2.5 } }] },
+    "bass": { "preset": "synthwave_bass", "volume": -6 },
+    "pad": { "preset": "synthwave_pad", "volume": -12, "effects": [{ "type": "chorus", "wet": 0.4 }, { "type": "reverb", "wet": 0.5, "options": { "decay": 3 } }] },
+    "drums": { "preset": "drums:909", "volume": -3 }
+  },
+  "patterns": {
+    "arp_am_up": {
+      "arpeggio": {
+        "chord": "Am",
+        "mode": "up",
+        "octaves": 2,
+        "duration": "16",
+        "gate": 0.6
+      }
+    },
+    "arp_em_down": {
+      "arpeggio": {
+        "chord": "Em",
+        "mode": "down",
+        "octaves": 2,
+        "duration": "16",
+        "gate": 0.6
+      }
+    },
+    "arp_dm_updown": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "updown",
+        "octaves": 2,
+        "duration": "16",
+        "gate": 0.7
+      }
+    },
+    "arp_g_downup": {
+      "arpeggio": {
+        "chord": "G",
+        "mode": "downup",
+        "octaves": 2,
+        "duration": "16",
+        "gate": 0.7
+      }
+    },
+    "arp_fmaj7_random": {
+      "arpeggio": {
+        "chord": "Fmaj7",
+        "mode": "random",
+        "octaves": 2,
+        "duration": "8",
+        "steps": 8,
+        "gate": 0.9
+      }
+    },
+    "arp_cmaj7_random": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "random",
+        "octaves": 2,
+        "duration": "8",
+        "steps": 8,
+        "gate": 0.9
+      }
+    },
+    "wide_arp_am": {
+      "arpeggio": {
+        "chord": "Am9",
+        "mode": "up",
+        "octaves": 3,
+        "duration": "16",
+        "gate": 0.5
+      }
+    },
+    "trance_arp": {
+      "arpeggio": {
+        "chord": "Am",
+        "mode": "updown",
+        "octaves": 2,
+        "duration": "16",
+        "gate": 0.3
+      }
+    },
+    "bass_am": {
+      "notes": ["A1:8", "r:8", "A1:8", "A2:8", "r:8", "A1:8", "E2:8", "r:8"]
+    },
+    "bass_dm": {
+      "notes": ["D2:8", "r:8", "D2:8", "D3:8", "r:8", "D2:8", "A2:8", "r:8"]
+    },
+    "bass_g": {
+      "notes": ["G1:8", "r:8", "G1:8", "G2:8", "r:8", "G1:8", "D2:8", "r:8"]
+    },
+    "bass_em": {
+      "notes": ["E2:8", "r:8", "E2:8", "E3:8", "r:8", "E2:8", "B2:8", "r:8"]
+    },
+    "pad_am": {
+      "chords": ["Am:w"]
+    },
+    "pad_em": {
+      "chords": ["Em:w"]
+    },
+    "pad_dm": {
+      "chords": ["Dm7:w"]
+    },
+    "pad_g": {
+      "chords": ["G:w"]
+    },
+    "pad_f": {
+      "chords": ["Fmaj7:w"]
+    },
+    "pad_c": {
+      "chords": ["Cmaj7:w"]
+    },
+    "beat_basic": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "hihat", "time": "8" },
+          { "drum": "clap", "time": "q" },
+          { "drum": "hihat", "time": "q+8" },
+          { "drum": "kick", "time": "h" },
+          { "drum": "hihat", "time": "h+8" },
+          { "drum": "clap", "time": "h+q" },
+          { "drum": "hihat_open", "time": "h+q+8" }
+        ]
+      }
+    }
+  },
+  "sections": {
+    "intro_up": {
+      "bars": 4,
+      "tracks": {
+        "arp_up": { "patterns": ["arp_am_up", "arp_am_up", "arp_em_down", "arp_em_down"] },
+        "pad": { "patterns": ["pad_am", "pad_am", "pad_em", "pad_em"] }
+      }
+    },
+    "build_updown": {
+      "bars": 4,
+      "tracks": {
+        "arp_up": { "patterns": ["arp_am_up", "arp_dm_updown", "arp_g_downup", "arp_em_down"] },
+        "bass": { "patterns": ["bass_am", "bass_dm", "bass_g", "bass_em"] },
+        "pad": { "patterns": ["pad_am", "pad_dm", "pad_g", "pad_em"] }
+      }
+    },
+    "drop_trance": {
+      "bars": 4,
+      "tracks": {
+        "arp_up": { "pattern": "trance_arp" },
+        "arp_down": { "pattern": "arp_em_down" },
+        "bass": { "patterns": ["bass_am", "bass_dm", "bass_g", "bass_em"] },
+        "pad": { "patterns": ["pad_am", "pad_dm", "pad_g", "pad_em"] },
+        "drums": { "pattern": "beat_basic" }
+      }
+    },
+    "breakdown_random": {
+      "bars": 4,
+      "tracks": {
+        "arp_random": { "patterns": ["arp_fmaj7_random", "arp_cmaj7_random", "arp_fmaj7_random", "arp_cmaj7_random"] },
+        "pad": { "patterns": ["pad_f", "pad_c", "pad_f", "pad_c"] }
+      }
+    },
+    "peak_wide": {
+      "bars": 4,
+      "tracks": {
+        "arp_up": { "pattern": "wide_arp_am" },
+        "arp_down": { "pattern": "arp_em_down" },
+        "arp_random": { "patterns": ["arp_fmaj7_random", "arp_cmaj7_random"] },
+        "bass": { "patterns": ["bass_am", "bass_dm", "bass_g", "bass_em"] },
+        "pad": { "patterns": ["pad_am", "pad_dm", "pad_g", "pad_em"] },
+        "drums": { "pattern": "beat_basic" }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "arp_up": { "patterns": ["arp_am_up", "arp_am_up"] },
+        "pad": { "patterns": ["pad_am", "pad_am", "pad_am", "pad_am"] }
+      }
+    }
+  },
+  "arrangement": [
+    "intro_up",
+    "build_updown",
+    "drop_trance",
+    "breakdown_random",
+    "peak_wide",
+    "outro"
+  ]
+}

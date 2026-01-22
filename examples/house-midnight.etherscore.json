@@ -1,0 +1,312 @@
+{
+  "meta": {
+    "title": "Midnight Protocol",
+    "composer": "Claude",
+    "mood": "driving, uplifting, groovy",
+    "genre": "House",
+    "description": "A classic Chicago-style house track featuring 4-on-the-floor drums, jazzy chord voicings with chord planing, and a deep sub-bass groove. Uses drop2 voicings for that smooth, spread piano sound.",
+    "tags": ["house", "electronic", "jazz-house", "chicago"]
+  },
+  "settings": {
+    "tempo": 122,
+    "key": "A minor",
+    "timeSignature": "4/4",
+    "swing": 0.12
+  },
+  "instruments": {
+    "kick": {
+      "preset": "kick_909",
+      "volume": 0,
+      "pan": 0,
+      "effects": [
+        { "type": "compressor", "options": { "threshold": -12, "ratio": 4, "attack": 0.003, "release": 0.1 } }
+      ]
+    },
+    "clap": {
+      "preset": "clap_909",
+      "volume": -6,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.25, "options": { "decay": 0.8 } }
+      ]
+    },
+    "hihat_open": {
+      "preset": "hihat_open",
+      "volume": -12,
+      "pan": 0.2,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 10000, "type": "highpass" } }
+      ]
+    },
+    "hihat_closed": {
+      "preset": "hihat_closed",
+      "volume": -14,
+      "pan": -0.2,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 8000, "type": "highpass" } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -4,
+      "pan": 0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 180, "type": "lowpass", "Q": 2 } }
+      ]
+    },
+    "chords": {
+      "preset": "electric_piano",
+      "volume": -8,
+      "pan": 0,
+      "effects": [
+        { "type": "chorus", "wet": 0.2, "options": { "frequency": 1.2, "depth": 0.5 } },
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 1.5 } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -14,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 3 } },
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass" } }
+      ]
+    },
+    "lead": {
+      "preset": "sawtooth",
+      "volume": -10,
+      "pan": 0.1,
+      "effects": [
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.3 } },
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ]
+    }
+  },
+  "patterns": {
+    "kick_four": {
+      "notes": ["C2:q", "C2:q", "C2:q", "C2:q"]
+    },
+    "kick_two_bar": {
+      "notes": ["C2:q", "C2:q", "C2:q", "C2:q", "C2:q", "C2:q", "C2:q", "C2:q"]
+    },
+    "clap_backbeat": {
+      "notes": ["r:q", "C4:q", "r:q", "C4:q"]
+    },
+    "clap_two_bar": {
+      "notes": ["r:q", "C4:q", "r:q", "C4:q", "r:q", "C4:q", "r:q", "C4:q"]
+    },
+    "hat_offbeat": {
+      "notes": ["r:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8"]
+    },
+    "hat_closed_8ths": {
+      "notes": ["C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8", "C4:8"]
+    },
+    "hat_buildup": {
+      "notes": ["C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16", "C4:16"]
+    },
+    "bass_root_simple": {
+      "notes": ["A1:q", "r:q", "A1:q", "r:q"]
+    },
+    "bass_groove_a": {
+      "notes": ["A1:8", "r:8", "A1:16", "A1:16", "r:8", "A1:8", "r:q"]
+    },
+    "bass_groove_b": {
+      "notes": ["E1:8", "r:8", "A1:8", "r:8", "A1:q", "G1:8", "r:8"]
+    },
+    "bass_full_groove": {
+      "notes": ["A1:8", "r:8", "A1:16", "A1:16", "r:8", "A1:8", "r:q", "E1:8", "r:8", "A1:8", "r:8", "A1:q", "G1:8", "r:8"]
+    },
+    "bass_drop_b": {
+      "notes": ["A1:8", "A1:16", "A1:16", "r:8", "A1:8", "G1:8", "E1:8", "D1:8", "r:8", "E1:8", "A1:16", "A1:16", "A1:q", "r:8", "G1:8"]
+    },
+    "chords_main": {
+      "chords": ["Am9@drop2:w", "Dm7@drop2:w", "Fmaj7@drop2:w", "Em7@drop2:w"]
+    },
+    "chords_stab": {
+      "chords": ["Am9@shell:q", "Am9@shell:q", "Am9@shell:q", "Am9@shell:q", "Dm7@shell:q", "Dm7@shell:q", "Dm7@shell:q", "Dm7@shell:q", "Fmaj7@shell:q", "Fmaj7@shell:q", "Fmaj7@shell:q", "Fmaj7@shell:q", "Em7@shell:q", "Em7@shell:q", "Em7@shell:q", "Em7@shell:q"]
+    },
+    "chords_offbeat_stab": {
+      "chords": ["Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Am9@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Dm7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Fmaj7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8", "Em7@shell:8"]
+    },
+    "pad_am_sustained": {
+      "chords": ["Am9@open:w", "Am9@open:w", "Am9@open:w", "Am9@open:w"]
+    },
+    "pad_progression": {
+      "chords": ["Am9@open:w", "Dm7@open:w", "Fmaj7@open:w", "Em7@open:w"]
+    },
+    "lead_hook_a": {
+      "notes": ["E5:8", "r:8", "A4:8", "C5:8", "E5:q", "D5:8", "C5:8"]
+    },
+    "lead_hook_b": {
+      "notes": ["A4:8", "r:8", "G4:8", "A4:8", "C5:q", "r:q"]
+    },
+    "lead_full": {
+      "notes": ["E5:8", "r:8", "A4:8", "C5:8", "E5:q", "D5:8", "C5:8", "A4:8", "r:8", "G4:8", "A4:8", "C5:q", "r:q"]
+    },
+    "silence_1bar": {
+      "notes": ["r:w"]
+    },
+    "silence_2bar": {
+      "notes": ["r:w", "r:w"]
+    },
+    "silence_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 0.6
+        },
+        "hihat_closed": {
+          "patterns": ["silence_4bar", "hat_closed_8ths", "hat_closed_8ths", "hat_closed_8ths", "hat_closed_8ths"],
+          "velocity": 0.4
+        },
+        "pad": {
+          "pattern": "pad_am_sustained",
+          "velocity": 0.5,
+          "octave": 0
+        }
+      }
+    },
+    "build": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 0.8
+        },
+        "hihat_closed": {
+          "pattern": "hat_closed_8ths",
+          "velocity": 0.5
+        },
+        "bass": {
+          "pattern": "bass_root_simple",
+          "velocity": 0.7
+        },
+        "chords": {
+          "patterns": ["silence_4bar", "silence_2bar", "chords_main"],
+          "velocity": 0.6,
+          "repeat": 1
+        },
+        "pad": {
+          "pattern": "pad_am_sustained",
+          "velocity": 0.4
+        }
+      }
+    },
+    "drop_a": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 1.0
+        },
+        "clap": {
+          "pattern": "clap_backbeat",
+          "velocity": 0.85
+        },
+        "hihat_open": {
+          "pattern": "hat_offbeat",
+          "velocity": 0.7
+        },
+        "hihat_closed": {
+          "pattern": "hat_closed_8ths",
+          "velocity": 0.5
+        },
+        "bass": {
+          "pattern": "bass_full_groove",
+          "velocity": 0.9
+        },
+        "chords": {
+          "pattern": "chords_main",
+          "velocity": 0.75,
+          "humanize": 0.05
+        }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "hihat_closed": {
+          "pattern": "hat_closed_8ths",
+          "velocity": 0.4
+        },
+        "hihat_open": {
+          "patterns": ["hat_offbeat", "hat_offbeat", "hat_offbeat", "hat_offbeat", "silence_1bar", "silence_1bar", "hat_buildup", "hat_buildup"],
+          "velocity": 0.5
+        },
+        "chords": {
+          "pattern": "chords_main",
+          "velocity": 0.6,
+          "humanize": 0.08
+        },
+        "pad": {
+          "pattern": "pad_progression",
+          "velocity": 0.7
+        }
+      }
+    },
+    "drop_b": {
+      "bars": 16,
+      "tracks": {
+        "kick": {
+          "pattern": "kick_four",
+          "velocity": 1.0
+        },
+        "clap": {
+          "pattern": "clap_backbeat",
+          "velocity": 0.9
+        },
+        "hihat_open": {
+          "pattern": "hat_offbeat",
+          "velocity": 0.75
+        },
+        "hihat_closed": {
+          "pattern": "hat_closed_8ths",
+          "velocity": 0.55
+        },
+        "bass": {
+          "pattern": "bass_drop_b",
+          "velocity": 0.95
+        },
+        "chords": {
+          "pattern": "chords_offbeat_stab",
+          "velocity": 0.8,
+          "humanize": 0.05
+        },
+        "lead": {
+          "pattern": "lead_full",
+          "velocity": 0.7,
+          "humanize": 0.08
+        }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "kick": {
+          "patterns": ["kick_four", "kick_four", "kick_four", "kick_four", "kick_four", "kick_four", "silence_1bar", "silence_1bar"],
+          "velocity": 0.8
+        },
+        "hihat_closed": {
+          "patterns": ["hat_closed_8ths", "hat_closed_8ths", "hat_closed_8ths", "hat_closed_8ths", "silence_1bar", "silence_1bar", "silence_1bar", "silence_1bar"],
+          "velocity": 0.4
+        },
+        "pad": {
+          "pattern": "pad_am_sustained",
+          "velocity": 0.6
+        },
+        "chords": {
+          "patterns": ["chords_main", "silence_4bar"],
+          "velocity": 0.5,
+          "repeat": 1
+        }
+      }
+    }
+  },
+  "arrangement": ["intro", "build", "drop_a", "breakdown", "drop_b", "outro"]
+}

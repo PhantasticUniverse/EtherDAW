@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "title": "Late Night Jazz",
+    "composer": "EtherDAW",
+    "mood": "smooth",
+    "genre": "jazz",
+    "description": "A cool jazz piece with ii-V-I progressions and walking bass"
+  },
+  "settings": {
+    "tempo": 128,
+    "key": "F major",
+    "timeSignature": "4/4",
+    "swing": 0.65
+  },
+  "instruments": {
+    "piano": {
+      "preset": "electric_piano",
+      "volume": -3,
+      "effects": [
+        { "type": "chorus", "wet": 0.2 },
+        { "type": "reverb", "wet": 0.3 }
+      ]
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -4
+    },
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25 }
+      ]
+    }
+  },
+  "patterns": {
+    "comping_a": {
+      "chords": ["Fmaj7:h", "Gm7:h", "Am7:h", "D7:h"]
+    },
+    "comping_b": {
+      "chords": ["Gm7:h", "C7:h", "Fmaj7:w"]
+    },
+    "comping_bridge": {
+      "chords": ["Bbmaj7:h", "Bdim7:h", "Am7:h", "Dm7:h"]
+    },
+    "turnaround": {
+      "chords": ["Dm7:h", "G7:h", "Gm7:h", "C7:h"]
+    },
+    "walking_a": {
+      "notes": [
+        "F2:q", "A2:q", "C3:q", "A2:q",
+        "G2:q", "Bb2:q", "D3:q", "Bb2:q",
+        "A2:q", "C3:q", "E3:q", "C3:q",
+        "D3:q", "F#3:q", "A3:q", "F#3:q"
+      ]
+    },
+    "walking_b": {
+      "notes": [
+        "G2:q", "Bb2:q", "D3:q", "F3:q",
+        "C2:q", "E2:q", "G2:q", "Bb2:q",
+        "F2:q", "A2:q", "C3:q", "F3:q",
+        "F2:h", "r:h"
+      ]
+    },
+    "walking_bridge": {
+      "notes": [
+        "Bb2:q", "D3:q", "F3:q", "A3:q",
+        "B2:q", "D3:q", "F3:q", "Ab3:q",
+        "A2:q", "C3:q", "E3:q", "G3:q",
+        "D2:q", "F2:q", "A2:q", "C3:q"
+      ]
+    },
+    "melody_head": {
+      "notes": [
+        "A4:q", "C5:q", "F5:h",
+        "E5:q", "D5:q", "C5:h",
+        "D5:q", "E5:8", "D5:8", "C5:q", "A4:q",
+        "G4:w"
+      ]
+    },
+    "melody_response": {
+      "notes": [
+        "Bb4:q", "A4:8", "G4:8", "F4:h",
+        "G4:q", "A4:q", "Bb4:h",
+        "A4:h.", "G4:q",
+        "F4:w"
+      ]
+    },
+    "melody_bridge": {
+      "notes": [
+        "D5:h", "C5:q", "Bb4:q",
+        "B4:q", "D5:q", "F5:h",
+        "E5:h", "C5:h",
+        "D5:w"
+      ]
+    },
+    "fill_1": {
+      "notes": ["C5:8", "D5:8", "E5:8", "F5:8", "E5:q", "D5:q"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "comping_a", "velocity": 0.5, "humanize": 0.1 },
+        "bass": { "pattern": "walking_a", "velocity": 0.6, "humanize": 0.15 }
+      }
+    },
+    "head_a": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "patterns": ["comping_a", "comping_b"], "velocity": 0.55, "humanize": 0.1 },
+        "bass": { "patterns": ["walking_a", "walking_b"], "velocity": 0.65, "humanize": 0.15 },
+        "lead": { "patterns": ["melody_head", "melody_response"], "velocity": 0.6, "humanize": 0.12 }
+      }
+    },
+    "head_b": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "patterns": ["comping_bridge", "turnaround"], "velocity": 0.55, "humanize": 0.1 },
+        "bass": { "patterns": ["walking_bridge", "walking_a"], "velocity": 0.65, "humanize": 0.15 },
+        "lead": { "patterns": ["melody_bridge", "melody_response"], "velocity": 0.6, "humanize": 0.12 }
+      }
+    },
+    "solo_section": {
+      "bars": 16,
+      "tracks": {
+        "piano": { "pattern": "comping_a", "repeat": 4, "velocity": 0.45, "humanize": 0.15 },
+        "bass": { "patterns": ["walking_a", "walking_b"], "repeat": 2, "velocity": 0.7, "humanize": 0.12 }
+      }
+    },
+    "head_out": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "patterns": ["comping_a", "comping_b"], "velocity": 0.6, "humanize": 0.1 },
+        "bass": { "patterns": ["walking_a", "walking_b"], "velocity": 0.7, "humanize": 0.12 },
+        "lead": { "patterns": ["melody_head", "melody_response"], "velocity": 0.65, "humanize": 0.1 }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "turnaround", "velocity": 0.5, "humanize": 0.1 },
+        "bass": { "pattern": "walking_b", "velocity": 0.55, "humanize": 0.1 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "head_a",
+    "head_b",
+    "solo_section",
+    "head_a",
+    "head_out",
+    "outro"
+  ]
+}

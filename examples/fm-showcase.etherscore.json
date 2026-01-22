@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "title": "FM Synthesis Showcase",
+    "composer": "EtherDAW",
+    "mood": "Warm, Bell-like, Expressive",
+    "genre": "Showcase",
+    "description": "Demonstrates all FM synthesis presets with DX7-inspired sounds",
+    "tags": ["fm", "dx7", "bells", "electric-piano", "showcase"]
+  },
+  "settings": {
+    "tempo": 85,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "epiano": {
+      "preset": "fm_epiano",
+      "volume": -3,
+      "effects": [
+        { "type": "chorus", "wet": 0.2, "options": { "frequency": 1.5, "depth": 0.4 } },
+        { "type": "reverb", "wet": 0.25, "options": { "decay": 2 } }
+      ]
+    },
+    "bass": {
+      "preset": "fm_bass",
+      "volume": -2
+    },
+    "brass": {
+      "preset": "fm_brass",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 1.5 } }
+      ]
+    },
+    "church_bell": {
+      "preset": "fm_church_bell",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 4 } }
+      ]
+    },
+    "tubular_bell": {
+      "preset": "fm_tubular_bell",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 3 } }
+      ]
+    },
+    "glass": {
+      "preset": "fm_glass",
+      "volume": -4,
+      "effects": [
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n.", "feedback": 0.3 } },
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.5 } }
+      ]
+    },
+    "vibes": {
+      "preset": "fm_vibraphone",
+      "volume": -4,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2 } }
+      ]
+    },
+    "fm_organ": {
+      "preset": "fm_organ",
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "wet": 0.3, "options": { "frequency": 2, "depth": 0.5 } },
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 1.5 } }
+      ]
+    },
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "epiano_intro": {
+      "chords": ["Cmaj7:h", "Am7:h", "Dm7:h", "G7:h"]
+    },
+    "epiano_verse": {
+      "chords": ["Fmaj7:h", "Em7:h", "Dm7:h", "Cmaj7:h"]
+    },
+    "bass_groove": {
+      "notes": ["C2:8", "C2:8", "r:8", "C3:8", "r:q", "G2:8", "r:8"]
+    },
+    "bass_verse": {
+      "notes": ["F2:8", "F2:8", "r:8", "F3:8", "E2:q", "D2:8", "C2:8"]
+    },
+    "brass_stab": {
+      "chords": ["r:h", "Cmaj7:8", "r:8.", "r:16", "Am7:8", "r:8."]
+    },
+    "brass_fill": {
+      "chords": ["r:q", "Fmaj7:8", "r:8", "Em7:8", "r:8", "Dm7:8", "r:8"]
+    },
+    "church_bell_toll": {
+      "notes": ["C3:w", "r:w", "G2:w", "r:w"]
+    },
+    "tubular_melody": {
+      "notes": ["E5:q", "G5:q", "C6:h", "B5:q", "A5:q", "G5:h"]
+    },
+    "glass_arp": {
+      "arpeggio": {
+        "chord": "Cmaj9",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "gate": 0.5
+      }
+    },
+    "glass_arp_am": {
+      "arpeggio": {
+        "chord": "Am9",
+        "duration": "16",
+        "mode": "updown",
+        "octaves": 2,
+        "gate": 0.5
+      }
+    },
+    "vibes_melody": {
+      "notes": ["E4:q", "F4:8", "G4:8", "A4:q", "G4:q", "E4:h", "D4:q", "C4:h."]
+    },
+    "vibes_counter": {
+      "notes": ["C5:q", "B4:8", "A4:8", "G4:q", "A4:q", "G4:h", "F4:q", "E4:h."]
+    },
+    "organ_pad": {
+      "chords": ["Cmaj7:w", "Am7:w"]
+    },
+    "organ_verse": {
+      "chords": ["Fmaj7:w", "G7:w"]
+    },
+    "drums_light": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "hihat", "time": "0", "velocity": 0.4 },
+          { "drum": "hihat", "time": "8", "velocity": 0.3 },
+          { "drum": "snare", "time": "q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q", "velocity": 0.4 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.3 },
+          { "drum": "kick", "time": "h" },
+          { "drum": "hihat", "time": "h", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.3 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.3 }
+        ]
+      }
+    },
+    "rest_2bars": {
+      "rest": "w+w"
+    },
+    "rest_4bars": {
+      "rest": "w+w+w+w"
+    }
+  },
+  "sections": {
+    "intro_bells": {
+      "bars": 4,
+      "tracks": {
+        "church_bell": { "pattern": "church_bell_toll" },
+        "tubular_bell": { "pattern": "tubular_melody" }
+      }
+    },
+    "epiano_intro": {
+      "bars": 4,
+      "tracks": {
+        "epiano": { "pattern": "epiano_intro", "repeat": 2 },
+        "bass": { "pattern": "bass_groove", "repeat": 4 },
+        "drums": { "pattern": "drums_light", "repeat": 4 }
+      }
+    },
+    "glass_section": {
+      "bars": 4,
+      "tracks": {
+        "glass": { "patterns": ["glass_arp", "glass_arp", "glass_arp_am", "glass_arp_am"] },
+        "bass": { "pattern": "bass_groove", "repeat": 4 },
+        "drums": { "pattern": "drums_light", "repeat": 4 }
+      }
+    },
+    "vibes_melody": {
+      "bars": 4,
+      "tracks": {
+        "vibes": { "pattern": "vibes_melody", "repeat": 2 },
+        "epiano": { "pattern": "epiano_verse", "repeat": 2 },
+        "bass": { "pattern": "bass_verse", "repeat": 4 },
+        "drums": { "pattern": "drums_light", "repeat": 4 }
+      }
+    },
+    "brass_section": {
+      "bars": 4,
+      "tracks": {
+        "brass": { "patterns": ["brass_stab", "brass_stab", "brass_fill", "brass_fill"] },
+        "epiano": { "pattern": "epiano_intro", "repeat": 2 },
+        "bass": { "pattern": "bass_groove", "repeat": 4 },
+        "drums": { "pattern": "drums_light", "repeat": 4 }
+      }
+    },
+    "organ_outro": {
+      "bars": 4,
+      "tracks": {
+        "fm_organ": { "pattern": "organ_pad", "repeat": 2 },
+        "vibes": { "pattern": "vibes_counter", "repeat": 2 },
+        "tubular_bell": { "pattern": "tubular_melody" }
+      }
+    },
+    "final_bells": {
+      "bars": 4,
+      "tracks": {
+        "church_bell": { "pattern": "church_bell_toll" }
+      }
+    }
+  },
+  "arrangement": [
+    "intro_bells",
+    "epiano_intro",
+    "glass_section",
+    "vibes_melody",
+    "brass_section",
+    "organ_outro",
+    "final_bells"
+  ]
+}
