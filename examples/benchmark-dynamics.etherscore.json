@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "Dynamics Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests velocity and dynamics features: pp-ff markings, velocity values, velocity envelopes (crescendo, diminuendo, swell), and humanization.",
+    "tags": ["benchmark", "dynamics", "velocity", "expression"]
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "piano": {
+      "preset": "electric_piano",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// DYNAMIC MARKINGS": "Standard notation dynamics",
+    "scale_pp": {
+      "notes": ["C4:q@pp", "D4:q@pp", "E4:q@pp", "F4:q@pp"]
+    },
+    "scale_p": {
+      "notes": ["C4:q@p", "D4:q@p", "E4:q@p", "F4:q@p"]
+    },
+    "scale_mp": {
+      "notes": ["C4:q@mp", "D4:q@mp", "E4:q@mp", "F4:q@mp"]
+    },
+    "scale_mf": {
+      "notes": ["C4:q@mf", "D4:q@mf", "E4:q@mf", "F4:q@mf"]
+    },
+    "scale_f": {
+      "notes": ["C4:q@f", "D4:q@f", "E4:q@f", "F4:q@f"]
+    },
+    "scale_ff": {
+      "notes": ["C4:q@ff", "D4:q@ff", "E4:q@ff", "F4:q@ff"]
+    },
+
+    "// NUMERIC VELOCITY": "Direct 0-1 values",
+    "velocity_gradient": {
+      "notes": [
+        "C4:q@0.1", "D4:q@0.2", "E4:q@0.3", "F4:q@0.4",
+        "G4:q@0.5", "A4:q@0.6", "B4:q@0.7", "C5:q@0.8"
+      ]
+    },
+    "velocity_accents": {
+      "notes": [
+        "C4:q@0.9", "D4:q@0.4", "E4:q@0.4", "F4:q@0.4",
+        "G4:q@0.9", "A4:q@0.4", "B4:q@0.4", "C5:q@0.4"
+      ]
+    },
+
+    "// VELOCITY ENVELOPES": "Applied to pattern as a whole",
+    "sustained_chord": {
+      "chords": ["C:q", "C:q", "C:q", "C:q", "C:q", "C:q", "C:q", "C:q"]
+    },
+    "ascending_scale": {
+      "notes": ["C4:q", "D4:q", "E4:q", "F4:q", "G4:q", "A4:q", "B4:q", "C5:q"]
+    },
+
+    "// HUMANIZATION": "Same pattern at different humanization levels",
+    "regular_pattern": {
+      "notes": ["C4:8", "E4:8", "G4:8", "C5:8", "G4:8", "E4:8", "C4:8", "E4:8"]
+    }
+  },
+  "sections": {
+    "dynamic_markings": {
+      "bars": 6,
+      "tracks": {
+        "piano": { "patterns": ["scale_pp", "scale_p", "scale_mp", "scale_mf", "scale_f", "scale_ff"] }
+      }
+    },
+    "numeric_velocity": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "patterns": ["velocity_gradient", "velocity_accents"] }
+      }
+    },
+    "crescendo_section": {
+      "bars": 2,
+      "tracks": {
+        "piano": {
+          "pattern": "sustained_chord",
+          "velocityEnvelope": "crescendo"
+        }
+      }
+    },
+    "diminuendo_section": {
+      "bars": 2,
+      "tracks": {
+        "piano": {
+          "pattern": "sustained_chord",
+          "velocityEnvelope": "diminuendo"
+        }
+      }
+    },
+    "swell_section": {
+      "bars": 2,
+      "tracks": {
+        "piano": {
+          "pattern": "sustained_chord",
+          "velocityEnvelope": "swell"
+        }
+      }
+    },
+    "humanize_none": {
+      "bars": 1,
+      "tracks": {
+        "piano": {
+          "pattern": "regular_pattern",
+          "humanize": 0
+        }
+      }
+    },
+    "humanize_light": {
+      "bars": 1,
+      "tracks": {
+        "piano": {
+          "pattern": "regular_pattern",
+          "humanize": 0.05
+        }
+      }
+    },
+    "humanize_medium": {
+      "bars": 1,
+      "tracks": {
+        "piano": {
+          "pattern": "regular_pattern",
+          "humanize": 0.1
+        }
+      }
+    },
+    "humanize_heavy": {
+      "bars": 1,
+      "tracks": {
+        "piano": {
+          "pattern": "regular_pattern",
+          "humanize": 0.2
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "dynamic_markings",
+    "numeric_velocity",
+    "crescendo_section",
+    "diminuendo_section",
+    "swell_section",
+    "humanize_none",
+    "humanize_light",
+    "humanize_medium",
+    "humanize_heavy"
+  ]
+}

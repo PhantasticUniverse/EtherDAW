@@ -653,10 +653,63 @@ export const DRUM_KITS: Record<KitName, DrumKit> = {
 };
 
 /**
- * Get a specific drum from a kit
+ * v0.81: Drum name aliases for common variations
+ * Maps alternative names to canonical DrumType names
  */
-export function getDrumParams(kit: KitName, drum: DrumType): DrumSynthParams | undefined {
-  return DRUM_KITS[kit]?.drums[drum];
+const DRUM_ALIASES: Record<string, DrumType> = {
+  // Open hi-hat variations
+  'openhat': 'hihat_open',
+  'open_hat': 'hihat_open',
+  'open_hihat': 'hihat_open',
+  'oh': 'hihat_open',
+  // Closed hi-hat variations
+  'closedhat': 'hihat',
+  'closed_hat': 'hihat',
+  'closed_hihat': 'hihat',
+  'ch': 'hihat',
+  'hh': 'hihat',
+  // Other common aliases
+  'bd': 'kick',
+  'bassdrum': 'kick',
+  'bass_drum': 'kick',
+  'sd': 'snare',
+  'rimshot': 'rim',
+  'tomhi': 'tom_hi',
+  'tommid': 'tom_mid',
+  'tomlo': 'tom_lo',
+  'tom_high': 'tom_hi',
+  'tom_low': 'tom_lo',
+  'cy': 'crash',
+  'cymbal': 'crash',
+  'rd': 'ride',
+  'cb': 'cowbell',
+  'sh': 'shaker',
+  'cp': 'clap',
+  'handclap': 'clap',
+};
+
+/**
+ * Normalize a drum name to its canonical form
+ * Handles aliases and case-insensitive matching
+ */
+export function normalizeDrumName(name: string): DrumType {
+  const lower = name.toLowerCase();
+  // Check if it's already a valid drum type
+  const validDrums: DrumType[] = ['kick', 'snare', 'clap', 'hihat', 'hihat_open', 'tom_hi', 'tom_mid', 'tom_lo', 'crash', 'ride', 'rim', 'cowbell', 'shaker'];
+  if (validDrums.includes(lower as DrumType)) {
+    return lower as DrumType;
+  }
+  // Check aliases
+  return DRUM_ALIASES[lower] || (lower as DrumType);
+}
+
+/**
+ * Get a specific drum from a kit
+ * Supports drum name aliases (e.g., 'openhat' -> 'hihat_open')
+ */
+export function getDrumParams(kit: KitName, drum: DrumType | string): DrumSynthParams | undefined {
+  const normalizedDrum = normalizeDrumName(drum);
+  return DRUM_KITS[kit]?.drums[normalizedDrum];
 }
 
 /**

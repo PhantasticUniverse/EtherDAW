@@ -1,0 +1,242 @@
+{
+  "meta": {
+    "title": "Mixing Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests per-track mixing features: EQ (low/mid/high bands), compression, sidechain ducking, instrument pan, and volume relationships.",
+    "tags": ["benchmark", "mixing", "eq", "compression", "sidechain", "v0.8"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// NO EQ REFERENCE": "---",
+    "synth_dry": {
+      "preset": "sawtooth",
+      "volume": -6
+    },
+
+    "// PER-TRACK EQ": "---",
+    "synth_low_cut": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "lowCut": 200
+      }
+    },
+    "synth_high_cut": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "highCut": 2000
+      }
+    },
+    "synth_low_shelf_boost": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "lowShelf": { "freq": 200, "gain": 6 }
+      }
+    },
+    "synth_high_shelf_cut": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "highShelf": { "freq": 4000, "gain": -6 }
+      }
+    },
+    "synth_mid_notch": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "mid": { "freq": 1000, "gain": -12, "q": 4 }
+      }
+    },
+    "synth_full_eq": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "eq": {
+        "lowCut": 80,
+        "lowShelf": { "freq": 150, "gain": 2 },
+        "mid": { "freq": 2000, "gain": -3, "q": 1.5 },
+        "highShelf": { "freq": 8000, "gain": 3 }
+      }
+    },
+
+    "// PAN POSITIONS": "---",
+    "synth_left": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "pan": -1
+    },
+    "synth_center": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "pan": 0
+    },
+    "synth_right": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "pan": 1
+    },
+    "synth_left_30": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "pan": -0.3
+    },
+    "synth_right_30": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "pan": 0.3
+    },
+
+    "// VOLUME LEVELS": "---",
+    "synth_quiet": {
+      "preset": "pluck",
+      "volume": -18
+    },
+    "synth_normal": {
+      "preset": "pluck",
+      "volume": -6
+    },
+    "synth_loud": {
+      "preset": "pluck",
+      "volume": 0
+    },
+
+    "// DRUMS FOR SIDECHAIN": "---",
+    "drums": {
+      "preset": "drums:909",
+      "volume": -3
+    },
+
+    "// BASS FOR SIDECHAIN": "---",
+    "bass_no_sidechain": {
+      "preset": "synth_bass",
+      "volume": -3
+    },
+    "bass_with_sidechain": {
+      "preset": "synth_bass",
+      "volume": -3,
+      "effects": [
+        { "type": "compressor", "options": { "threshold": -30, "ratio": 8, "attack": 0.001, "release": 0.1 } }
+      ]
+    }
+  },
+  "patterns": {
+    "sustained_note": {
+      "notes": ["C4:w", "C4:w"]
+    },
+    "sustained_chord": {
+      "chords": ["Cmaj7:w", "Cmaj7:w"]
+    },
+    "melody": {
+      "notes": ["C4:q", "E4:q", "G4:q", "E4:q", "C4:q", "E4:q", "G4:h"]
+    },
+    "bass_sustained": {
+      "notes": ["C2:w", "C2:w", "C2:w", "C2:w"]
+    },
+    "kick_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "kick": "x...x...x...x..."
+        }
+      }
+    },
+    "rest_2bar": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "eq_reference": {
+      "bars": 2,
+      "tracks": {
+        "synth_dry": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_low_cut": {
+      "bars": 2,
+      "tracks": {
+        "synth_low_cut": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_high_cut": {
+      "bars": 2,
+      "tracks": {
+        "synth_high_cut": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_low_shelf_boost": {
+      "bars": 2,
+      "tracks": {
+        "synth_low_shelf_boost": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_high_shelf_cut": {
+      "bars": 2,
+      "tracks": {
+        "synth_high_shelf_cut": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_mid_notch": {
+      "bars": 2,
+      "tracks": {
+        "synth_mid_notch": { "pattern": "sustained_note" }
+      }
+    },
+    "eq_full": {
+      "bars": 2,
+      "tracks": {
+        "synth_full_eq": { "pattern": "sustained_note" }
+      }
+    },
+    "pan_test": {
+      "bars": 10,
+      "tracks": {
+        "synth_left": { "patterns": ["melody", "rest_2bar", "rest_2bar", "rest_2bar", "rest_2bar"] },
+        "synth_center": { "patterns": ["rest_2bar", "melody", "rest_2bar", "rest_2bar", "rest_2bar"] },
+        "synth_right": { "patterns": ["rest_2bar", "rest_2bar", "melody", "rest_2bar", "rest_2bar"] },
+        "synth_left_30": { "patterns": ["rest_2bar", "rest_2bar", "rest_2bar", "melody", "rest_2bar"] },
+        "synth_right_30": { "patterns": ["rest_2bar", "rest_2bar", "rest_2bar", "rest_2bar", "melody"] }
+      }
+    },
+    "volume_test": {
+      "bars": 6,
+      "tracks": {
+        "synth_quiet": { "patterns": ["melody", "rest_2bar", "rest_2bar"] },
+        "synth_normal": { "patterns": ["rest_2bar", "melody", "rest_2bar"] },
+        "synth_loud": { "patterns": ["rest_2bar", "rest_2bar", "melody"] }
+      }
+    },
+    "sidechain_off": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "kick_pattern", "repeat": 4 },
+        "bass_no_sidechain": { "pattern": "bass_sustained" }
+      }
+    },
+    "sidechain_on": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "kick_pattern", "repeat": 4 },
+        "bass_with_sidechain": { "pattern": "bass_sustained" }
+      }
+    }
+  },
+  "arrangement": [
+    "eq_reference",
+    "eq_low_cut",
+    "eq_high_cut",
+    "eq_low_shelf_boost",
+    "eq_high_shelf_cut",
+    "eq_mid_notch",
+    "eq_full",
+    "pan_test",
+    "volume_test",
+    "sidechain_off",
+    "sidechain_on"
+  ]
+}

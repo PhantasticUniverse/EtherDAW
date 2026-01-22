@@ -241,3 +241,35 @@ The validators only check structure, not semantics. The actual parsing/rendering
 | `src/synthesis/presets.ts` | Synth preset definitions |
 | `src/generative/markov-presets.ts` | Markov chain presets |
 | `docs/ETHERSCORE_FORMAT.md` | User-facing format documentation |
+
+## Changelog
+
+### v0.81 (2026-01-23)
+
+**New Features:**
+- **Noise presets**: Added `noise`, `pink_noise`, `brown_noise`, `vinyl_crackle`, `noise_sweep` to presets.ts for texture and lo-fi effects
+- **Drum name aliases**: Common aliases now work (`openhat` → `hihat_open`, `closedhat` → `hihat`, `bd` → `kick`, etc.)
+- **Drum shorthand notation**: Drum patterns can use direct keys without `"lines"` wrapper:
+  ```json
+  // New shorthand (v0.81)
+  { "kit": "909", "kick": "x...x...", "snare": "....x..." }
+
+  // Old verbose format (still supported)
+  { "kit": "909", "lines": { "kick": "x...x...", "snare": "....x..." } }
+  ```
+
+**Files Modified:**
+- `src/synthesis/presets.ts` - Added noise preset definitions
+- `src/synthesis/drum-kits.ts` - Added `normalizeDrumName()` and `DRUM_ALIASES`
+- `src/parser/pattern-expander.ts` - Auto-detect drum shorthand format
+- `src/schema/types.ts` - Updated DrumPattern interface for shorthand
+- `src/browser/player.ts` - Use normalized drum names in pools
+
+**Compositions:**
+- `examples/emergent-patterns.etherscore.json` - Generative ambient showcase
+- `examples/midnight-study.etherscore.json` - Lo-fi hip-hop with Dilla groove
+
+**Lessons Learned:**
+- Browser bundle uses `presets.ts` (not `instruments.ts`) for synth creation
+- Offline WAV rendering can reveal clipping not audible in realtime playback
+- Drum name aliases improve composer ergonomics significantly

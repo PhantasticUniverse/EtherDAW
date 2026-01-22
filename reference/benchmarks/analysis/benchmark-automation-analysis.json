@@ -1,0 +1,29 @@
+{
+  "benchmark": "benchmark-automation",
+  "title": "Automation Benchmark",
+  "description": "Tests section automation: tempo (ritardando/accelerando), filter cutoff, semantic parameters (brightness), and all curve types (linear, exponential, logarithmic, sine, step).",
+  "features": [
+    "automation",
+    "tempo",
+    "filter",
+    "curves",
+    "v0.5",
+    "v0.7",
+    "chords"
+  ],
+  "duration": 96,
+  "tempo": 120,
+  "key": "A minor",
+  "sections": 12,
+  "patterns": 4,
+  "notes": 222,
+  "instruments": [
+    "lead",
+    "bass",
+    "pad"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.633Z",
+  "expectedCharacteristics": {
+    "automation": "Continuous parameter changes visible in spectrogram"
+  }
+}

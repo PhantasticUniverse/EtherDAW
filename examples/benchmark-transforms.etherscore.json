@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "title": "Pattern Transforms Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests pattern transformations (invert, retrograde, augment, diminish, transpose, octave) and pattern inheritance (extends/overrides).",
+    "tags": ["benchmark", "transforms", "patterns", "inheritance", "v0.3", "v0.7"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    }
+  },
+  "patterns": {
+    "// SOURCE PATTERN": "The original theme for all transformations",
+    "theme": {
+      "notes": ["D4:q", "F4:8", "A4:8", "G4:q", "F4:h"]
+    },
+
+    "// INVERSION": "Flip melodic contour around axis",
+    "theme_inverted": {
+      "transform": {
+        "source": "theme",
+        "operation": "invert",
+        "params": { "axis": "G4" }
+      }
+    },
+
+    "// RETROGRADE": "Reverse note order",
+    "theme_retrograde": {
+      "transform": {
+        "source": "theme",
+        "operation": "retrograde"
+      }
+    },
+
+    "// AUGMENTATION": "Double rhythm values (slower)",
+    "theme_augmented": {
+      "transform": {
+        "source": "theme",
+        "operation": "augment",
+        "params": { "factor": 2 }
+      }
+    },
+
+    "// DIMINUTION": "Halve rhythm values (faster)",
+    "theme_diminished": {
+      "transform": {
+        "source": "theme",
+        "operation": "diminish",
+        "params": { "factor": 0.5 }
+      }
+    },
+
+    "// TRANSPOSE": "Shift pitches by semitones",
+    "theme_transposed_up5": {
+      "transform": {
+        "source": "theme",
+        "operation": "transpose",
+        "params": { "semitones": 5 }
+      }
+    },
+    "theme_transposed_down3": {
+      "transform": {
+        "source": "theme",
+        "operation": "transpose",
+        "params": { "semitones": -3 }
+      }
+    },
+
+    "// OCTAVE SHIFT": "Shift by octaves",
+    "theme_octave_up": {
+      "transform": {
+        "source": "theme",
+        "operation": "octave",
+        "params": { "octaves": 1 }
+      }
+    },
+    "theme_octave_down": {
+      "transform": {
+        "source": "theme",
+        "operation": "octave",
+        "params": { "octaves": -1 }
+      }
+    },
+
+    "// COMBINED TRANSFORMS": "Retrograde inversion",
+    "theme_retrograde_inverted": {
+      "transform": {
+        "source": "theme_inverted",
+        "operation": "retrograde"
+      }
+    },
+
+    "// PATTERN INHERITANCE (v0.7)": "Extend patterns with overrides",
+    "main_melody": {
+      "notes": ["C4:q", "E4:q", "G4:h", "E4:q", "C4:q"]
+    },
+    "melody_loud": {
+      "extends": "main_melody",
+      "overrides": {
+        "velocity": 0.95
+      }
+    },
+    "melody_soft": {
+      "extends": "main_melody",
+      "overrides": {
+        "velocity": 0.4
+      }
+    },
+    "melody_high": {
+      "extends": "main_melody",
+      "overrides": {
+        "octave": 1
+      }
+    },
+    "melody_transposed": {
+      "extends": "main_melody",
+      "overrides": {
+        "transpose": 7
+      }
+    },
+
+    "// INHERITANCE CHAIN": "Pattern extending another extended pattern",
+    "melody_loud_high": {
+      "extends": "melody_loud",
+      "overrides": {
+        "octave": 1
+      }
+    },
+
+    "rest_2bar": {
+      "notes": ["r:w", "r:w"]
+    },
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "original_theme": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "theme" }
+      }
+    },
+    "transform_invert": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "theme_inverted" }
+      }
+    },
+    "transform_retrograde": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "theme_retrograde" }
+      }
+    },
+    "transform_augment": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "theme_augmented" }
+      }
+    },
+    "transform_diminish": {
+      "bars": 1,
+      "tracks": {
+        "lead": { "pattern": "theme_diminished" }
+      }
+    },
+    "transform_transpose": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "patterns": ["theme_transposed_up5", "theme_transposed_down3"] }
+      }
+    },
+    "transform_octave": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "patterns": ["theme_octave_up", "theme_octave_down"] }
+      }
+    },
+    "transform_combined": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "theme_retrograde_inverted" }
+      }
+    },
+    "inheritance_demo": {
+      "bars": 10,
+      "tracks": {
+        "lead": { "patterns": ["main_melody", "melody_loud", "melody_soft", "melody_high", "melody_transposed"] }
+      }
+    },
+    "inheritance_chain": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "melody_loud_high" }
+      }
+    }
+  },
+  "arrangement": [
+    "original_theme",
+    "transform_invert",
+    "transform_retrograde",
+    "transform_augment",
+    "transform_diminish",
+    "transform_transpose",
+    "transform_octave",
+    "transform_combined",
+    "inheritance_demo",
+    "inheritance_chain"
+  ]
+}

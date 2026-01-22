@@ -55,12 +55,17 @@ export function validateOrThrow(score: unknown): EtherScore {
   return score as EtherScore;
 }
 
+// Helper to check if a key is a comment
+function isComment(key: string): boolean {
+  return key.startsWith('//');
+}
+
 /**
  * Check if arrangement references valid sections
  */
 export function validateArrangement(score: EtherScore): ValidationResult {
   const errors: ValidationError[] = [];
-  const sectionNames = new Set(Object.keys(score.sections));
+  const sectionNames = new Set(Object.keys(score.sections).filter(k => !isComment(k)));
 
   for (let i = 0; i < score.arrangement.length; i++) {
     const sectionName = score.arrangement[i];
@@ -80,11 +85,19 @@ export function validateArrangement(score: EtherScore): ValidationResult {
  */
 export function validateReferences(score: EtherScore): ValidationResult {
   const errors: ValidationError[] = [];
-  const patternNames = new Set(Object.keys(score.patterns));
-  const instrumentNames = new Set(Object.keys(score.instruments || {}));
+  const patternNames = new Set(Object.keys(score.patterns).filter(k => !isComment(k)));
+  const instrumentNames = new Set(Object.keys(score.instruments || {}).filter(k => !isComment(k)));
 
   for (const [sectionName, section] of Object.entries(score.sections)) {
+    // Skip comment keys
+    if (isComment(sectionName)) continue;
+    if (!section || typeof section !== 'object' || !section.tracks) continue;
+
     for (const [trackName, track] of Object.entries(section.tracks)) {
+      // Skip comment keys
+      if (isComment(trackName)) continue;
+      if (!track || typeof track !== 'object') continue;
+
       // Check pattern reference
       if (track.pattern && !patternNames.has(track.pattern)) {
         errors.push({

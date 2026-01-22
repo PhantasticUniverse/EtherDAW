@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "title": "LFO Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests v0.8 LFO modulation: different rates (sync to tempo), shapes (sine, triangle, square, sawtooth), and targets (filterCutoff, pan, volume, pitch).",
+    "tags": ["benchmark", "lfo", "modulation", "v0.8"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// REFERENCE": "No LFO for comparison",
+    "dry": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ]
+    },
+
+    "// LFO RATES": "Different sync rates",
+    "lfo_rate_1n": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "1n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+    "lfo_rate_2n": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "2n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+    "lfo_rate_4n": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+    "lfo_rate_8n": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "8n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+    "lfo_rate_16n": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "16n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+
+    "// LFO SHAPES": "Different waveforms",
+    "lfo_shape_sine": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.6
+      }
+    },
+    "lfo_shape_triangle": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "triangle",
+        "target": "filterCutoff",
+        "depth": 0.6
+      }
+    },
+    "lfo_shape_square": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "square",
+        "target": "filterCutoff",
+        "depth": 0.6
+      }
+    },
+    "lfo_shape_sawtooth": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sawtooth",
+        "target": "filterCutoff",
+        "depth": 0.6
+      }
+    },
+
+    "// LFO TARGETS": "Different modulation destinations",
+    "lfo_target_filter": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 4 } }
+      ],
+      "lfo": {
+        "rate": "2n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.7
+      }
+    },
+    "lfo_target_pan": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "lfo": {
+        "rate": "2n",
+        "shape": "sine",
+        "target": "pan",
+        "depth": 0.8
+      }
+    },
+    "lfo_target_volume": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "volume",
+        "depth": 0.5
+      }
+    },
+    "lfo_target_pitch": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "lfo": {
+        "rate": "8n",
+        "shape": "sine",
+        "target": "pitch",
+        "depth": 0.1
+      }
+    },
+
+    "// LFO DEPTHS": "Different intensity levels",
+    "lfo_depth_subtle": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.2
+      }
+    },
+    "lfo_depth_moderate": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.5
+      }
+    },
+    "lfo_depth_extreme": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 1.0
+      }
+    }
+  },
+  "patterns": {
+    "sustained_chord": {
+      "chords": ["Am7:w", "Am7:w"]
+    },
+    "rest": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "reference": {
+      "bars": 2,
+      "tracks": {
+        "dry": { "pattern": "sustained_chord" }
+      }
+    },
+    "rates": {
+      "bars": 10,
+      "tracks": {
+        "lfo_rate_1n": { "patterns": ["sustained_chord", "rest", "rest", "rest", "rest"] },
+        "lfo_rate_2n": { "patterns": ["rest", "sustained_chord", "rest", "rest", "rest"] },
+        "lfo_rate_4n": { "patterns": ["rest", "rest", "sustained_chord", "rest", "rest"] },
+        "lfo_rate_8n": { "patterns": ["rest", "rest", "rest", "sustained_chord", "rest"] },
+        "lfo_rate_16n": { "patterns": ["rest", "rest", "rest", "rest", "sustained_chord"] }
+      }
+    },
+    "shapes": {
+      "bars": 8,
+      "tracks": {
+        "lfo_shape_sine": { "patterns": ["sustained_chord", "rest", "rest", "rest"] },
+        "lfo_shape_triangle": { "patterns": ["rest", "sustained_chord", "rest", "rest"] },
+        "lfo_shape_square": { "patterns": ["rest", "rest", "sustained_chord", "rest"] },
+        "lfo_shape_sawtooth": { "patterns": ["rest", "rest", "rest", "sustained_chord"] }
+      }
+    },
+    "targets": {
+      "bars": 8,
+      "tracks": {
+        "lfo_target_filter": { "patterns": ["sustained_chord", "rest", "rest", "rest"] },
+        "lfo_target_pan": { "patterns": ["rest", "sustained_chord", "rest", "rest"] },
+        "lfo_target_volume": { "patterns": ["rest", "rest", "sustained_chord", "rest"] },
+        "lfo_target_pitch": { "patterns": ["rest", "rest", "rest", "sustained_chord"] }
+      }
+    },
+    "depths": {
+      "bars": 6,
+      "tracks": {
+        "lfo_depth_subtle": { "patterns": ["sustained_chord", "rest", "rest"] },
+        "lfo_depth_moderate": { "patterns": ["rest", "sustained_chord", "rest"] },
+        "lfo_depth_extreme": { "patterns": ["rest", "rest", "sustained_chord"] }
+      }
+    }
+  },
+  "arrangement": [
+    "reference",
+    "rates",
+    "shapes",
+    "targets",
+    "depths"
+  ]
+}

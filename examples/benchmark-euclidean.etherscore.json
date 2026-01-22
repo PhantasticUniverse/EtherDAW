@@ -1,0 +1,282 @@
+{
+  "meta": {
+    "title": "Euclidean Rhythms Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests Euclidean rhythm generation: E(k,n) patterns, rotation parameter, drum vs melodic modes, and common world music patterns.",
+    "tags": ["benchmark", "euclidean", "rhythm", "algorithmic", "world-music"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:808",
+      "volume": -3
+    },
+    "percussion": {
+      "preset": "drums:acoustic",
+      "volume": -6
+    },
+    "melodic": {
+      "preset": "kalimba",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.3 }
+      ]
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// BASIC EUCLIDEAN": "E(k,n) - k hits in n steps",
+
+    "// E(3,8) - Tresillo (Cuban)": "x..x..x.",
+    "euclidean_3_8": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "drum": "rim"
+      }
+    },
+
+    "// E(5,8) - Cinquillo (Caribbean)": "x.xx.xx.",
+    "euclidean_5_8": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "clap"
+      }
+    },
+
+    "// E(7,12) - West African bell": "---",
+    "euclidean_7_12": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 12,
+        "duration": "8",
+        "drum": "cowbell"
+      }
+    },
+
+    "// E(7,16) - Brazilian samba": "---",
+    "euclidean_7_16": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 16,
+        "duration": "16",
+        "drum": "shaker"
+      }
+    },
+
+    "// E(5,16) - Bossa nova": "---",
+    "euclidean_5_16": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 16,
+        "duration": "16",
+        "drum": "hihat"
+      }
+    },
+
+    "// E(9,16) - 9 in 16 (dense)": "---",
+    "euclidean_9_16": {
+      "euclidean": {
+        "hits": 9,
+        "steps": 16,
+        "duration": "16",
+        "drum": "kick"
+      }
+    },
+
+    "// E(4,12) - Afro-Cuban": "---",
+    "euclidean_4_12": {
+      "euclidean": {
+        "hits": 4,
+        "steps": 12,
+        "duration": "8",
+        "drum": "tom_hi"
+      }
+    },
+
+    "// ROTATION PARAMETER": "Shift pattern start",
+
+    "euclidean_3_8_rot0": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "rotation": 0,
+        "duration": "8",
+        "drum": "snare"
+      }
+    },
+
+    "euclidean_3_8_rot1": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "rotation": 1,
+        "duration": "8",
+        "drum": "snare"
+      }
+    },
+
+    "euclidean_3_8_rot2": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "rotation": 2,
+        "duration": "8",
+        "drum": "snare"
+      }
+    },
+
+    "euclidean_3_8_rot3": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "rotation": 3,
+        "duration": "8",
+        "drum": "snare"
+      }
+    },
+
+    "// MELODIC EUCLIDEAN": "Use pitch instead of drum",
+
+    "euclidean_melodic_3_8": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "pitch": "D4"
+      }
+    },
+
+    "euclidean_melodic_5_8": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "pitch": "A3"
+      }
+    },
+
+    "euclidean_melodic_7_16": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 16,
+        "duration": "16",
+        "pitch": "F4"
+      }
+    },
+
+    "// POLYRHYTHMIC COMBINATION": "Multiple euclidean patterns together",
+
+    "poly_kick_3_8": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "drum": "kick"
+      }
+    },
+
+    "poly_hihat_5_8": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+
+    "poly_clap_2_8": {
+      "euclidean": {
+        "hits": 2,
+        "steps": 8,
+        "duration": "8",
+        "drum": "clap"
+      }
+    },
+
+    "// BASS EUCLIDEAN": "Rhythmic bass pattern",
+    "bass_euclidean": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 16,
+        "duration": "16",
+        "pitch": "D2"
+      }
+    },
+
+    "rest_1bar": {
+      "notes": ["r:w"]
+    },
+    "rest_2bar": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "basic_patterns": {
+      "bars": 14,
+      "tracks": {
+        "drums": { "patterns": [
+          "euclidean_3_8", "euclidean_3_8",
+          "euclidean_5_8", "euclidean_5_8",
+          "euclidean_7_12", "euclidean_7_12",
+          "euclidean_7_16",
+          "euclidean_5_16",
+          "euclidean_9_16",
+          "euclidean_4_12", "euclidean_4_12",
+          "rest_1bar", "rest_1bar", "rest_1bar"
+        ] }
+      }
+    },
+
+    "rotation_demo": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": [
+          "euclidean_3_8_rot0", "euclidean_3_8_rot0",
+          "euclidean_3_8_rot1", "euclidean_3_8_rot1",
+          "euclidean_3_8_rot2", "euclidean_3_8_rot2",
+          "euclidean_3_8_rot3", "euclidean_3_8_rot3"
+        ] }
+      }
+    },
+
+    "melodic_euclidean": {
+      "bars": 6,
+      "tracks": {
+        "melodic": { "patterns": [
+          "euclidean_melodic_3_8", "euclidean_melodic_3_8",
+          "euclidean_melodic_5_8", "euclidean_melodic_5_8",
+          "euclidean_melodic_7_16", "euclidean_melodic_7_16"
+        ] }
+      }
+    },
+
+    "polyrhythm": {
+      "bars": 4,
+      "tracks": {
+        "drums": {
+          "parallel": ["poly_kick_3_8", "poly_hihat_5_8", "poly_clap_2_8"],
+          "repeat": 4
+        },
+        "bass": { "pattern": "bass_euclidean", "repeat": 4 }
+      }
+    }
+  },
+  "arrangement": [
+    "basic_patterns",
+    "rotation_demo",
+    "melodic_euclidean",
+    "polyrhythm"
+  ]
+}

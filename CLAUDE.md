@@ -52,6 +52,12 @@ r:q            Rest
 - `voiceLead` - Voice-led progressions
 - `velocityEnvelope` - `crescendo`, `diminuendo`, `swell`
 
+**Drums shorthand (v0.81)**: `{ "kit": "909", "kick": "x...", "snare": "...x" }`
+
+**Drum aliases (v0.81)**: `openhat`→`hihat_open`, `closedhat`→`hihat`, `bd`→`kick`
+
+**Noise presets (v0.81)**: `noise`, `pink_noise`, `brown_noise`, `vinyl_crackle`, `noise_sweep`
+
 ## Track Options
 
 ```json
@@ -66,17 +72,49 @@ r:q            Rest
 |------|---------|
 | `docs/ETHERSCORE_FORMAT.md` | Complete format spec |
 | `docs/DEVELOPMENT.md` | Dev guide (validation, adding features) |
+| `docs/LLM_COMPOSER_GUIDE.md` | Practical guide for AI composers |
+| `docs/SPECTROGRAM_WORKFLOW.md` | Visual verification workflow |
 | `src/synthesis/presets.ts` | 62 synth presets |
 | `src/validation/validator.ts` | Two-layer validation |
-| `examples/*.etherscore.json` | Compositions |
+| `src/analysis/benchmark-verifier.ts` | Audio verification tools |
+| `examples/benchmark-*.etherscore.json` | Feature benchmarks (11 files) |
+| `examples/archive/*.etherscore.json` | Full compositions |
 
 ## Commands
 
 ```bash
-npm run build:all     # Full build
-npm test              # Tests
-open player.html      # Listen
+npm run build:all          # Full build
+npm test                   # Tests
+npm run generate:benchmarks # MIDI export + analysis
+npm run generate:references # Reference signal spectrograms
+open player.html           # Listen
 ```
+
+## Verification Workflow
+
+1. **Validate**: `npx tsx src/cli.ts validate myfile.etherscore.json`
+2. **Compile**: `npx tsx src/cli.ts compile myfile.etherscore.json`
+3. **Listen**: Open `player.html`, load file, play
+4. **Analyze**: Use benchmark verifier for automated checks
+
+**Analysis tools** (`src/analysis/benchmark-verifier.ts`):
+- `verifyFrequencyContent()` - Check expected frequency range
+- `verifyTiming()` - Verify note onset timing
+- `verifyDynamics()` - Check amplitude envelope
+- `detectArtifacts()` - Find clicks, pops, DC offset
+
+## Composition Philosophy
+
+When composing and hitting a limitation:
+1. **Don't work around it** - Don't change your intended composition to fit DAW limitations
+2. **Improve the DAW** - Add the missing feature, preset, or syntax support
+3. **Document the change** - Update docs/DEVELOPMENT.md changelog
+4. **Test thoroughly** - Run tests, validate compositions, listen in browser
+
+Examples of DAW improvements over workarounds:
+- Missing `openhat` drum name? Add drum aliases, not rename in composition
+- No noise presets? Add them to presets.ts, not use a different sound
+- Drums require verbose `"lines"` wrapper? Add shorthand detection
 
 ## Conventions
 

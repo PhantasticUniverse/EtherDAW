@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "title": "Synthesis Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests all synth presets. Each plays C4 for one whole note at 60 BPM (4 seconds per note). Use for visual/audio comparison after code changes.",
+    "tags": ["benchmark", "synthesis", "presets"]
+  },
+  "settings": {
+    "tempo": 60,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// BASIC WAVEFORMS": "Fundamental oscillator types",
+    "synth": { "preset": "synth", "volume": -6 },
+    "sine": { "preset": "sine", "volume": -6 },
+    "square": { "preset": "square", "volume": -6 },
+    "sawtooth": { "preset": "sawtooth", "volume": -6 },
+
+    "// BASS": "Bass presets",
+    "synth_bass": { "preset": "synth_bass", "volume": -6 },
+    "sub_bass": { "preset": "sub_bass", "volume": -6 },
+    "pluck_bass": { "preset": "pluck_bass", "volume": -6 },
+    "fm_bass": { "preset": "fm_bass", "volume": -6 },
+
+    "// PADS": "Pad presets",
+    "warm_pad": { "preset": "warm_pad", "volume": -6 },
+    "string_pad": { "preset": "string_pad", "volume": -6 },
+    "ambient_pad": { "preset": "ambient_pad", "volume": -6 },
+
+    "// LEADS": "Lead presets",
+    "lead": { "preset": "lead", "volume": -6 },
+    "soft_lead": { "preset": "soft_lead", "volume": -6 },
+
+    "// KEYS": "Keyboard presets",
+    "electric_piano": { "preset": "electric_piano", "volume": -6 },
+    "organ": { "preset": "organ", "volume": -6 },
+
+    "// PLUCKED": "Plucked/percussive presets",
+    "pluck": { "preset": "pluck", "volume": -6 },
+    "bell": { "preset": "bell", "volume": -6 },
+    "marimba": { "preset": "marimba", "volume": -6 },
+
+    "// FM SYNTHESIS": "DX7-style FM presets",
+    "fm_epiano": { "preset": "fm_epiano", "volume": -6 },
+    "fm_brass": { "preset": "fm_brass", "volume": -6 },
+    "fm_church_bell": { "preset": "fm_church_bell", "volume": -6 },
+    "fm_tubular_bell": { "preset": "fm_tubular_bell", "volume": -6 },
+    "fm_glass": { "preset": "fm_glass", "volume": -6 },
+    "fm_vibraphone": { "preset": "fm_vibraphone", "volume": -6 },
+    "fm_organ": { "preset": "fm_organ", "volume": -6 },
+    "fm_bell": { "preset": "fm_bell", "volume": -6 },
+
+    "// SYNTHWAVE": "80s-style presets",
+    "synthwave_bass": { "preset": "synthwave_bass", "volume": -6 },
+    "synthwave_lead": { "preset": "synthwave_lead", "volume": -6 },
+    "synthwave_stab": { "preset": "synthwave_stab", "volume": -6 },
+    "synthwave_pad": { "preset": "synthwave_pad", "volume": -6 },
+    "arp_synth": { "preset": "arp_synth", "volume": -6 },
+
+    "// LOFI": "Lo-fi aesthetic presets",
+    "lofi_keys": { "preset": "lofi_keys", "volume": -6 },
+    "lofi_pad": { "preset": "lofi_pad", "volume": -6 },
+    "vinyl_texture": { "preset": "vinyl_texture", "volume": -6 },
+    "dusty_piano": { "preset": "dusty_piano", "volume": -6 },
+
+    "// CINEMATIC": "Film score presets",
+    "cinematic_brass": { "preset": "cinematic_brass", "volume": -6 },
+    "tension_strings": { "preset": "tension_strings", "volume": -6 },
+    "impact_hit": { "preset": "impact_hit", "volume": -6 },
+    "epic_pad": { "preset": "epic_pad", "volume": -6 },
+    "riser": { "preset": "riser", "volume": -6 },
+
+    "// WORLD": "World instrument presets",
+    "kalimba": { "preset": "kalimba", "volume": -6 },
+    "sitar_lead": { "preset": "sitar_lead", "volume": -6 },
+    "steel_drum": { "preset": "steel_drum", "volume": -6 },
+    "koto": { "preset": "koto", "volume": -6 },
+
+    "// AMBIENT": "Atmospheric presets",
+    "granular_pad": { "preset": "granular_pad", "volume": -6 },
+    "drone": { "preset": "drone", "volume": -6 },
+    "shimmer": { "preset": "shimmer", "volume": -6 },
+    "atmosphere": { "preset": "atmosphere", "volume": -6 },
+    "space_pad": { "preset": "space_pad", "volume": -6 },
+
+    "// MODERN": "Contemporary electronic presets",
+    "trap_hihat": { "preset": "trap_hihat", "volume": -6 },
+    "future_bass_lead": { "preset": "future_bass_lead", "volume": -6 },
+    "wobble_bass": { "preset": "wobble_bass", "volume": -6 },
+    "pluck_lead": { "preset": "pluck_lead", "volume": -6 },
+    "supersaw": { "preset": "supersaw", "volume": -6 },
+    "chiptune": { "preset": "chiptune", "volume": -6 }
+  },
+  "patterns": {
+    "single_note": { "notes": ["C4:w"] },
+    "single_note_bass": { "notes": ["C2:w"] },
+    "rest": { "notes": ["r:w"] }
+  },
+  "sections": {
+    "basic_waveforms": {
+      "bars": 4,
+      "tracks": {
+        "synth": { "patterns": ["single_note", "rest", "rest", "rest"] },
+        "sine": { "patterns": ["rest", "single_note", "rest", "rest"] },
+        "square": { "patterns": ["rest", "rest", "single_note", "rest"] },
+        "sawtooth": { "patterns": ["rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "bass_presets": {
+      "bars": 4,
+      "tracks": {
+        "synth_bass": { "patterns": ["single_note_bass", "rest", "rest", "rest"] },
+        "sub_bass": { "patterns": ["rest", "single_note_bass", "rest", "rest"] },
+        "pluck_bass": { "patterns": ["rest", "rest", "single_note_bass", "rest"] },
+        "fm_bass": { "patterns": ["rest", "rest", "rest", "single_note_bass"] }
+      }
+    },
+    "pad_presets": {
+      "bars": 3,
+      "tracks": {
+        "warm_pad": { "patterns": ["single_note", "rest", "rest"] },
+        "string_pad": { "patterns": ["rest", "single_note", "rest"] },
+        "ambient_pad": { "patterns": ["rest", "rest", "single_note"] }
+      }
+    },
+    "lead_presets": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "patterns": ["single_note", "rest"] },
+        "soft_lead": { "patterns": ["rest", "single_note"] }
+      }
+    },
+    "keys_presets": {
+      "bars": 2,
+      "tracks": {
+        "electric_piano": { "patterns": ["single_note", "rest"] },
+        "organ": { "patterns": ["rest", "single_note"] }
+      }
+    },
+    "plucked_presets": {
+      "bars": 3,
+      "tracks": {
+        "pluck": { "patterns": ["single_note", "rest", "rest"] },
+        "bell": { "patterns": ["rest", "single_note", "rest"] },
+        "marimba": { "patterns": ["rest", "rest", "single_note"] }
+      }
+    },
+    "fm_presets": {
+      "bars": 8,
+      "tracks": {
+        "fm_epiano": { "patterns": ["single_note", "rest", "rest", "rest", "rest", "rest", "rest", "rest"] },
+        "fm_brass": { "patterns": ["rest", "single_note", "rest", "rest", "rest", "rest", "rest", "rest"] },
+        "fm_church_bell": { "patterns": ["rest", "rest", "single_note", "rest", "rest", "rest", "rest", "rest"] },
+        "fm_tubular_bell": { "patterns": ["rest", "rest", "rest", "single_note", "rest", "rest", "rest", "rest"] },
+        "fm_glass": { "patterns": ["rest", "rest", "rest", "rest", "single_note", "rest", "rest", "rest"] },
+        "fm_vibraphone": { "patterns": ["rest", "rest", "rest", "rest", "rest", "single_note", "rest", "rest"] },
+        "fm_organ": { "patterns": ["rest", "rest", "rest", "rest", "rest", "rest", "single_note", "rest"] },
+        "fm_bell": { "patterns": ["rest", "rest", "rest", "rest", "rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "synthwave_presets": {
+      "bars": 5,
+      "tracks": {
+        "synthwave_bass": { "patterns": ["single_note_bass", "rest", "rest", "rest", "rest"] },
+        "synthwave_lead": { "patterns": ["rest", "single_note", "rest", "rest", "rest"] },
+        "synthwave_stab": { "patterns": ["rest", "rest", "single_note", "rest", "rest"] },
+        "synthwave_pad": { "patterns": ["rest", "rest", "rest", "single_note", "rest"] },
+        "arp_synth": { "patterns": ["rest", "rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "lofi_presets": {
+      "bars": 4,
+      "tracks": {
+        "lofi_keys": { "patterns": ["single_note", "rest", "rest", "rest"] },
+        "lofi_pad": { "patterns": ["rest", "single_note", "rest", "rest"] },
+        "vinyl_texture": { "patterns": ["rest", "rest", "single_note", "rest"] },
+        "dusty_piano": { "patterns": ["rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "cinematic_presets": {
+      "bars": 5,
+      "tracks": {
+        "cinematic_brass": { "patterns": ["single_note", "rest", "rest", "rest", "rest"] },
+        "tension_strings": { "patterns": ["rest", "single_note", "rest", "rest", "rest"] },
+        "impact_hit": { "patterns": ["rest", "rest", "single_note", "rest", "rest"] },
+        "epic_pad": { "patterns": ["rest", "rest", "rest", "single_note", "rest"] },
+        "riser": { "patterns": ["rest", "rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "world_presets": {
+      "bars": 4,
+      "tracks": {
+        "kalimba": { "patterns": ["single_note", "rest", "rest", "rest"] },
+        "sitar_lead": { "patterns": ["rest", "single_note", "rest", "rest"] },
+        "steel_drum": { "patterns": ["rest", "rest", "single_note", "rest"] },
+        "koto": { "patterns": ["rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "ambient_presets": {
+      "bars": 5,
+      "tracks": {
+        "granular_pad": { "patterns": ["single_note", "rest", "rest", "rest", "rest"] },
+        "drone": { "patterns": ["rest", "single_note", "rest", "rest", "rest"] },
+        "shimmer": { "patterns": ["rest", "rest", "single_note", "rest", "rest"] },
+        "atmosphere": { "patterns": ["rest", "rest", "rest", "single_note", "rest"] },
+        "space_pad": { "patterns": ["rest", "rest", "rest", "rest", "single_note"] }
+      }
+    },
+    "modern_presets": {
+      "bars": 6,
+      "tracks": {
+        "trap_hihat": { "patterns": ["single_note", "rest", "rest", "rest", "rest", "rest"] },
+        "future_bass_lead": { "patterns": ["rest", "single_note", "rest", "rest", "rest", "rest"] },
+        "wobble_bass": { "patterns": ["rest", "rest", "single_note_bass", "rest", "rest", "rest"] },
+        "pluck_lead": { "patterns": ["rest", "rest", "rest", "single_note", "rest", "rest"] },
+        "supersaw": { "patterns": ["rest", "rest", "rest", "rest", "single_note", "rest"] },
+        "chiptune": { "patterns": ["rest", "rest", "rest", "rest", "rest", "single_note"] }
+      }
+    }
+  },
+  "arrangement": [
+    "basic_waveforms",
+    "bass_presets",
+    "pad_presets",
+    "lead_presets",
+    "keys_presets",
+    "plucked_presets",
+    "fm_presets",
+    "synthwave_presets",
+    "lofi_presets",
+    "cinematic_presets",
+    "world_presets",
+    "ambient_presets",
+    "modern_presets"
+  ]
+}

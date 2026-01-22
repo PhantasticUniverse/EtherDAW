@@ -1,0 +1,25 @@
+{
+  "benchmark": "benchmark-transforms",
+  "title": "Pattern Transforms Benchmark",
+  "description": "Tests pattern transformations (invert, retrograde, augment, diminish, transpose, octave) and pattern inheritance (extends/overrides).",
+  "features": [
+    "transforms",
+    "patterns",
+    "inheritance",
+    "v0.3",
+    "v0.7"
+  ],
+  "duration": 73.19999999999999,
+  "tempo": 100,
+  "key": "D minor",
+  "sections": 10,
+  "patterns": 18,
+  "notes": 30,
+  "instruments": [
+    "lead"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.678Z",
+  "expectedCharacteristics": {
+    "transforms": "Inversions should mirror, retrogrades reverse timing"
+  }
+}

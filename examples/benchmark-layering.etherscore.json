@@ -1,0 +1,172 @@
+{
+  "meta": {
+    "title": "Layering Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests v0.8 instrument layering: multiple presets stacked, detune offsets, octave doubling, and volume balancing.",
+    "tags": ["benchmark", "layering", "v0.8"]
+  },
+  "settings": {
+    "tempo": 80,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// SINGLE PRESETS": "Reference sounds without layering",
+    "piano_single": {
+      "preset": "electric_piano",
+      "volume": -6
+    },
+    "pad_single": {
+      "preset": "warm_pad",
+      "volume": -6
+    },
+    "lead_single": {
+      "preset": "soft_lead",
+      "volume": -6
+    },
+
+    "// BASIC LAYERING": "Two sounds combined",
+    "piano_layered": {
+      "layers": [
+        { "preset": "electric_piano", "volume": 0 },
+        { "preset": "bell", "volume": -6 }
+      ],
+      "volume": -6
+    },
+    "pad_layered": {
+      "layers": [
+        { "preset": "warm_pad", "volume": 0 },
+        { "preset": "string_pad", "volume": -3 }
+      ],
+      "volume": -6
+    },
+    "lead_layered": {
+      "layers": [
+        { "preset": "soft_lead", "volume": 0 },
+        { "preset": "sawtooth", "volume": -6 }
+      ],
+      "volume": -6
+    },
+
+    "// DETUNE LAYERING": "Subtle pitch differences for width",
+    "detuned_unison": {
+      "layers": [
+        { "preset": "sawtooth", "volume": 0, "detune": 0 },
+        { "preset": "sawtooth", "volume": 0, "detune": 10 },
+        { "preset": "sawtooth", "volume": 0, "detune": -10 }
+      ],
+      "volume": -9
+    },
+    "detuned_wide": {
+      "layers": [
+        { "preset": "sawtooth", "volume": 0, "detune": 0 },
+        { "preset": "sawtooth", "volume": 0, "detune": 25 },
+        { "preset": "sawtooth", "volume": 0, "detune": -25 }
+      ],
+      "volume": -9
+    },
+
+    "// OCTAVE LAYERING": "Different octave combinations",
+    "octave_double": {
+      "layers": [
+        { "preset": "pluck", "volume": 0, "octave": 0 },
+        { "preset": "pluck", "volume": -3, "octave": 1 }
+      ],
+      "volume": -6
+    },
+    "octave_sub": {
+      "layers": [
+        { "preset": "synth_bass", "volume": 0, "octave": 0 },
+        { "preset": "sub_bass", "volume": -3, "octave": -1 }
+      ],
+      "volume": -6
+    },
+
+    "// COMPLEX LAYERING": "Multiple techniques combined",
+    "supersaw_stack": {
+      "layers": [
+        { "preset": "sawtooth", "volume": 0, "detune": 0 },
+        { "preset": "sawtooth", "volume": -3, "detune": 7, "octave": 0 },
+        { "preset": "sawtooth", "volume": -3, "detune": -7, "octave": 0 },
+        { "preset": "sawtooth", "volume": -6, "detune": 12, "octave": 1 },
+        { "preset": "sawtooth", "volume": -6, "detune": -12, "octave": -1 }
+      ],
+      "volume": -12
+    },
+    "hybrid_pad": {
+      "layers": [
+        { "preset": "warm_pad", "volume": 0 },
+        { "preset": "ambient_pad", "volume": -3, "octave": 1 },
+        { "preset": "drone", "volume": -9, "octave": -1 }
+      ],
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "test_chord": {
+      "chords": ["Am7:w", "Dm7:w"]
+    },
+    "test_melody": {
+      "notes": ["C4:q", "E4:q", "G4:q", "C5:q", "B4:q", "G4:q", "E4:q", "C4:q"]
+    },
+    "sustained_note": {
+      "notes": ["C4:w", "C4:w"]
+    },
+    "rest": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "piano_comparison": {
+      "bars": 4,
+      "tracks": {
+        "piano_single": { "patterns": ["test_melody", "rest"] },
+        "piano_layered": { "patterns": ["rest", "test_melody"] }
+      }
+    },
+    "pad_comparison": {
+      "bars": 4,
+      "tracks": {
+        "pad_single": { "patterns": ["test_chord", "rest"] },
+        "pad_layered": { "patterns": ["rest", "test_chord"] }
+      }
+    },
+    "lead_comparison": {
+      "bars": 4,
+      "tracks": {
+        "lead_single": { "patterns": ["test_melody", "rest"] },
+        "lead_layered": { "patterns": ["rest", "test_melody"] }
+      }
+    },
+    "detune_comparison": {
+      "bars": 4,
+      "tracks": {
+        "detuned_unison": { "patterns": ["sustained_note", "rest"] },
+        "detuned_wide": { "patterns": ["rest", "sustained_note"] }
+      }
+    },
+    "octave_comparison": {
+      "bars": 4,
+      "tracks": {
+        "octave_double": { "patterns": ["test_melody", "rest"] },
+        "octave_sub": { "patterns": ["rest", "test_melody"] }
+      }
+    },
+    "complex_layering": {
+      "bars": 4,
+      "tracks": {
+        "supersaw_stack": { "patterns": ["sustained_note", "rest"] },
+        "hybrid_pad": { "patterns": ["rest", "test_chord"] }
+      }
+    }
+  },
+  "arrangement": [
+    "piano_comparison",
+    "pad_comparison",
+    "lead_comparison",
+    "detune_comparison",
+    "octave_comparison",
+    "complex_layering"
+  ]
+}

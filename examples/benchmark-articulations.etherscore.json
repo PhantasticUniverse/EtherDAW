@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "title": "Articulations Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests note articulations (staccato, legato, accent, marcato), jazz articulations (fall, doit, scoop, bend), and ornaments (trill, mordent, turn).",
+    "tags": ["benchmark", "articulations", "ornaments", "expression"]
+  },
+  "settings": {
+    "tempo": 80,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25, "options": { "decay": 1.5 } }
+      ]
+    },
+    "brass": {
+      "preset": "fm_brass",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    }
+  },
+  "patterns": {
+    "// REFERENCE": "Plain notes for comparison",
+    "plain_notes": {
+      "notes": ["C4:q", "D4:q", "E4:q", "F4:q", "G4:q", "A4:q", "B4:q", "C5:q"]
+    },
+
+    "// BASIC ARTICULATIONS": "Standard markings",
+    "staccato_notes": {
+      "notes": ["C4:q*", "D4:q*", "E4:q*", "F4:q*", "G4:q*", "A4:q*", "B4:q*", "C5:q*"]
+    },
+    "legato_notes": {
+      "notes": ["C4:q~", "D4:q~", "E4:q~", "F4:q~", "G4:q~", "A4:q~", "B4:q~", "C5:q~"]
+    },
+    "accent_notes": {
+      "notes": ["C4:q>", "D4:q>", "E4:q>", "F4:q>", "G4:q>", "A4:q>", "B4:q>", "C5:q>"]
+    },
+    "marcato_notes": {
+      "notes": ["C4:q^", "D4:q^", "E4:q^", "F4:q^", "G4:q^", "A4:q^", "B4:q^", "C5:q^"]
+    },
+
+    "// JAZZ ARTICULATIONS": "Brass/wind ornaments",
+    "fall_notes": {
+      "notes": ["C4:q.fall", "E4:q.fall", "G4:q.fall", "C5:q.fall"]
+    },
+    "doit_notes": {
+      "notes": ["C4:q.doit", "E4:q.doit", "G4:q.doit", "C5:q.doit"]
+    },
+    "scoop_notes": {
+      "notes": ["C4:q.scoop", "E4:q.scoop", "G4:q.scoop", "C5:q.scoop"]
+    },
+    "bend_notes": {
+      "notes": ["C4:q.bend+2", "E4:q.bend+1", "G4:q.bend-1", "C5:q.bend-2"]
+    },
+
+    "// ORNAMENTS": "Classical embellishments",
+    "trill_notes": {
+      "notes": ["C4:h.tr", "E4:h.tr", "G4:h.tr", "C5:h.tr"]
+    },
+    "mordent_notes": {
+      "notes": ["C4:h.mord", "E4:h.mord", "G4:h.mord", "C5:h.mord"]
+    },
+    "turn_notes": {
+      "notes": ["C4:h.turn", "E4:h.turn", "G4:h.turn", "C5:h.turn"]
+    },
+
+    "// PORTAMENTO": "Pitch glide",
+    "portamento_notes": {
+      "notes": ["C4:q~>", "E4:q~>", "G4:q~>", "C5:q"]
+    },
+
+    "// COMBINED": "Multiple articulations",
+    "combined_staccato_accent": {
+      "notes": ["C4:q*>", "E4:q*>", "G4:q*>", "C5:q*>"]
+    },
+    "combined_legato_accent": {
+      "notes": ["C4:q~>", "D4:q~>", "E4:q~>", "F4:q~>"]
+    },
+
+    "// COMPARISON PHRASES": "Same phrase with different articulations",
+    "phrase_plain": {
+      "notes": ["C4:8", "D4:8", "E4:8", "F4:8", "G4:q", "E4:h"]
+    },
+    "phrase_staccato": {
+      "notes": ["C4:8*", "D4:8*", "E4:8*", "F4:8*", "G4:q*", "E4:h"]
+    },
+    "phrase_legato": {
+      "notes": ["C4:8~", "D4:8~", "E4:8~", "F4:8~", "G4:q~", "E4:h"]
+    },
+    "phrase_accented": {
+      "notes": ["C4:8>", "D4:8>", "E4:8>", "F4:8>", "G4:q>", "E4:h"]
+    }
+  },
+  "sections": {
+    "basic_articulations": {
+      "bars": 10,
+      "tracks": {
+        "lead": { "patterns": ["plain_notes", "staccato_notes", "legato_notes", "accent_notes", "marcato_notes"] }
+      }
+    },
+    "jazz_articulations": {
+      "bars": 4,
+      "tracks": {
+        "brass": { "patterns": ["fall_notes", "doit_notes", "scoop_notes", "bend_notes"] }
+      }
+    },
+    "ornaments": {
+      "bars": 6,
+      "tracks": {
+        "lead": { "patterns": ["trill_notes", "mordent_notes", "turn_notes"] }
+      }
+    },
+    "portamento_section": {
+      "bars": 1,
+      "tracks": {
+        "lead": { "pattern": "portamento_notes" }
+      }
+    },
+    "combined_section": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "patterns": ["combined_staccato_accent", "combined_legato_accent"] }
+      }
+    },
+    "phrase_comparison": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "patterns": ["phrase_plain", "phrase_staccato", "phrase_legato", "phrase_accented"] }
+      }
+    }
+  },
+  "arrangement": [
+    "basic_articulations",
+    "jazz_articulations",
+    "ornaments",
+    "portamento_section",
+    "combined_section",
+    "phrase_comparison"
+  ]
+}

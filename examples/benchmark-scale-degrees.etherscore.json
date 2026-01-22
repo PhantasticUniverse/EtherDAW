@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "title": "Scale Degrees Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests scale degree notation (1-7), chromatic alterations (b3, #4), octave modifiers (+/-), and constrainToScale behavior.",
+    "tags": ["benchmark", "scale-degrees", "theory", "patterns", "v0.3"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "fm_epiano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// BASIC SCALE DEGREES": "1-7 in C major = C D E F G A B",
+
+    "degrees_ascending": {
+      "degrees": ["1:q", "2:q", "3:q", "4:q", "5:q", "6:q", "7:q", "8:q"]
+    },
+
+    "degrees_descending": {
+      "degrees": ["8:q", "7:q", "6:q", "5:q", "4:q", "3:q", "2:q", "1:q"]
+    },
+
+    "degrees_triad": {
+      "degrees": ["1:h", "3:h", "5:h", "3:h", "1:w"]
+    },
+
+    "degrees_7th_chord": {
+      "degrees": ["1:q", "3:q", "5:q", "7:q", "5:q", "3:q", "1:h"]
+    },
+
+    "// CHROMATIC ALTERATIONS": "b = flat, # = sharp",
+
+    "degrees_minor_third": {
+      "degrees": ["1:q", "2:q", "b3:h", "4:q", "5:q", "b3:h", "1:w"]
+    },
+
+    "degrees_lydian_fourth": {
+      "degrees": ["1:q", "2:q", "3:q", "#4:q", "5:q", "6:q", "7:q", "8:q"]
+    },
+
+    "degrees_blues_scale": {
+      "degrees": ["1:q", "b3:q", "4:q", "b5:q", "5:q", "b7:q", "8:h"]
+    },
+
+    "degrees_chromatic_line": {
+      "degrees": ["1:q", "#1:q", "2:q", "#2:q", "3:q", "4:q", "#4:q", "5:q"]
+    },
+
+    "// OCTAVE MODIFIERS": "+ = octave up, - = octave down",
+
+    "degrees_wide_range": {
+      "degrees": ["1-:h", "5:h", "1:h", "5+:h"]
+    },
+
+    "degrees_bass_walk": {
+      "degrees": ["1-:q", "2-:q", "3-:q", "4-:q", "5-:q", "6-:q", "7-:q", "1:q"]
+    },
+
+    "degrees_high_melody": {
+      "degrees": ["1+:q", "3+:q", "5+:h", "6+:q", "5+:q", "3+:h"]
+    },
+
+    "// COMBINED ALTERATIONS AND OCTAVES": "e.g., b7- = flat 7th, octave down",
+
+    "degrees_combined": {
+      "degrees": ["1-:q", "5-:q", "b7-:q", "1:q", "b3:q", "5:q", "b7:q", "1+:h"]
+    },
+
+    "// RHYTHM ARRAY SYNTAX": "Separate degrees from rhythm",
+
+    "degrees_with_rhythm_array": {
+      "degrees": [1, 3, 5, 8, 5, 3, 1],
+      "rhythm": ["q", "q", "q", "h", "q", "q", "w"]
+    },
+
+    "// CONSTRAIN TO SCALE": "Out-of-key notes snap to scale",
+
+    "unconstrained_chromatic": {
+      "notes": ["C4:q", "C#4:q", "D4:q", "D#4:q", "E4:q", "F4:q", "F#4:q", "G4:q"]
+    },
+
+    "constrained_chromatic": {
+      "notes": ["C4:q", "C#4:q", "D4:q", "D#4:q", "E4:q", "F4:q", "F#4:q", "G4:q"],
+      "constrainToScale": true
+    },
+
+    "rest_2bar": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "basic_degrees": {
+      "bars": 8,
+      "key": "C major",
+      "tracks": {
+        "lead": { "patterns": ["degrees_ascending", "degrees_descending", "degrees_triad", "degrees_7th_chord"] }
+      }
+    },
+
+    "chromatic_alterations": {
+      "bars": 8,
+      "key": "C major",
+      "tracks": {
+        "lead": { "patterns": ["degrees_minor_third", "degrees_lydian_fourth", "degrees_blues_scale", "degrees_chromatic_line"] }
+      }
+    },
+
+    "octave_modifiers": {
+      "bars": 6,
+      "key": "C major",
+      "tracks": {
+        "lead": { "patterns": ["degrees_wide_range", "degrees_high_melody"] },
+        "bass": { "patterns": ["degrees_bass_walk", "rest_2bar"] }
+      }
+    },
+
+    "combined_modifiers": {
+      "bars": 2,
+      "key": "C major",
+      "tracks": {
+        "lead": { "pattern": "degrees_combined" }
+      }
+    },
+
+    "rhythm_array": {
+      "bars": 2,
+      "key": "C major",
+      "tracks": {
+        "lead": { "pattern": "degrees_with_rhythm_array" }
+      }
+    },
+
+    "// KEY CHANGE DEMO": "Same degrees, different keys",
+
+    "degrees_in_g_major": {
+      "bars": 2,
+      "key": "G major",
+      "tracks": {
+        "lead": { "pattern": "degrees_ascending" }
+      }
+    },
+
+    "degrees_in_d_minor": {
+      "bars": 2,
+      "key": "D minor",
+      "tracks": {
+        "lead": { "pattern": "degrees_ascending" }
+      }
+    },
+
+    "degrees_in_f_lydian": {
+      "bars": 2,
+      "key": "F lydian",
+      "tracks": {
+        "lead": { "pattern": "degrees_ascending" }
+      }
+    },
+
+    "// SCALE CONSTRAINT COMPARISON": "---",
+
+    "unconstrained_section": {
+      "bars": 2,
+      "key": "C major",
+      "tracks": {
+        "lead": { "pattern": "unconstrained_chromatic" }
+      }
+    },
+
+    "constrained_section": {
+      "bars": 2,
+      "key": "C major",
+      "tracks": {
+        "lead": { "pattern": "constrained_chromatic" }
+      }
+    }
+  },
+  "arrangement": [
+    "basic_degrees",
+    "chromatic_alterations",
+    "octave_modifiers",
+    "combined_modifiers",
+    "rhythm_array",
+    "degrees_in_g_major",
+    "degrees_in_d_minor",
+    "degrees_in_f_lydian",
+    "unconstrained_section",
+    "constrained_section"
+  ]
+}

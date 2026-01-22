@@ -33,7 +33,7 @@ export interface RenderOptions {
  * Active instrument with effects chain (v0.8: added layer synth, LFO, EQ, compression, sidechain)
  */
 interface ActiveInstrument {
-  synth: Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | LayerSynth;
+  synth: Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | Tone.NoiseSynth | LayerSynth;
   effects: Tone.ToneAudioNode[];
   channel: Tone.Channel;
   // v0.8: Additional mixing components
@@ -93,7 +93,7 @@ export class ToneRenderer {
       const presetName = def?.preset || 'synth';
 
       // v0.8: Check if this is a layered instrument
-      let synth: Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | LayerSynth;
+      let synth: Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | Tone.NoiseSynth | LayerSynth;
       let isLayered = false;
 
       if (def?.layers && def.layers.length > 0) {
@@ -553,7 +553,7 @@ export class ToneRenderer {
 
     return await Tone.Offline(async ({ transport }) => {
       // Recreate instruments in offline context
-      const offlineInstruments = new Map<string, Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth>();
+      const offlineInstruments = new Map<string, Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | Tone.NoiseSynth>();
       const offlineDrumPools = new Map<string, DrumSynthPool>();
 
       for (const name of timeline.instruments) {

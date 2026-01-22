@@ -1,0 +1,26 @@
+{
+  "benchmark": "benchmark-voice-leading",
+  "title": "Voice Leading Benchmark",
+  "description": "Tests constraint-based voice leading with 4-voice chorale, style presets (bach, jazz, pop), and custom voice ranges.",
+  "features": [
+    "voice-leading",
+    "chorale",
+    "constraints",
+    "v0.6"
+  ],
+  "duration": 143.33333333333334,
+  "tempo": 72,
+  "key": "C major",
+  "sections": 7,
+  "patterns": 8,
+  "notes": 168,
+  "instruments": [
+    "chorale",
+    "jazz_piano",
+    "pop_synth"
+  ],
+  "compiledAt": "2026-01-22T15:15:35.539Z",
+  "expectedCharacteristics": {
+    "voiceLeading": "Smooth transitions between chords, no parallel fifths in Bach style"
+  }
+}

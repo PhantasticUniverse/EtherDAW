@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "title": "Signal",
+    "composer": "Claude (v0.81)",
+    "genre": "techno",
+    "description": "Driving 4/4 techno with 909 drums, acid bassline, and noise sweeps. Demonstrates v0.81 features: drum shorthand, noise presets, and drum aliases.",
+    "tags": ["techno", "v0.81", "drums", "noise", "acid"]
+  },
+  "settings": {
+    "tempo": 130,
+    "key": "E minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": -9
+    },
+    "acid": {
+      "preset": "acid_bass",
+      "volume": -12,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 8 } },
+        { "type": "distortion", "wet": 0.3, "options": { "amount": 0.4 } }
+      ],
+      "lfo": {
+        "rate": "4n",
+        "shape": "sawtooth",
+        "target": "filterCutoff",
+        "depth": 0.6
+      }
+    },
+    "pad": {
+      "preset": "dark_pad",
+      "volume": -18,
+      "effects": [
+        { "type": "reverb", "wet": 0.4 }
+      ]
+    },
+    "riser": {
+      "preset": "noise_sweep",
+      "volume": -15,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 4000, "type": "highpass", "Q": 2 } },
+        { "type": "reverb", "wet": 0.5 }
+      ]
+    },
+    "stab": {
+      "preset": "fm_brass",
+      "volume": -15,
+      "effects": [
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// DRUMS": "Using v0.81 shorthand notation and aliases",
+    "kick_4x4": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x..."
+      }
+    },
+    "full_beat": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x...",
+        "openhat": "..x...x...x...x.",
+        "closedhat": "x.x.x.x.x.x.x.x."
+      }
+    },
+    "beat_with_clap": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x...",
+        "clap": "....x.......x...",
+        "openhat": "..x...x...x...x.",
+        "closedhat": "x.x.x.x.x.x.x.x."
+      }
+    },
+
+    "// BASSLINE": "Acid sequence in E minor",
+    "acid_line": {
+      "notes": "E2:8 E2:8 E2:8 G2:8 E2:8 E2:8 B2:8 A2:8"
+    },
+    "acid_var": {
+      "notes": "E2:8 E3:8* E2:8 G2:8~ E2:8 D3:8* B2:8 E2:8"
+    },
+
+    "// PAD": "Sustained chords",
+    "pad_chords": {
+      "chords": ["Em:w", "Am:w", "Em:w", "Bm:w"]
+    },
+
+    "// RISER": "Build tension with noise",
+    "noise_build": {
+      "notes": "C4:w",
+      "velocityEnvelope": "crescendo"
+    },
+
+    "// STAB": "Offbeat hits using notes",
+    "stab_hits": {
+      "notes": "r:8 E3:8* B3:8* r:8 r:8 E3:8* B3:8* r:8"
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_4x4", "repeat": 8, "velocity": 0.7 }
+      }
+    },
+    "build_a": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 8 },
+        "acid": { "pattern": "acid_line", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+    "build_b": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 8 },
+        "acid": { "pattern": "acid_var", "repeat": 8, "velocity": 0.7 },
+        "riser": { "pattern": "noise_build", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+    "drop": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_with_clap", "repeat": 16, "velocity": 0.9 },
+        "acid": { "pattern": "acid_var", "repeat": 16, "velocity": 0.85 },
+        "pad": { "pattern": "pad_chords", "repeat": 4 },
+        "stab": { "pattern": "stab_hits", "repeat": 16, "velocity": 0.7 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_chords", "repeat": 2, "velocity": 0.5 },
+        "riser": { "pattern": "noise_build", "repeat": 2, "velocity": 0.5 }
+      }
+    },
+    "drop_2": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_with_clap", "repeat": 16, "velocity": 1.0 },
+        "acid": { "pattern": "acid_var", "repeat": 16, "velocity": 0.9 },
+        "pad": { "pattern": "pad_chords", "repeat": 4 },
+        "stab": { "pattern": "stab_hits", "repeat": 16, "velocity": 0.8 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_4x4", "repeat": 8, "velocity": 0.6 }
+      }
+    }
+  },
+  "arrangement": ["intro", "build_a", "build_b", "drop", "breakdown", "drop_2", "outro"]
+}

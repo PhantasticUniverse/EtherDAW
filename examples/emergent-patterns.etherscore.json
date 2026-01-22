@@ -1,0 +1,435 @@
+{
+  "meta": {
+    "title": "Emergent Patterns",
+    "composer": "Claude (v0.81 Composition)",
+    "genre": "ambient/electronic",
+    "description": "A generative ambient piece showcasing v0.8 features: Markov chains, density curves, LFO modulation, layered instruments, and Euclidean rhythms. The piece builds from sparse textures through a dense peak and releases into stillness.",
+    "tags": ["generative", "ambient", "electronic", "markov", "density", "lfo", "layering", "euclidean", "v0.8"]
+  },
+  "settings": {
+    "tempo": 75,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// PAD WITH LFO": "Slow filter modulation for evolving texture",
+    "evolving_pad": {
+      "layers": [
+        { "preset": "ambient_pad", "volume": -6 },
+        { "preset": "warm_pad", "volume": -12, "detune": 5 }
+      ],
+      "volume": -15,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 1.5 } },
+        { "type": "reverb", "wet": 0.5 }
+      ],
+      "lfo": {
+        "rate": "1n",
+        "shape": "sine",
+        "target": "filterCutoff",
+        "depth": 0.4
+      }
+    },
+
+    "// MARKOV MELODY": "Stepwise melodic motion",
+    "markov_lead": {
+      "preset": "fm_epiano",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.35 },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n.", "feedback": 0.25 } }
+      ]
+    },
+
+    "// WALKING BASS": "Markov-driven bass movement",
+    "walking_bass": {
+      "preset": "synth_bass",
+      "volume": -12,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 1 } }
+      ]
+    },
+
+    "// EUCLIDEAN DRUMS": "Algorithmic percussion",
+    "perc": {
+      "preset": "drums:lofi",
+      "volume": -12
+    },
+
+    "// ATMOSPHERIC LAYER": "Sparse textural elements - boosted for better high freq presence",
+    "texture": {
+      "preset": "bell",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.5 },
+        { "type": "delay", "wet": 0.25, "options": { "time": "4n", "feedback": 0.3 } }
+      ]
+    },
+
+    "// DRONE": "Sub-bass foundation",
+    "drone": {
+      "layers": [
+        { "preset": "sub_bass", "volume": -6 },
+        { "preset": "drone", "volume": -12, "octave": 1 }
+      ],
+      "volume": -18,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 400, "type": "lowpass", "Q": 0.7 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// MARKOV MELODIC PATTERNS": "Different seeds for variation",
+
+    "melody_sparse": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "melody_stepwise",
+        "steps": 8,
+        "duration": ["h", "q", "q"],
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "melody_active": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7", "8"],
+        "preset": "melody_stepwise",
+        "steps": 16,
+        "duration": ["q", "8", "8"],
+        "octave": 4,
+        "seed": 123
+      }
+    },
+
+    "melody_peak": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7", "8"],
+        "preset": "neighbor_weighted",
+        "steps": 16,
+        "duration": "8",
+        "octave": 5,
+        "seed": 789
+      }
+    },
+
+    "melody_falling": {
+      "markov": {
+        "states": ["5", "4", "3", "2", "1"],
+        "preset": "melody_stepwise",
+        "steps": 12,
+        "duration": ["q", "q", "h"],
+        "octave": 4,
+        "seed": 456
+      }
+    },
+
+    "// BASS PATTERNS": "Walking bass Markov",
+
+    "bass_walking": {
+      "markov": {
+        "states": ["1", "3", "5", "7", "approach"],
+        "preset": "walking_bass",
+        "steps": 8,
+        "duration": "q",
+        "octave": 2,
+        "seed": 42
+      }
+    },
+
+    "bass_root": {
+      "markov": {
+        "states": ["1", "5", "1"],
+        "preset": "root_heavy",
+        "steps": 4,
+        "duration": "h",
+        "octave": 2,
+        "seed": 100
+      }
+    },
+
+    "// PAD CHORDS": "Harmonic foundation",
+
+    "pad_Am": {
+      "chords": ["Am7:w", "Am7:w", "Am7:w", "Am7:w"]
+    },
+
+    "pad_progression": {
+      "chords": ["Am7:w", "Fmaj7:w", "C:w", "Em7:w"]
+    },
+
+    "pad_climax": {
+      "chords": ["Am9:w", "Fmaj9:w", "Cmaj7:w", "E7:w"]
+    },
+
+    "// EUCLIDEAN DRUMS": "World music rhythms",
+
+    "drums_sparse": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 16,
+        "duration": "16",
+        "drum": "rim"
+      }
+    },
+
+    "drums_tresillo": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 8,
+        "duration": "8",
+        "drum": "kick"
+      }
+    },
+
+    "drums_cinquillo": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+
+    "drums_dense": {
+      "euclidean": {
+        "hits": 7,
+        "steps": 16,
+        "duration": "16",
+        "drum": "snare"
+      }
+    },
+
+    "// TEXTURE PATTERNS": "Sparse bell hits with probability",
+
+    "bells_sparse": {
+      "notes": [
+        "A5:h?0.3", "r:q", "E5:q?0.4", "r:h",
+        "C6:q?0.2", "r:q", "r:h", "B5:h?0.3"
+      ]
+    },
+
+    "bells_active": {
+      "notes": [
+        "A5:q?0.5", "E5:q?0.6", "C6:q?0.4", "B5:q?0.5",
+        "A5:q?0.6", "G5:q?0.4", "E5:q?0.5", "D5:q?0.4"
+      ]
+    },
+
+    "bells_climax": {
+      "notes": [
+        "A6:8?0.85", "E6:8?0.9", "C6:8?0.75", "B5:8?0.85",
+        "A6:8?0.9", "G6:8?0.75", "E6:8?0.85", "D6:8?0.7",
+        "C6:q?0.95", "E6:8?0.85", "A6:8?0.8", "B5:q?0.9",
+        "A6:h?0.95"
+      ]
+    },
+
+    "// DRONE": "Sustained low note",
+
+    "drone_A": {
+      "notes": ["A1:w", "A1:w", "A1:w", "A1:w"]
+    },
+
+    "// UTILITY": "Rest patterns",
+
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "rest_8bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w", "r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "// INTRO": "Sparse, mysterious - 8 bars",
+
+    "intro": {
+      "bars": 8,
+      "density": {
+        "start": 0.3,
+        "end": 0.5,
+        "curve": "linear"
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_Am", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_sparse", "repeat": 2 },
+        "texture": { "pattern": "bells_sparse", "repeat": 2 },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      }
+    },
+
+    "// BUILD": "Gradual increase in activity - 16 bars",
+
+    "build_a": {
+      "bars": 8,
+      "density": {
+        "start": 0.4,
+        "end": 0.7,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_progression", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_active", "repeat": 2 },
+        "walking_bass": { "pattern": "bass_walking", "repeat": 4 },
+        "texture": { "pattern": "bells_active", "repeat": 2 },
+        "perc": {
+          "parallel": ["drums_tresillo", "drums_sparse"],
+          "repeat": 4
+        },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      }
+    },
+
+    "build_b": {
+      "bars": 8,
+      "density": {
+        "start": 0.6,
+        "end": 0.9,
+        "curve": "exponential"
+      },
+      "tension": {
+        "start": 0.4,
+        "end": 0.8,
+        "curve": "exponential",
+        "mappings": {
+          "brightness": [0.4, 0.8],
+          "velocity": [0.6, 0.95]
+        }
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_progression", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_active", "repeat": 2 },
+        "walking_bass": { "pattern": "bass_walking", "repeat": 4 },
+        "texture": { "pattern": "bells_active", "repeat": 2 },
+        "perc": {
+          "parallel": ["drums_tresillo", "drums_cinquillo", "drums_sparse"],
+          "repeat": 4
+        },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      }
+    },
+
+    "// PEAK": "Maximum density and tension - 8 bars",
+
+    "peak": {
+      "bars": 8,
+      "density": {
+        "start": 0.92,
+        "end": 0.98,
+        "curve": "sine"
+      },
+      "tension": {
+        "start": 0.85,
+        "end": 0.98,
+        "curve": "sine",
+        "mappings": {
+          "brightness": [0.8, 0.98],
+          "velocity": [0.85, 1.0]
+        }
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_climax", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_peak", "repeat": 2 },
+        "walking_bass": { "pattern": "bass_walking", "repeat": 4 },
+        "texture": { "pattern": "bells_climax", "repeat": 2 },
+        "perc": {
+          "parallel": ["drums_tresillo", "drums_cinquillo", "drums_dense"],
+          "repeat": 4
+        },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      },
+      "automation": {
+        "evolving_pad.filter.frequency": {
+          "start": 2500,
+          "end": 5000,
+          "curve": "exponential"
+        }
+      }
+    },
+
+    "// RELEASE": "Gradual decrease - 16 bars",
+
+    "release_a": {
+      "bars": 8,
+      "density": {
+        "start": 0.85,
+        "end": 0.5,
+        "curve": "logarithmic"
+      },
+      "tension": {
+        "start": 0.8,
+        "end": 0.4,
+        "curve": "logarithmic",
+        "mappings": {
+          "brightness": [0.7, 0.4],
+          "velocity": [0.8, 0.5]
+        }
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_progression", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_falling", "repeat": 2 },
+        "walking_bass": { "pattern": "bass_root", "repeat": 4 },
+        "texture": { "pattern": "bells_sparse", "repeat": 2 },
+        "perc": {
+          "parallel": ["drums_tresillo", "drums_sparse"],
+          "repeat": 4
+        },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      }
+    },
+
+    "release_b": {
+      "bars": 8,
+      "density": {
+        "start": 0.5,
+        "end": 0.25,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_Am", "repeat": 2 },
+        "markov_lead": { "pattern": "melody_sparse", "repeat": 2 },
+        "texture": { "pattern": "bells_sparse", "repeat": 2 },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      }
+    },
+
+    "// OUTRO": "Return to stillness - 8 bars",
+
+    "outro": {
+      "bars": 8,
+      "density": {
+        "start": 0.3,
+        "end": 0.05,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "evolving_pad": { "pattern": "pad_Am", "repeat": 2, "velocity": 0.35 },
+        "texture": { "pattern": "bells_sparse", "repeat": 2 },
+        "drone": { "pattern": "drone_A", "repeat": 2 }
+      },
+      "automation": {
+        "evolving_pad.filter.frequency": {
+          "start": 1800,
+          "end": 300,
+          "curve": "logarithmic"
+        },
+        "evolving_pad.volume": {
+          "start": -9,
+          "end": -30,
+          "curve": "logarithmic"
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "build_a",
+    "build_b",
+    "peak",
+    "release_a",
+    "release_b",
+    "outro"
+  ]
+}

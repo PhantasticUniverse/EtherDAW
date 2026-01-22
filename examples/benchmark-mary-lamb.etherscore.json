@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "title": "Mary Had a Little Lamb",
+    "composer": "Traditional / EtherDAW",
+    "genre": "benchmark",
+    "description": "Reference melody for comparing EtherDAW rendering against raw synthesis. Uses electric piano preset.",
+    "tags": ["benchmark", "reference", "melody", "piano"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "piano": {
+      "preset": "electric_piano",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "full_melody": {
+      "notes": [
+        "E4:q", "D4:q", "C4:q", "D4:q",
+        "E4:q", "E4:q", "E4:h",
+        "D4:q", "D4:q", "D4:h",
+        "E4:q", "G4:q", "G4:h",
+        "E4:q", "D4:q", "C4:q", "D4:q",
+        "E4:q", "E4:q", "E4:q", "E4:q",
+        "D4:q", "D4:q", "E4:q", "D4:q",
+        "C4:w"
+      ]
+    }
+  },
+  "sections": {
+    "melody": {
+      "bars": 8,
+      "tracks": {
+        "piano": {
+          "pattern": "full_melody",
+          "velocity": 0.75
+        }
+      }
+    }
+  },
+  "arrangement": ["melody"]
+}

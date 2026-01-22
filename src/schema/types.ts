@@ -241,6 +241,9 @@ export interface DrumPattern {
   lines?: Record<DrumName, string>;  // { "kick": "x...x...", "hihat": "..x...x." }
   // NEW v0.5: Explicit pattern length in bars (default: 1 for hits, auto for steps/lines)
   bars?: number;
+  // NEW v0.81: Allow direct drum name keys as shorthand (auto-converted to lines)
+  // This allows: { "kick": "x...", "snare": "...x" } without "lines" wrapper
+  [drumName: string]: string | '808' | '909' | 'acoustic' | 'lofi' | DrumHit[] | Record<DrumName, string> | number | undefined;
 }
 
 // NEW v0.2: Euclidean rhythm config

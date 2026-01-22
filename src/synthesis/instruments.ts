@@ -10,9 +10,9 @@ import { DRUM_KITS, type DrumType, type KitName, type DrumSynthParams } from './
  */
 export interface InstrumentPreset {
   name: string;
-  category: 'synth' | 'bass' | 'pad' | 'lead' | 'keys' | 'pluck' | 'drums' | 'fm';
+  category: 'synth' | 'bass' | 'pad' | 'lead' | 'keys' | 'pluck' | 'drums' | 'fm' | 'noise';
   description: string;
-  create: () => Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth;
+  create: () => Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | Tone.NoiseSynth;
 }
 
 /**
@@ -413,6 +413,57 @@ export const PRESETS: Record<string, InstrumentPreset> = {
       modulationEnvelope: { attack: 0.01, decay: 0.01, sustain: 1.0, release: 0.1 },
     }),
   },
+
+  // Noise presets
+  'noise': {
+    name: 'White Noise',
+    category: 'noise',
+    description: 'White noise for texture, risers, and effects',
+    create: () => new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 },
+    }),
+  },
+
+  'pink_noise': {
+    name: 'Pink Noise',
+    category: 'noise',
+    description: 'Pink noise - warmer, more natural sounding',
+    create: () => new Tone.NoiseSynth({
+      noise: { type: 'pink' },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 },
+    }),
+  },
+
+  'brown_noise': {
+    name: 'Brown Noise',
+    category: 'noise',
+    description: 'Brown noise - deep, rumbling texture',
+    create: () => new Tone.NoiseSynth({
+      noise: { type: 'brown' },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 },
+    }),
+  },
+
+  'vinyl_crackle': {
+    name: 'Vinyl Crackle',
+    category: 'noise',
+    description: 'Lo-fi vinyl crackle texture with short decay',
+    create: () => new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.001, decay: 0.02, sustain: 0, release: 0.01 },
+    }),
+  },
+
+  'noise_sweep': {
+    name: 'Noise Sweep',
+    category: 'noise',
+    description: 'Noise with long attack for risers and builds',
+    create: () => new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 2.0, decay: 0.5, sustain: 0.8, release: 1.0 },
+    }),
+  },
 };
 
 /**
@@ -425,7 +476,7 @@ export function getPreset(name: string): InstrumentPreset | undefined {
 /**
  * Create an instrument from a preset name
  */
-export function createInstrument(presetName: string): Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth {
+export function createInstrument(presetName: string): Tone.PolySynth | Tone.Synth | Tone.MonoSynth | Tone.FMSynth | Tone.NoiseSynth {
   const preset = getPreset(presetName);
 
   if (!preset) {

@@ -1,0 +1,29 @@
+{
+  "benchmark": "benchmark-generative",
+  "title": "Generative Features Benchmark",
+  "description": "Tests Markov chain generation with all 5 presets (uniform, neighbor_weighted, walking_bass, melody_stepwise, root_heavy), seeded reproducibility, and scale-aware generation.",
+  "features": [
+    "generative",
+    "markov",
+    "v0.6",
+    "v0.7"
+  ],
+  "duration": 70,
+  "tempo": 120,
+  "key": "C major",
+  "sections": 4,
+  "patterns": 11,
+  "notes": 368,
+  "instruments": [
+    "uniform_synth",
+    "neighbor_synth",
+    "walking_bass_synth",
+    "melody_synth",
+    "root_heavy_synth",
+    "seeded_synth"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.659Z",
+  "expectedCharacteristics": {
+    "generative": "Each Markov preset produces distinct melodic patterns"
+  }
+}

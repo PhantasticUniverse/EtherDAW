@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "title": "Density & Tension Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests density curves (all 4 types: linear, exponential, logarithmic, sine) and tension curves with buildup/release/swell presets. Demonstrates how LLMs can express musical intent at a higher level.",
+    "tags": ["benchmark", "density", "tension", "curves", "generative", "v0.6", "v0.8"]
+  },
+  "settings": {
+    "tempo": 110,
+    "key": "F major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -9,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 3000, "type": "lowpass", "Q": 1 } }
+      ]
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -3
+    },
+    "arp": {
+      "preset": "arp_synth",
+      "volume": -6,
+      "effects": [
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.2 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// PROBABILISTIC NOTES": "Notes with probability for density testing",
+    "sparse_melody": {
+      "notes": [
+        "F4:q?0.8", "G4:q?0.6", "A4:q?0.8", "Bb4:q?0.5",
+        "C5:q?0.9", "D5:q?0.4", "C5:q?0.7", "A4:q?0.6",
+        "G4:q?0.8", "F4:q?0.5", "E4:q?0.7", "D4:q?0.4",
+        "C4:q?0.9", "D4:q?0.5", "E4:q?0.7", "F4:h?0.8"
+      ]
+    },
+
+    "chord_progression": {
+      "chords": ["Fmaj7:w", "Gm7:w", "Am7:w", "Bbmaj7:w"]
+    },
+
+    "bass_line": {
+      "notes": [
+        "F2:q?0.95", "r:q?0.3", "F2:8?0.7", "F2:8?0.5", "A2:q?0.8",
+        "G2:q?0.95", "r:q?0.3", "G2:8?0.6", "G2:8?0.4", "Bb2:q?0.7",
+        "A2:q?0.95", "r:q?0.3", "A2:8?0.5", "A2:8?0.3", "C3:q?0.8",
+        "Bb2:q?0.95", "r:q?0.3", "Bb2:8?0.6", "Bb2:8?0.4", "D3:q?0.7"
+      ]
+    },
+
+    "arp_pattern": {
+      "arpeggio": {
+        "chord": "Fmaj7",
+        "mode": "updown",
+        "duration": "16",
+        "octaves": 2
+      }
+    },
+
+    "sustained_pad": {
+      "chords": ["Fmaj7:w", "Fmaj7:w", "Fmaj7:w", "Fmaj7:w"]
+    }
+  },
+  "sections": {
+    "// DENSITY CURVES": "Control note probability across section",
+
+    "density_linear_buildup": {
+      "bars": 8,
+      "density": {
+        "start": 0.2,
+        "end": 1.0,
+        "curve": "linear"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      }
+    },
+
+    "density_exponential_buildup": {
+      "bars": 8,
+      "density": {
+        "start": 0.1,
+        "end": 1.0,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      }
+    },
+
+    "density_logarithmic_buildup": {
+      "bars": 8,
+      "density": {
+        "start": 0.1,
+        "end": 1.0,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      }
+    },
+
+    "density_sine_swell": {
+      "bars": 8,
+      "density": {
+        "start": 0.3,
+        "end": 0.9,
+        "curve": "sine"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      }
+    },
+
+    "density_fadeout": {
+      "bars": 8,
+      "density": {
+        "start": 1.0,
+        "end": 0.1,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      }
+    },
+
+    "// TENSION CURVES": "Higher-level control of multiple parameters",
+
+    "tension_buildup": {
+      "bars": 8,
+      "tension": {
+        "start": 0.1,
+        "end": 1.0,
+        "curve": "exponential",
+        "mappings": {
+          "density": [0.2, 1.0],
+          "brightness": [0.2, 0.9],
+          "velocity": [0.4, 1.0]
+        }
+      },
+      "tracks": {
+        "pad": { "pattern": "sustained_pad", "repeat": 2 },
+        "arp": { "pattern": "arp_pattern", "repeat": 2 }
+      }
+    },
+
+    "tension_release": {
+      "bars": 8,
+      "tension": {
+        "start": 1.0,
+        "end": 0.2,
+        "curve": "logarithmic",
+        "mappings": {
+          "density": [1.0, 0.3],
+          "brightness": [0.8, 0.3],
+          "velocity": [0.9, 0.4]
+        }
+      },
+      "tracks": {
+        "pad": { "pattern": "sustained_pad", "repeat": 2 },
+        "arp": { "pattern": "arp_pattern", "repeat": 2 }
+      }
+    },
+
+    "tension_swell": {
+      "bars": 8,
+      "tension": {
+        "start": 0.3,
+        "end": 0.3,
+        "curve": "sine",
+        "mappings": {
+          "velocity": [0.4, 0.9],
+          "brightness": [0.4, 0.7]
+        }
+      },
+      "tracks": {
+        "pad": { "pattern": "sustained_pad", "repeat": 2 }
+      }
+    },
+
+    "// COMBINED DENSITY + AUTOMATION": "Density affecting notes, automation affecting sound",
+    "combined_buildup": {
+      "bars": 8,
+      "density": {
+        "start": 0.2,
+        "end": 0.95,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "lead": { "pattern": "sparse_melody", "repeat": 2 },
+        "pad": { "pattern": "sustained_pad", "repeat": 2 },
+        "bass": { "pattern": "bass_line", "repeat": 2 }
+      },
+      "automation": {
+        "pad.filter.frequency": {
+          "start": 500,
+          "end": 4000,
+          "curve": "exponential"
+        },
+        "pad.volume": {
+          "start": -20,
+          "end": -6,
+          "curve": "linear"
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "density_linear_buildup",
+    "density_exponential_buildup",
+    "density_logarithmic_buildup",
+    "density_sine_swell",
+    "density_fadeout",
+    "tension_buildup",
+    "tension_release",
+    "tension_swell",
+    "combined_buildup"
+  ]
+}

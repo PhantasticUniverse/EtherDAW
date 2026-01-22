@@ -1,0 +1,202 @@
+{
+  "meta": {
+    "title": "Generative Features Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests Markov chain generation with all 5 presets (uniform, neighbor_weighted, walking_bass, melody_stepwise, root_heavy), seeded reproducibility, and scale-aware generation.",
+    "tags": ["benchmark", "generative", "markov", "v0.6", "v0.7"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// MARKOV PRESET TESTS": "Each preset generates 16 notes at 120 BPM",
+    "uniform_synth": {
+      "preset": "fm_epiano",
+      "volume": -6
+    },
+    "neighbor_synth": {
+      "preset": "fm_epiano",
+      "volume": -6
+    },
+    "walking_bass_synth": {
+      "preset": "synth_bass",
+      "volume": -3
+    },
+    "melody_synth": {
+      "preset": "soft_lead",
+      "volume": -6
+    },
+    "root_heavy_synth": {
+      "preset": "pluck",
+      "volume": -6
+    },
+    "seeded_synth": {
+      "preset": "bell",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "// MARKOV PRESETS": "Test all 5 built-in transition presets",
+
+    "markov_uniform": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "uniform",
+        "steps": 16,
+        "duration": "q",
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "markov_neighbor_weighted": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "neighbor_weighted",
+        "steps": 16,
+        "duration": "q",
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "markov_walking_bass": {
+      "markov": {
+        "states": ["1", "3", "5", "7", "approach"],
+        "preset": "walking_bass",
+        "steps": 16,
+        "duration": "q",
+        "octave": 2,
+        "seed": 42
+      }
+    },
+
+    "markov_melody_stepwise": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7", "8"],
+        "preset": "melody_stepwise",
+        "steps": 16,
+        "duration": "8",
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "markov_root_heavy": {
+      "markov": {
+        "states": ["1", "3", "5", "7"],
+        "preset": "root_heavy",
+        "steps": 16,
+        "duration": "q",
+        "octave": 3,
+        "seed": 42
+      }
+    },
+
+    "// SEEDED REPRODUCIBILITY": "Same seed should produce same output",
+    "markov_seeded_a": {
+      "markov": {
+        "states": ["1", "3", "5"],
+        "preset": "uniform",
+        "steps": 8,
+        "duration": "q",
+        "octave": 5,
+        "seed": 12345
+      }
+    },
+    "markov_seeded_b": {
+      "markov": {
+        "states": ["1", "3", "5"],
+        "preset": "uniform",
+        "steps": 8,
+        "duration": "q",
+        "octave": 5,
+        "seed": 12345
+      }
+    },
+
+    "// CUSTOM TRANSITIONS": "Explicit transition matrix",
+    "markov_custom": {
+      "markov": {
+        "states": ["1", "5", "rest"],
+        "transitions": {
+          "1": { "5": 0.7, "rest": 0.2, "1": 0.1 },
+          "5": { "1": 0.8, "rest": 0.1, "5": 0.1 },
+          "rest": { "1": 0.5, "5": 0.5, "rest": 0 }
+        },
+        "initialState": "1",
+        "steps": 16,
+        "duration": "q",
+        "octave": 3,
+        "seed": 42
+      }
+    },
+
+    "// CHROMATIC STATES": "Using flat/sharp scale degrees",
+    "markov_chromatic": {
+      "markov": {
+        "states": ["1", "b3", "5", "b7"],
+        "preset": "uniform",
+        "steps": 16,
+        "duration": "q",
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "// VARIABLE DURATIONS": "Array of durations for rhythmic variety",
+    "markov_rhythm": {
+      "markov": {
+        "states": ["1", "3", "5"],
+        "preset": "neighbor_weighted",
+        "steps": 12,
+        "duration": ["q", "8", "8"],
+        "octave": 4,
+        "seed": 42
+      }
+    },
+
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "markov_presets": {
+      "bars": 20,
+      "tracks": {
+        "uniform_synth": { "patterns": ["markov_uniform", "rest_4bar", "rest_4bar", "rest_4bar", "rest_4bar"] },
+        "neighbor_synth": { "patterns": ["rest_4bar", "markov_neighbor_weighted", "rest_4bar", "rest_4bar", "rest_4bar"] },
+        "walking_bass_synth": { "patterns": ["rest_4bar", "rest_4bar", "markov_walking_bass", "rest_4bar", "rest_4bar"] },
+        "melody_synth": { "patterns": ["rest_4bar", "rest_4bar", "rest_4bar", "markov_melody_stepwise", "rest_4bar"] },
+        "root_heavy_synth": { "patterns": ["rest_4bar", "rest_4bar", "rest_4bar", "rest_4bar", "markov_root_heavy"] }
+      }
+    },
+    "seeded_test": {
+      "bars": 4,
+      "tracks": {
+        "seeded_synth": { "patterns": ["markov_seeded_a", "markov_seeded_b"] }
+      }
+    },
+    "custom_and_chromatic": {
+      "bars": 8,
+      "tracks": {
+        "uniform_synth": { "patterns": ["markov_custom", "markov_chromatic"] }
+      }
+    },
+    "rhythm_variety": {
+      "bars": 3,
+      "tracks": {
+        "melody_synth": { "pattern": "markov_rhythm" }
+      }
+    }
+  },
+  "arrangement": [
+    "markov_presets",
+    "seeded_test",
+    "custom_and_chromatic",
+    "rhythm_variety"
+  ]
+}

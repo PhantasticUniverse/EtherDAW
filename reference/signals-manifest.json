@@ -1,0 +1,148 @@
+{
+  "signals": [
+    {
+      "name": "sine-440",
+      "description": "A440 reference tone (concert A)",
+      "audioPath": "reference/audio/signals/sine-440.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sine-440.png"
+    },
+    {
+      "name": "sine-1000",
+      "description": "1kHz reference tone",
+      "audioPath": "reference/audio/signals/sine-1000.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sine-1000.png"
+    },
+    {
+      "name": "sine-100",
+      "description": "100Hz bass reference tone",
+      "audioPath": "reference/audio/signals/sine-100.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sine-100.png"
+    },
+    {
+      "name": "sine-5000",
+      "description": "5kHz mid-high reference tone",
+      "audioPath": "reference/audio/signals/sine-5000.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sine-5000.png"
+    },
+    {
+      "name": "sine-10000",
+      "description": "10kHz high reference tone",
+      "audioPath": "reference/audio/signals/sine-10000.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sine-10000.png"
+    },
+    {
+      "name": "square-440",
+      "description": "Square wave at A440 (rich odd harmonics)",
+      "audioPath": "reference/audio/signals/square-440.wav",
+      "spectrogramPath": "reference/spectrograms/signals/square-440.png"
+    },
+    {
+      "name": "sawtooth-440",
+      "description": "Sawtooth wave at A440 (all harmonics)",
+      "audioPath": "reference/audio/signals/sawtooth-440.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sawtooth-440.png"
+    },
+    {
+      "name": "triangle-440",
+      "description": "Triangle wave at A440 (soft odd harmonics)",
+      "audioPath": "reference/audio/signals/triangle-440.wav",
+      "spectrogramPath": "reference/spectrograms/signals/triangle-440.png"
+    },
+    {
+      "name": "white-noise",
+      "description": "White noise (equal energy across spectrum)",
+      "audioPath": "reference/audio/signals/white-noise.wav",
+      "spectrogramPath": "reference/spectrograms/signals/white-noise.png"
+    },
+    {
+      "name": "pink-noise",
+      "description": "Pink noise (1/f, equal energy per octave)",
+      "audioPath": "reference/audio/signals/pink-noise.wav",
+      "spectrogramPath": "reference/spectrograms/signals/pink-noise.png"
+    },
+    {
+      "name": "brown-noise",
+      "description": "Brown/red noise (1/f², deeper bass)",
+      "audioPath": "reference/audio/signals/brown-noise.wav",
+      "spectrogramPath": "reference/spectrograms/signals/brown-noise.png"
+    },
+    {
+      "name": "sweep-log-20-20k",
+      "description": "Logarithmic sweep 20Hz to 20kHz (5 seconds)",
+      "audioPath": "reference/audio/signals/sweep-log-20-20k.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sweep-log-20-20k.png"
+    },
+    {
+      "name": "sweep-linear-20-20k",
+      "description": "Linear sweep 20Hz to 20kHz (5 seconds)",
+      "audioPath": "reference/audio/signals/sweep-linear-20-20k.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sweep-linear-20-20k.png"
+    },
+    {
+      "name": "sweep-bass-20-200",
+      "description": "Bass frequency sweep 20Hz to 200Hz",
+      "audioPath": "reference/audio/signals/sweep-bass-20-200.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sweep-bass-20-200.png"
+    },
+    {
+      "name": "sweep-mid-200-2k",
+      "description": "Midrange frequency sweep 200Hz to 2kHz",
+      "audioPath": "reference/audio/signals/sweep-mid-200-2k.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sweep-mid-200-2k.png"
+    },
+    {
+      "name": "sweep-high-2k-20k",
+      "description": "High frequency sweep 2kHz to 20kHz",
+      "audioPath": "reference/audio/signals/sweep-high-2k-20k.wav",
+      "spectrogramPath": "reference/spectrograms/signals/sweep-high-2k-20k.png"
+    },
+    {
+      "name": "mary-had-a-little-lamb",
+      "description": "Mary Had a Little Lamb - recognizable melody reference (piano-like tone)",
+      "audioPath": "reference/audio/signals/mary-had-a-little-lamb.wav",
+      "spectrogramPath": "reference/spectrograms/signals/mary-had-a-little-lamb.png"
+    },
+    {
+      "name": "c-major-scale",
+      "description": "C major scale (C4 to C5)",
+      "audioPath": "reference/audio/signals/c-major-scale.wav",
+      "spectrogramPath": "reference/spectrograms/signals/c-major-scale.png"
+    },
+    {
+      "name": "chromatic-scale",
+      "description": "Chromatic scale (all 12 notes)",
+      "audioPath": "reference/audio/signals/chromatic-scale.wav",
+      "spectrogramPath": "reference/spectrograms/signals/chromatic-scale.png"
+    },
+    {
+      "name": "a440-reference",
+      "description": "A440 tuning reference (3 seconds)",
+      "audioPath": "reference/audio/signals/a440-reference.wav",
+      "spectrogramPath": "reference/spectrograms/signals/a440-reference.png"
+    },
+    {
+      "name": "metronome-120bpm",
+      "description": "Metronome at 120 BPM (4/4 time)",
+      "audioPath": "reference/audio/signals/metronome-120bpm.wav",
+      "spectrogramPath": "reference/spectrograms/signals/metronome-120bpm.png"
+    },
+    {
+      "name": "metronome-60bpm",
+      "description": "Metronome at 60 BPM (one click per second)",
+      "audioPath": "reference/audio/signals/metronome-60bpm.wav",
+      "spectrogramPath": "reference/spectrograms/signals/metronome-60bpm.png"
+    },
+    {
+      "name": "harmonic-series",
+      "description": "First 8 harmonics of A110 (bass A)",
+      "audioPath": "reference/audio/signals/harmonic-series.wav",
+      "spectrogramPath": "reference/spectrograms/signals/harmonic-series.png"
+    },
+    {
+      "name": "intervals",
+      "description": "Musical intervals from unison to octave",
+      "audioPath": "reference/audio/signals/intervals.wav",
+      "spectrogramPath": "reference/spectrograms/signals/intervals.png"
+    }
+  ]
+}

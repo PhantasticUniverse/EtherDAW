@@ -491,6 +491,43 @@ Write full drum beats visually with the `lines` property:
 
 All lines must be the same length. Each line plays its drum on the same grid.
 
+#### Shorthand Notation (v0.81)
+
+The `lines` wrapper is optional. Drum names can be direct keys:
+
+```json
+{
+  "patterns": {
+    "beat": {
+      "drums": {
+        "kit": "909",
+        "kick":   "x...x...x...x...",
+        "hihat":  "..x...x...x...x.",
+        "clap":   "....x.......x..."
+      }
+    }
+  }
+}
+```
+
+#### Drum Name Aliases (v0.81)
+
+Common aliases are automatically resolved:
+
+| Alias | Resolves To |
+|-------|-------------|
+| `openhat`, `open_hat`, `oh` | `hihat_open` |
+| `closedhat`, `closed_hat`, `ch`, `hh` | `hihat` |
+| `bd`, `bassdrum` | `kick` |
+| `sd` | `snare` |
+| `cp`, `handclap` | `clap` |
+| `tomhi`, `tom_high` | `tom_hi` |
+| `tomlo`, `tom_low` | `tom_lo` |
+| `cy`, `cymbal` | `crash` |
+| `rd` | `ride` |
+| `cb` | `cowbell` |
+| `sh` | `shaker` |
+
 #### Hit Array
 ```json
 {
@@ -1249,3 +1286,35 @@ These may be addressed in future versions.
 - [THEORY.md](THEORY.md) - Music theory helpers
 - [QUICKSTART.md](QUICKSTART.md) - Getting started guide
 - [EXAMPLES.md](EXAMPLES.md) - Example compositions
+- [LLM_COMPOSER_GUIDE.md](LLM_COMPOSER_GUIDE.md) - Practical guide for AI composers
+- [SPECTROGRAM_WORKFLOW.md](SPECTROGRAM_WORKFLOW.md) - Visual verification workflow
+
+## Benchmark Files
+
+Feature benchmark files in `examples/benchmark-*.etherscore.json` demonstrate each capability:
+
+| Benchmark | Features |
+|-----------|----------|
+| `benchmark-synthesis` | All synth presets and basic sounds |
+| `benchmark-drums` | Drum kits and patterns |
+| `benchmark-chords` | Chord voicings and progressions |
+| `benchmark-arpeggios` | Arpeggio modes and patterns |
+| `benchmark-articulations` | Staccato, legato, accents, jazz articulations |
+| `benchmark-effects` | Reverb, delay, filter, distortion |
+| `benchmark-dynamics` | Velocity envelopes, crescendo/diminuendo |
+| `benchmark-timing` | Grooves, swing, humanization |
+| `benchmark-layering` | Instrument layering and detuning |
+| `benchmark-lfo` | LFO modulation targets and rates |
+| `benchmark-generative` | Markov chains, all 5 presets |
+| `benchmark-transforms` | Pattern transformations, inheritance |
+| `benchmark-voice-leading` | Bach/jazz/pop voice leading styles |
+| `benchmark-automation` | Tempo, filter, volume automation |
+| `benchmark-density-tension` | Density curves, tension presets |
+| `benchmark-continuation` | Melodic development techniques |
+| `benchmark-scale-degrees` | Degree notation, chromatic alterations |
+| `benchmark-euclidean` | Algorithmic Euclidean rhythms |
+| `benchmark-parallel` | Parallel patterns, probability, fallback |
+| `benchmark-mixing` | EQ, pan, compression, sidechain |
+| `benchmark-mary-lamb` | Reference melody (validation target) |
+
+Run `npm run generate:benchmarks` to export all benchmarks to MIDI and generate analysis files.

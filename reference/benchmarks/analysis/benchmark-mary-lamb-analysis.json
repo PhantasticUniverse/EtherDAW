@@ -1,0 +1,21 @@
+{
+  "benchmark": "benchmark-mary-lamb",
+  "title": "Mary Had a Little Lamb",
+  "description": "Reference melody for comparing EtherDAW rendering against raw synthesis. Uses electric piano preset.",
+  "features": [
+    "reference",
+    "melody",
+    "piano"
+  ],
+  "duration": 16,
+  "tempo": 120,
+  "key": "C major",
+  "sections": 1,
+  "patterns": 1,
+  "notes": 26,
+  "instruments": [
+    "piano"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.666Z",
+  "expectedCharacteristics": {}
+}

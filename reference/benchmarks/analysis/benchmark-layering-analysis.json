@@ -1,0 +1,34 @@
+{
+  "benchmark": "benchmark-layering",
+  "title": "Layering Benchmark",
+  "description": "Tests v0.8 instrument layering: multiple presets stacked, detune offsets, octave doubling, and volume balancing.",
+  "features": [
+    "layering",
+    "v0.8",
+    "chords"
+  ],
+  "duration": 72,
+  "tempo": 80,
+  "key": "C major",
+  "sections": 6,
+  "patterns": 4,
+  "notes": 114,
+  "instruments": [
+    "piano_single",
+    "piano_layered",
+    "pad_single",
+    "pad_layered",
+    "lead_single",
+    "lead_layered",
+    "detuned_unison",
+    "detuned_wide",
+    "octave_double",
+    "octave_sub",
+    "supersaw_stack",
+    "hybrid_pad"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.662Z",
+  "expectedCharacteristics": {
+    "layering": "Wider frequency spread, detuned = beating pattern"
+  }
+}

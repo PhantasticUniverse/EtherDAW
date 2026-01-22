@@ -9,7 +9,7 @@ import * as Tone from 'tone';
 import type { EtherScore, Timeline, NoteEvent, Instrument, Effect } from '../schema/types.js';
 import { compile } from '../engine/compiler.js';
 import { getAllNotes } from '../engine/timeline.js';
-import { DRUM_KITS, type DrumType, type KitName, type DrumSynthParams } from '../synthesis/drum-kits.js';
+import { DRUM_KITS, type DrumType, type KitName, type DrumSynthParams, normalizeDrumName } from '../synthesis/drum-kits.js';
 import { EFFECT_DEFAULTS } from '../config/constants.js';
 import { createInstrumentFromOptions, type CreatedInstrument } from '../synthesis/instrument-factory.js';
 import { getPresetDefinition } from '../synthesis/presets.js';
@@ -470,7 +470,9 @@ export class Player {
    * Get or create a drum synth pool for handling simultaneous hits
    */
   private getOrCreateDrumPool(drumName: DrumType, kitName: KitName): DrumSynthPool | null {
-    const key = `${drumName}@${kitName}`;
+    // Normalize drum name to handle aliases (e.g., 'openhat' -> 'hihat_open')
+    const normalizedDrumName = normalizeDrumName(drumName);
+    const key = `${normalizedDrumName}@${kitName}`;
 
     if (this.drumPools.has(key)) {
       return this.drumPools.get(key)!;
@@ -482,9 +484,9 @@ export class Player {
       return null;
     }
 
-    const params = kit.drums[drumName];
+    const params = kit.drums[normalizedDrumName];
     if (!params) {
-      console.warn(`Unknown drum: ${drumName} in kit ${kitName}`);
+      console.warn(`Unknown drum: ${drumName} (normalized: ${normalizedDrumName}) in kit ${kitName}`);
       return null;
     }
 
@@ -926,14 +928,16 @@ export class Player {
 
       // Helper to get/create drum pool for offline rendering
       const getOfflineDrumPool = (drumName: DrumType, kitName: KitName): DrumSynthPool | null => {
-        const key = `${drumName}@${kitName}`;
+        // Normalize drum name to handle aliases
+        const normalizedDrumName = normalizeDrumName(drumName);
+        const key = `${normalizedDrumName}@${kitName}`;
         if (offlineDrumPools.has(key)) {
           return offlineDrumPools.get(key)!;
         }
 
         const kit = DRUM_KITS[kitName];
         if (!kit) return null;
-        const params = kit.drums[drumName];
+        const params = kit.drums[normalizedDrumName];
         if (!params) return null;
 
         // Create pool for offline rendering

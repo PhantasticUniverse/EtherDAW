@@ -13,6 +13,8 @@
     "build:browser": "esbuild src/browser/index.ts --bundle --format=esm --outfile=dist/etherdaw-browser.js --external:@tonejs/midi",
     "build:manifest": "npx tsx scripts/generate-manifest.ts",
     "build:all": "npm run build && npm run build:browser && npm run build:manifest",
+    "generate:references": "npx tsx scripts/generate-references.ts",
+    "generate:benchmarks": "npx tsx scripts/generate-benchmark-spectrograms.ts",
     "watch": "tsc --watch",
     "test": "vitest",
     "test:run": "vitest run",

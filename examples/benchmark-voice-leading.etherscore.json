@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "title": "Voice Leading Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests constraint-based voice leading with 4-voice chorale, style presets (bach, jazz, pop), and custom voice ranges.",
+    "tags": ["benchmark", "voice-leading", "chorale", "constraints", "v0.6"]
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "chorale": {
+      "preset": "organ",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2.5 } }
+      ]
+    },
+    "jazz_piano": {
+      "preset": "fm_epiano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    },
+    "pop_synth": {
+      "preset": "warm_pad",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "// BACH STYLE": "Strict baroque voice leading (no parallels)",
+    "bach_chorale": {
+      "voiceLead": {
+        "progression": ["C", "Am", "Dm7", "G7", "C"],
+        "voices": 4,
+        "style": "bach",
+        "voiceRanges": {
+          "bass": ["E2", "C4"],
+          "tenor": ["C3", "G4"],
+          "alto": ["G3", "D5"],
+          "soprano": ["C4", "G5"]
+        }
+      }
+    },
+
+    "// JAZZ STYLE": "Smooth motion, allow some parallel",
+    "jazz_voicing": {
+      "voiceLead": {
+        "progression": ["Dm7", "G7", "Cmaj7", "Am7", "Dm7", "G7", "Cmaj7"],
+        "voices": 4,
+        "style": "jazz",
+        "voiceRanges": {
+          "bass": ["E2", "E3"],
+          "tenor": ["G2", "C4"],
+          "alto": ["C3", "G4"],
+          "soprano": ["E3", "C5"]
+        }
+      }
+    },
+
+    "// POP STYLE": "Simple smooth motion",
+    "pop_chords": {
+      "voiceLead": {
+        "progression": ["C", "G", "Am", "F", "C", "G", "F", "C"],
+        "voices": 4,
+        "style": "pop"
+      }
+    },
+
+    "// CUSTOM CONSTRAINTS": "User-specified constraints",
+    "custom_voicing": {
+      "voiceLead": {
+        "progression": ["Cm", "Fm", "Bb", "Eb", "Ab", "Bb", "Cm"],
+        "voices": 4,
+        "style": "custom",
+        "constraints": ["smooth_motion", "avoid_voice_crossing", "contrary_outer_motion"]
+      }
+    },
+
+    "// 3-VOICE TEXTURE": "Fewer voices for lighter texture",
+    "trio_voicing": {
+      "voiceLead": {
+        "progression": ["Fmaj7", "Em7", "Dm7", "Cmaj7"],
+        "voices": 3,
+        "style": "jazz"
+      }
+    },
+
+    "// EXTENDED CHORDS": "7ths and 9ths",
+    "extended_harmony": {
+      "voiceLead": {
+        "progression": ["Cmaj9", "Fmaj7", "Dm9", "G13", "Cmaj9"],
+        "voices": 4,
+        "style": "jazz"
+      }
+    },
+
+    "// CHROMATIC PROGRESSION": "More complex harmony",
+    "chromatic_voicing": {
+      "voiceLead": {
+        "progression": ["C", "Db", "D", "Eb", "E", "F", "C"],
+        "voices": 4,
+        "style": "jazz"
+      }
+    },
+
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "bach_section": {
+      "bars": 5,
+      "tracks": {
+        "chorale": { "pattern": "bach_chorale" }
+      }
+    },
+    "jazz_section": {
+      "bars": 7,
+      "tracks": {
+        "jazz_piano": { "pattern": "jazz_voicing" }
+      }
+    },
+    "pop_section": {
+      "bars": 8,
+      "tracks": {
+        "pop_synth": { "pattern": "pop_chords" }
+      }
+    },
+    "custom_section": {
+      "bars": 7,
+      "key": "C minor",
+      "tracks": {
+        "chorale": { "pattern": "custom_voicing" }
+      }
+    },
+    "trio_section": {
+      "bars": 4,
+      "tracks": {
+        "jazz_piano": { "pattern": "trio_voicing" }
+      }
+    },
+    "extended_section": {
+      "bars": 5,
+      "tracks": {
+        "jazz_piano": { "pattern": "extended_harmony" }
+      }
+    },
+    "chromatic_section": {
+      "bars": 7,
+      "tracks": {
+        "pop_synth": { "pattern": "chromatic_voicing" }
+      }
+    }
+  },
+  "arrangement": [
+    "bach_section",
+    "jazz_section",
+    "pop_section",
+    "custom_section",
+    "trio_section",
+    "extended_section",
+    "chromatic_section"
+  ]
+}

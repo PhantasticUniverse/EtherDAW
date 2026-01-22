@@ -974,8 +974,22 @@ export function expandDrumPattern(drums: DrumPattern, velocity: number): Expande
   const kit = drums.kit || '909';
   const stepDuration = parseDurationString(drums.stepDuration || DRUM_SEQUENCER.DEFAULT_STEP_DURATION);
 
+  // v0.81: Auto-detect shorthand format where drum names are direct keys
+  // This allows: { "kick": "x...", "snare": "...x" } without "lines" wrapper
+  const DRUM_NAMES = ['kick', 'snare', 'hihat', 'openhat', 'closedhat', 'clap', 'rim', 'tom_hi', 'tom_mid', 'tom_lo', 'crash', 'ride', 'cowbell', 'shaker', 'perc'];
+  const directDrumKeys = Object.keys(drums).filter(k => DRUM_NAMES.includes(k) && typeof (drums as any)[k] === 'string');
+
+  if (directDrumKeys.length > 0 && !drums.lines) {
+    // Convert shorthand to lines format
+    const lines: Record<string, string> = {};
+    for (const key of directDrumKeys) {
+      lines[key] = (drums as any)[key];
+    }
+    drums = { ...drums, lines };
+  }
+
   // v0.5: Handle multi-line step notation
-  // Format: { "kick": "x...x...", "hihat": "..x...x." }
+  // Format: { "lines": { "kick": "x...x...", "hihat": "..x...x." } }
   if (drums.lines) {
     let maxLength = 0;
 

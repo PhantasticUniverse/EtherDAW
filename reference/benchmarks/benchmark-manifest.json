@@ -1,0 +1,376 @@
+{
+  "generated": "2026-01-22T15:15:35.539Z",
+  "totalBenchmarks": 21,
+  "benchmarks": [
+    {
+      "name": "benchmark-arpeggios",
+      "title": "benchmark-arpeggios.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-arpeggios.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid duration: 8n"
+    },
+    {
+      "name": "benchmark-articulations",
+      "title": "benchmark-articulations.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-articulations.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid note format: \"G4:q.bend-1\". Expected format: {pitch}{octave}:{duration}[tN][articulation][.jazzArt][.ornament][@velocity][+/-timing][?probability] (e.g., \"C4:q\", \"C4:q*\", \"C4:q@0.8\", \"C4:8t3\", \"C4:q.fall\", \"C4:q.tr\")"
+    },
+    {
+      "name": "benchmark-automation",
+      "title": "Automation Benchmark",
+      "description": "Tests section automation: tempo (ritardando/accelerando), filter cutoff, semantic parameters (brightness), and all curve types (linear, exponential, logarithmic, sine, step).",
+      "duration": 96,
+      "paths": {
+        "etherscore": "examples/benchmark-automation.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-automation.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-automation.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-automation-analysis.json"
+      },
+      "features": [
+        "automation",
+        "tempo",
+        "filter",
+        "curves",
+        "v0.5",
+        "v0.7",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-chords",
+      "title": "benchmark-chords.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-chords.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid chord format: \"C7sus4:w\". Expected format: {root}{quality}[@voicing]:{duration}[articulation] (e.g., \"Cmaj7:w\", \"Dm:h\", \"Am7:q*\", \"Am9@drop2:w\")"
+    },
+    {
+      "name": "benchmark-continuation",
+      "title": "Continuation Benchmark",
+      "description": "Tests melodic continuation with all 5 techniques: ascending_sequence, descending_sequence, extension, fragmentation, and development.",
+      "duration": 148.8,
+      "paths": {
+        "etherscore": "examples/benchmark-continuation.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-continuation.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-continuation.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-continuation-analysis.json"
+      },
+      "features": [
+        "continuation",
+        "generative",
+        "melody",
+        "v0.6",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-density-tension",
+      "title": "benchmark-density-tension.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-density-tension.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid rest format: \"r:q?0.3\". Expected format: r:{duration} (e.g., \"r:q\", \"r:h\")"
+    },
+    {
+      "name": "benchmark-drums",
+      "title": "benchmark-drums.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-drums.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid pitch: \"drum:kick@909\""
+    },
+    {
+      "name": "benchmark-dynamics",
+      "title": "Dynamics Benchmark",
+      "description": "Tests velocity and dynamics features: pp-ff markings, velocity values, velocity envelopes (crescendo, diminuendo, swell), and humanization.",
+      "duration": 66.65964154705703,
+      "paths": {
+        "etherscore": "examples/benchmark-dynamics.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-dynamics.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-dynamics.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-dynamics-analysis.json"
+      },
+      "features": [
+        "dynamics",
+        "velocity",
+        "expression",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-effects",
+      "title": "Effects Benchmark",
+      "description": "Tests all effect types in isolation. Each section applies a different effect to the same source sound for comparison.",
+      "duration": 90.66666666666667,
+      "paths": {
+        "etherscore": "examples/benchmark-effects.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-effects.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-effects.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-effects-analysis.json"
+      },
+      "features": [
+        "effects",
+        "audio-processing",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-euclidean",
+      "title": "benchmark-euclidean.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-euclidean.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid pitch: \"drum:rim@909\""
+    },
+    {
+      "name": "benchmark-generative",
+      "title": "Generative Features Benchmark",
+      "description": "Tests Markov chain generation with all 5 presets (uniform, neighbor_weighted, walking_bass, melody_stepwise, root_heavy), seeded reproducibility, and scale-aware generation.",
+      "duration": 70,
+      "paths": {
+        "etherscore": "examples/benchmark-generative.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-generative.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-generative.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-generative-analysis.json"
+      },
+      "features": [
+        "generative",
+        "markov",
+        "v0.6",
+        "v0.7"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-layering",
+      "title": "Layering Benchmark",
+      "description": "Tests v0.8 instrument layering: multiple presets stacked, detune offsets, octave doubling, and volume balancing.",
+      "duration": 72,
+      "paths": {
+        "etherscore": "examples/benchmark-layering.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-layering.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-layering.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-layering-analysis.json"
+      },
+      "features": [
+        "layering",
+        "v0.8",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-lfo",
+      "title": "LFO Benchmark",
+      "description": "Tests v0.8 LFO modulation: different rates (sync to tempo), shapes (sine, triangle, square, sawtooth), and targets (filterCutoff, pan, volume, pitch).",
+      "duration": 81.60000000000001,
+      "paths": {
+        "etherscore": "examples/benchmark-lfo.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-lfo.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-lfo.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-lfo-analysis.json"
+      },
+      "features": [
+        "lfo",
+        "modulation",
+        "v0.8",
+        "chords"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-mary-lamb",
+      "title": "Mary Had a Little Lamb",
+      "description": "Reference melody for comparing EtherDAW rendering against raw synthesis. Uses electric piano preset.",
+      "duration": 16,
+      "paths": {
+        "etherscore": "examples/benchmark-mary-lamb.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-mary-lamb.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-mary-lamb.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-mary-lamb-analysis.json"
+      },
+      "features": [
+        "reference",
+        "melody",
+        "piano"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-mixing",
+      "title": "benchmark-mixing.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-mixing.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid pitch: \"drum:kick@909\""
+    },
+    {
+      "name": "benchmark-parallel",
+      "title": "benchmark-parallel.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-parallel.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid pitch: \"drum:kick@909\""
+    },
+    {
+      "name": "benchmark-scale-degrees",
+      "title": "benchmark-scale-degrees.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-scale-degrees.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid degree: b3:h"
+    },
+    {
+      "name": "benchmark-synthesis",
+      "title": "Synthesis Benchmark",
+      "description": "Tests all synth presets. Each plays C4 for one whole note at 60 BPM (4 seconds per note). Use for visual/audio comparison after code changes.",
+      "duration": 220,
+      "paths": {
+        "etherscore": "examples/benchmark-synthesis.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-synthesis.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-synthesis.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-synthesis-analysis.json"
+      },
+      "features": [
+        "synthesis",
+        "presets"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-timing",
+      "title": "benchmark-timing.etherscore.json",
+      "description": "Error during processing",
+      "duration": 0,
+      "paths": {
+        "etherscore": "examples/benchmark-timing.etherscore.json",
+        "midi": "",
+        "spectrogram": "",
+        "analysis": ""
+      },
+      "features": [],
+      "verified": false,
+      "notes": "Error: Error: Invalid pitch: \"drum:kick@909\""
+    },
+    {
+      "name": "benchmark-transforms",
+      "title": "Pattern Transforms Benchmark",
+      "description": "Tests pattern transformations (invert, retrograde, augment, diminish, transpose, octave) and pattern inheritance (extends/overrides).",
+      "duration": 73.19999999999999,
+      "paths": {
+        "etherscore": "examples/benchmark-transforms.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-transforms.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-transforms.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-transforms-analysis.json"
+      },
+      "features": [
+        "transforms",
+        "patterns",
+        "inheritance",
+        "v0.3",
+        "v0.7"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    },
+    {
+      "name": "benchmark-voice-leading",
+      "title": "Voice Leading Benchmark",
+      "description": "Tests constraint-based voice leading with 4-voice chorale, style presets (bach, jazz, pop), and custom voice ranges.",
+      "duration": 143.33333333333334,
+      "paths": {
+        "etherscore": "examples/benchmark-voice-leading.etherscore.json",
+        "midi": "reference/benchmarks/audio/benchmark-voice-leading.mid",
+        "spectrogram": "reference/benchmarks/spectrograms/benchmark-voice-leading.png",
+        "analysis": "reference/benchmarks/analysis/benchmark-voice-leading-analysis.json"
+      },
+      "features": [
+        "voice-leading",
+        "chorale",
+        "constraints",
+        "v0.6"
+      ],
+      "verified": false,
+      "notes": "MIDI exported. Spectrogram requires WAV rendering in browser."
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "meta": {
+    "title": "Drums Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests all drum kits (808, 909, acoustic, lofi) and drum notation styles (step, hits, patterns). Each section showcases a different kit with identical patterns.",
+    "tags": ["benchmark", "drums", "kits"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// 808 KIT": "Classic Roland TR-808",
+    "drums_808": {
+      "kit": "808",
+      "volume": -3
+    },
+    "// 909 KIT": "Classic Roland TR-909",
+    "drums_909": {
+      "kit": "909",
+      "volume": -3
+    },
+    "// ACOUSTIC KIT": "Natural acoustic drums",
+    "drums_acoustic": {
+      "kit": "acoustic",
+      "volume": -3
+    },
+    "// LOFI KIT": "Lo-fi processed drums",
+    "drums_lofi": {
+      "kit": "lofi",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// STEP NOTATION": "Visual drum programming with x and .",
+    "basic_beat_step": {
+      "drums": {
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "snare": "....x.......x...",
+          "hihat": "x.x.x.x.x.x.x.x."
+        }
+      }
+    },
+    "syncopated_step": {
+      "drums": {
+        "lines": {
+          "kick":  "x.....x.x.......",
+          "snare": "....x.......x..x",
+          "hihat": "..x...x...x...x."
+        }
+      }
+    },
+    "four_on_floor_step": {
+      "drums": {
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "snare": "....x.......x...",
+          "hihat": "..x...x...x...x."
+        }
+      }
+    },
+
+    "// HIT ARRAYS": "Alternative drum notation",
+    "kick_hits": {
+      "drums": {
+        "hits": {
+          "kick": [0, 4, 8, 12]
+        }
+      }
+    },
+    "snare_hits": {
+      "drums": {
+        "hits": {
+          "snare": [4, 12]
+        }
+      }
+    },
+    "hihat_hits": {
+      "drums": {
+        "hits": {
+          "hihat": [0, 2, 4, 6, 8, 10, 12, 14]
+        }
+      }
+    },
+
+    "// INDIVIDUAL SOUNDS": "Each drum sound in isolation",
+    "all_kicks": {
+      "drums": {
+        "lines": {
+          "kick": "x...x...x...x..."
+        }
+      }
+    },
+    "all_snares": {
+      "drums": {
+        "lines": {
+          "snare": "x...x...x...x..."
+        }
+      }
+    },
+    "all_hihats_closed": {
+      "drums": {
+        "lines": {
+          "hihat": "xxxxxxxxxxxxxxxx"
+        }
+      }
+    },
+    "all_hihats_open": {
+      "drums": {
+        "lines": {
+          "hihat_open": "x...x...x...x..."
+        }
+      }
+    },
+    "all_toms": {
+      "drums": {
+        "lines": {
+          "tom_high": "x.......x.......",
+          "tom_mid":  "..x.......x.....",
+          "tom_low":  "....x.......x..."
+        }
+      }
+    },
+    "all_cymbals": {
+      "drums": {
+        "lines": {
+          "crash": "x...............",
+          "ride":  "....x...x...x..."
+        }
+      }
+    },
+    "all_claps": {
+      "drums": {
+        "lines": {
+          "clap": "....x.......x..."
+        }
+      }
+    },
+    "all_rimshots": {
+      "drums": {
+        "lines": {
+          "rimshot": "....x.......x..."
+        }
+      }
+    },
+
+    "rest": { "notes": ["r:w"] }
+  },
+  "sections": {
+    "// 808 SHOWCASE": "TR-808 drum machine",
+    "kit_808_basic": {
+      "bars": 4,
+      "tracks": {
+        "drums_808": { "pattern": "basic_beat_step" }
+      }
+    },
+    "kit_808_syncopated": {
+      "bars": 4,
+      "tracks": {
+        "drums_808": { "pattern": "syncopated_step" }
+      }
+    },
+    "kit_808_sounds": {
+      "bars": 8,
+      "tracks": {
+        "drums_808": { "patterns": ["all_kicks", "all_snares", "all_hihats_closed", "all_hihats_open", "all_toms", "all_cymbals", "all_claps", "all_rimshots"] }
+      }
+    },
+
+    "// 909 SHOWCASE": "TR-909 drum machine",
+    "kit_909_basic": {
+      "bars": 4,
+      "tracks": {
+        "drums_909": { "pattern": "basic_beat_step" }
+      }
+    },
+    "kit_909_four_on_floor": {
+      "bars": 4,
+      "tracks": {
+        "drums_909": { "pattern": "four_on_floor_step" }
+      }
+    },
+    "kit_909_sounds": {
+      "bars": 8,
+      "tracks": {
+        "drums_909": { "patterns": ["all_kicks", "all_snares", "all_hihats_closed", "all_hihats_open", "all_toms", "all_cymbals", "all_claps", "all_rimshots"] }
+      }
+    },
+
+    "// ACOUSTIC SHOWCASE": "Natural drums",
+    "kit_acoustic_basic": {
+      "bars": 4,
+      "tracks": {
+        "drums_acoustic": { "pattern": "basic_beat_step" }
+      }
+    },
+    "kit_acoustic_sounds": {
+      "bars": 8,
+      "tracks": {
+        "drums_acoustic": { "patterns": ["all_kicks", "all_snares", "all_hihats_closed", "all_hihats_open", "all_toms", "all_cymbals", "all_claps", "all_rimshots"] }
+      }
+    },
+
+    "// LOFI SHOWCASE": "Lo-fi processed drums",
+    "kit_lofi_basic": {
+      "bars": 4,
+      "tracks": {
+        "drums_lofi": { "pattern": "basic_beat_step" }
+      }
+    },
+    "kit_lofi_sounds": {
+      "bars": 8,
+      "tracks": {
+        "drums_lofi": { "patterns": ["all_kicks", "all_snares", "all_hihats_closed", "all_hihats_open", "all_toms", "all_cymbals", "all_claps", "all_rimshots"] }
+      }
+    }
+  },
+  "arrangement": [
+    "kit_808_basic",
+    "kit_808_syncopated",
+    "kit_808_sounds",
+    "kit_909_basic",
+    "kit_909_four_on_floor",
+    "kit_909_sounds",
+    "kit_acoustic_basic",
+    "kit_acoustic_sounds",
+    "kit_lofi_basic",
+    "kit_lofi_sounds"
+  ]
+}

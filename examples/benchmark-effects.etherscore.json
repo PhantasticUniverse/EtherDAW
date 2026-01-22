@@ -1,0 +1,253 @@
+{
+  "meta": {
+    "title": "Effects Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests all effect types in isolation. Each section applies a different effect to the same source sound for comparison.",
+    "tags": ["benchmark", "effects", "audio-processing"]
+  },
+  "settings": {
+    "tempo": 90,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// DRY REFERENCE": "No effects for comparison",
+    "dry": {
+      "preset": "sawtooth",
+      "volume": -6
+    },
+
+    "// REVERB": "Room/space simulation",
+    "with_reverb_short": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 0.5 } }
+      ]
+    },
+    "with_reverb_long": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 4.0 } }
+      ]
+    },
+
+    "// DELAY": "Echo effect",
+    "with_delay_8th": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n", "feedback": 0.4 } }
+      ]
+    },
+    "with_delay_dotted": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n.", "feedback": 0.4 } }
+      ]
+    },
+
+    "// CHORUS": "Pitch modulation doubling",
+    "with_chorus": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "wet": 0.5, "options": { "frequency": 2.0, "depth": 0.7 } }
+      ]
+    },
+
+    "// DISTORTION": "Saturation/clipping",
+    "with_distortion_light": {
+      "preset": "sawtooth",
+      "volume": -9,
+      "effects": [
+        { "type": "distortion", "wet": 1.0, "options": { "amount": 0.3 } }
+      ]
+    },
+    "with_distortion_heavy": {
+      "preset": "sawtooth",
+      "volume": -12,
+      "effects": [
+        { "type": "distortion", "wet": 1.0, "options": { "amount": 0.8 } }
+      ]
+    },
+
+    "// FILTER": "Frequency shaping",
+    "with_filter_lowpass": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 2 } }
+      ]
+    },
+    "with_filter_highpass": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "highpass", "Q": 2 } }
+      ]
+    },
+    "with_filter_bandpass": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 1000, "type": "bandpass", "Q": 4 } }
+      ]
+    },
+
+    "// COMPRESSOR": "Dynamic range control",
+    "with_compressor": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "compressor", "options": { "threshold": -24, "ratio": 8, "attack": 0.003, "release": 0.1 } }
+      ]
+    },
+
+    "// PHASER": "Phase modulation",
+    "with_phaser": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "phaser", "wet": 0.5, "options": { "frequency": 0.5, "depth": 10 } }
+      ]
+    },
+
+    "// VIBRATO": "Pitch modulation",
+    "with_vibrato": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "vibrato", "wet": 1.0, "options": { "frequency": 5, "depth": 0.3 } }
+      ]
+    },
+
+    "// BITCRUSHER": "Lo-fi degradation",
+    "with_bitcrusher": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "bitcrusher", "wet": 1.0, "options": { "bits": 4 } }
+      ]
+    },
+
+    "// EFFECT CHAINS": "Multiple effects combined",
+    "chain_classic": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "wet": 0.3 },
+        { "type": "delay", "wet": 0.25, "options": { "time": "8n", "feedback": 0.3 } },
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 1.5 } }
+      ]
+    },
+    "chain_lofi": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass" } },
+        { "type": "bitcrusher", "wet": 0.5, "options": { "bits": 8 } },
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    }
+  },
+  "patterns": {
+    "test_phrase": {
+      "notes": ["C4:q", "E4:q", "G4:q", "C5:q", "G4:q", "E4:q", "C4:h"]
+    },
+    "sustained_chord": {
+      "chords": ["Am7:w", "Am7:w"]
+    },
+    "rest": { "notes": ["r:w", "r:w"] }
+  },
+  "sections": {
+    "dry_reference": {
+      "bars": 2,
+      "tracks": {
+        "dry": { "pattern": "test_phrase" }
+      }
+    },
+    "reverb_comparison": {
+      "bars": 4,
+      "tracks": {
+        "with_reverb_short": { "patterns": ["test_phrase", "rest"] },
+        "with_reverb_long": { "patterns": ["rest", "test_phrase"] }
+      }
+    },
+    "delay_comparison": {
+      "bars": 4,
+      "tracks": {
+        "with_delay_8th": { "patterns": ["test_phrase", "rest"] },
+        "with_delay_dotted": { "patterns": ["rest", "test_phrase"] }
+      }
+    },
+    "chorus_section": {
+      "bars": 2,
+      "tracks": {
+        "with_chorus": { "pattern": "test_phrase" }
+      }
+    },
+    "distortion_comparison": {
+      "bars": 4,
+      "tracks": {
+        "with_distortion_light": { "patterns": ["test_phrase", "rest"] },
+        "with_distortion_heavy": { "patterns": ["rest", "test_phrase"] }
+      }
+    },
+    "filter_comparison": {
+      "bars": 6,
+      "tracks": {
+        "with_filter_lowpass": { "patterns": ["test_phrase", "rest", "rest"] },
+        "with_filter_highpass": { "patterns": ["rest", "test_phrase", "rest"] },
+        "with_filter_bandpass": { "patterns": ["rest", "rest", "test_phrase"] }
+      }
+    },
+    "compressor_section": {
+      "bars": 2,
+      "tracks": {
+        "with_compressor": { "pattern": "test_phrase" }
+      }
+    },
+    "phaser_section": {
+      "bars": 2,
+      "tracks": {
+        "with_phaser": { "pattern": "sustained_chord" }
+      }
+    },
+    "vibrato_section": {
+      "bars": 2,
+      "tracks": {
+        "with_vibrato": { "pattern": "test_phrase" }
+      }
+    },
+    "bitcrusher_section": {
+      "bars": 2,
+      "tracks": {
+        "with_bitcrusher": { "pattern": "test_phrase" }
+      }
+    },
+    "chains_section": {
+      "bars": 4,
+      "tracks": {
+        "chain_classic": { "patterns": ["test_phrase", "rest"] },
+        "chain_lofi": { "patterns": ["rest", "test_phrase"] }
+      }
+    }
+  },
+  "arrangement": [
+    "dry_reference",
+    "reverb_comparison",
+    "delay_comparison",
+    "chorus_section",
+    "distortion_comparison",
+    "filter_comparison",
+    "compressor_section",
+    "phaser_section",
+    "vibrato_section",
+    "bitcrusher_section",
+    "chains_section"
+  ]
+}

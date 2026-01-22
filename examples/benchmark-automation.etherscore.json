@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "title": "Automation Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests section automation: tempo (ritardando/accelerando), filter cutoff, semantic parameters (brightness), and all curve types (linear, exponential, logarithmic, sine, step).",
+    "tags": ["benchmark", "automation", "tempo", "filter", "curves", "v0.5", "v0.7"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass", "Q": 2 } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -9
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -3,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 3 } }
+      ]
+    }
+  },
+  "patterns": {
+    "sustained_chord": {
+      "chords": ["Am7:w", "Am7:w", "Am7:w", "Am7:w"]
+    },
+    "bass_line": {
+      "notes": ["A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q", "A2:q"]
+    },
+    "melody": {
+      "notes": ["A4:q", "C5:q", "E5:q", "D5:q", "C5:q", "B4:q", "A4:q", "G4:q", "A4:q", "C5:q", "E5:q", "D5:q", "C5:q", "B4:q", "A4:h"]
+    },
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "// TEMPO AUTOMATION (v0.7)": "---",
+    "accelerando": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "melody" },
+        "bass": { "pattern": "bass_line" }
+      },
+      "automation": {
+        "tempo": {
+          "start": 80,
+          "end": 140,
+          "curve": "exponential"
+        }
+      }
+    },
+    "ritardando": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "melody" },
+        "bass": { "pattern": "bass_line" }
+      },
+      "automation": {
+        "tempo": {
+          "start": 140,
+          "end": 60,
+          "curve": "logarithmic"
+        }
+      }
+    },
+
+    "// FILTER AUTOMATION": "---",
+    "filter_sweep_up": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 200,
+          "end": 5000,
+          "curve": "exponential"
+        }
+      }
+    },
+    "filter_sweep_down": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 5000,
+          "end": 200,
+          "curve": "exponential"
+        }
+      }
+    },
+
+    "// SEMANTIC PARAM AUTOMATION": "---",
+    "brightness_rise": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "pad.params.brightness": {
+          "start": 0.1,
+          "end": 0.9,
+          "curve": "linear"
+        }
+      }
+    },
+
+    "// CURVE COMPARISON": "Linear, exponential, logarithmic, sine",
+    "curve_linear": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 300,
+          "end": 4000,
+          "curve": "linear"
+        }
+      }
+    },
+    "curve_exponential": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 300,
+          "end": 4000,
+          "curve": "exponential"
+        }
+      }
+    },
+    "curve_logarithmic": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 300,
+          "end": 4000,
+          "curve": "logarithmic"
+        }
+      }
+    },
+    "curve_sine": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 300,
+          "end": 4000,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "// VOLUME/PAN AUTOMATION": "---",
+    "volume_fade_in": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "pad.volume": {
+          "start": -40,
+          "end": -6,
+          "curve": "linear"
+        }
+      }
+    },
+    "pan_sweep": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.pan": {
+          "start": -1,
+          "end": 1,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "// CUSTOM POINTS": "Multi-point automation curve",
+    "custom_points": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "sustained_chord" }
+      },
+      "automation": {
+        "lead.filter.frequency": {
+          "start": 500,
+          "end": 500,
+          "points": [
+            { "time": 0, "value": 500 },
+            { "time": 0.25, "value": 4000 },
+            { "time": 0.5, "value": 800 },
+            { "time": 0.75, "value": 3000 },
+            { "time": 1, "value": 500 }
+          ]
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "accelerando",
+    "ritardando",
+    "filter_sweep_up",
+    "filter_sweep_down",
+    "brightness_rise",
+    "curve_linear",
+    "curve_exponential",
+    "curve_logarithmic",
+    "curve_sine",
+    "volume_fade_in",
+    "pan_sweep",
+    "custom_points"
+  ]
+}

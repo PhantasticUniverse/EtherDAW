@@ -2978,6 +2978,15 @@ function expandDrumPattern(drums, velocity) {
   const notes = [];
   const kit = drums.kit || "909";
   const stepDuration = parseDurationString(drums.stepDuration || DRUM_SEQUENCER.DEFAULT_STEP_DURATION);
+  const DRUM_NAMES = ["kick", "snare", "hihat", "openhat", "closedhat", "clap", "rim", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "cowbell", "shaker", "perc"];
+  const directDrumKeys = Object.keys(drums).filter((k) => DRUM_NAMES.includes(k) && typeof drums[k] === "string");
+  if (directDrumKeys.length > 0 && !drums.lines) {
+    const lines = {};
+    for (const key of directDrumKeys) {
+      lines[key] = drums[key];
+    }
+    drums = { ...drums, lines };
+  }
   if (drums.lines) {
     let maxLength = 0;
     for (const [drumName, pattern] of Object.entries(drums.lines)) {
@@ -4072,13 +4081,18 @@ function analyze(score) {
 }
 function validateScore(score) {
   const errors = [];
+  const isComment = (key) => key.startsWith("//");
   for (const sectionName of score.arrangement) {
     if (!score.sections[sectionName]) {
       errors.push(`Arrangement references unknown section: "${sectionName}"`);
     }
   }
   for (const [sectionName, section] of Object.entries(score.sections)) {
+    if (isComment(sectionName)) continue;
+    if (!section || typeof section !== "object" || !section.tracks) continue;
     for (const [trackName, track] of Object.entries(section.tracks)) {
+      if (isComment(trackName)) continue;
+      if (!track || typeof track !== "object") continue;
       if (track.pattern && !score.patterns[track.pattern]) {
         errors.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${track.pattern}"`);
       }
@@ -4092,9 +4106,12 @@ function validateScore(score) {
     }
   }
   if (score.instruments) {
-    const instrumentNames = new Set(Object.keys(score.instruments));
+    const instrumentNames = new Set(Object.keys(score.instruments).filter((k) => !isComment(k)));
     for (const [sectionName, section] of Object.entries(score.sections)) {
+      if (isComment(sectionName)) continue;
+      if (!section || typeof section !== "object" || !section.tracks) continue;
       for (const trackName of Object.keys(section.tracks)) {
+        if (isComment(trackName)) continue;
         if (!instrumentNames.has(trackName)) {
           errors.push(`Section "${sectionName}" has track "${trackName}" with no matching instrument`);
         }
@@ -4872,8 +4889,48 @@ var DRUM_KITS = {
   "acoustic": KIT_ACOUSTIC,
   "lofi": KIT_LOFI
 };
+var DRUM_ALIASES = {
+  // Open hi-hat variations
+  "openhat": "hihat_open",
+  "open_hat": "hihat_open",
+  "open_hihat": "hihat_open",
+  "oh": "hihat_open",
+  // Closed hi-hat variations
+  "closedhat": "hihat",
+  "closed_hat": "hihat",
+  "closed_hihat": "hihat",
+  "ch": "hihat",
+  "hh": "hihat",
+  // Other common aliases
+  "bd": "kick",
+  "bassdrum": "kick",
+  "bass_drum": "kick",
+  "sd": "snare",
+  "rimshot": "rim",
+  "tomhi": "tom_hi",
+  "tommid": "tom_mid",
+  "tomlo": "tom_lo",
+  "tom_high": "tom_hi",
+  "tom_low": "tom_lo",
+  "cy": "crash",
+  "cymbal": "crash",
+  "rd": "ride",
+  "cb": "cowbell",
+  "sh": "shaker",
+  "cp": "clap",
+  "handclap": "clap"
+};
+function normalizeDrumName(name) {
+  const lower = name.toLowerCase();
+  const validDrums = ["kick", "snare", "clap", "hihat", "hihat_open", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "rim", "cowbell", "shaker"];
+  if (validDrums.includes(lower)) {
+    return lower;
+  }
+  return DRUM_ALIASES[lower] || lower;
+}
 function getDrumParams(kit, drum) {
-  return DRUM_KITS[kit]?.drums[drum];
+  const normalizedDrum = normalizeDrumName(drum);
+  return DRUM_KITS[kit]?.drums[normalizedDrum];
 }
 function getAvailableDrums() {
   return [
@@ -25787,6 +25844,64 @@ var PRESET_DEFINITIONS = {
       envelope: { attack: 1e-3, decay: 0.1, sustain: 0.4, release: 0.1 }
     },
     semanticDefaults: { brightness: 0.8, punch: 0.5 }
+  },
+  // ============================================================================
+  // v0.81: Noise Presets (for textures, ambience, lo-fi effects)
+  // ============================================================================
+  "noise": {
+    name: "White Noise",
+    category: "texture",
+    description: "White noise for texture, risers, and ambient effects",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 1 }
+  },
+  "pink_noise": {
+    name: "Pink Noise",
+    category: "texture",
+    description: "Pink noise (1/f) - warmer, more natural sounding",
+    type: "noise",
+    base: {
+      noise: { type: "pink" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.7, warmth: 0.6 }
+  },
+  "brown_noise": {
+    name: "Brown Noise",
+    category: "texture",
+    description: "Brown noise (1/f\xB2) - deepest, smoothest noise",
+    type: "noise",
+    base: {
+      noise: { type: "brown" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.9 }
+  },
+  "vinyl_crackle": {
+    name: "Vinyl Crackle",
+    category: "lofi",
+    description: "Lo-fi vinyl crackle texture with short decay",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.02, sustain: 0, release: 0.01 }
+    },
+    semanticDefaults: { brightness: 0.9 }
+  },
+  "noise_sweep": {
+    name: "Noise Sweep",
+    category: "texture",
+    description: "White noise with longer attack for sweeps and risers",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 0.5, decay: 0.3, sustain: 0.3, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 1 }
   }
 };
 function getPresetDefinition(name) {
@@ -26320,7 +26435,8 @@ var Player2 = class {
    * Get or create a drum synth pool for handling simultaneous hits
    */
   getOrCreateDrumPool(drumName, kitName) {
-    const key = `${drumName}@${kitName}`;
+    const normalizedDrumName = normalizeDrumName(drumName);
+    const key = `${normalizedDrumName}@${kitName}`;
     if (this.drumPools.has(key)) {
       return this.drumPools.get(key);
     }
@@ -26329,9 +26445,9 @@ var Player2 = class {
       console.warn(`Unknown drum kit: ${kitName}`);
       return null;
     }
-    const params = kit.drums[drumName];
+    const params = kit.drums[normalizedDrumName];
     if (!params) {
-      console.warn(`Unknown drum: ${drumName} in kit ${kitName}`);
+      console.warn(`Unknown drum: ${drumName} (normalized: ${normalizedDrumName}) in kit ${kitName}`);
       return null;
     }
     const synths = [];
@@ -26666,13 +26782,14 @@ var Player2 = class {
         offlineInstruments.set(name, { synth, synthType, defaultPitch });
       }
       const getOfflineDrumPool = (drumName, kitName) => {
-        const key = `${drumName}@${kitName}`;
+        const normalizedDrumName = normalizeDrumName(drumName);
+        const key = `${normalizedDrumName}@${kitName}`;
         if (offlineDrumPools.has(key)) {
           return offlineDrumPools.get(key);
         }
         const kit = DRUM_KITS[kitName];
         if (!kit) return null;
-        const params = kit.drums[drumName];
+        const params = kit.drums[normalizedDrumName];
         if (!params) return null;
         const synths = [];
         for (let i = 0; i < DRUM_POOL_SIZE; i++) {

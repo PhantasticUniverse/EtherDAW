@@ -223,6 +223,9 @@ export function analyze(score: EtherScore): CompilationStats & {
 export function validateScore(score: EtherScore): string[] {
   const errors: string[] = [];
 
+  // Helper to check if a key is a comment
+  const isComment = (key: string) => key.startsWith('//');
+
   // Check arrangement references
   for (const sectionName of score.arrangement) {
     if (!score.sections[sectionName]) {
@@ -232,7 +235,14 @@ export function validateScore(score: EtherScore): string[] {
 
   // Check pattern references in tracks
   for (const [sectionName, section] of Object.entries(score.sections)) {
+    // Skip comment keys
+    if (isComment(sectionName)) continue;
+    if (!section || typeof section !== 'object' || !section.tracks) continue;
+
     for (const [trackName, track] of Object.entries(section.tracks)) {
+      if (isComment(trackName)) continue;
+      if (!track || typeof track !== 'object') continue;
+
       if (track.pattern && !score.patterns[track.pattern]) {
         errors.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${track.pattern}"`);
       }
@@ -248,9 +258,14 @@ export function validateScore(score: EtherScore): string[] {
 
   // Check instrument references
   if (score.instruments) {
-    const instrumentNames = new Set(Object.keys(score.instruments));
+    const instrumentNames = new Set(Object.keys(score.instruments).filter(k => !isComment(k)));
     for (const [sectionName, section] of Object.entries(score.sections)) {
+      // Skip comment keys
+      if (isComment(sectionName)) continue;
+      if (!section || typeof section !== 'object' || !section.tracks) continue;
+
       for (const trackName of Object.keys(section.tracks)) {
+        if (isComment(trackName)) continue;
         if (!instrumentNames.has(trackName)) {
           errors.push(`Section "${sectionName}" has track "${trackName}" with no matching instrument`);
         }

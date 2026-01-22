@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "title": "Arpeggios Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests arpeggiator with different modes, rates, and chord types. Each section tests a specific arpeggiator parameter.",
+    "tags": ["benchmark", "arpeggio", "patterns"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "arp": {
+      "preset": "arp_synth",
+      "volume": -6,
+      "effects": [
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// ARPEGGIO MODES": "Different playback directions",
+    "arp_up": {
+      "arpeggio": {
+        "chord": "Am7",
+        "mode": "up",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_down": {
+      "arpeggio": {
+        "chord": "Am7",
+        "mode": "down",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_updown": {
+      "arpeggio": {
+        "chord": "Am7",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_downup": {
+      "arpeggio": {
+        "chord": "Am7",
+        "mode": "downup",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_random_seeded": {
+      "arpeggio": {
+        "chord": "Am7",
+        "mode": "random",
+        "duration": "8n",
+        "octaves": 2,
+        "seed": 42
+      }
+    },
+
+    "// DURATION RATES": "Different note lengths",
+    "arp_rate_q": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "up",
+        "duration": "4n",
+        "octaves": 1
+      }
+    },
+    "arp_rate_8": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "up",
+        "duration": "8n",
+        "octaves": 1
+      }
+    },
+    "arp_rate_16": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "up",
+        "duration": "16n",
+        "octaves": 1
+      }
+    },
+    "arp_rate_triplet": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "up",
+        "duration": "8t",
+        "octaves": 1
+      }
+    },
+
+    "// OCTAVE RANGES": "Different spans",
+    "arp_1_octave": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "up",
+        "duration": "8n",
+        "octaves": 1
+      }
+    },
+    "arp_2_octaves": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "up",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_3_octaves": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "up",
+        "duration": "8n",
+        "octaves": 3
+      }
+    },
+
+    "// CHORD TYPES": "Different harmonic content",
+    "arp_triad": {
+      "arpeggio": {
+        "chord": "C",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_seventh": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_ninth": {
+      "arpeggio": {
+        "chord": "Cmaj9",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_diminished": {
+      "arpeggio": {
+        "chord": "Cdim7",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    },
+    "arp_augmented": {
+      "arpeggio": {
+        "chord": "Caug",
+        "mode": "updown",
+        "duration": "8n",
+        "octaves": 2
+      }
+    }
+  },
+  "sections": {
+    "modes": {
+      "bars": 10,
+      "tracks": {
+        "arp": { "patterns": ["arp_up", "arp_down", "arp_updown", "arp_downup", "arp_random_seeded"] }
+      }
+    },
+    "rates": {
+      "bars": 8,
+      "tracks": {
+        "arp": { "patterns": ["arp_rate_q", "arp_rate_8", "arp_rate_16", "arp_rate_triplet"] }
+      }
+    },
+    "octaves": {
+      "bars": 6,
+      "tracks": {
+        "arp": { "patterns": ["arp_1_octave", "arp_2_octaves", "arp_3_octaves"] }
+      }
+    },
+    "chord_types": {
+      "bars": 10,
+      "tracks": {
+        "arp": { "patterns": ["arp_triad", "arp_seventh", "arp_ninth", "arp_diminished", "arp_augmented"] }
+      }
+    }
+  },
+  "arrangement": [
+    "modes",
+    "rates",
+    "octaves",
+    "chord_types"
+  ]
+}

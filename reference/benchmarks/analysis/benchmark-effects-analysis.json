@@ -1,0 +1,39 @@
+{
+  "benchmark": "benchmark-effects",
+  "title": "Effects Benchmark",
+  "description": "Tests all effect types in isolation. Each section applies a different effect to the same source sound for comparison.",
+  "features": [
+    "effects",
+    "audio-processing",
+    "chords"
+  ],
+  "duration": 90.66666666666667,
+  "tempo": 90,
+  "key": "C major",
+  "sections": 11,
+  "patterns": 3,
+  "notes": 169,
+  "instruments": [
+    "dry",
+    "with_reverb_short",
+    "with_reverb_long",
+    "with_delay_8th",
+    "with_delay_dotted",
+    "with_chorus",
+    "with_distortion_light",
+    "with_distortion_heavy",
+    "with_filter_lowpass",
+    "with_filter_highpass",
+    "with_filter_bandpass",
+    "with_compressor",
+    "with_phaser",
+    "with_vibrato",
+    "with_bitcrusher",
+    "chain_classic",
+    "chain_lofi"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.651Z",
+  "expectedCharacteristics": {
+    "effects": "Reverb = time smear, delay = repeats, filter = frequency cutoff"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "benchmark": "benchmark-dynamics",
+  "title": "Dynamics Benchmark",
+  "description": "Tests velocity and dynamics features: pp-ff markings, velocity values, velocity envelopes (crescendo, diminuendo, swell), and humanization.",
+  "features": [
+    "dynamics",
+    "velocity",
+    "expression",
+    "chords"
+  ],
+  "duration": 66.65964154705703,
+  "tempo": 72,
+  "key": "C major",
+  "sections": 9,
+  "patterns": 11,
+  "notes": 148,
+  "instruments": [
+    "piano"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.647Z",
+  "expectedCharacteristics": {
+    "dynamics": "Amplitude variation visible in spectrogram brightness"
+  }
+}

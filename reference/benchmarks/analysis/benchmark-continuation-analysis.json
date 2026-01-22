@@ -1,0 +1,26 @@
+{
+  "benchmark": "benchmark-continuation",
+  "title": "Continuation Benchmark",
+  "description": "Tests melodic continuation with all 5 techniques: ascending_sequence, descending_sequence, extension, fragmentation, and development.",
+  "features": [
+    "continuation",
+    "generative",
+    "melody",
+    "v0.6",
+    "chords"
+  ],
+  "duration": 148.8,
+  "tempo": 100,
+  "key": "G major",
+  "sections": 6,
+  "patterns": 15,
+  "notes": 82,
+  "instruments": [
+    "lead",
+    "strings"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.642Z",
+  "expectedCharacteristics": {
+    "continuation": "Sequences should show transposed repetitions of motifs"
+  }
+}

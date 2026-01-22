@@ -1,0 +1,40 @@
+{
+  "benchmark": "benchmark-lfo",
+  "title": "LFO Benchmark",
+  "description": "Tests v0.8 LFO modulation: different rates (sync to tempo), shapes (sine, triangle, square, sawtooth), and targets (filterCutoff, pan, volume, pitch).",
+  "features": [
+    "lfo",
+    "modulation",
+    "v0.8",
+    "chords"
+  ],
+  "duration": 81.60000000000001,
+  "tempo": 100,
+  "key": "C major",
+  "sections": 5,
+  "patterns": 2,
+  "notes": 312,
+  "instruments": [
+    "dry",
+    "lfo_rate_1n",
+    "lfo_rate_2n",
+    "lfo_rate_4n",
+    "lfo_rate_8n",
+    "lfo_rate_16n",
+    "lfo_shape_sine",
+    "lfo_shape_triangle",
+    "lfo_shape_square",
+    "lfo_shape_sawtooth",
+    "lfo_target_filter",
+    "lfo_target_pan",
+    "lfo_target_volume",
+    "lfo_target_pitch",
+    "lfo_depth_subtle",
+    "lfo_depth_moderate",
+    "lfo_depth_extreme"
+  ],
+  "compiledAt": "2026-01-22T15:15:34.665Z",
+  "expectedCharacteristics": {
+    "lfo": "Periodic modulation visible in target parameter"
+  }
+}

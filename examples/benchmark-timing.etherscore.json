@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "title": "Timing Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests timing and rhythm features: time signatures, swing amounts, note durations, tuplets, and groove templates.",
+    "tags": ["benchmark", "timing", "rhythm", "swing", "groove"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "click": {
+      "preset": "bell",
+      "volume": -6
+    },
+    "drums": {
+      "kit": "808",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// NOTE DURATIONS": "Standard rhythmic values",
+    "whole_notes": {
+      "notes": ["C4:w"]
+    },
+    "half_notes": {
+      "notes": ["C4:h", "E4:h"]
+    },
+    "quarter_notes": {
+      "notes": ["C4:q", "D4:q", "E4:q", "F4:q"]
+    },
+    "eighth_notes": {
+      "notes": ["C4:8", "D4:8", "E4:8", "F4:8", "G4:8", "A4:8", "B4:8", "C5:8"]
+    },
+    "sixteenth_notes": {
+      "notes": ["C4:16", "D4:16", "E4:16", "F4:16", "G4:16", "A4:16", "B4:16", "C5:16", "B4:16", "A4:16", "G4:16", "F4:16", "E4:16", "D4:16", "C4:16", "D4:16"]
+    },
+
+    "// DOTTED VALUES": "1.5x duration",
+    "dotted_quarters": {
+      "notes": ["C4:q.", "E4:8", "G4:q.", "E4:8"]
+    },
+    "dotted_eighths": {
+      "notes": ["C4:8.", "D4:16", "E4:8.", "F4:16", "G4:8.", "A4:16", "B4:8.", "C5:16"]
+    },
+
+    "// TUPLETS": "Irregular divisions",
+    "triplet_eighths": {
+      "notes": ["C4:8t3", "D4:8t3", "E4:8t3", "F4:8t3", "G4:8t3", "A4:8t3", "B4:8t3", "C5:8t3", "D5:8t3", "E5:8t3", "D5:8t3", "C5:8t3"]
+    },
+    "quintuplet_sixteenths": {
+      "notes": ["C4:16t5", "D4:16t5", "E4:16t5", "F4:16t5", "G4:16t5", "A4:16t5", "B4:16t5", "C5:16t5", "D5:16t5", "E5:16t5", "F5:16t5", "G5:16t5", "A5:16t5", "B5:16t5", "C6:16t5", "D6:16t5", "E6:16t5", "D6:16t5", "C6:16t5", "B5:16t5"]
+    },
+
+    "// TIMING OFFSETS": "Micro-timing adjustments",
+    "offset_positive": {
+      "notes": ["C4:q+20ms", "E4:q+20ms", "G4:q+20ms", "C5:q+20ms"]
+    },
+    "offset_negative": {
+      "notes": ["C4:q-20ms", "E4:q-20ms", "G4:q-20ms", "C5:q-20ms"]
+    },
+
+    "// DRUM PATTERNS": "For swing/groove testing",
+    "straight_beat": {
+      "drums": {
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "snare": "....x.......x...",
+          "hihat": "x.x.x.x.x.x.x.x."
+        }
+      }
+    }
+  },
+  "sections": {
+    "durations": {
+      "bars": 5,
+      "tracks": {
+        "click": { "patterns": ["whole_notes", "half_notes", "quarter_notes", "eighth_notes", "sixteenth_notes"] }
+      }
+    },
+    "dotted_values": {
+      "bars": 2,
+      "tracks": {
+        "click": { "patterns": ["dotted_quarters", "dotted_eighths"] }
+      }
+    },
+    "tuplets_section": {
+      "bars": 2,
+      "tracks": {
+        "click": { "patterns": ["triplet_eighths", "quintuplet_sixteenths"] }
+      }
+    },
+    "offsets_section": {
+      "bars": 2,
+      "tracks": {
+        "click": { "patterns": ["offset_positive", "offset_negative"] }
+      }
+    },
+    "swing_0": {
+      "bars": 2,
+      "swing": 0,
+      "tracks": {
+        "drums": { "pattern": "straight_beat" }
+      }
+    },
+    "swing_15": {
+      "bars": 2,
+      "swing": 0.15,
+      "tracks": {
+        "drums": { "pattern": "straight_beat" }
+      }
+    },
+    "swing_33": {
+      "bars": 2,
+      "swing": 0.33,
+      "tracks": {
+        "drums": { "pattern": "straight_beat" }
+      }
+    },
+    "swing_50": {
+      "bars": 2,
+      "swing": 0.5,
+      "tracks": {
+        "drums": { "pattern": "straight_beat" }
+      }
+    },
+    "swing_66": {
+      "bars": 2,
+      "swing": 0.66,
+      "tracks": {
+        "drums": { "pattern": "straight_beat" }
+      }
+    }
+  },
+  "arrangement": [
+    "durations",
+    "dotted_values",
+    "tuplets_section",
+    "offsets_section",
+    "swing_0",
+    "swing_15",
+    "swing_33",
+    "swing_50",
+    "swing_66"
+  ]
+}

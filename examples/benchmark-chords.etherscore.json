@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "title": "Chords Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests chord parsing and voicing algorithms. Covers major, minor, dominant, diminished, augmented, and various voicings (root, drop2, shell, open).",
+    "tags": ["benchmark", "chords", "voicings", "theory"]
+  },
+  "settings": {
+    "tempo": 60,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "piano": {
+      "preset": "electric_piano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 1.5 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// TRIADS": "Basic three-note chords",
+    "triads_major": {
+      "chords": ["C:w", "D:w", "E:w", "F:w", "G:w", "A:w", "B:w"]
+    },
+    "triads_minor": {
+      "chords": ["Cm:w", "Dm:w", "Em:w", "Fm:w", "Gm:w", "Am:w", "Bm:w"]
+    },
+    "triads_diminished": {
+      "chords": ["Cdim:w", "Ddim:w", "Edim:w", "Fdim:w"]
+    },
+    "triads_augmented": {
+      "chords": ["Caug:w", "Daug:w", "Eaug:w", "Faug:w"]
+    },
+
+    "// SEVENTH CHORDS": "Four-note chords",
+    "sevenths_major": {
+      "chords": ["Cmaj7:w", "Dmaj7:w", "Emaj7:w", "Fmaj7:w", "Gmaj7:w", "Amaj7:w"]
+    },
+    "sevenths_minor": {
+      "chords": ["Cm7:w", "Dm7:w", "Em7:w", "Fm7:w", "Gm7:w", "Am7:w"]
+    },
+    "sevenths_dominant": {
+      "chords": ["C7:w", "D7:w", "E7:w", "F7:w", "G7:w", "A7:w"]
+    },
+    "sevenths_diminished": {
+      "chords": ["Cdim7:w", "Ddim7:w", "Edim7:w", "Fdim7:w"]
+    },
+    "sevenths_half_dim": {
+      "chords": ["Cm7b5:w", "Dm7b5:w", "Em7b5:w", "Fm7b5:w"]
+    },
+
+    "// EXTENDED CHORDS": "9ths, 11ths, 13ths",
+    "ninths": {
+      "chords": ["Cmaj9:w", "Cm9:w", "C9:w", "Cadd9:w"]
+    },
+    "elevenths": {
+      "chords": ["Cmaj11:w", "Cm11:w", "C11:w"]
+    },
+    "thirteenths": {
+      "chords": ["Cmaj13:w", "Cm13:w", "C13:w"]
+    },
+
+    "// SUSPENSIONS": "Sus2 and Sus4",
+    "suspensions": {
+      "chords": ["Csus2:w", "Csus4:w", "C7sus4:w", "Dsus2:w", "Dsus4:w", "D7sus4:w"]
+    },
+
+    "// VOICINGS - SAME CHORD": "Am7 in different voicings",
+    "voicing_root": {
+      "chords": ["Am7:w"]
+    },
+    "voicing_drop2": {
+      "chords": ["Am7@drop2:w"]
+    },
+    "voicing_shell": {
+      "chords": ["Am7@shell:w"]
+    },
+    "voicing_open": {
+      "chords": ["Am7@open:w"]
+    },
+
+    "// INVERSIONS": "Slash chords",
+    "inversions": {
+      "chords": ["C/E:w", "C/G:w", "Am/C:w", "Am/E:w", "G7/B:w", "G7/D:w"]
+    },
+
+    "// PROGRESSIONS": "Common chord progressions for reference",
+    "prog_ii_v_i_major": {
+      "chords": ["Dm7:h", "G7:h", "Cmaj7:w"]
+    },
+    "prog_ii_v_i_minor": {
+      "chords": ["Dm7b5:h", "G7:h", "Cm7:w"]
+    },
+    "prog_i_vi_ii_v": {
+      "chords": ["Cmaj7:h", "Am7:h", "Dm7:h", "G7:h"]
+    },
+    "prog_i_iv_v": {
+      "chords": ["C:h", "F:h", "G:h", "C:h"]
+    }
+  },
+  "sections": {
+    "triads": {
+      "bars": 26,
+      "tracks": {
+        "piano": { "patterns": ["triads_major", "triads_minor", "triads_diminished", "triads_augmented"] }
+      }
+    },
+    "sevenths": {
+      "bars": 28,
+      "tracks": {
+        "piano": { "patterns": ["sevenths_major", "sevenths_minor", "sevenths_dominant", "sevenths_diminished", "sevenths_half_dim"] }
+      }
+    },
+    "extended": {
+      "bars": 11,
+      "tracks": {
+        "piano": { "patterns": ["ninths", "elevenths", "thirteenths"] }
+      }
+    },
+    "suspensions_section": {
+      "bars": 6,
+      "tracks": {
+        "piano": { "pattern": "suspensions" }
+      }
+    },
+    "voicings": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "patterns": ["voicing_root", "voicing_drop2", "voicing_shell", "voicing_open"] }
+      }
+    },
+    "inversions_section": {
+      "bars": 6,
+      "tracks": {
+        "piano": { "pattern": "inversions" }
+      }
+    },
+    "progressions": {
+      "bars": 12,
+      "tracks": {
+        "piano": { "patterns": ["prog_ii_v_i_major", "prog_ii_v_i_minor", "prog_i_vi_ii_v", "prog_i_iv_v"] }
+      }
+    }
+  },
+  "arrangement": [
+    "triads",
+    "sevenths",
+    "extended",
+    "suspensions_section",
+    "voicings",
+    "inversions_section",
+    "progressions"
+  ]
+}

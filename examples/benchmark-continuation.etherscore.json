@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "title": "Continuation Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests melodic continuation with all 5 techniques: ascending_sequence, descending_sequence, extension, fragmentation, and development.",
+    "tags": ["benchmark", "continuation", "generative", "melody", "v0.6"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "G major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25 }
+      ]
+    },
+    "strings": {
+      "preset": "string_pad",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.4 }
+      ]
+    }
+  },
+  "patterns": {
+    "// SOURCE MOTIFS": "Original themes for continuation",
+
+    "motif_short": {
+      "notes": ["G4:q", "A4:q", "B4:h"]
+    },
+
+    "motif_medium": {
+      "notes": ["D4:q", "E4:8", "F#4:8", "G4:q", "A4:h"]
+    },
+
+    "motif_baroque": {
+      "notes": ["G4:8", "A4:8", "B4:8", "C5:8", "D5:q", "B4:q"]
+    },
+
+    "// ASCENDING SEQUENCE": "Repeat motif at ascending intervals",
+    "ascending_short": {
+      "continuation": {
+        "source": "motif_short",
+        "technique": "ascending_sequence",
+        "steps": 4,
+        "interval": 2
+      }
+    },
+
+    "ascending_medium": {
+      "continuation": {
+        "source": "motif_medium",
+        "technique": "ascending_sequence",
+        "steps": 3,
+        "interval": 3
+      }
+    },
+
+    "// DESCENDING SEQUENCE": "Repeat motif at descending intervals",
+    "descending_short": {
+      "continuation": {
+        "source": "motif_short",
+        "technique": "descending_sequence",
+        "steps": 4,
+        "interval": 2
+      }
+    },
+
+    "descending_baroque": {
+      "continuation": {
+        "source": "motif_baroque",
+        "technique": "descending_sequence",
+        "steps": 3,
+        "interval": 2
+      }
+    },
+
+    "// EXTENSION": "Add notes following contour",
+    "extended_short": {
+      "continuation": {
+        "source": "motif_short",
+        "technique": "extension",
+        "steps": 6
+      }
+    },
+
+    "extended_medium": {
+      "continuation": {
+        "source": "motif_medium",
+        "technique": "extension",
+        "steps": 8
+      }
+    },
+
+    "// FRAGMENTATION": "Progressively smaller pieces",
+    "fragmented_medium": {
+      "continuation": {
+        "source": "motif_medium",
+        "technique": "fragmentation",
+        "steps": 5
+      }
+    },
+
+    "fragmented_baroque": {
+      "continuation": {
+        "source": "motif_baroque",
+        "technique": "fragmentation",
+        "steps": 4
+      }
+    },
+
+    "// DEVELOPMENT": "Combined techniques",
+    "developed_short": {
+      "continuation": {
+        "source": "motif_short",
+        "technique": "development",
+        "steps": 4,
+        "interval": -2
+      }
+    },
+
+    "developed_baroque": {
+      "continuation": {
+        "source": "motif_baroque",
+        "technique": "development",
+        "steps": 5,
+        "interval": -3
+      }
+    },
+
+    "// ACCOMPANIMENT": "Background for context",
+    "g_major_chords": {
+      "chords": ["G:w", "D:w", "Em:w", "C:w"]
+    },
+
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "source_motifs": {
+      "bars": 6,
+      "tracks": {
+        "lead": { "patterns": ["motif_short", "motif_medium", "motif_baroque"] },
+        "strings": { "pattern": "g_major_chords" }
+      }
+    },
+
+    "ascending_sequences": {
+      "bars": 14,
+      "tracks": {
+        "lead": { "patterns": ["ascending_short", "rest_4bar", "ascending_medium"] }
+      }
+    },
+
+    "descending_sequences": {
+      "bars": 14,
+      "tracks": {
+        "lead": { "patterns": ["descending_short", "rest_4bar", "descending_baroque"] }
+      }
+    },
+
+    "extensions": {
+      "bars": 8,
+      "tracks": {
+        "lead": { "patterns": ["extended_short", "extended_medium"] }
+      }
+    },
+
+    "fragmentations": {
+      "bars": 8,
+      "tracks": {
+        "lead": { "patterns": ["fragmented_medium", "fragmented_baroque"] }
+      }
+    },
+
+    "developments": {
+      "bars": 12,
+      "tracks": {
+        "lead": { "patterns": ["developed_short", "rest_4bar", "developed_baroque"] },
+        "strings": { "pattern": "g_major_chords", "repeat": 3 }
+      }
+    }
+  },
+  "arrangement": [
+    "source_motifs",
+    "ascending_sequences",
+    "descending_sequences",
+    "extensions",
+    "fragmentations",
+    "developments"
+  ]
+}

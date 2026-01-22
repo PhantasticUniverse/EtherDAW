@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "title": "Midnight Study",
+    "composer": "Claude (v0.81)",
+    "genre": "lo-fi hip-hop",
+    "description": "Late night study vibes. Boom-bap drums with dilla groove, jazzy Rhodes chords, mellow bassline. Inspired by the lo-fi beats to study/relax to aesthetic.",
+    "tags": ["lo-fi", "hip-hop", "chill", "study", "boom-bap", "dilla", "v0.8"]
+  },
+  "settings": {
+    "tempo": 78,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// RHODES": "Warm electric piano with slight detuning",
+    "rhodes": {
+      "layers": [
+        { "preset": "fm_epiano", "volume": 0 },
+        { "preset": "electric_piano", "volume": -9, "detune": 8 }
+      ],
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 3500, "type": "lowpass", "Q": 0.7 } },
+        { "type": "reverb", "wet": 0.25 }
+      ]
+    },
+
+    "// BASS": "Mellow synth bass",
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 600, "type": "lowpass", "Q": 1 } }
+      ]
+    },
+
+    "// DRUMS": "Lo-fi kit with humanization",
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -3
+    },
+
+    "// TEXTURE": "Subtle vinyl crackle texture via soft noise hits",
+    "texture": {
+      "preset": "noise",
+      "volume": -24,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "highpass", "Q": 0.5 } }
+      ]
+    },
+
+    "// MELODY": "Sparse melodic fills",
+    "melody": {
+      "preset": "soft_lead",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.4 },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n.", "feedback": 0.2 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// CHORD PROGRESSIONS": "Jazzy minor progressions",
+
+    "chords_verse": {
+      "chords": ["Dm9:h", "Dm9:h", "Am7:h", "Am7:h", "Gm7:h", "Gm7:h", "A7:h", "A7:h"]
+    },
+
+    "chords_hook": {
+      "chords": ["Dm9:h", "Bbmaj7:h", "Gm7:h", "A7:h"]
+    },
+
+    "// BASS PATTERNS": "Simple root movement with occasional fills",
+
+    "bass_verse": {
+      "notes": [
+        "D2:q", "r:8", "D2:8", "r:q", "D3:8", "D2:8",
+        "A2:q", "r:8", "A2:8", "r:q", "A3:8", "A2:8",
+        "G2:q", "r:8", "G2:8", "r:q", "G3:8", "G2:8",
+        "A2:q", "r:8", "A2:8", "r:q", "E3:8", "A2:8"
+      ]
+    },
+
+    "bass_hook": {
+      "notes": [
+        "D2:q", "D2:8", "r:8", "F2:q", "D2:q",
+        "Bb1:q", "Bb1:8", "r:8", "D2:q", "Bb1:q",
+        "G2:q", "G2:8", "r:8", "Bb2:q", "G2:q",
+        "A2:q", "A2:8", "r:8", "C#3:q", "A2:q"
+      ]
+    },
+
+    "// DRUM PATTERNS": "Boom-bap with swing",
+
+    "drums_main": {
+      "drums": {
+        "kick": "x.....x...x.....",
+        "snare": "....x.......x...",
+        "hihat": "x.x.x.x.x.x.x.x.",
+        "openhat": "..........x....."
+      }
+    },
+
+    "drums_fill": {
+      "drums": {
+        "kick": "x.....x.x.x.....",
+        "snare": "....x.....x.x.x.",
+        "hihat": "x.x.x.x.x.x.x.x.",
+        "rim": "..x.......x....."
+      }
+    },
+
+    "drums_sparse": {
+      "drums": {
+        "kick": "x...........x...",
+        "snare": "....x...........",
+        "hihat": "..x...x...x...x."
+      }
+    },
+
+    "// MELODIC FILLS": "Sparse pentatonic fills with probability",
+
+    "melody_fill_1": {
+      "notes": [
+        "r:h", "D5:8?0.6", "F5:8?0.5", "A5:q?0.4", "r:q",
+        "r:h", "r:q", "G5:8?0.3", "F5:8?0.4"
+      ]
+    },
+
+    "melody_fill_2": {
+      "notes": [
+        "r:q", "A5:8?0.5", "G5:8?0.4", "F5:q?0.5", "D5:q?0.3",
+        "r:h", "r:q", "C5:8?0.4", "D5:q?0.5"
+      ]
+    },
+
+    "// TEXTURE": "Background atmosphere",
+
+    "vinyl_texture": {
+      "notes": [
+        "A2:16?0.1", "r:16", "r:8", "A2:16?0.08", "r:16", "r:8",
+        "A2:16?0.12", "r:16", "r:8", "A2:16?0.07", "r:16", "r:8",
+        "A2:16?0.09", "r:16", "r:8", "A2:16?0.11", "r:16", "r:8",
+        "A2:16?0.06", "r:16", "r:8", "A2:16?0.1", "r:16", "r:8"
+      ]
+    },
+
+    "rest_4bar": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "// INTRO": "Sparse, drums only at first",
+
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_sparse", "repeat": 4, "groove": "dilla", "humanize": 0.03 },
+        "rhodes": { "patterns": ["rest_4bar", "chords_verse"], "velocity": 0.5 },
+        "texture": { "pattern": "vinyl_texture", "repeat": 4 }
+      }
+    },
+
+    "// VERSE 1": "Full groove kicks in",
+
+    "verse1": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 8, "groove": "dilla", "humanize": 0.025 },
+        "rhodes": { "pattern": "chords_verse", "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_verse", "repeat": 4, "groove": "dilla", "humanize": 0.02 },
+        "melody": { "patterns": ["melody_fill_1", "rest_4bar", "melody_fill_2", "rest_4bar"], "velocity": 0.6 },
+        "texture": { "pattern": "vinyl_texture", "repeat": 8 }
+      }
+    },
+
+    "// HOOK": "Chord change for variety",
+
+    "hook": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": ["drums_main", "drums_main", "drums_main", "drums_fill"], "groove": "dilla", "humanize": 0.025 },
+        "rhodes": { "pattern": "chords_hook", "repeat": 2, "velocity": 0.8 },
+        "bass": { "pattern": "bass_hook", "repeat": 2, "groove": "dilla", "humanize": 0.02 },
+        "melody": { "pattern": "melody_fill_2", "repeat": 2, "velocity": 0.7 },
+        "texture": { "pattern": "vinyl_texture", "repeat": 4 }
+      }
+    },
+
+    "// VERSE 2": "Back to verse with slight variation",
+
+    "verse2": {
+      "bars": 16,
+      "density": {
+        "start": 0.9,
+        "end": 0.95,
+        "curve": "linear"
+      },
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 8, "groove": "dilla", "humanize": 0.025 },
+        "rhodes": { "pattern": "chords_verse", "repeat": 4, "velocity": 0.75 },
+        "bass": { "pattern": "bass_verse", "repeat": 4, "groove": "dilla", "humanize": 0.02 },
+        "melody": { "patterns": ["melody_fill_2", "melody_fill_1", "melody_fill_1", "melody_fill_2"], "velocity": 0.65 },
+        "texture": { "pattern": "vinyl_texture", "repeat": 8 }
+      }
+    },
+
+    "// OUTRO": "Fade out gradually",
+
+    "outro": {
+      "bars": 8,
+      "density": {
+        "start": 0.9,
+        "end": 0.3,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "drums": { "pattern": "drums_sparse", "repeat": 4, "groove": "dilla", "humanize": 0.03, "velocity": 0.5 },
+        "rhodes": { "pattern": "chords_verse", "repeat": 2, "velocity": 0.4 },
+        "texture": { "pattern": "vinyl_texture", "repeat": 4 }
+      },
+      "automation": {
+        "rhodes.filter.frequency": {
+          "start": 3500,
+          "end": 1000,
+          "curve": "logarithmic"
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "verse1",
+    "hook",
+    "verse2",
+    "hook",
+    "outro"
+  ]
+}

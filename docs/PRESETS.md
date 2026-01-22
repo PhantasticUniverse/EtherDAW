@@ -276,6 +276,42 @@ FM presets use frequency modulation for complex, evolving timbres. The key param
 
 ---
 
+## Noise & Texture Presets (v0.81)
+
+For ambient textures, risers, and lo-fi effects.
+
+### `noise`
+**White Noise**
+- Full spectrum noise
+- Medium attack/decay
+- Best for: Risers, sweeps, ambient textures
+
+### `pink_noise`
+**Pink Noise (1/f)**
+- Warmer, more natural sounding
+- Equal energy per octave
+- Best for: Natural ambience, warmth
+
+### `brown_noise`
+**Brown Noise (1/f²)**
+- Deep, smooth, rumbling
+- Bass-heavy spectrum
+- Best for: Sub textures, deep ambience
+
+### `vinyl_crackle`
+**Vinyl Crackle**
+- Short, percussive noise bursts
+- Very short decay
+- Best for: Lo-fi texture, vintage feel
+
+### `noise_sweep`
+**Noise Sweep**
+- Long attack envelope
+- Great for builds
+- Best for: Risers, transitions, tension
+
+---
+
 ## Drum Kits
 
 Drum presets use the format `drums:KITNAME`.

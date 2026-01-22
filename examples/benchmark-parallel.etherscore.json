@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "title": "Parallel Patterns Benchmark",
+    "composer": "EtherDAW",
+    "genre": "benchmark",
+    "description": "Tests parallel pattern playback, pattern probability, fallback patterns, and conditional patterns. Essential for layered drum patterns and dynamic arrangement.",
+    "tags": ["benchmark", "parallel", "probability", "conditional", "patterns", "v0.5", "v0.7"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "E minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": -3
+    },
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    },
+    "arp": {
+      "preset": "arp_synth",
+      "volume": -9,
+      "effects": [
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -3
+    }
+  },
+  "patterns": {
+    "// INDIVIDUAL DRUM PARTS": "Separate patterns for parallel playback",
+
+    "kick_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "kick": "x...x...x...x..."
+        }
+      }
+    },
+
+    "hihat_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "hihat": "..x...x...x...x."
+        }
+      }
+    },
+
+    "hihat_open_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "hihat_open": "......x.......x."
+        }
+      }
+    },
+
+    "clap_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "clap": "....x.......x..."
+        }
+      }
+    },
+
+    "snare_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "snare": "....x.......x..."
+        }
+      }
+    },
+
+    "ride_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "ride": "x.x.x.x.x.x.x.x."
+        }
+      }
+    },
+
+    "// MELODIC PATTERNS": "For parallel testing with melodies",
+
+    "melody_main": {
+      "notes": ["E4:q", "G4:q", "A4:q", "B4:q", "A4:q", "G4:q", "E4:h"]
+    },
+
+    "melody_harmony": {
+      "notes": ["B3:q", "D4:q", "E4:q", "F#4:q", "E4:q", "D4:q", "B3:h"]
+    },
+
+    "arp_em": {
+      "arpeggio": {
+        "chord": "Em7",
+        "mode": "up",
+        "duration": "16",
+        "octaves": 2
+      }
+    },
+
+    "bass_line": {
+      "notes": ["E2:q", "E2:8", "E2:8", "G2:q", "B2:q"]
+    },
+
+    "// FILL PATTERNS": "For probability/fallback testing",
+
+    "fill_pattern": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "tom_hi": "..x.x.x.x.x.x.x.",
+          "tom_mid": "....x.x.x.x.x...",
+          "tom_lo": "........x.x.x.x.",
+          "crash": "x..............."
+        }
+      }
+    },
+
+    "simple_fill": {
+      "drums": {
+        "kit": "909",
+        "lines": {
+          "snare": "....x...x...xxxx"
+        }
+      }
+    },
+
+    "// CONDITIONAL PATTERN TARGETS": "---",
+
+    "dense_melody": {
+      "notes": ["E4:8", "F#4:8", "G4:8", "A4:8", "B4:8", "A4:8", "G4:8", "F#4:8"]
+    },
+
+    "sparse_melody": {
+      "notes": ["E4:h", "r:q", "G4:q", "A4:h", "r:h"]
+    },
+
+    "rest_1bar": {
+      "notes": ["r:w"]
+    }
+  },
+  "sections": {
+    "// PARALLEL PATTERNS": "Multiple patterns playing simultaneously",
+
+    "parallel_basic": {
+      "bars": 4,
+      "tracks": {
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern", "clap_pattern"],
+          "repeat": 4
+        }
+      }
+    },
+
+    "parallel_full_kit": {
+      "bars": 4,
+      "tracks": {
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern", "hihat_open_pattern", "snare_pattern"],
+          "repeat": 4
+        }
+      }
+    },
+
+    "parallel_melody": {
+      "bars": 4,
+      "tracks": {
+        "lead": {
+          "parallel": ["melody_main", "melody_harmony"],
+          "repeat": 2
+        },
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern"],
+          "repeat": 4
+        }
+      }
+    },
+
+    "// PATTERN PROBABILITY": "Random variation based on probability",
+
+    "probability_fills": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern", "clap_pattern"],
+          "repeat": 8
+        }
+      }
+    },
+
+    "// Note: probability is per-pattern-instance, creates variation": "---",
+    "probability_demo": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "pattern": "simple_fill",
+          "probability": 0.3,
+          "fallback": "clap_pattern",
+          "repeat": 8
+        }
+      }
+    },
+
+    "// FALLBACK PATTERNS": "Default when probability fails",
+
+    "fallback_demo": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "pattern": "fill_pattern",
+          "probability": 0.25,
+          "fallback": "kick_pattern",
+          "repeat": 8
+        },
+        "bass": { "pattern": "bass_line", "repeat": 8 }
+      }
+    },
+
+    "// CONDITIONAL PATTERNS (v0.7)": "Select patterns based on conditions",
+
+    "conditional_density": {
+      "bars": 8,
+      "density": {
+        "start": 0.2,
+        "end": 0.9,
+        "curve": "linear"
+      },
+      "tracks": {
+        "lead": { "patterns": ["sparse_melody", "sparse_melody", "dense_melody", "dense_melody"] },
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern"],
+          "repeat": 8
+        }
+      }
+    },
+
+    "// COMBINED FEATURES": "All features together",
+
+    "combined_section": {
+      "bars": 8,
+      "density": {
+        "start": 0.5,
+        "end": 0.9,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "drums": {
+          "parallel": ["kick_pattern", "hihat_pattern", "clap_pattern"],
+          "repeat": 8
+        },
+        "lead": {
+          "pattern": "melody_main",
+          "repeat": 4
+        },
+        "arp": {
+          "pattern": "arp_em",
+          "probability": 0.7,
+          "repeat": 8
+        },
+        "bass": {
+          "pattern": "bass_line",
+          "repeat": 8
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "parallel_basic",
+    "parallel_full_kit",
+    "parallel_melody",
+    "probability_fills",
+    "probability_demo",
+    "fallback_demo",
+    "conditional_density",
+    "combined_section"
+  ]
+}
