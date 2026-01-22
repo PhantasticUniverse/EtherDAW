@@ -1,0 +1,348 @@
+{
+  "meta": {
+    "title": "Convergence",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "Contemplative, Evolving, Transcendent",
+    "genre": "Minimalist Ambient",
+    "description": "Multiple independent melodic lines begin scattered and gradually converge toward unity, then dissolve again. A meditation on how meaning emerges from chaos.",
+    "tags": ["minimalist", "ambient", "generative", "long-form", "meditative"]
+  },
+
+  "settings": {
+    "tempo": 66,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+
+  "instruments": {
+    "voice1": {
+      "preset": "fm_glass",
+      "volume": -6,
+      "pan": -0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } },
+        { "type": "delay", "wet": 0.2, "options": { "time": "4n", "feedback": 0.3 } }
+      ]
+    },
+    "voice2": {
+      "preset": "fm_vibraphone",
+      "volume": -8,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 3.5 } },
+        { "type": "chorus", "wet": 0.3, "options": { "frequency": 0.5, "depth": 0.5 } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -10,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 5 } },
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass" } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -4,
+      "pan": 0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 400, "type": "lowpass" } }
+      ]
+    },
+    "texture": {
+      "preset": "fm_epiano",
+      "volume": -12,
+      "pan": 0.5,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 3 } },
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n.", "feedback": 0.4 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// CORE MOTIF": "----------------------------------------",
+    "motif_prime": {
+      "notes": ["D4:h", "F4:q", "E4:q", "A4:h", "G4:w"],
+      "velocityEnvelope": "swell"
+    },
+
+    "// VOICE 1 PATTERNS": "----------------------------------------",
+    "v1_fragments_sparse": {
+      "notes": [
+        "D5:h?0.6", "r:h", "r:w",
+        "F5:q?0.5", "r:q", "r:h", "r:w",
+        "r:w", "A5:h?0.7", "r:h"
+      ],
+      "velocityEnvelope": [0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.7, 0.5]
+    },
+    "v1_fragments_medium": {
+      "notes": [
+        "D5:h?0.8", "F5:q?0.7", "E5:q?0.6", "r:w",
+        "A5:h?0.8", "G5:q?0.7", "r:q", "r:h",
+        "D5:q?0.6", "r:q", "F5:h?0.8", "r:w"
+      ],
+      "velocityEnvelope": "crescendo"
+    },
+    "v1_motif_full": {
+      "notes": ["D5:h~", "F5:q", "E5:q", "A5:h~", "G5:w"],
+      "velocityEnvelope": "swell"
+    },
+    "v1_motif_decorated": {
+      "notes": [
+        "D5:q", "E5:8@0.6", "D5:8@0.5", "F5:q~", "E5:q",
+        "A5:q", "G5:8@0.6", "A5:8@0.5", "G5:h~",
+        "F5:q@0.7", "E5:q@0.6", "D5:h"
+      ],
+      "velocityEnvelope": "swell"
+    },
+    "v1_dissolution": {
+      "notes": [
+        "D5:h?0.7", "r:h", "F5:q?0.5", "r:q", "r:w",
+        "r:w", "r:w",
+        "A5:w?0.4"
+      ],
+      "velocityEnvelope": "diminuendo"
+    },
+
+    "// VOICE 2 PATTERNS": "----------------------------------------",
+    "v2_answer_sparse": {
+      "notes": [
+        "r:w", "r:w",
+        "A4:h?0.6", "r:h", "G4:q?0.5", "r:q", "r:h",
+        "r:w", "F4:h?0.7", "E4:h?0.6"
+      ],
+      "velocityEnvelope": [0.3, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4]
+    },
+    "v2_answer_medium": {
+      "notes": [
+        "r:h", "A4:q?0.8", "G4:q?0.7",
+        "F4:h?0.8", "E4:q", "D4:q?0.7",
+        "r:h", "G4:h?0.8", "A4:h~"
+      ],
+      "velocityEnvelope": "crescendo"
+    },
+    "v2_countermelody": {
+      "notes": [
+        "A4:h~", "G4:q", "F4:q",
+        "E4:h", "D4:q", "E4:q",
+        "F4:h~", "G4:h",
+        "A4:w"
+      ],
+      "velocityEnvelope": "swell"
+    },
+    "v2_interlock": {
+      "notes": [
+        "r:q", "A4:q", "r:q", "G4:q",
+        "r:q", "F4:q", "E4:q", "r:q",
+        "D4:q", "r:q", "E4:q", "F4:q",
+        "G4:h", "r:h"
+      ],
+      "velocityEnvelope": [0.5, 0.6, 0.5, 0.7, 0.5, 0.6, 0.7, 0.5, 0.6, 0.5, 0.7, 0.8, 0.7, 0.6]
+    },
+    "v2_dissolution": {
+      "notes": [
+        "A4:h?0.6", "r:h", "r:w",
+        "G4:q?0.4", "r:q", "r:h", "r:w",
+        "r:w", "F4:w?0.3"
+      ],
+      "velocityEnvelope": "diminuendo"
+    },
+
+    "// PAD PATTERNS": "----------------------------------------",
+    "pad_drone_d": {
+      "chords": ["Dm:w", "Dm:w", "Dm:w", "Dm:w"],
+      "velocityEnvelope": [0.3, 0.35, 0.4, 0.35]
+    },
+    "pad_dm_am": {
+      "chords": ["Dm:w", "Dm:w", "Am:w", "Am:w"],
+      "velocityEnvelope": "swell"
+    },
+    "pad_progression_slow": {
+      "chords": ["Dm:w", "Dm:w", "Bb:w", "Am:w", "Gm:w", "Am:w", "Dm:w", "Dm:w"],
+      "velocityEnvelope": [0.4, 0.45, 0.5, 0.55, 0.6, 0.55, 0.5, 0.45]
+    },
+    "pad_convergence": {
+      "chords": ["Dm7:w", "Dm7:w", "Bbmaj7:w", "Am7:w", "Gm7:w", "A7:w", "Dm:w", "Dm:w"],
+      "velocityEnvelope": [0.5, 0.55, 0.6, 0.7, 0.75, 0.8, 0.7, 0.6]
+    },
+    "pad_final": {
+      "chords": ["Dm:w", "Dm:w", "Dm:w", "Dm:w"],
+      "velocityEnvelope": "diminuendo"
+    },
+
+    "// BASS PATTERNS": "----------------------------------------",
+    "bass_drone": {
+      "notes": ["D2:w", "D2:w", "D2:w", "D2:w"],
+      "velocityEnvelope": [0.6, 0.6, 0.6, 0.6]
+    },
+    "bass_movement_subtle": {
+      "notes": ["D2:w", "D2:w", "A2:w", "A2:w"],
+      "velocityEnvelope": [0.6, 0.65, 0.7, 0.65]
+    },
+    "bass_walking_slow": {
+      "notes": [
+        "D2:h", "r:h", "D2:h", "E2:h",
+        "F2:h", "r:h", "E2:h", "D2:h"
+      ],
+      "velocityEnvelope": [0.6, 0.5, 0.65, 0.7, 0.7, 0.5, 0.65, 0.6]
+    },
+    "bass_convergence": {
+      "notes": [
+        "D2:h", "D2:q", "E2:q",
+        "F2:h", "E2:h",
+        "G2:h", "A2:h",
+        "D2:w"
+      ],
+      "velocityEnvelope": [0.6, 0.65, 0.7, 0.75, 0.7, 0.8, 0.85, 0.7]
+    },
+    "bass_final": {
+      "notes": ["D2:w", "D2:w", "D2:w", "D2:w"],
+      "velocityEnvelope": "diminuendo"
+    },
+
+    "// TEXTURE PATTERNS": "----------------------------------------",
+    "texture_shimmer": {
+      "arpeggio": {
+        "chord": "Dm9",
+        "mode": "random",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.3,
+        "steps": 32
+      }
+    },
+    "texture_rising": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "up",
+        "duration": "16",
+        "octaves": 3,
+        "gate": 0.4
+      }
+    },
+    "texture_convergence": {
+      "arpeggio": {
+        "chord": "Dm9",
+        "mode": "updown",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.5
+      }
+    },
+    "texture_sparse": {
+      "notes": [
+        "D5:8?0.3", "r:8", "A5:8?0.2", "r:8", "F5:8?0.3", "r:8", "r:q",
+        "r:h", "E5:8?0.2", "r:8", "r:q",
+        "r:w", "r:w"
+      ]
+    },
+
+    "// SILENCE": "----------------------------------------",
+    "silence_long": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+
+  "sections": {
+    "// MOVEMENT I: EMERGENCE": "----------------------------------------",
+    "emergence_a": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_fragments_sparse", "repeat": 2, "velocity": 0.5 },
+        "pad": { "pattern": "pad_drone_d", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+    "emergence_b": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_fragments_sparse", "repeat": 2, "velocity": 0.55 },
+        "voice2": { "pattern": "v2_answer_sparse", "repeat": 2, "velocity": 0.4 },
+        "pad": { "pattern": "pad_drone_d", "repeat": 4, "velocity": 0.35 },
+        "bass": { "pattern": "bass_drone", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "// MOVEMENT II: GATHERING": "----------------------------------------",
+    "gathering_a": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_fragments_medium", "repeat": 2, "velocity": 0.6 },
+        "voice2": { "pattern": "v2_answer_medium", "repeat": 2, "velocity": 0.5 },
+        "pad": { "pattern": "pad_dm_am", "repeat": 4, "velocity": 0.4 },
+        "bass": { "pattern": "bass_movement_subtle", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "gathering_b": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_motif_full", "repeat": 4, "velocity": 0.65 },
+        "voice2": { "pattern": "v2_countermelody", "repeat": 2, "velocity": 0.55 },
+        "pad": { "pattern": "pad_progression_slow", "repeat": 2, "velocity": 0.45 },
+        "bass": { "pattern": "bass_walking_slow", "repeat": 4, "velocity": 0.55 },
+        "texture": { "pattern": "texture_sparse", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "// MOVEMENT III: CONVERGENCE": "----------------------------------------",
+    "convergence_build": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_motif_decorated", "repeat": 2, "velocity": 0.7 },
+        "voice2": { "pattern": "v2_interlock", "repeat": 2, "velocity": 0.65 },
+        "pad": { "pattern": "pad_convergence", "repeat": 2, "velocity": 0.55 },
+        "bass": { "pattern": "bass_convergence", "repeat": 4, "velocity": 0.6 },
+        "texture": { "pattern": "texture_rising", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+    "convergence_peak": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_motif_decorated", "repeat": 2, "velocity": 0.8 },
+        "voice2": { "pattern": "v2_countermelody", "repeat": 2, "velocity": 0.75 },
+        "pad": { "pattern": "pad_convergence", "repeat": 2, "velocity": 0.65 },
+        "bass": { "pattern": "bass_convergence", "repeat": 4, "velocity": 0.7 },
+        "texture": { "pattern": "texture_convergence", "repeat": 2, "velocity": 0.5 }
+      }
+    },
+
+    "// MOVEMENT IV: DISSOLUTION": "----------------------------------------",
+    "dissolution_a": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_motif_full", "repeat": 4, "velocity": 0.6 },
+        "voice2": { "pattern": "v2_dissolution", "repeat": 2, "velocity": 0.5 },
+        "pad": { "pattern": "pad_final", "repeat": 4, "velocity": 0.45 },
+        "bass": { "pattern": "bass_final", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "dissolution_b": {
+      "bars": 16,
+      "tracks": {
+        "voice1": { "pattern": "v1_dissolution", "repeat": 2, "velocity": 0.45 },
+        "pad": { "pattern": "pad_final", "repeat": 4, "velocity": 0.3 },
+        "bass": { "pattern": "bass_drone", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+    "dissolution_final": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_drone_d", "repeat": 2, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "emergence_a",
+    "emergence_b",
+    "gathering_a",
+    "gathering_b",
+    "convergence_build",
+    "convergence_peak",
+    "dissolution_a",
+    "dissolution_b",
+    "dissolution_final"
+  ]
+}
