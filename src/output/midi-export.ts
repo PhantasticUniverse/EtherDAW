@@ -9,6 +9,7 @@ type TrackType = MidiType['tracks'][number];
 import type { Timeline, NoteEvent } from '../schema/types.js';
 import { getAllNotes } from '../engine/timeline.js';
 import { pitchToMidi } from '../parser/note-parser.js';
+import { NOTE_NAMES, MIDI, DEFAULT_SETTINGS } from '../config/constants.js';
 
 /**
  * Options for MIDI export
@@ -148,7 +149,7 @@ export function importMidi(midiData: ArrayBuffer): {
   }));
 
   return {
-    tempo: midi.header.tempos[0]?.bpm ?? 120,
+    tempo: midi.header.tempos[0]?.bpm ?? DEFAULT_SETTINGS.tempo,
     tracks,
   };
 }
@@ -157,10 +158,9 @@ export function importMidi(midiData: ArrayBuffer): {
  * Convert MIDI note number to pitch string
  */
 function midiToPitchString(midiNote: number): string {
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const octave = Math.floor(midiNote / 12) - 1;
-  const noteIndex = midiNote % 12;
-  return `${noteNames[noteIndex]}${octave}`;
+  const octave = Math.floor(midiNote / MIDI.SEMITONES_PER_OCTAVE) - 1;
+  const noteIndex = midiNote % MIDI.SEMITONES_PER_OCTAVE;
+  return `${NOTE_NAMES[noteIndex]}${octave}`;
 }
 
 /**
@@ -178,7 +178,7 @@ export function getMidiInfo(midiData: ArrayBuffer): {
   return {
     name: midi.header.name || 'Untitled',
     duration: midi.duration,
-    tempo: midi.header.tempos[0]?.bpm ?? 120,
+    tempo: midi.header.tempos[0]?.bpm ?? DEFAULT_SETTINGS.tempo,
     trackCount: midi.tracks.length,
     noteCount: midi.tracks.reduce((sum, t) => sum + t.notes.length, 0),
   };

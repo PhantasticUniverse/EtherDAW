@@ -8,6 +8,7 @@ import type { Timeline, NoteEvent, Instrument, Effect } from '../schema/types.js
 import { createInstrument, getPreset, createDrumSynth, getDrumSynthParams, parseDrumPitch, type DrumSynth } from './instruments.js';
 import { getAllNotes } from '../engine/timeline.js';
 import type { DrumType, KitName } from './drum-kits.js';
+import { EFFECT_DEFAULTS } from '../config/constants.js';
 
 /**
  * Options for rendering
@@ -151,51 +152,51 @@ export class ToneRenderer {
     switch (def.type) {
       case 'reverb':
         return new Tone.Reverb({
-          decay: (options.decay as number) ?? 2,
+          decay: (options.decay as number) ?? EFFECT_DEFAULTS.reverb.decay,
           wet,
         });
 
       case 'delay':
         return new Tone.FeedbackDelay({
-          delayTime: (options.time as string) ?? '8n',
-          feedback: (options.feedback as number) ?? 0.3,
+          delayTime: (options.time as string) ?? EFFECT_DEFAULTS.delay.time,
+          feedback: (options.feedback as number) ?? EFFECT_DEFAULTS.delay.feedback,
           wet,
         });
 
       case 'chorus':
         return new Tone.Chorus({
-          frequency: (options.frequency as number) ?? 1.5,
-          delayTime: (options.delayTime as number) ?? 3.5,
-          depth: (options.depth as number) ?? 0.7,
+          frequency: (options.frequency as number) ?? EFFECT_DEFAULTS.chorus.frequency,
+          delayTime: (options.delayTime as number) ?? EFFECT_DEFAULTS.chorus.delayTime,
+          depth: (options.depth as number) ?? EFFECT_DEFAULTS.chorus.depth,
           wet,
         }).start();
 
       case 'distortion':
         return new Tone.Distortion({
-          distortion: (options.amount as number) ?? 0.4,
+          distortion: (options.amount as number) ?? EFFECT_DEFAULTS.distortion.distortion,
           wet,
         });
 
       case 'filter':
         return new Tone.Filter({
-          frequency: (options.frequency as number) ?? 1000,
-          type: (options.type as 'lowpass' | 'highpass' | 'bandpass') ?? 'lowpass',
-          Q: (options.Q as number) ?? 1,
+          frequency: (options.frequency as number) ?? EFFECT_DEFAULTS.filter.frequency,
+          type: (options.type as 'lowpass' | 'highpass' | 'bandpass') ?? EFFECT_DEFAULTS.filter.type,
+          Q: (options.Q as number) ?? EFFECT_DEFAULTS.filter.Q,
         });
 
       case 'compressor':
         return new Tone.Compressor({
-          threshold: (options.threshold as number) ?? -24,
-          ratio: (options.ratio as number) ?? 4,
-          attack: (options.attack as number) ?? 0.003,
-          release: (options.release as number) ?? 0.25,
+          threshold: (options.threshold as number) ?? EFFECT_DEFAULTS.compressor.threshold,
+          ratio: (options.ratio as number) ?? EFFECT_DEFAULTS.compressor.ratio,
+          attack: (options.attack as number) ?? EFFECT_DEFAULTS.compressor.attack,
+          release: (options.release as number) ?? EFFECT_DEFAULTS.compressor.release,
         });
 
       case 'eq':
         return new Tone.EQ3({
-          low: (options.low as number) ?? 0,
-          mid: (options.mid as number) ?? 0,
-          high: (options.high as number) ?? 0,
+          low: (options.low as number) ?? EFFECT_DEFAULTS.eq.low,
+          mid: (options.mid as number) ?? EFFECT_DEFAULTS.eq.mid,
+          high: (options.high as number) ?? EFFECT_DEFAULTS.eq.high,
         });
 
       default:

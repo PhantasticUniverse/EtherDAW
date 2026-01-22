@@ -1,6 +1,6 @@
 {
   "name": "etherdaw",
-  "version": "0.1.0",
+  "version": "0.45.0",
   "description": "A DAW designed for LLMs to compose music using the EtherScore JSON format",
   "type": "module",
   "main": "dist/index.js",
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "tsc && cp src/schema/etherscore.schema.json dist/schema/",
+    "build:browser": "esbuild src/browser/index.ts --bundle --format=esm --outfile=dist/etherdaw-browser.js --external:tone --external:@tonejs/midi",
     "watch": "tsc --watch",
     "test": "vitest",
     "test:run": "vitest run",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "esbuild": "^0.27.2",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
   },

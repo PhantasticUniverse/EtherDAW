@@ -159,6 +159,15 @@ Add articulation markers after duration:
 
 Examples: `C4:q*` (staccato), `D4:h~` (legato), `E4:8>` (accent)
 
+#### Expression Modifiers (v0.4)
+Fine-grained per-note control:
+- `@0.8` - Velocity (0.0-1.0)
+- `?0.7` - Probability (70% chance to play)
+- `+10ms` / `-5ms` - Timing offset
+- `~>` - Portamento (glide to next note)
+
+Examples: `C4:q@0.8` (80% velocity), `D4:8?0.5` (50% chance), `E4:q*@0.9?0.5-5ms` (combined)
+
 #### Rests
 Use `r` for rests: `"r:q"` (quarter rest), `"r:h"` (half rest)
 
@@ -352,6 +361,25 @@ Automatically snap out-of-key notes to the nearest scale tone:
 }
 ```
 With key "C major", the F#4 would snap to F4 or G4.
+
+### Velocity Envelopes (v0.4)
+
+Apply dynamic curves across patterns:
+
+```json
+{
+  "patterns": {
+    "crescendo_line": {
+      "notes": ["C4:q", "D4:q", "E4:q", "F4:q"],
+      "velocityEnvelope": "crescendo"
+    }
+  }
+}
+```
+
+**Presets:** `crescendo`, `diminuendo`, `swell`, `accent_first`, `accent_downbeats`
+
+**Custom arrays:** `"velocityEnvelope": [0.5, 0.7, 0.9, 1.0]`
 
 ### Pattern Transforms (v0.3)
 

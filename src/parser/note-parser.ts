@@ -1,5 +1,6 @@
 import type { ParsedNote, NoteName, Accidental, Articulation, ArticulationModifiers } from '../schema/types.js';
 import { DURATION_MAP } from '../schema/types.js';
+import { ARTICULATION, DOTTED_MULTIPLIER, NOTE_VALUES, NOTE_NAMES, MIDI } from '../config/constants.js';
 
 /**
  * Regular expression for parsing note notation
@@ -97,7 +98,7 @@ export function parseNote(noteStr: string): ParsedNote {
     throw new Error(`Invalid duration code: "${durationCode}"`);
   }
 
-  const durationBeats = isDotted ? baseDuration * 1.5 : baseDuration;
+  const durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
   const pitch = `${noteName}${accidental}${octave}`;
 
   // Build result object, only including v0.4 fields if they were specified
@@ -129,15 +130,15 @@ export function parseNote(noteStr: string): ParsedNote {
 export function getArticulationModifiers(articulation: Articulation | undefined): ArticulationModifiers {
   switch (articulation) {
     case '*': // Staccato: short note
-      return { gate: 0.3, velocityBoost: 0 };
+      return { ...ARTICULATION.staccato };
     case '~': // Legato: slightly longer note
-      return { gate: 1.1, velocityBoost: 0 };
+      return { ...ARTICULATION.legato };
     case '>': // Accent: louder
-      return { gate: 1.0, velocityBoost: 0.2 };
+      return { ...ARTICULATION.accent };
     case '^': // Marcato: accent + staccato
-      return { gate: 0.3, velocityBoost: 0.2 };
+      return { ...ARTICULATION.marcato };
     default:
-      return { gate: 1.0, velocityBoost: 0 };
+      return { ...ARTICULATION.normal };
   }
 }
 
@@ -160,7 +161,7 @@ export function parseRest(restStr: string): number {
     throw new Error(`Invalid duration code: "${durationCode}"`);
   }
 
-  return dotted === '.' ? baseDuration * 1.5 : baseDuration;
+  return dotted === '.' ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
 }
 
 /**
@@ -183,7 +184,7 @@ export function parseDuration(durationStr: string, dotted = false): number {
     throw new Error(`Invalid duration: "${durationStr}". Valid durations: ${Object.keys(DURATION_MAP).join(', ')}`);
   }
 
-  return dotted ? baseDuration * 1.5 : baseDuration;
+  return dotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
 }
 
 /**
@@ -210,17 +211,12 @@ export function pitchToMidi(pitch: string): number {
   const [, noteName, accidental, octaveStr] = match;
   const octave = parseInt(octaveStr, 10);
 
-  // Note values relative to C
-  const noteValues: Record<string, number> = {
-    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
-  };
-
-  let noteValue = noteValues[noteName];
+  let noteValue = NOTE_VALUES[noteName];
   if (accidental === '#') noteValue += 1;
   if (accidental === 'b') noteValue -= 1;
 
-  // MIDI: C4 = 60
-  return (octave + 1) * 12 + noteValue;
+  // MIDI: C4 = 60 (octave + 1) * 12
+  return (octave + 1) * MIDI.SEMITONES_PER_OCTAVE + noteValue;
 }
 
 /**
@@ -229,10 +225,9 @@ export function pitchToMidi(pitch: string): number {
  * @returns Pitch string (e.g., "C4", "F#3")
  */
 export function midiToPitch(midi: number): string {
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const octave = Math.floor(midi / 12) - 1;
-  const noteIndex = midi % 12;
-  return `${noteNames[noteIndex]}${octave}`;
+  const octave = Math.floor(midi / MIDI.SEMITONES_PER_OCTAVE) - 1;
+  const noteIndex = midi % MIDI.SEMITONES_PER_OCTAVE;
+  return `${NOTE_NAMES[noteIndex]}${octave}`;
 }
 
 /**

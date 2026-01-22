@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read any file in the project",
+      "Edit src/**/*.ts files",
+      "Edit docs/**/*.md files",
+      "Run npm test",
+      "Run npm run build"
+    ],
+    "ask": [
+      "Create new files",
+      "Modify package.json",
+      "Run git commands"
+    ],
+    "deny": [
+      "Delete files without confirmation",
+      "Modify .env or credentials"
+    ]
+  }
+}

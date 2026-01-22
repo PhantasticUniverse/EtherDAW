@@ -86,6 +86,63 @@ The browser player includes WAV audio export functionality:
 - File size is approximately 10MB per minute of audio
 - Export timing matches real-time playback
 
+## Architecture (v0.45)
+
+EtherDAW v0.45 introduces a shared codebase between Node.js and browser:
+
+```
+src/
+├── config/
+│   └── constants.ts    # Single source of truth for all magic numbers
+├── browser/
+│   └── index.ts        # Browser bundle entry point
+├── parser/             # Note, chord, pattern parsing
+├── engine/             # Compilation and timeline building
+├── theory/             # Music theory (scales, chords, rhythm)
+├── synthesis/          # Tone.js instruments and effects
+└── output/             # MIDI, WAV, ABC export
+
+dist/
+├── *.js                # Node.js compiled output
+└── etherdaw-browser.js # Browser bundle (~78KB)
+```
+
+### Development Workflow
+
+```bash
+# Build TypeScript for Node.js
+npm run build
+
+# Build browser bundle (after source changes)
+npm run build:browser
+
+# Run tests
+npm run test:run
+
+# Open player in browser
+open player.html
+```
+
+### Constants
+
+All magic numbers are centralized in `src/config/constants.ts`:
+
+```typescript
+import { DURATIONS, ARTICULATION, EFFECT_DEFAULTS } from './config/constants.js';
+
+// Duration values
+DURATIONS.q  // 1 (quarter note = 1 beat)
+DURATIONS.h  // 2 (half note)
+
+// Articulation modifiers
+ARTICULATION.staccato  // { gate: 0.3, velocityBoost: 0 }
+ARTICULATION.accent    // { gate: 1.0, velocityBoost: 0.2 }
+
+// Effect defaults
+EFFECT_DEFAULTS.reverb.decay  // 2
+EFFECT_DEFAULTS.delay.feedback  // 0.3
+```
+
 ---
 
 # EtherScore Format Reference
@@ -765,7 +822,25 @@ Comprehensive documentation is available in the `docs/` directory:
 
 # Development Status
 
-## v0.3 Features (Latest)
+## v0.45 Features (Latest)
+
+| Feature | Description |
+|---------|-------------|
+| **Claude Code Configuration** | `.claude/` directory with CLAUDE.md, settings.json, custom commands |
+| **Constants Extraction** | Single source of truth in `src/config/constants.ts` |
+| **Browser Bundle** | `dist/etherdaw-browser.js` shares code between Node.js and browser |
+
+## v0.4 Features
+
+| Feature | Description |
+|---------|-------------|
+| **Per-note Velocity** | `C4:q@0.8` - Individual note velocity (0.0-1.0) |
+| **Per-note Probability** | `C4:q?0.7` - 70% chance to play |
+| **Timing Offset** | `C4:q+10ms` or `C4:q-5ms` - Micro-timing control |
+| **Portamento** | `C4:q~>` - Glide to next note |
+| **Velocity Envelopes** | Pattern-level dynamics: `crescendo`, `diminuendo`, `swell`, custom arrays |
+
+## v0.3 Features
 
 | Feature | Description |
 |---------|-------------|

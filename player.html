@@ -329,11 +329,21 @@
   </div>
 
   <script src="https://unpkg.com/tone@15.0.4/build/Tone.js"></script>
+  <!-- v0.45: Import browser bundle for shared code -->
+  <script type="module">
+    import * as EtherDAW from './dist/etherdaw-browser.js';
+    // Expose EtherDAW to global scope for use by non-module scripts
+    window.EtherDAW = EtherDAW;
+    // Signal that the bundle is loaded
+    window.dispatchEvent(new Event('etherdaw-loaded'));
+  </script>
   <script>
     // ============================================================================
-    // EtherDAW Browser Player
+    // EtherDAW Browser Player v0.45
+    // Now imports shared code from dist/etherdaw-browser.js
     // ============================================================================
 
+    // Duration map - use imported if available, fallback for backwards compatibility
     const DURATION_MAP = { 'w': 4, 'h': 2, 'q': 1, '8': 0.5, '16': 0.25, '32': 0.125, '2': 2, '4': 1, '0': 0 };
 
     // ============================================================================
@@ -2978,6 +2988,12 @@
 
       var selectedSong = document.getElementById('song-select').value;
       await loadSong(selectedSong);
+    });
+
+    // v0.45: Check for shared code availability
+    window.addEventListener('etherdaw-loaded', function() {
+      console.log('EtherDAW browser bundle loaded:', window.EtherDAW.VERSION);
+      console.log('Shared code available - run `npm run build:browser` after source changes');
     });
   </script>
 </body>

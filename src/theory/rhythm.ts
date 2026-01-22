@@ -2,6 +2,8 @@
  * Rhythm utilities for EtherDAW - swing, humanization, and groove
  */
 
+import { HUMANIZE, GROOVE_TEMPLATES as GROOVE_CONSTANTS, type GrooveTemplateName } from '../config/constants.js';
+
 /**
  * Apply swing to a beat position
  * @param beat - Beat position
@@ -32,10 +34,10 @@ export function applySwing(beat: number, swingAmount: number, division = 0.5): n
  * Humanize timing by adding subtle random variations
  * @param beat - Beat position
  * @param amount - Humanization amount (0-1)
- * @param maxDeviation - Maximum deviation in beats (default: 0.05)
+ * @param maxDeviation - Maximum deviation in beats (default from HUMANIZE constants)
  * @returns Humanized beat position
  */
-export function humanizeTiming(beat: number, amount: number, maxDeviation = 0.05): number {
+export function humanizeTiming(beat: number, amount: number, maxDeviation = HUMANIZE.MAX_TIMING_VARIANCE_BEATS): number {
   if (amount === 0) return beat;
 
   const deviation = (Math.random() * 2 - 1) * maxDeviation * amount;
@@ -46,10 +48,10 @@ export function humanizeTiming(beat: number, amount: number, maxDeviation = 0.05
  * Humanize velocity
  * @param velocity - Base velocity (0-1)
  * @param amount - Humanization amount (0-1)
- * @param maxDeviation - Maximum deviation (default: 0.1)
+ * @param maxDeviation - Maximum deviation (default from HUMANIZE constants)
  * @returns Humanized velocity (clamped 0-1)
  */
-export function humanizeVelocity(velocity: number, amount: number, maxDeviation = 0.1): number {
+export function humanizeVelocity(velocity: number, amount: number, maxDeviation = HUMANIZE.MAX_VELOCITY_VARIANCE): number {
   if (amount === 0) return velocity;
 
   const deviation = (Math.random() * 2 - 1) * maxDeviation * amount;
@@ -60,10 +62,10 @@ export function humanizeVelocity(velocity: number, amount: number, maxDeviation 
  * Humanize duration (note length)
  * @param duration - Base duration in beats
  * @param amount - Humanization amount (0-1)
- * @param maxDeviation - Maximum deviation as ratio (default: 0.05)
+ * @param maxDeviation - Maximum deviation as ratio (default from HUMANIZE constants)
  * @returns Humanized duration
  */
-export function humanizeDuration(duration: number, amount: number, maxDeviation = 0.05): number {
+export function humanizeDuration(duration: number, amount: number, maxDeviation = HUMANIZE.MAX_DURATION_VARIANCE): number {
   if (amount === 0) return duration;
 
   const deviation = (Math.random() * 2 - 1) * maxDeviation * amount;
@@ -82,38 +84,10 @@ export interface GrooveTemplate {
   velocityMultipliers: number[];
 }
 
-export const GROOVE_TEMPLATES: Record<string, GrooveTemplate> = {
-  'straight': {
-    name: 'Straight',
-    timingOffsets: [0, 0, 0, 0],
-    velocityMultipliers: [1, 0.8, 0.9, 0.8],
-  },
-  'shuffle': {
-    name: 'Shuffle',
-    timingOffsets: [0, 0.08, 0, 0.08],
-    velocityMultipliers: [1, 0.7, 0.9, 0.7],
-  },
-  'funk': {
-    name: 'Funk',
-    timingOffsets: [0, -0.02, 0.02, -0.01],
-    velocityMultipliers: [1, 0.9, 0.85, 0.95],
-  },
-  'laid_back': {
-    name: 'Laid Back',
-    timingOffsets: [0.03, 0.03, 0.03, 0.03],
-    velocityMultipliers: [1, 0.85, 0.9, 0.85],
-  },
-  'pushed': {
-    name: 'Pushed',
-    timingOffsets: [-0.02, -0.02, -0.02, -0.02],
-    velocityMultipliers: [1, 0.9, 0.95, 0.9],
-  },
-  'hip_hop': {
-    name: 'Hip Hop',
-    timingOffsets: [0, 0.05, 0, 0.07],
-    velocityMultipliers: [1, 0.75, 0.9, 0.8],
-  },
-};
+/**
+ * Groove templates - re-exported from constants with proper typing
+ */
+export const GROOVE_TEMPLATES: Record<string, GrooveTemplate> = GROOVE_CONSTANTS;
 
 /**
  * Apply a groove template to beat position and velocity

@@ -64,6 +64,29 @@ Add articulation marker after duration (and dot if present):
 - `F#3:q^` - Marcato quarter note (short and accented)
 - `A4:h.*` - Dotted half, staccato (3 beats duration, plays 0.9 beats)
 
+### Expression Modifiers (v0.4)
+Add expression modifiers after articulation for fine-grained control:
+
+| Modifier | Syntax | Description |
+|----------|--------|-------------|
+| Velocity | `@0.8` | Per-note velocity (0.0-1.0) |
+| Probability | `?0.7` | Chance to play (0.0-1.0) |
+| Timing offset | `+10ms` / `-5ms` | Shift timing forward/backward |
+| Portamento | `~>` | Glide to next note |
+
+**Examples:**
+- `C4:q@0.8` - Quarter note at 80% velocity
+- `D4:8?0.5` - 50% chance to play this eighth note
+- `E4:q+10ms` - Slightly late (10ms after beat)
+- `F4:q-5ms` - Slightly early (5ms before beat)
+- `G4:h~>` - Glide from this note to the next
+- `C4:q*@0.9?0.5-5ms` - Combined: staccato, 90% velocity, 50% probability, 5ms early
+
+**Combining modifiers:** Apply in order after duration/articulation:
+```
+<pitch><octave>:<duration>[.][articulation][@velocity][?probability][±timing][~>]
+```
+
 ### Rests
 Use `r` as the pitch for rests:
 - `r:q` - Quarter rest
@@ -259,6 +282,48 @@ Automatically break chords into note sequences.
   }
 }
 ```
+
+---
+
+## Velocity Envelopes (v0.4)
+
+Apply dynamic velocity curves across an entire pattern:
+
+### Presets
+```json
+{
+  "patterns": {
+    "crescendo_melody": {
+      "notes": ["C4:q", "D4:q", "E4:q", "F4:q", "G4:q", "A4:q", "B4:q", "C5:q"],
+      "velocityEnvelope": "crescendo"
+    }
+  }
+}
+```
+
+| Preset | Effect |
+|--------|--------|
+| `crescendo` | Gradually increase velocity (soft to loud) |
+| `diminuendo` | Gradually decrease velocity (loud to soft) |
+| `swell` | Increase then decrease (< shape) |
+| `accent_first` | First note accented, others normal |
+| `accent_downbeats` | Accent on downbeats (1, 3 in 4/4) |
+
+### Custom Arrays
+Define exact velocity for each note:
+
+```json
+{
+  "patterns": {
+    "custom_dynamics": {
+      "notes": ["C4:q", "E4:q", "G4:q", "C5:q"],
+      "velocityEnvelope": [0.5, 0.6, 0.8, 1.0]
+    }
+  }
+}
+```
+
+The array length should match the number of notes. Values are multiplied with track velocity.
 
 ---
 

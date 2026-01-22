@@ -5,6 +5,7 @@
 
 import type { Timeline, EtherScore, Instrument } from '../schema/types.js';
 import { createRenderer, ToneRenderer } from '../synthesis/tone-renderer.js';
+import { AUDIO } from '../config/constants.js';
 
 /**
  * Options for WAV export
@@ -77,9 +78,9 @@ export async function writeWavFile(
  */
 export function createWavHeader(
   dataLength: number,
-  sampleRate = 44100,
-  channels = 2,
-  bitsPerSample = 16
+  sampleRate = AUDIO.SAMPLE_RATE,
+  channels = AUDIO.CHANNELS,
+  bitsPerSample = AUDIO.BIT_DEPTH
 ): ArrayBuffer {
   const headerSize = 44;
   const header = new ArrayBuffer(headerSize);

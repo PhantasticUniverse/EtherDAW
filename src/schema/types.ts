@@ -284,13 +284,10 @@ export interface Timeline {
 // Duration Constants
 // ============================================================================
 
-export const DURATION_MAP: Record<string, number> = {
-  'w': 4,      // whole note
-  'h': 2,      // half note
-  'q': 1,      // quarter note
-  '8': 0.5,   // eighth note
-  '16': 0.25, // sixteenth note
-  '32': 0.125, // thirty-second note
-  '2': 2,     // alternative half notation
-  '4': 1,     // alternative quarter notation
-};
+import { DURATIONS } from '../config/constants.js';
+
+/**
+ * Duration map: duration code -> beats
+ * Re-exported from constants for backward compatibility
+ */
+export const DURATION_MAP: Record<string, number> = DURATIONS;

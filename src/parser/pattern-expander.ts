@@ -4,6 +4,7 @@ import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
 import { snapToScale, parseKey } from '../theory/scales.js';
 import { invertPattern, retrogradePattern, augmentPattern, transposePattern, shiftOctave } from '../theory/transformations.js';
+import { DURATIONS, DOTTED_MULTIPLIER, VELOCITY_ENVELOPE, SCALE_INTERVALS, NOTE_VALUES, NOTE_NAMES, MIDI, ARPEGGIATOR, DRUM_SEQUENCER } from '../config/constants.js';
 
 export interface ExpandedPattern {
   notes: Array<{
@@ -32,8 +33,8 @@ function generateVelocityPreset(preset: VelocityEnvelopePreset, noteCount: numbe
   if (noteCount === 1) return [baseVelocity];
 
   const velocities: number[] = [];
-  const minVel = Math.max(0.1, baseVelocity * 0.3); // Floor at 30% of base or 0.1
-  const maxVel = Math.min(1.0, baseVelocity * 1.2); // Ceiling at 120% of base or 1.0
+  const minVel = Math.max(0.1, baseVelocity * VELOCITY_ENVELOPE.MIN_VELOCITY); // Floor at 30% of base or 0.1
+  const maxVel = Math.min(VELOCITY_ENVELOPE.MAX_VELOCITY, baseVelocity * VELOCITY_ENVELOPE.SWELL_PEAK); // Ceiling at 120% of base or 1.0
 
   switch (preset) {
     case 'crescendo':
@@ -208,7 +209,7 @@ export function resolvePattern(pattern: Pattern, allPatterns?: Record<string, Pa
  * Expand a pattern into individual note events
  */
 export function expandPattern(pattern: Pattern, context: PatternContext): ExpandedPattern {
-  const velocity = context.velocity ?? 0.8;
+  const velocity = context.velocity ?? VELOCITY_ENVELOPE.DEFAULT_VELOCITY;
   const octaveOffset = context.octaveOffset ?? 0;
   const transpose = context.transpose ?? 0;
 
@@ -389,17 +390,12 @@ function parseDurationString(str: string): number {
   const isDotted = str.endsWith('.');
   const code = isDotted ? str.slice(0, -1) : str;
 
-  const DURATION_MAP: Record<string, number> = {
-    'w': 4, 'h': 2, 'q': 1, '8': 0.5, '16': 0.25, '32': 0.125,
-    '2': 2, '4': 1,
-  };
-
-  const base = DURATION_MAP[code];
+  const base = DURATIONS[code as keyof typeof DURATIONS];
   if (base === undefined) {
     throw new Error(`Invalid duration: ${str}`);
   }
 
-  return isDotted ? base * 1.5 : base;
+  return isDotted ? base * DOTTED_MULTIPLIER : base;
 }
 
 /**
@@ -459,19 +455,7 @@ function scaleDegreeToNote(degree: number | string, key: string, octave: number)
   const [, root, mode] = keyMatch;
   const normalizedMode = normalizeMode(mode || 'major');
 
-  // Scale intervals for different modes
-  const modeIntervals: Record<string, number[]> = {
-    'major': [0, 2, 4, 5, 7, 9, 11],
-    'minor': [0, 2, 3, 5, 7, 8, 10],
-    'dorian': [0, 2, 3, 5, 7, 9, 10],
-    'phrygian': [0, 1, 3, 5, 7, 8, 10],
-    'lydian': [0, 2, 4, 6, 7, 9, 11],
-    'mixolydian': [0, 2, 4, 5, 7, 9, 10],
-    'aeolian': [0, 2, 3, 5, 7, 8, 10],
-    'locrian': [0, 1, 3, 5, 6, 8, 10],
-  };
-
-  const intervals = modeIntervals[normalizedMode] || modeIntervals['major'];
+  const intervals = SCALE_INTERVALS[normalizedMode] || SCALE_INTERVALS['major'];
 
   // Parse enhanced degree notation
   const parsed = parseEnhancedDegree(degree);
@@ -506,26 +490,21 @@ function normalizeMode(mode: string): string {
 }
 
 function noteNameToMidi(noteName: string, octave: number): number {
-  const noteValues: Record<string, number> = {
-    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
-  };
-
   const match = noteName.match(/^([A-G])([#b]?)$/);
   if (!match) throw new Error(`Invalid note name: ${noteName}`);
 
   const [, note, accidental] = match;
-  let value = noteValues[note];
+  let value = NOTE_VALUES[note];
   if (accidental === '#') value += 1;
   if (accidental === 'b') value -= 1;
 
-  return (octave + 1) * 12 + value;
+  return (octave + 1) * MIDI.SEMITONES_PER_OCTAVE + value;
 }
 
 function midiToPitchName(midi: number): string {
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const octave = Math.floor(midi / 12) - 1;
-  const noteIndex = midi % 12;
-  return `${noteNames[noteIndex]}${octave}`;
+  const octave = Math.floor(midi / MIDI.SEMITONES_PER_OCTAVE) - 1;
+  const noteIndex = midi % MIDI.SEMITONES_PER_OCTAVE;
+  return `${NOTE_NAMES[noteIndex]}${octave}`;
 }
 
 function adjustOctave(pitch: string, octaveOffset: number): string {
@@ -621,7 +600,7 @@ function expandArpeggio(
   transpose: number,
   velocity: number
 ): ExpandedPattern {
-  const { chord, duration, mode, octaves = 1, gate = 0.8, steps } = arpeggio;
+  const { chord, duration, mode, octaves = ARPEGGIATOR.DEFAULT_OCTAVES, gate = ARPEGGIATOR.DEFAULT_GATE, steps } = arpeggio;
   const chordNotes = getChordNotes(chord, 3 + octaveOffset);
   const durationBeats = parseDurationString(duration);
 
@@ -672,9 +651,10 @@ function expandArpeggio(
  * Supports: "0", "q", "h+8", "q+16", etc.
  */
 function parseDrumTime(timeStr: string): number {
-  const DURATION_MAP: Record<string, number> = {
-    'w': 4, 'h': 2, 'q': 1, '8': 0.5, '16': 0.25, '32': 0.125,
-    '2': 2, '4': 1, '0': 0,
+  // Extended duration map including '0' for drum timing
+  const DRUM_DURATION_MAP: Record<string, number> = {
+    ...DURATIONS,
+    '0': 0,
   };
 
   // Handle compound times like "h+8", "q+16"
@@ -683,8 +663,8 @@ function parseDrumTime(timeStr: string): number {
 
   for (const part of parts) {
     const trimmed = part.trim();
-    if (DURATION_MAP[trimmed] !== undefined) {
-      total += DURATION_MAP[trimmed];
+    if (DRUM_DURATION_MAP[trimmed] !== undefined) {
+      total += DRUM_DURATION_MAP[trimmed];
     } else {
       // Try parsing as a number (for "0")
       const num = parseFloat(trimmed);
@@ -704,7 +684,7 @@ function parseDrumTime(timeStr: string): number {
 export function expandDrumPattern(drums: DrumPattern, velocity: number): ExpandedPattern {
   const notes: ExpandedPattern['notes'] = [];
   const kit = drums.kit || '909';
-  const stepDuration = parseDurationString(drums.stepDuration || '16');
+  const stepDuration = parseDurationString(drums.stepDuration || DRUM_SEQUENCER.DEFAULT_STEP_DURATION);
 
   // Handle step sequencer pattern
   if (drums.steps) {
@@ -716,14 +696,14 @@ export function expandDrumPattern(drums: DrumPattern, velocity: number): Expande
           pitch: `drum:kick@${kit}`, // Default to kick for steps pattern
           startBeat: i * stepDuration,
           durationBeats: stepDuration,
-          velocity: velocity * 0.8,
+          velocity: velocity * DRUM_SEQUENCER.DEFAULT_VELOCITY,
         });
       } else if (char === '>') {
         notes.push({
           pitch: `drum:kick@${kit}`,
           startBeat: i * stepDuration,
           durationBeats: stepDuration,
-          velocity: 1.0,
+          velocity: DRUM_SEQUENCER.ACCENT_VELOCITY,
         });
       }
       // '.' is rest, skip
