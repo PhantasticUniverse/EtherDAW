@@ -1,0 +1,266 @@
+{
+  "meta": {
+    "title": "Night Architecture",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 7,
+    "mood": "Nocturnal, Geometric, Electronic",
+    "description": "The city at night. Pulsing lights. Geometric darkness. Structures of electricity."
+  },
+
+  "settings": {
+    "tempo": 105,
+    "key": "B minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "sequence": {
+      "preset": "saw_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2500, "type": "lowpass", "Q": 3 } },
+        { "type": "delay", "wet": 0.25, "options": { "delayTime": "16n", "feedback": 0.35 } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 150, "type": "lowpass" } }
+      ]
+    },
+    "pad": {
+      "preset": "dark_pad",
+      "volume": -16,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+      ]
+    },
+    "pulse": {
+      "preset": "square_lead",
+      "volume": -12,
+      "pan": -0.3,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 1800, "type": "lowpass" } },
+        { "type": "delay", "wet": 0.3, "options": { "delayTime": "8n.", "feedback": 0.4 } }
+      ]
+    },
+    "kick": {
+      "preset": "drums:808",
+      "volume": -4
+    },
+    "hat": {
+      "preset": "drums:808",
+      "volume": -12
+    }
+  },
+
+  "patterns": {
+    "// SEQUENCE - Main melodic motif": "---",
+
+    "seq_cell": {
+      "notes": ["B3:16", "r:16", "D4:16", "r:16", "F#4:16", "r:16", "B3:16", "r:16"]
+    },
+
+    "seq_rise": {
+      "notes": ["B3:16", "D4:16", "F#4:16", "A4:16", "B4:16", "r:16", "A4:16", "r:16"]
+    },
+
+    "seq_complex": {
+      "notes": ["B3:16", "r:16", "F#4:16", "D4:16", "B4:16", "r:16", "A4:16", "F#4:16"]
+    },
+
+    "seq_arp": {
+      "arpeggio": {
+        "chord": "Bm7",
+        "mode": "up",
+        "duration": "16",
+        "octaves": 2,
+        "gate": 0.6,
+        "steps": 16
+      }
+    },
+
+    "// BASS - Deep foundation": "---",
+
+    "bass_root": {
+      "notes": ["B1:q", "r:q", "r:h"]
+    },
+
+    "bass_pulse": {
+      "notes": ["B1:8", "r:8", "B1:8", "r:8", "B1:8", "r:8", "r:q"]
+    },
+
+    "bass_moving": {
+      "notes": ["B1:8", "r:8", "r:q", "D2:8", "r:8", "r:q"]
+    },
+
+    "bass_line": {
+      "notes": ["B1:8", "r:8", "F#1:8", "r:8", "G1:8", "r:8", "A1:8", "r:8"]
+    },
+
+    "// PAD - Atmospheric bed": "---",
+
+    "pad_bm": {
+      "chords": ["Bm7:w", "Bm7:w"]
+    },
+
+    "pad_dark": {
+      "chords": ["Bm9:w", "Gmaj7:w", "Em9:w", "F#7:w"]
+    },
+
+    "// PULSE - Secondary sequence": "---",
+
+    "pulse_high": {
+      "notes": ["r:8", "F#5:16@p", "r:16", "r:q", "r:8", "B5:16@pp", "r:16", "r:q"]
+    },
+
+    "pulse_echo": {
+      "notes": ["B4:16@p", "r:16", "r:8", "D5:16@pp", "r:16", "r:8", "F#5:16@ppp", "r:16", "r:8"]
+    },
+
+    "// DRUMS - Minimal kit": "---",
+
+    "kick_four": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "kick", "time": "q", "velocity": 0.85 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.85 }
+        ]
+      }
+    },
+
+    "kick_syncopate": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "kick", "time": "q+8", "velocity": 0.8 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.85 }
+        ]
+      }
+    },
+
+    "hat_16": {
+      "euclidean": {
+        "hits": 8,
+        "steps": 16,
+        "duration": "16",
+        "drum": "hihat"
+      }
+    },
+
+    "hat_offbeat": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "hihat", "time": "8", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.45 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.45 }
+        ]
+      }
+    },
+
+    "// REST": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "darkness": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_bm", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "flicker": {
+      "bars": 8,
+      "tracks": {
+        "sequence": { "pattern": "seq_cell", "repeat": 8, "velocity": 0.5 },
+        "pad": { "pattern": "pad_bm", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "grid": {
+      "bars": 16,
+      "tracks": {
+        "sequence": { "pattern": "seq_cell", "repeat": 16, "velocity": 0.6 },
+        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.7 },
+        "pad": { "pattern": "pad_bm", "repeat": 8, "velocity": 0.4 },
+        "kick": { "pattern": "kick_four", "repeat": 16, "velocity": 0.75 }
+      }
+    },
+
+    "towers": {
+      "bars": 16,
+      "tracks": {
+        "sequence": { "patterns": ["seq_cell", "seq_rise"], "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.75 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.45 },
+        "pulse": { "pattern": "pulse_high", "repeat": 8, "velocity": 0.4 },
+        "kick": { "pattern": "kick_four", "repeat": 16, "velocity": 0.8 },
+        "hat": { "pattern": "hat_offbeat", "repeat": 16, "velocity": 0.5 }
+      }
+    },
+
+    "neon": {
+      "bars": 16,
+      "tracks": {
+        "sequence": { "pattern": "seq_complex", "repeat": 16, "velocity": 0.75 },
+        "bass": { "pattern": "bass_line", "repeat": 8, "velocity": 0.8 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.5 },
+        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.5 },
+        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_16", "repeat": 8, "velocity": 0.55 }
+      }
+    },
+
+    "skyline": {
+      "bars": 16,
+      "tracks": {
+        "sequence": { "pattern": "seq_arp", "repeat": 8, "velocity": 0.75 },
+        "bass": { "pattern": "bass_moving", "repeat": 8, "velocity": 0.8 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.5 },
+        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.55 },
+        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_16", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+
+    "fade": {
+      "bars": 8,
+      "tracks": {
+        "sequence": { "pattern": "seq_cell", "repeat": 8, "velocity": 0.5 },
+        "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "pad_bm", "repeat": 4, "velocity": 0.4 },
+        "kick": { "pattern": "kick_four", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+
+    "sleep": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_bm", "repeat": 4, "velocity": 0.3 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "darkness",
+    "flicker",
+    "grid",
+    "towers",
+    "neon",
+    "skyline",
+    "fade",
+    "sleep"
+  ]
+}

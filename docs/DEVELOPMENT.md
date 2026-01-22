@@ -244,6 +244,45 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.83 (2026-01-23) - Pattern Algebra + Album
+
+**Vision:** Full pattern transformation system plus an 8-track album "Threshold" demonstrating all capabilities.
+
+**Pattern Algebra:**
+- **Core Transforms**: `reverse`, `invert`, `shuffle`, `slice`, `rotate` REPL commands
+- **Combinators**: `every N <transform>`, `sometimes <transform>` for conditional application
+- **Pattern Variables**: `set name = pattern | transform` with pipe syntax chaining
+- **Debug Tools**: `show`, `explain`, `diff` for inspecting transformed patterns
+
+**LLM Feedback Tools:**
+- `preview <pattern>` - ASCII pitch contour visualization
+- `describe <pattern>` - Verbal analysis (contour, range, rhythm, mood)
+- `suggest <pattern>` - Generate transform suggestions
+- `spectrum [section]` - Frequency band distribution visualization
+- `timeline` - Time-domain energy arc visualization
+
+**Format Enhancements:**
+- Extended chord support: `add11`, `m7add11`, `maj7add11` compound chords
+- Extended dynamics: `@ppp`, `@fff` for extreme dynamic markings
+
+**Files Created:**
+- `src/transforms/reverse.ts`, `invert.ts`, `shuffle.ts`, `slice.ts`, `rotate.ts`
+- `src/cli/repl/combinators.ts` - Combinator logic
+- `examples/album-1-01/` - 8-track album "Threshold"
+- `docs/PRD.md` - Comprehensive product requirements document
+- `docs/ARCHITECTURE.md` - Technical architecture documentation
+
+**Files Modified:**
+- `src/cli/repl/commands.ts` - All new REPL commands
+- `src/cli/repl/state.ts` - Pattern modifications, variables, transform history
+- `src/parser/chord-parser.ts` - Extended add chord support
+- `src/config/constants.ts` - Extended dynamics (@ppp, @fff)
+- `src/parser/note-parser.ts` - Extended dynamics regex
+
+**Key Insight:** When composing reveals DAW limitations, improve the DAW instead of compromising the composition.
+
+---
+
 ### v0.82 (2026-01-23) - Live Coding Foundation
 
 **Vision:** See [docs/VISION.md](./VISION.md) for the long-term architecture and philosophy.

@@ -1,0 +1,227 @@
+{
+  "meta": {
+    "title": "The Commute",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 3,
+    "mood": "Suspended, Rhythmic, Hypnotic",
+    "description": "The liminal space of transit. Neither here nor there. Time measured in repetition."
+  },
+
+  "settings": {
+    "tempo": 118,
+    "key": "F minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "synth": {
+      "preset": "saw_bass",
+      "volume": -8,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 1200, "type": "lowpass", "Q": 2 } },
+        { "type": "delay", "wet": 0.15, "options": { "delayTime": "16n", "feedback": 0.2 } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 200, "type": "lowpass" } }
+      ]
+    },
+    "pad": {
+      "preset": "dark_pad",
+      "volume": -18,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 8 } }
+      ]
+    },
+    "perc": {
+      "preset": "drums:808",
+      "volume": -4
+    },
+    "hat": {
+      "preset": "drums:808",
+      "volume": -10
+    }
+  },
+
+  "patterns": {
+    "// SYNTH - Main motif (will be transformed)": "---",
+
+    "motif_a": {
+      "notes": ["F3:16", "r:16", "F3:16", "Ab3:16", "r:8", "C4:16", "r:16"]
+    },
+
+    "motif_b": {
+      "notes": ["F3:16", "r:16", "Eb3:16", "F3:16", "Ab3:8", "r:8"]
+    },
+
+    "motif_c": {
+      "notes": ["C4:16", "r:16", "Ab3:16", "r:16", "F3:8", "r:8"]
+    },
+
+    "motif_full": {
+      "notes": ["F3:16", "r:16", "F3:16", "Ab3:16", "C4:16", "r:16", "Ab3:16", "F3:16"]
+    },
+
+    "// BASS - Anchoring pulse": "---",
+
+    "bass_pulse": {
+      "notes": ["F1:8", "r:8", "r:q", "F1:8", "r:8", "r:q"]
+    },
+
+    "bass_walk": {
+      "notes": ["F1:8", "r:8", "Ab1:8", "r:8", "Bb1:8", "r:8", "C2:8", "r:8"]
+    },
+
+    "// PAD - Harmonic wash": "---",
+
+    "pad_fm": {
+      "chords": ["Fm:w", "Fm:w"]
+    },
+
+    "pad_move": {
+      "chords": ["Fm:w", "Db:w", "Ab:w", "Eb:w"]
+    },
+
+    "// DRUMS - Minimal kit": "---",
+
+    "kick_four": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "kick", "time": "q", "velocity": 0.9 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 }
+        ]
+      }
+    },
+
+    "kick_syncopate": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "kick", "time": "q", "velocity": 0.85 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.8 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 }
+        ]
+      }
+    },
+
+    "hat_steady": {
+      "euclidean": {
+        "hits": 8,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+
+    "hat_offbeat": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "hihat", "time": "8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.5 }
+        ]
+      }
+    },
+
+    "// SILENCE": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "approach": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_fm", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "pulse": {
+      "bars": 8,
+      "tracks": {
+        "perc": { "pattern": "kick_four", "repeat": 8, "velocity": 0.7 },
+        "pad": { "pattern": "pad_fm", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "emerge": {
+      "bars": 16,
+      "tracks": {
+        "synth": { "pattern": "motif_a", "repeat": 16, "velocity": 0.6 },
+        "perc": { "pattern": "kick_four", "repeat": 16, "velocity": 0.75 },
+        "pad": { "pattern": "pad_fm", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "motion": {
+      "bars": 16,
+      "tracks": {
+        "synth": { "patterns": ["motif_a", "motif_b"], "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.7 },
+        "perc": { "pattern": "kick_four", "repeat": 16, "velocity": 0.8 },
+        "hat": { "pattern": "hat_offbeat", "repeat": 16, "velocity": 0.5 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.45 }
+      }
+    },
+
+    "transit": {
+      "bars": 16,
+      "tracks": {
+        "synth": { "patterns": ["motif_a", "motif_b", "motif_c", "motif_a"], "repeat": 2, "velocity": 0.75 },
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.75 },
+        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_steady", "repeat": 8, "velocity": 0.55 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "suspended": {
+      "bars": 16,
+      "tracks": {
+        "synth": { "pattern": "motif_full", "repeat": 16, "velocity": 0.8 },
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.8 },
+        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_steady", "repeat": 8, "velocity": 0.6 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "arrival": {
+      "bars": 8,
+      "tracks": {
+        "synth": { "pattern": "motif_a", "repeat": 8, "velocity": 0.6 },
+        "perc": { "pattern": "kick_four", "repeat": 8, "velocity": 0.7 },
+        "pad": { "pattern": "pad_fm", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "dissolve": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_fm", "repeat": 4, "velocity": 0.3 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "approach",
+    "pulse",
+    "emerge",
+    "motion",
+    "transit",
+    "suspended",
+    "arrival",
+    "dissolve"
+  ]
+}

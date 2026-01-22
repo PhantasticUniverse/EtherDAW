@@ -67,12 +67,14 @@ export const ARTICULATION = {
  * Traditional dynamics notation mapped to velocity (0-1)
  */
 export const DYNAMICS = {
+  ppp: 0.10,  // pianississimo - extremely soft
   pp: 0.20,   // pianissimo - very soft
   p: 0.35,    // piano - soft
   mp: 0.50,   // mezzo-piano - medium soft
   mf: 0.65,   // mezzo-forte - medium loud
   f: 0.80,    // forte - loud
   ff: 0.95,   // fortissimo - very loud
+  fff: 1.0,   // fortississimo - extremely loud
 } as const;
 
 export type DynamicsMarking = keyof typeof DYNAMICS;

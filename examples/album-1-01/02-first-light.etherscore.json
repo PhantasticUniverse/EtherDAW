@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "title": "First Light",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 2,
+    "mood": "Awakening, Gradual, Hopeful",
+    "description": "Patterns emerging from silence. The first rays breaking through."
+  },
+
+  "settings": {
+    "tempo": 72,
+    "key": "G major",
+    "timeSignature": "4/4",
+    "swing": 0.05
+  },
+
+  "instruments": {
+    "keys": {
+      "preset": "fm_epiano",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 3 } },
+        { "type": "delay", "wet": 0.2, "options": { "delayTime": "8n.", "feedback": 0.3 } }
+      ]
+    },
+    "bass": {
+      "preset": "warm_bass",
+      "volume": -10,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 600, "type": "lowpass" } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -16,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+      ]
+    },
+    "bells": {
+      "preset": "music_box",
+      "volume": -12,
+      "pan": 0.25,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 4 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// KEYS - Main melodic cell": "---",
+
+    "keys_seed": {
+      "notes": ["G4:q", "B4:8", "D5:8", "E5:q", "D5:q"]
+    },
+
+    "keys_phrase": {
+      "notes": ["G4:q", "B4:8", "D5:8", "E5:q", "D5:8", "B4:8", "G4:h"]
+    },
+
+    "keys_answer": {
+      "notes": ["A4:q", "C5:8", "E5:8", "D5:q", "B4:q"]
+    },
+
+    "keys_extended": {
+      "notes": ["G4:q", "B4:8", "D5:8", "E5:q", "G5:8", "E5:8", "D5:q", "B4:h"]
+    },
+
+    "// BASS - Simple root movement": "---",
+
+    "bass_root": {
+      "notes": ["G2:h", "r:h"]
+    },
+
+    "bass_walk": {
+      "notes": ["G2:q", "A2:q", "B2:q", "D3:q"]
+    },
+
+    "bass_full": {
+      "notes": ["G2:h", "D2:h", "E2:h", "D2:h"]
+    },
+
+    "// PAD - Harmonic bed": "---",
+
+    "pad_g": {
+      "chords": ["Gmaj7:w", "Gmaj7:w"]
+    },
+
+    "pad_move": {
+      "chords": ["Gmaj7:w", "Em7:w", "Am7:w", "D7:w"]
+    },
+
+    "// BELLS - Crystalline punctuation": "---",
+
+    "bells_sparse": {
+      "notes": ["r:h", "D6:h@pp", "r:w", "r:w"]
+    },
+
+    "bells_phrase": {
+      "notes": ["G5:8@p", "r:8", "D6:q@pp", "r:h", "B5:q@pp", "r:q"]
+    },
+
+    "// SILENCE": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "dawn": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "emergence": {
+      "bars": 8,
+      "tracks": {
+        "keys": { "pattern": "keys_seed", "repeat": 4, "velocity": 0.5 },
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "building": {
+      "bars": 16,
+      "tracks": {
+        "keys": { "pattern": "keys_phrase", "repeat": 4, "velocity": 0.6 },
+        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.5 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "light": {
+      "bars": 16,
+      "tracks": {
+        "keys": { "patterns": ["keys_phrase", "keys_answer"], "repeat": 2, "velocity": 0.7 },
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.6 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.55 },
+        "bells": { "pattern": "bells_sparse", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "radiant": {
+      "bars": 16,
+      "tracks": {
+        "keys": { "pattern": "keys_extended", "repeat": 4, "velocity": 0.75 },
+        "bass": { "pattern": "bass_full", "repeat": 4, "velocity": 0.65 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.6 },
+        "bells": { "pattern": "bells_phrase", "repeat": 8, "velocity": 0.5 }
+      }
+    },
+
+    "resolve": {
+      "bars": 8,
+      "tracks": {
+        "keys": { "pattern": "keys_phrase", "repeat": 2, "velocity": 0.6 },
+        "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.5 },
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.45 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "dawn",
+    "emergence",
+    "building",
+    "light",
+    "radiant",
+    "resolve"
+  ]
+}

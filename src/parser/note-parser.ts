@@ -16,7 +16,7 @@ import { ARTICULATION, DOTTED_MULTIPLIER, NOTE_VALUES, NOTE_NAMES, MIDI, DYNAMIC
  * Tuplets: tN where N is the tuplet ratio (e.g., t3 for triplet, t5 for quintuplet)
  * Jazz Articulations (v0.8): .fall, .doit, .scoop, .bend+N
  * Ornaments (v0.8): .tr, .mord, .turn
- * Velocity: @0.0-1.0 or @pp/@p/@mp/@mf/@f/@ff (per-note velocity)
+ * Velocity: @0.0-1.0 or @ppp/@pp/@p/@mp/@mf/@f/@ff/@fff (per-note velocity)
  * Timing: +/-Nms (timing offset in milliseconds)
  * Probability: ?0.0-1.0 (chance of note playing)
  *
@@ -38,7 +38,7 @@ import { ARTICULATION, DOTTED_MULTIPLIER, NOTE_VALUES, NOTE_NAMES, MIDI, DYNAMIC
  * 15: Probability (number after ?)
  */
 // Note: Portamento (~>) can appear either before or after velocity/timing modifiers
-const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|pp|p|mp|mf|f|ff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?$/;
+const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?$/;
 
 /**
  * Regular expression for parsing rest notation

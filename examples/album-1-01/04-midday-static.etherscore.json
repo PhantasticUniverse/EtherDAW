@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "title": "Midday Static",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 4,
+    "mood": "Present, Textural, Meditative",
+    "description": "The hum of being present. Texture and density. The moment when time stands still."
+  },
+
+  "settings": {
+    "tempo": 90,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "drone": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 12 } }
+      ]
+    },
+    "shimmer": {
+      "preset": "glass_pad",
+      "volume": -16,
+      "pan": -0.3,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "delayTime": "4n.", "feedback": 0.6 } },
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 8 } }
+      ]
+    },
+    "texture": {
+      "preset": "pink_noise",
+      "volume": -22
+    },
+    "bells": {
+      "preset": "music_box",
+      "volume": -14,
+      "pan": 0.4,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+      ]
+    },
+    "pulse": {
+      "preset": "soft_lead",
+      "volume": -18,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass" } },
+        { "type": "delay", "wet": 0.3, "options": { "delayTime": "8n", "feedback": 0.4 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// DRONE - Sustained beds": "---",
+
+    "drone_c": {
+      "chords": ["C:w", "C:w", "C:w", "C:w"]
+    },
+
+    "drone_move": {
+      "chords": ["C:w", "Am:w", "F:w", "G:w"]
+    },
+
+    "drone_suspend": {
+      "chords": ["Csus4:w", "C:w", "Csus2:w", "C:w"]
+    },
+
+    "// SHIMMER - High harmonics": "---",
+
+    "shimmer_arp": {
+      "arpeggio": {
+        "chord": "Cmaj9",
+        "mode": "random",
+        "duration": "16",
+        "octaves": 2,
+        "gate": 0.4,
+        "steps": 16
+      }
+    },
+
+    "shimmer_sparse": {
+      "notes": ["G5:h@pp", "r:h", "E5:h@ppp", "r:h"]
+    },
+
+    "// TEXTURE": "---",
+
+    "texture_bed": {
+      "notes": ["C4:w", "C4:w"]
+    },
+
+    "// BELLS - Occasional clarity": "---",
+
+    "bells_single": {
+      "notes": ["r:w", "r:w", "r:w", "C6:w@pp"]
+    },
+
+    "bells_chime": {
+      "notes": ["E5:h@p", "r:q", "G5:q@pp", "r:h", "C6:h@ppp"]
+    },
+
+    "bells_descend": {
+      "notes": ["C6:q@pp", "G5:q@pp", "E5:q@pp", "C5:q@pp"]
+    },
+
+    "// PULSE - Subtle rhythmic element": "---",
+
+    "pulse_steady": {
+      "notes": ["C4:8@ppp", "r:8", "C4:8@ppp", "r:8", "C4:8@ppp", "r:8", "C4:8@ppp", "r:8"]
+    },
+
+    "pulse_synth": {
+      "notes": ["C4:8@ppp", "r:8", "E4:8@ppp", "r:8", "G4:8@ppp", "r:8", "E4:8@ppp", "r:8"]
+    },
+
+    "// SILENCE": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "emerge": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_c", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.25 }
+      }
+    },
+
+    "hum": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_c", "repeat": 4, "velocity": 0.4 },
+        "shimmer": { "pattern": "shimmer_sparse", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+
+    "static": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_suspend", "repeat": 4, "velocity": 0.45 },
+        "shimmer": { "pattern": "shimmer_arp", "velocity": 0.35 },
+        "bells": { "pattern": "bells_single", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.35 }
+      }
+    },
+
+    "present": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_move", "repeat": 4, "velocity": 0.5 },
+        "shimmer": { "pattern": "shimmer_arp", "velocity": 0.4 },
+        "bells": { "pattern": "bells_chime", "repeat": 4, "velocity": 0.35 },
+        "pulse": { "pattern": "pulse_steady", "repeat": 8, "velocity": 0.25 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.35 }
+      }
+    },
+
+    "density": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_move", "repeat": 4, "velocity": 0.55 },
+        "shimmer": { "pattern": "shimmer_arp", "velocity": 0.45 },
+        "bells": { "pattern": "bells_descend", "repeat": 8, "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_synth", "repeat": 8, "velocity": 0.3 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "dissolve": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_suspend", "repeat": 4, "velocity": 0.4 },
+        "shimmer": { "pattern": "shimmer_sparse", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_bed", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+
+    "silence": {
+      "bars": 8,
+      "tracks": {
+        "drone": { "pattern": "drone_c", "repeat": 2, "velocity": 0.25 },
+        "texture": { "pattern": "texture_bed", "repeat": 4, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "emerge",
+    "hum",
+    "static",
+    "present",
+    "density",
+    "dissolve",
+    "silence"
+  ]
+}

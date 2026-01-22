@@ -150,22 +150,45 @@ export async function startREPL(config: REPLConfig = {}): Promise<void> {
     return result.shouldExit === true;
   };
 
+  // Track if we're processing a command (for piped input)
+  let processing = false;
+  const commandQueue: string[] = [];
+
+  const processNextCommand = async (): Promise<void> => {
+    if (processing || commandQueue.length === 0) return;
+
+    processing = true;
+    const line = commandQueue.shift()!;
+
+    try {
+      const shouldExit = await handleLine(line);
+      if (shouldExit) {
+        rl.close();
+        processing = false;
+        return;
+      }
+    } catch (error) {
+      console.error(`Error: ${(error as Error).message}`);
+    }
+
+    // Update prompt (might have changed after command)
+    rl.setPrompt(getPrompt(session));
+    processing = false;
+
+    // Process next command if queued, otherwise show prompt
+    if (commandQueue.length > 0) {
+      await processNextCommand();
+    } else {
+      rl.prompt();
+    }
+  };
+
   // Main loop
   return new Promise((resolve) => {
     rl.on('line', async (line) => {
-      try {
-        const shouldExit = await handleLine(line);
-        if (shouldExit) {
-          rl.close();
-          return;
-        }
-      } catch (error) {
-        console.error(`Error: ${(error as Error).message}`);
-      }
-
-      // Update prompt (might have changed after command)
-      rl.setPrompt(getPrompt(session));
-      rl.prompt();
+      // Queue the command and process sequentially
+      commandQueue.push(line);
+      await processNextCommand();
     });
 
     rl.on('close', () => {

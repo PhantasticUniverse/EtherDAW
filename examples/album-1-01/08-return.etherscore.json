@@ -1,0 +1,209 @@
+{
+  "meta": {
+    "title": "Return",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 8,
+    "mood": "Peaceful, Transformed, Home",
+    "description": "Coming home. The same door, but you are different. Rest."
+  },
+
+  "settings": {
+    "tempo": 65,
+    "key": "D major",
+    "timeSignature": "4/4",
+    "swing": 0.05
+  },
+
+  "instruments": {
+    "voice": {
+      "preset": "fm_epiano",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 5 } },
+        { "type": "delay", "wet": 0.15, "options": { "delayTime": "4n", "feedback": 0.2 } }
+      ]
+    },
+    "embrace": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 10 } }
+      ]
+    },
+    "ground": {
+      "preset": "warm_bass",
+      "volume": -14,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 300, "type": "lowpass" } }
+      ]
+    },
+    "light": {
+      "preset": "music_box",
+      "volume": -16,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+      ]
+    },
+    "breath": {
+      "preset": "pink_noise",
+      "volume": -28
+    }
+  },
+
+  "patterns": {
+    "// VOICE - Main melodic presence": "---",
+
+    "voice_arrive": {
+      "notes": ["D4:q", "F#4:8", "A4:8", "D5:h", "r:q"]
+    },
+
+    "voice_settle": {
+      "notes": ["D4:q", "E4:8", "F#4:8", "A4:h", "F#4:q", "D4:h"]
+    },
+
+    "voice_remember": {
+      "notes": ["A4:q", "B4:8", "D5:8", "E5:q", "D5:8", "B4:8", "A4:h"]
+    },
+
+    "voice_peace": {
+      "notes": ["D5:h", "A4:q", "F#4:q", "D4:w"]
+    },
+
+    "voice_rest": {
+      "notes": ["D4:w", "r:w"]
+    },
+
+    "// EMBRACE - Harmonic warmth": "---",
+
+    "embrace_home": {
+      "chords": ["Dmaj7:w", "Dmaj7:w"]
+    },
+
+    "embrace_journey": {
+      "chords": ["Dmaj7:w", "Bm7:w", "Gmaj7:w", "A7:w"]
+    },
+
+    "embrace_resolve": {
+      "chords": ["Gmaj9:w", "A7:w", "Dmaj9:w", "Dmaj7:w"]
+    },
+
+    "// GROUND - Gentle foundation": "---",
+
+    "ground_root": {
+      "notes": ["D2:w", "r:w"]
+    },
+
+    "ground_walk": {
+      "notes": ["D2:h", "A1:h", "B1:h", "A1:h"]
+    },
+
+    "// LIGHT - High melodic accents": "---",
+
+    "light_sparse": {
+      "notes": ["r:w", "r:w", "A5:h@ppp", "r:h"]
+    },
+
+    "light_phrase": {
+      "notes": ["D6:q@pp", "r:q", "A5:h@ppp", "r:h", "F#5:h@ppp"]
+    },
+
+    "// BREATH": "---",
+
+    "breath_bed": {
+      "notes": ["C4:w", "C4:w"]
+    },
+
+    "// REST": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "threshold": {
+      "bars": 8,
+      "tracks": {
+        "embrace": { "pattern": "embrace_home", "repeat": 4, "velocity": 0.3 },
+        "breath": { "pattern": "breath_bed", "repeat": 4, "velocity": 0.2 }
+      }
+    },
+
+    "arrival": {
+      "bars": 8,
+      "tracks": {
+        "voice": { "pattern": "voice_arrive", "repeat": 4, "velocity": 0.45 },
+        "embrace": { "pattern": "embrace_home", "repeat": 4, "velocity": 0.4 },
+        "breath": { "pattern": "breath_bed", "repeat": 4, "velocity": 0.2 }
+      }
+    },
+
+    "recognition": {
+      "bars": 16,
+      "tracks": {
+        "voice": { "patterns": ["voice_arrive", "voice_settle"], "repeat": 2, "velocity": 0.55 },
+        "embrace": { "pattern": "embrace_journey", "repeat": 4, "velocity": 0.45 },
+        "ground": { "pattern": "ground_root", "repeat": 8, "velocity": 0.4 },
+        "light": { "pattern": "light_sparse", "repeat": 4, "velocity": 0.25 }
+      }
+    },
+
+    "remembering": {
+      "bars": 16,
+      "tracks": {
+        "voice": { "pattern": "voice_remember", "repeat": 4, "velocity": 0.6 },
+        "embrace": { "pattern": "embrace_journey", "repeat": 4, "velocity": 0.5 },
+        "ground": { "pattern": "ground_walk", "repeat": 4, "velocity": 0.45 },
+        "light": { "pattern": "light_phrase", "repeat": 4, "velocity": 0.3 },
+        "breath": { "pattern": "breath_bed", "repeat": 8, "velocity": 0.2 }
+      }
+    },
+
+    "gratitude": {
+      "bars": 16,
+      "tracks": {
+        "voice": { "patterns": ["voice_remember", "voice_settle"], "repeat": 2, "velocity": 0.6 },
+        "embrace": { "pattern": "embrace_resolve", "repeat": 4, "velocity": 0.55 },
+        "ground": { "pattern": "ground_walk", "repeat": 4, "velocity": 0.5 },
+        "light": { "pattern": "light_phrase", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "settling": {
+      "bars": 8,
+      "tracks": {
+        "voice": { "pattern": "voice_peace", "repeat": 2, "velocity": 0.5 },
+        "embrace": { "pattern": "embrace_resolve", "repeat": 2, "velocity": 0.45 },
+        "ground": { "pattern": "ground_root", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "rest": {
+      "bars": 16,
+      "tracks": {
+        "voice": { "pattern": "voice_rest", "repeat": 4, "velocity": 0.35 },
+        "embrace": { "pattern": "embrace_home", "repeat": 8, "velocity": 0.35 },
+        "breath": { "pattern": "breath_bed", "repeat": 8, "velocity": 0.25 }
+      }
+    },
+
+    "silence": {
+      "bars": 8,
+      "tracks": {
+        "embrace": { "pattern": "embrace_home", "repeat": 4, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "threshold",
+    "arrival",
+    "recognition",
+    "remembering",
+    "gratitude",
+    "settling",
+    "rest",
+    "silence"
+  ]
+}

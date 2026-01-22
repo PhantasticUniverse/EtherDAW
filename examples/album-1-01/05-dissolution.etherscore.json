@@ -1,0 +1,180 @@
+{
+  "meta": {
+    "title": "Dissolution",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 5,
+    "mood": "Fading, Uncertain, Soft",
+    "description": "The afternoon fade. Certainty dissolving. Edges becoming soft."
+  },
+
+  "settings": {
+    "tempo": 68,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "haze": {
+      "preset": "dark_pad",
+      "volume": -14,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 1800, "type": "lowpass", "Q": 0.5 } },
+        { "type": "reverb", "wet": 0.85, "options": { "decay": 15 } }
+      ]
+    },
+    "dust": {
+      "preset": "vinyl_crackle",
+      "volume": -24
+    },
+    "memory": {
+      "preset": "glass_pad",
+      "volume": -18,
+      "pan": 0.2,
+      "effects": [
+        { "type": "delay", "wet": 0.5, "options": { "delayTime": "2n", "feedback": 0.7 } },
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 10 } }
+      ]
+    },
+    "fragments": {
+      "preset": "music_box",
+      "volume": -16,
+      "pan": -0.3,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 3000, "type": "lowpass" } },
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 8 } }
+      ]
+    },
+    "breath": {
+      "preset": "pink_noise",
+      "volume": -26,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass", "Q": 2 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// HAZE - Dissolving harmonic bed": "---",
+
+    "haze_am": {
+      "chords": ["Am7:w", "Am7:w"]
+    },
+
+    "haze_drift": {
+      "chords": ["Am7:w", "Fmaj7:w", "Dm9:w", "Em7:w"]
+    },
+
+    "haze_dissolve": {
+      "chords": ["Am7add11:w", "Fmaj9:w", "Dm11:w", "Esus4:w"]
+    },
+
+    "// MEMORY - Fragments of melody": "---",
+
+    "memory_echo": {
+      "notes": ["A4:h@pp", "r:h", "r:w", "E4:h.@ppp", "r:q"]
+    },
+
+    "memory_fade": {
+      "notes": ["C5:q@pp", "r:q", "A4:h@ppp", "r:w", "r:h"]
+    },
+
+    "memory_ghost": {
+      "notes": ["r:w", "E5:w@ppp", "r:w", "r:w"]
+    },
+
+    "// FRAGMENTS - Scattered tones": "---",
+
+    "fragments_sparse": {
+      "notes": ["r:w", "r:w", "A5:h@ppp", "r:h", "r:w", "E5:q@ppp", "r:q", "r:h"]
+    },
+
+    "fragments_descend": {
+      "notes": ["E5:q@pp", "r:q", "C5:q@pp", "r:q", "A4:h@ppp", "r:h"]
+    },
+
+    "// DUST - Texture bed": "---",
+
+    "dust_bed": {
+      "notes": ["C4:w", "C4:w"]
+    },
+
+    "// BREATH": "---",
+
+    "breath_bed": {
+      "notes": ["C4:w", "C4:w"]
+    },
+
+    "// SILENCE": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "present": {
+      "bars": 8,
+      "tracks": {
+        "haze": { "pattern": "haze_am", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "softening": {
+      "bars": 16,
+      "tracks": {
+        "haze": { "pattern": "haze_am", "repeat": 8, "velocity": 0.45 },
+        "memory": { "pattern": "memory_echo", "repeat": 4, "velocity": 0.3 },
+        "dust": { "pattern": "dust_bed", "repeat": 8, "velocity": 0.2 }
+      }
+    },
+
+    "blur": {
+      "bars": 16,
+      "tracks": {
+        "haze": { "pattern": "haze_drift", "repeat": 4, "velocity": 0.5 },
+        "memory": { "pattern": "memory_fade", "repeat": 4, "velocity": 0.35 },
+        "fragments": { "pattern": "fragments_sparse", "repeat": 2, "velocity": 0.25 },
+        "dust": { "pattern": "dust_bed", "repeat": 8, "velocity": 0.25 },
+        "breath": { "pattern": "breath_bed", "repeat": 8, "velocity": 0.2 }
+      }
+    },
+
+    "uncertain": {
+      "bars": 16,
+      "tracks": {
+        "haze": { "pattern": "haze_dissolve", "repeat": 4, "velocity": 0.5 },
+        "memory": { "pattern": "memory_ghost", "repeat": 4, "velocity": 0.3 },
+        "fragments": { "pattern": "fragments_descend", "repeat": 4, "velocity": 0.3 },
+        "dust": { "pattern": "dust_bed", "repeat": 8, "velocity": 0.3 },
+        "breath": { "pattern": "breath_bed", "repeat": 8, "velocity": 0.25 }
+      }
+    },
+
+    "fade": {
+      "bars": 16,
+      "tracks": {
+        "haze": { "pattern": "haze_dissolve", "repeat": 4, "velocity": 0.4 },
+        "memory": { "pattern": "memory_ghost", "repeat": 4, "velocity": 0.2 },
+        "dust": { "pattern": "dust_bed", "repeat": 8, "velocity": 0.25 },
+        "breath": { "pattern": "breath_bed", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+
+    "gone": {
+      "bars": 8,
+      "tracks": {
+        "haze": { "pattern": "haze_am", "repeat": 4, "velocity": 0.25 },
+        "breath": { "pattern": "breath_bed", "repeat": 4, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "present",
+    "softening",
+    "blur",
+    "uncertain",
+    "fade",
+    "gone"
+  ]
+}

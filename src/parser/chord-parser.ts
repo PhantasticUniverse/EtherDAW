@@ -5,11 +5,12 @@ import { pitchToMidi, midiToPitch } from './note-parser.js';
 /**
  * Regular expression for parsing chord notation
  * Format: {root}{quality}[@voicing]:{duration}[.][articulation] or {root}{quality}[@voicing]/{bass}:{duration}[.][articulation]
- * Examples: Cmaj7:w, Dm:h, F#m7b5:q, Bb/D:h., Am7:q*, Dm7:h~, Am9@drop2:w, Fmaj7@shell:q
+ * Examples: Cmaj7:w, Dm:h, F#m7b5:q, Bb/D:h., Am7:q*, Dm7:h~, Am9@drop2:w, Fmaj7@shell:q, Am7add11:w
  * Voicings: @drop2, @drop3, @shell, @open, @close, @rootless_a
  * Articulations: * (staccato), ~ (legato), > (accent), ^ (marcato)
+ * Add chords: add9, add11, add13 can follow 7th chords (e.g., m7add11, maj7add9)
  */
-const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:alt)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
+const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?)?(?:\d+)?(?:add\d+)?(?:alt)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
 
 /**
  * Chord quality intervals (semitones from root)
@@ -44,11 +45,22 @@ const CHORD_INTERVALS: Record<string, number[]> = {
   '11': [0, 4, 7, 10, 14, 17], // dominant 11th
   '13': [0, 4, 7, 10, 14, 21], // dominant 13th
 
-  // Add chords
+  // Add chords (triads with added tones, no 7th)
   'add9': [0, 4, 7, 14],   // add 9
   'add11': [0, 4, 7, 17],  // add 11
+  'add13': [0, 4, 7, 21],  // add 13
+  'madd9': [0, 3, 7, 14],  // minor add 9
+  'madd11': [0, 3, 7, 17], // minor add 11
   '6': [0, 4, 7, 9],       // major 6th
   'm6': [0, 3, 7, 9],      // minor 6th
+
+  // Seventh chords with added tones
+  '7add11': [0, 4, 7, 10, 17],     // dominant 7 add 11
+  '7add13': [0, 4, 7, 10, 21],     // dominant 7 add 13
+  'maj7add11': [0, 4, 7, 11, 17],  // major 7 add 11
+  'maj7add13': [0, 4, 7, 11, 21],  // major 7 add 13
+  'm7add11': [0, 3, 7, 10, 17],    // minor 7 add 11
+  'm7add13': [0, 3, 7, 10, 21],    // minor 7 add 13
 
   // Altered chords
   '7alt': [0, 4, 6, 10, 13],   // altered dominant (7 b5 b9)

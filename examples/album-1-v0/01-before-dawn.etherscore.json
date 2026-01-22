@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "title": "Before Dawn",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 1,
+    "mood": "Still, Patient, Waiting",
+    "description": "The stillness before change. A meditation on the space between night and morning, when the world holds its breath."
+  },
+
+  "settings": {
+    "tempo": 60,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "pad_low": {
+      "preset": "warm_pad",
+      "volume": -14,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 8 } },
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass" } }
+      ]
+    },
+    "pad_high": {
+      "preset": "glass_pad",
+      "volume": -18,
+      "pan": 0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 10 } }
+      ]
+    },
+    "texture": {
+      "preset": "vinyl_crackle",
+      "volume": -24
+    },
+    "bell": {
+      "preset": "music_box",
+      "volume": -16,
+      "pan": -0.3,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "delayTime": "2n", "feedback": 0.5 } },
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// LOW PAD - Root drone": "---",
+
+    "drone_d": {
+      "chords": ["D2:w", "D2:w", "D2:w", "D2:w"],
+      "velocityEnvelope": [0.3, 0.32, 0.34, 0.32]
+    },
+
+    "drone_rise": {
+      "chords": ["D2:w", "D2:w", "A2:w", "D2:w"],
+      "velocityEnvelope": [0.32, 0.35, 0.4, 0.35]
+    },
+
+    "// HIGH PAD - Floating harmonics": "---",
+
+    "air_sparse": {
+      "chords": ["Dm9:w", "r:w", "r:w", "r:w"],
+      "velocityEnvelope": [0.25, 0.2, 0.15, 0.1]
+    },
+
+    "air_breathe": {
+      "chords": ["Dm9:w", "r:w", "Gm7:w", "r:w"],
+      "velocityEnvelope": "swell"
+    },
+
+    "air_full": {
+      "chords": ["Dm9:w", "Am7:w", "Gm7:w", "Dm9:w"],
+      "velocityEnvelope": [0.3, 0.35, 0.35, 0.3]
+    },
+
+    "// BELL - Occasional punctuation": "---",
+
+    "bell_silence": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "bell_single": {
+      "notes": ["r:w", "r:w", "r:w", "D5:w@pp"],
+      "velocityEnvelope": [0.1, 0.1, 0.1, 0.3]
+    },
+
+    "bell_two": {
+      "notes": ["r:w", "A4:w@pp", "r:w", "D5:w@pp"]
+    },
+
+    "bell_phrase": {
+      "notes": ["D5:h@pp", "r:h", "F5:w@ppp", "r:w", "A4:w@pp"]
+    },
+
+    "// TEXTURE": "---",
+
+    "texture_loop": {
+      "notes": ["C4:w", "C4:w"]
+    }
+  },
+
+  "sections": {
+    "// STILLNESS - Absolute minimal beginning": "---",
+    "stillness": {
+      "bars": 16,
+      "tracks": {
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+
+    "// FIRST BREATH - Drone emerges": "---",
+    "first_breath": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_d", "repeat": 4, "velocity": 0.4 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.35 }
+      }
+    },
+
+    "// AWAKENING - High pad enters": "---",
+    "awakening": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_d", "repeat": 4, "velocity": 0.5 },
+        "pad_high": { "pattern": "air_sparse", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "// BREATHING - Harmonic movement": "---",
+    "breathing": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_rise", "repeat": 4, "velocity": 0.55 },
+        "pad_high": { "pattern": "air_breathe", "repeat": 4, "velocity": 0.4 },
+        "bell": { "pattern": "bell_single", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "// PRESENCE - Fuller texture": "---",
+    "presence": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_rise", "repeat": 4, "velocity": 0.6 },
+        "pad_high": { "pattern": "air_full", "repeat": 4, "velocity": 0.5 },
+        "bell": { "pattern": "bell_two", "repeat": 4, "velocity": 0.35 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.45 }
+      }
+    },
+
+    "// THRESHOLD - The moment before": "---",
+    "threshold": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_d", "repeat": 4, "velocity": 0.5 },
+        "pad_high": { "pattern": "air_breathe", "repeat": 4, "velocity": 0.45 },
+        "bell": { "pattern": "bell_phrase", "repeat": 4, "velocity": 0.4 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "// DISSOLVE - Return to silence": "---",
+    "dissolve": {
+      "bars": 16,
+      "tracks": {
+        "pad_low": { "pattern": "drone_d", "repeat": 4, "velocity": 0.35 },
+        "pad_high": { "pattern": "air_sparse", "repeat": 4, "velocity": 0.25 },
+        "texture": { "pattern": "texture_loop", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+
+    "// END - Stillness returns": "---",
+    "end": {
+      "bars": 8,
+      "tracks": {
+        "texture": { "pattern": "texture_loop", "repeat": 4, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "stillness",
+    "first_breath",
+    "awakening",
+    "breathing",
+    "presence",
+    "threshold",
+    "dissolve",
+    "end"
+  ]
+}

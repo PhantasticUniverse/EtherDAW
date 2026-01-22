@@ -187,36 +187,96 @@ Comprehensive AI-assisted development infrastructure.
 - Evidence-based verification (/verify) improves composition quality
 - Two-layer validation (schema + semantic) catches different error classes
 
-### v0.83: Pattern Algebra
+### v0.83: Pattern Algebra + Album (Complete)
 
-- Full transform library: reverse, invert, shuffle, slice
-- Combinators: parallel, sequence, every, sometimes
-- Pattern variables in REPL
+Full pattern transformation system inspired by TidalCycles/Strudel, plus an 8-track album demonstrating all capabilities.
 
-### v0.84: EtherLang DSL
+- **Core Transforms**: reverse, invert, shuffle, slice, rotate (all working)
+- **Combinators**: `every N` and `sometimes` for conditional transforms
+- **Pattern Variables**: `set` command with pipe syntax (`set var = pattern | transpose 5 | reverse`)
+- **Debug Tools**: `show`, `explain`, `diff` for inspecting transformed patterns
+- **LLM Feedback Tools**: `preview`, `describe`, `suggest`, `spectrum`, `timeline` for composition feedback
+- **Extended Chord Support**: `add11`, `m7add11`, `maj7add11` and other compound add chords
+- **Extended Dynamics**: `@ppp`, `@fff` for extreme dynamics
+
+**REPL Commands Added:**
+```
+reverse <pattern>              Reverse note order
+invert <pattern> [pivot]       Invert around pitch
+shuffle <pattern>              Randomize order
+slice <pattern> <start> <end>  Extract range
+rotate <pattern> <n>           Circular shift
+reset <pattern>                Clear modifications
+every <n> <transform> <pat>    Apply every N cycles
+sometimes <transform> <pat>    50% probability
+set <name> = <pat> | <tr>...   Create variable
+vars                           List variables
+show <pattern>                 View transformed notes
+explain <pattern>              List active transforms
+diff <pattern>                 Compare original vs current
+preview <pattern>              ASCII pitch contour visualization
+describe <pattern>             Verbal analysis of pattern
+suggest <pattern>              Generate transform suggestions
+spectrum [section]             Frequency band distribution
+timeline                       Time-domain energy visualization
+```
+
+**Album "Threshold"**: 8-track album created with EtherDAW, showcasing:
+- Ambient (Before Dawn, Dissolution)
+- Lo-fi hip hop (First Light)
+- Minimal techno (The Commute)
+- Textural/meditative (Midday Static)
+- Jazz-influenced (Blue Hour)
+- Electronic/geometric (Night Architecture)
+- Peaceful resolution (Return)
+
+**Learnings:**
+- Transforms work best at pattern string level (before compilation)
+- Combinator state (cycle count) needs to be tracked per-session
+- Pipe syntax enables powerful chaining: `acid_line | transpose 5 | reverse | slice 0 4`
+- **Never compromise composition for DAW limitations** - improve the DAW instead
+- LLM feedback tools (spectrum, timeline, describe) are essential for blind composition
+
+### v0.9: Perceptual Foundation
+
+See [PRD.md](./PRD.md) for comprehensive details.
+
+- Audio-to-visual pipeline (spectrograms, chromagrams)
+- Semantic audio analysis
+- Reference track import and analysis
+- Autonomous iteration mode (compose → render → analyze → adjust)
+
+### v1.0: EtherLang DSL + Generative Algorithms
 
 - Formal syntax for pattern expressions
 - Parser and evaluator
-- Integration with REPL
+- L-systems, cellular automata, genetic algorithms
+- Pattern variables with scope
 
-### v0.85: Live Modification
+### v1.1: Multi-Agent Composition
 
-- Modify patterns during playback
-- Hot-reload without stopping
-- Temporal recursion support
-
-### v0.90: Multi-Agent Composition
-
-- Specialized agents (melody, harmony, rhythm)
+- Specialized agents (melody, harmony, rhythm, arrangement)
 - Agent collaboration protocol
-- Human-in-the-loop oversight
+- Session-based composition with human oversight
+- Agent memory and learning
 
-### v1.0: Full Live Coding Environment
+### v1.2: Real-Time and Live Coding
 
-- Complete EtherLang implementation
-- Visual pattern representation
-- Network collaboration (multiple REPLs)
-- Plugin architecture
+- Hot-reload patterns during playback
+- Temporal recursion
+- External sync (MIDI Clock, Ableton Link, OSC)
+
+### v1.3: Collaborative Features
+
+- Multi-user sessions
+- MCP/HTTP API
+- Git-like version control for compositions
+
+### v1.4: Advanced Sound Design
+
+- Natural language sound design
+- Spectral matching
+- Semantic effect chain synthesis
 
 ---
 

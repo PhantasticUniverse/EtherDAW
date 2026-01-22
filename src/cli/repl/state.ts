@@ -6,6 +6,12 @@
 
 import type { EtherScore, Timeline } from '../../schema/types.js';
 import { NodePlayer, createNodePlayer } from '../../node/player.js';
+import {
+  retrogradePattern,
+  invertPattern,
+  augmentPattern,
+  transposePattern,
+} from '../../theory/transformations.js';
 
 /**
  * Session state interface
@@ -23,6 +29,57 @@ export interface REPLState {
   tempoOverride: number | null;
   /** Pattern modifications */
   patternMods: Map<string, PatternModification>;
+  /** Current cycle count for combinators */
+  cycleCount: number;
+  /** Pattern variables (for `set` command) */
+  variables: Map<string, PatternVariable>;
+}
+
+/**
+ * Pattern variable - a named pattern with transforms
+ */
+export interface PatternVariable {
+  /** Source pattern name */
+  sourcePattern: string;
+  /** Transforms to apply (in order) */
+  transforms: TransformRecord[];
+}
+
+/**
+ * Transform types supported by the REPL
+ */
+export type TransformType =
+  | 'transpose'
+  | 'stretch'
+  | 'velocity'
+  | 'reverse'
+  | 'invert'
+  | 'shuffle'
+  | 'rotate'
+  | 'slice';
+
+/**
+ * Individual transform record with order tracking
+ */
+export interface TransformRecord {
+  type: TransformType;
+  params: Record<string, unknown>;
+  appliedAt: number; // timestamp for ordering
+}
+
+/**
+ * Combinator rule - applies a transform conditionally
+ */
+export interface CombinatorRule {
+  type: 'every' | 'sometimes';
+  /** For 'every': apply every N cycles */
+  n?: number;
+  /** For 'sometimes': probability (0-1) */
+  probability?: number;
+  /** The transform to apply */
+  transform: TransformType;
+  /** Transform params */
+  params: Record<string, unknown>;
 }
 
 /**
@@ -32,6 +89,17 @@ export interface PatternModification {
   transpose?: number;
   stretch?: number;
   velocity?: number;
+  reverse?: boolean;
+  invert?: string; // pivot pitch
+  shuffle?: boolean;
+  rotate?: number;
+  slice?: { start: number; end: number };
+
+  // Combinators (conditional transforms)
+  combinators?: CombinatorRule[];
+
+  // Transform history for explain command
+  transformHistory: TransformRecord[];
 }
 
 /**
@@ -50,6 +118,8 @@ export class REPLSession {
       modified: false,
       tempoOverride: null,
       patternMods: new Map(),
+      cycleCount: 0,
+      variables: new Map(),
     };
     this.player = createNodePlayer();
   }
@@ -80,6 +150,8 @@ export class REPLSession {
       modified: false,
       tempoOverride: null,
       patternMods: new Map(),
+      cycleCount: 0,
+      variables: new Map(),
     };
   }
 
@@ -139,10 +211,123 @@ export class REPLSession {
   /**
    * Set pattern modification
    */
-  setPatternMod(patternName: string, mod: Partial<PatternModification>): void {
-    const existing = this.state.patternMods.get(patternName) || {};
-    this.state.patternMods.set(patternName, { ...existing, ...mod });
+  setPatternMod(patternName: string, mod: Partial<Omit<PatternModification, 'transformHistory'>>): void {
+    const existing = this.state.patternMods.get(patternName) || { transformHistory: [] };
+    const now = Date.now();
+
+    // Record each modification in history for explain command
+    const newHistory = [...(existing.transformHistory || [])];
+    for (const [key, value] of Object.entries(mod)) {
+      if (value !== undefined) {
+        newHistory.push({
+          type: key as TransformType,
+          params: { [key]: value },
+          appliedAt: now,
+        });
+      }
+    }
+
+    this.state.patternMods.set(patternName, {
+      ...existing,
+      ...mod,
+      transformHistory: newHistory,
+    });
     this.state.modified = true;
+  }
+
+  /**
+   * Clear all modifications for a pattern
+   */
+  clearPatternMod(patternName: string): void {
+    this.state.patternMods.delete(patternName);
+    this.state.modified = true;
+  }
+
+  /**
+   * Get transform history for a pattern (for explain command)
+   */
+  getTransformHistory(patternName: string): TransformRecord[] {
+    return this.state.patternMods.get(patternName)?.transformHistory || [];
+  }
+
+  /**
+   * Add a combinator rule to a pattern
+   */
+  addCombinator(patternName: string, rule: CombinatorRule): void {
+    const existing = this.state.patternMods.get(patternName) || { transformHistory: [] };
+    const combinators = existing.combinators || [];
+    combinators.push(rule);
+
+    // Also record in history for explain command
+    const now = Date.now();
+    const history = [...(existing.transformHistory || [])];
+    history.push({
+      type: rule.transform,
+      params: {
+        combinator: rule.type,
+        n: rule.n,
+        probability: rule.probability,
+        ...rule.params,
+      },
+      appliedAt: now,
+    });
+
+    this.state.patternMods.set(patternName, {
+      ...existing,
+      combinators,
+      transformHistory: history,
+    });
+    this.state.modified = true;
+  }
+
+  /**
+   * Get current cycle count
+   */
+  getCycleCount(): number {
+    return this.state.cycleCount;
+  }
+
+  /**
+   * Increment cycle count (called on each pattern loop)
+   */
+  incrementCycle(): void {
+    this.state.cycleCount++;
+  }
+
+  /**
+   * Reset cycle count
+   */
+  resetCycleCount(): void {
+    this.state.cycleCount = 0;
+  }
+
+  /**
+   * Set a pattern variable
+   */
+  setVariable(name: string, sourcePattern: string, transforms: TransformRecord[]): void {
+    this.state.variables.set(name, { sourcePattern, transforms });
+    this.state.modified = true;
+  }
+
+  /**
+   * Get a pattern variable
+   */
+  getVariable(name: string): PatternVariable | undefined {
+    return this.state.variables.get(name);
+  }
+
+  /**
+   * List all pattern variables
+   */
+  getVariables(): string[] {
+    return Array.from(this.state.variables.keys());
+  }
+
+  /**
+   * Check if a name is a variable
+   */
+  isVariable(name: string): boolean {
+    return this.state.variables.has(name);
   }
 
   /**
@@ -216,17 +401,159 @@ export class REPLSession {
       const pattern = modified.patterns[patternName];
       if (!pattern) continue;
 
-      // Apply transpose
-      if (mod.transpose && pattern.notes) {
-        const transposed = this.transposeNotes(pattern.notes, mod.transpose);
-        pattern.notes = transposed as typeof pattern.notes;
-      }
+      // Only apply to patterns with notes (not drums, euclidean, etc.)
+      if (pattern.notes) {
+        let notes = this.normalizeNotes(pattern.notes);
 
-      // Apply velocity (we'll handle this at playback time for now)
-      // Apply stretch (would need to modify durations)
+        // Apply transforms in a consistent order
+        if (mod.transpose) {
+          notes = transposePattern(notes, mod.transpose);
+        }
+        if (mod.stretch) {
+          notes = augmentPattern(notes, mod.stretch);
+        }
+        if (mod.reverse) {
+          notes = retrogradePattern(notes);
+        }
+        if (mod.invert) {
+          notes = invertPattern(notes, mod.invert);
+        }
+        if (mod.shuffle) {
+          notes = this.shuffleArray(notes);
+        }
+        if (mod.rotate) {
+          notes = this.rotateArray(notes, mod.rotate);
+        }
+        if (mod.slice) {
+          notes = notes.slice(mod.slice.start, mod.slice.end);
+        }
+
+        // Apply velocity scaling to each note
+        if (mod.velocity) {
+          notes = this.applyVelocityScale(notes, mod.velocity);
+        }
+
+        // Apply combinators based on cycle count
+        if (mod.combinators) {
+          notes = this.applyCombinators(notes, mod.combinators);
+        }
+
+        // Store back as array (the compiler will expand string format anyway)
+        pattern.notes = notes;
+      }
     }
 
     return modified;
+  }
+
+  /**
+   * Apply combinator rules to notes based on cycle count
+   */
+  private applyCombinators(notes: string[], combinators: CombinatorRule[]): string[] {
+    let result = [...notes];
+    const cycle = this.state.cycleCount;
+
+    for (const rule of combinators) {
+      let shouldApply = false;
+
+      if (rule.type === 'every' && rule.n) {
+        // Apply every N cycles (0-indexed: apply on cycles 0, n, 2n, ...)
+        shouldApply = cycle % rule.n === 0;
+      } else if (rule.type === 'sometimes') {
+        // Apply with probability
+        shouldApply = Math.random() < (rule.probability ?? 0.5);
+      }
+
+      if (shouldApply) {
+        result = this.applyTransformByType(result, rule.transform, rule.params);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Apply a single transform by type
+   */
+  private applyTransformByType(
+    notes: string[],
+    transform: TransformType,
+    params: Record<string, unknown>
+  ): string[] {
+    switch (transform) {
+      case 'transpose':
+        return transposePattern(notes, (params.semitones as number) || 0);
+      case 'stretch':
+        return augmentPattern(notes, (params.factor as number) || 1);
+      case 'reverse':
+        return retrogradePattern(notes);
+      case 'invert':
+        return invertPattern(notes, params.pivot as string);
+      case 'shuffle':
+        return this.shuffleArray(notes);
+      case 'rotate':
+        return this.rotateArray(notes, (params.n as number) || 0);
+      case 'velocity':
+        return this.applyVelocityScale(notes, (params.scale as number) || 1);
+      case 'slice':
+        const slice = params as { start: number; end: number };
+        return notes.slice(slice.start, slice.end);
+      default:
+        return notes;
+    }
+  }
+
+  /**
+   * Normalize notes to array format
+   */
+  private normalizeNotes(notes: string | string[]): string[] {
+    if (typeof notes === 'string') {
+      return notes.split(/\s+/).filter(n => n && n !== '|');
+    }
+    return [...notes];
+  }
+
+  /**
+   * Apply velocity scaling to notes (adds @velocity modifier)
+   */
+  private applyVelocityScale(notes: string[], scale: number): string[] {
+    return notes.map(note => {
+      if (note.startsWith('r')) return note; // Skip rests
+
+      // Check if note already has velocity
+      const velocityMatch = note.match(/@([\d.]+|pp|p|mp|mf|f|ff)/);
+      if (velocityMatch) {
+        // Scale existing numeric velocity
+        const existing = parseFloat(velocityMatch[1]);
+        if (!isNaN(existing)) {
+          const newVel = Math.max(0, Math.min(1, existing * scale));
+          return note.replace(/@[\d.]+/, `@${newVel.toFixed(2)}`);
+        }
+      }
+      // Add velocity modifier
+      return `${note}@${scale.toFixed(2)}`;
+    });
+  }
+
+  /**
+   * Shuffle array (Fisher-Yates)
+   */
+  private shuffleArray<T>(array: T[]): T[] {
+    const result = [...array];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+
+  /**
+   * Rotate array by n positions
+   */
+  private rotateArray<T>(array: T[], n: number): T[] {
+    if (array.length === 0) return array;
+    const normalizedN = ((n % array.length) + array.length) % array.length;
+    return [...array.slice(normalizedN), ...array.slice(0, normalizedN)];
   }
 
   /**

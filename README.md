@@ -825,6 +825,10 @@ Comprehensive documentation is available in the `docs/` directory:
 |----------|-------------|
 | [QUICKSTART.md](docs/QUICKSTART.md) | Get started creating music quickly |
 | [ETHERSCORE_FORMAT.md](docs/ETHERSCORE_FORMAT.md) | Complete format specification |
+| [VISION.md](docs/VISION.md) | Long-term architecture and philosophy |
+| [PRD.md](docs/PRD.md) | Product requirements for LLM-native DAW |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical architecture and extension points |
+| [DEVELOPMENT.md](docs/DEVELOPMENT.md) | Development guide and changelog |
 | [SYNTH_PARAMETERS.md](docs/SYNTH_PARAMETERS.md) | Semantic parameter reference for sound shaping (v0.5) |
 | [PRESETS.md](docs/PRESETS.md) | All instrument presets with descriptions |
 | [PATTERNS.md](docs/PATTERNS.md) | Pattern syntax reference |
@@ -836,7 +840,29 @@ Comprehensive documentation is available in the `docs/` directory:
 
 # Development Status
 
-## v0.6 Features (Latest) - "Generative Primitives"
+## v0.83 Features (Latest) - "Pattern Algebra + Album"
+
+| Feature | Description |
+|---------|-------------|
+| **Pattern Transforms** | `reverse`, `invert`, `shuffle`, `slice`, `rotate` transforms in REPL |
+| **Combinators** | `every N` and `sometimes` for conditional/probabilistic transforms |
+| **Pattern Variables** | `set var = pattern \| transform` with pipe syntax |
+| **Debug Tools** | `show`, `explain`, `diff` for inspecting pattern state |
+| **LLM Feedback** | `preview`, `describe`, `suggest`, `spectrum`, `timeline` commands |
+| **Extended Chords** | `add11`, `m7add11`, `maj7add11` compound chord support |
+| **Extended Dynamics** | `@ppp` and `@fff` dynamic markings |
+| **Album "Threshold"** | 8-track album demonstrating all DAW capabilities |
+
+## v0.82 Features - "Live Coding Foundation"
+
+| Feature | Description |
+|---------|-------------|
+| **EtherREPL** | Interactive composition environment with load/play/stop/save commands |
+| **Node.js Playback** | Play compositions from CLI without browser |
+| **Pattern Transforms** | Transpose, stretch, velocity scaling via REPL |
+| **Templates** | Quick-start templates for techno, lofi, ambient genres |
+
+## v0.6 Features - "Generative Primitives"
 
 | Feature | Description |
 |---------|-------------|

@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "title": "Blue Hour",
+    "composer": "Claude",
+    "album": "Threshold",
+    "trackNumber": 6,
+    "mood": "Wistful, Bittersweet, Transitional",
+    "description": "The magic hour. Sky between day and night. Color fading to memory."
+  },
+
+  "settings": {
+    "tempo": 80,
+    "key": "Eb major",
+    "timeSignature": "4/4",
+    "swing": 0.08
+  },
+
+  "instruments": {
+    "piano": {
+      "preset": "fm_epiano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 4 } },
+        { "type": "delay", "wet": 0.15, "options": { "delayTime": "8n.", "feedback": 0.25 } }
+      ]
+    },
+    "strings": {
+      "preset": "warm_pad",
+      "volume": -14,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 8 } }
+      ]
+    },
+    "bass": {
+      "preset": "warm_bass",
+      "volume": -10,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 400, "type": "lowpass" } }
+      ]
+    },
+    "glow": {
+      "preset": "glass_pad",
+      "volume": -18,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 10 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// PIANO - Main melodic voice": "---",
+
+    "piano_open": {
+      "notes": ["Eb4:q", "G4:8", "Bb4:8", "Eb5:h", "r:q"]
+    },
+
+    "piano_phrase": {
+      "notes": ["Eb4:q", "G4:8", "Bb4:8", "C5:q", "Bb4:8", "G4:8", "Eb4:h"]
+    },
+
+    "piano_answer": {
+      "notes": ["F4:q", "Ab4:8", "C5:8", "Bb4:q", "Ab4:q", "G4:h"]
+    },
+
+    "piano_longing": {
+      "notes": ["Eb5:h", "D5:q", "C5:q", "Bb4:h", "Ab4:q", "G4:q"]
+    },
+
+    "piano_close": {
+      "notes": ["Eb4:q", "G4:q", "Bb4:h", "Eb4:w"]
+    },
+
+    "// STRINGS - Harmonic bed": "---",
+
+    "strings_eb": {
+      "chords": ["Ebmaj7:w", "Ebmaj7:w"]
+    },
+
+    "strings_move": {
+      "chords": ["Ebmaj7:w", "Cm7:w", "Abmaj7:w", "Bb7:w"]
+    },
+
+    "strings_twilight": {
+      "chords": ["Ebmaj9:w", "Cm9:w", "Fm9:w", "Bb7add11:w"]
+    },
+
+    "// BASS - Gentle foundation": "---",
+
+    "bass_root": {
+      "notes": ["Eb2:h", "r:h"]
+    },
+
+    "bass_walk": {
+      "notes": ["Eb2:h", "D2:q", "C2:q", "Ab1:h", "Bb1:h"]
+    },
+
+    "bass_moving": {
+      "notes": ["Eb2:q", "r:q", "G2:q", "r:q", "C2:q", "r:q", "Bb1:h"]
+    },
+
+    "// GLOW - High atmospheric element": "---",
+
+    "glow_high": {
+      "notes": ["r:w", "Bb5:w@ppp", "r:w", "G5:w@ppp"]
+    },
+
+    "glow_shimmer": {
+      "arpeggio": {
+        "chord": "Ebmaj9",
+        "mode": "random",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.3,
+        "steps": 8
+      }
+    },
+
+    "// REST": "---",
+    "rest": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "sky": {
+      "bars": 8,
+      "tracks": {
+        "strings": { "pattern": "strings_eb", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "color": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "pattern": "piano_open", "repeat": 4, "velocity": 0.5 },
+        "strings": { "pattern": "strings_eb", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "fading": {
+      "bars": 16,
+      "tracks": {
+        "piano": { "patterns": ["piano_phrase", "piano_answer"], "repeat": 2, "velocity": 0.6 },
+        "strings": { "pattern": "strings_move", "repeat": 4, "velocity": 0.45 },
+        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.5 },
+        "glow": { "pattern": "glow_high", "repeat": 4, "velocity": 0.25 }
+      }
+    },
+
+    "memory": {
+      "bars": 16,
+      "tracks": {
+        "piano": { "pattern": "piano_longing", "repeat": 4, "velocity": 0.65 },
+        "strings": { "pattern": "strings_twilight", "repeat": 4, "velocity": 0.5 },
+        "bass": { "pattern": "bass_walk", "repeat": 4, "velocity": 0.55 },
+        "glow": { "pattern": "glow_shimmer", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "last_light": {
+      "bars": 16,
+      "tracks": {
+        "piano": { "patterns": ["piano_phrase", "piano_longing"], "repeat": 2, "velocity": 0.7 },
+        "strings": { "pattern": "strings_twilight", "repeat": 4, "velocity": 0.55 },
+        "bass": { "pattern": "bass_moving", "repeat": 4, "velocity": 0.6 },
+        "glow": { "pattern": "glow_shimmer", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "dusk": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "pattern": "piano_close", "repeat": 2, "velocity": 0.55 },
+        "strings": { "pattern": "strings_move", "repeat": 2, "velocity": 0.45 },
+        "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "night": {
+      "bars": 8,
+      "tracks": {
+        "strings": { "pattern": "strings_eb", "repeat": 4, "velocity": 0.3 },
+        "glow": { "pattern": "glow_high", "repeat": 2, "velocity": 0.2 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "sky",
+    "color",
+    "fading",
+    "memory",
+    "last_light",
+    "dusk",
+    "night"
+  ]
+}
