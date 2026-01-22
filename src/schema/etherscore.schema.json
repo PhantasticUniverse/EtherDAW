@@ -5,6 +5,7 @@
   "description": "A pattern-based, declarative music notation format designed for LLMs",
   "type": "object",
   "required": ["settings", "patterns", "sections", "arrangement"],
+  "additionalProperties": true,
   "properties": {
     "meta": {
       "type": "object",
@@ -34,7 +35,6 @@
         },
         "key": {
           "type": "string",
-          "pattern": "^[A-G][#b]?\\s*(major|minor|maj|min|m|M|dorian|phrygian|lydian|mixolydian|aeolian|locrian)?$",
           "description": "Key signature (e.g., 'C major', 'F# minor', 'Bb dorian')"
         },
         "timeSignature": {
@@ -55,23 +55,17 @@
     "instruments": {
       "type": "object",
       "description": "Instrument definitions",
-      "additionalProperties": {
-        "$ref": "#/definitions/instrument"
-      }
+      "additionalProperties": true
     },
     "patterns": {
       "type": "object",
       "description": "Reusable musical patterns",
-      "additionalProperties": {
-        "$ref": "#/definitions/pattern"
-      }
+      "additionalProperties": true
     },
     "sections": {
       "type": "object",
       "description": "Named sections of the composition",
-      "additionalProperties": {
-        "$ref": "#/definitions/section"
-      }
+      "additionalProperties": true
     },
     "arrangement": {
       "type": "array",
@@ -83,11 +77,44 @@
   "definitions": {
     "instrument": {
       "type": "object",
-      "required": ["preset"],
       "properties": {
         "preset": {
           "type": "string",
           "description": "Instrument preset name"
+        },
+        "layers": {
+          "type": "array",
+          "description": "v0.8: Array of layered synth voices",
+          "items": {
+            "type": "object",
+            "required": ["preset"],
+            "properties": {
+              "preset": { "type": "string" },
+              "detune": { "type": "number" },
+              "volume": { "type": "number" },
+              "octave": { "type": "integer" }
+            }
+          }
+        },
+        "lfo": {
+          "type": "object",
+          "description": "v0.8: LFO modulation settings",
+          "properties": {
+            "rate": { "type": "string" },
+            "shape": {
+              "type": "string",
+              "enum": ["sine", "triangle", "square", "sawtooth"]
+            },
+            "depth": { "type": "number", "minimum": 0, "maximum": 1 },
+            "target": {
+              "type": "string",
+              "enum": ["filterCutoff", "pan", "volume", "pitch"]
+            }
+          }
+        },
+        "eq": {
+          "type": "object",
+          "description": "v0.8: Per-track EQ settings"
         },
         "volume": {
           "type": "number",
@@ -102,6 +129,10 @@
           "maximum": 1,
           "default": 0,
           "description": "Stereo pan (-1 = left, 0 = center, 1 = right)"
+        },
+        "params": {
+          "type": "object",
+          "description": "Semantic synth parameters (brightness, warmth, etc.)"
         },
         "effects": {
           "type": "array",
@@ -136,11 +167,14 @@
     "pattern": {
       "type": "object",
       "description": "A reusable musical pattern",
+      "additionalProperties": true,
       "properties": {
         "notes": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Array of notes in pitch:duration format (e.g., 'C4:q', 'Eb3:8')"
+          "oneOf": [
+            { "type": "array", "items": { "type": "string" } },
+            { "type": "string" }
+          ],
+          "description": "Notes in pitch:duration format - array or compact string"
         },
         "chords": {
           "type": "array",
@@ -198,17 +232,20 @@
         "drums": {
           "type": "object",
           "description": "Drum pattern with semantic drum names",
+          "additionalProperties": true,
           "properties": {
             "kit": {
               "type": "string",
-              "enum": ["808", "909", "acoustic", "lofi"],
-              "default": "909",
               "description": "Drum kit preset"
             },
             "steps": {
               "type": "string",
-              "pattern": "^[x.>]+$",
               "description": "Step sequencer pattern (x=hit, .=rest, >=accent)"
+            },
+            "lines": {
+              "type": "object",
+              "description": "Multi-line drum patterns",
+              "additionalProperties": { "type": "string" }
             },
             "hits": {
               "type": "array",
@@ -252,9 +289,62 @@
             },
             "drum": {
               "type": "string",
-              "enum": ["kick", "snare", "clap", "hihat", "hihat_open", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "rim", "cowbell", "shaker"],
               "description": "Drum type for drum patterns"
             }
+          }
+        },
+        "markov": {
+          "type": "object",
+          "description": "Markov chain pattern generator",
+          "required": ["states", "steps", "duration"],
+          "properties": {
+            "states": { "type": "array", "items": { "type": "string" } },
+            "transitions": { "type": "object" },
+            "preset": { "type": "string" },
+            "initialState": { "type": "string" },
+            "steps": { "type": "integer" },
+            "duration": {
+              "oneOf": [
+                { "type": "string" },
+                { "type": "array", "items": { "type": "string" } }
+              ]
+            },
+            "octave": { "type": "integer" },
+            "seed": { "type": "integer" },
+            "constrainToScale": { "type": "boolean" },
+            "chordScale": { "type": "string" }
+          }
+        },
+        "voiceLead": {
+          "type": "object",
+          "description": "Voice-led chord progression",
+          "required": ["progression", "voices"],
+          "properties": {
+            "progression": { "type": "array", "items": { "type": "string" } },
+            "voices": { "type": "integer", "minimum": 2, "maximum": 6 },
+            "style": { "type": "string" },
+            "constraints": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "continuation": {
+          "type": "object",
+          "description": "Melodic continuation/development",
+          "required": ["source", "technique"],
+          "properties": {
+            "source": { "type": "string" },
+            "technique": { "type": "string" },
+            "steps": { "type": "integer" },
+            "interval": { "type": "integer" }
+          }
+        },
+        "transform": {
+          "type": "object",
+          "description": "Pattern transformation",
+          "required": ["source", "operation"],
+          "properties": {
+            "source": { "type": "string" },
+            "operation": { "type": "string" },
+            "params": { "type": "object" }
           }
         },
         "rhythm": {
@@ -264,7 +354,22 @@
         },
         "rest": {
           "type": "string",
-          "description": "A rest pattern (e.g., 'r:w' for whole rest)"
+          "description": "A rest pattern (e.g., 'w' for whole rest)"
+        },
+        "velocityEnvelope": {
+          "oneOf": [
+            { "type": "string", "enum": ["crescendo", "diminuendo", "swell"] },
+            { "type": "array", "items": { "type": "number" } }
+          ],
+          "description": "Velocity envelope for the pattern"
+        },
+        "groove": {
+          "type": "string",
+          "description": "v0.8: Named groove template"
+        },
+        "constrainToScale": {
+          "type": "boolean",
+          "description": "v0.8: Constrain notes to current scale"
         }
       }
     },
@@ -274,7 +379,6 @@
       "properties": {
         "drum": {
           "type": "string",
-          "enum": ["kick", "snare", "clap", "hihat", "hihat_open", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "rim", "cowbell", "shaker"],
           "description": "Drum type"
         },
         "time": {
@@ -293,6 +397,7 @@
     "section": {
       "type": "object",
       "required": ["bars", "tracks"],
+      "additionalProperties": true,
       "properties": {
         "bars": {
           "type": "integer",
@@ -301,9 +406,7 @@
         },
         "tracks": {
           "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/track"
-          }
+          "additionalProperties": { "$ref": "#/definitions/track" }
         },
         "tempo": {
           "type": "number",
@@ -312,11 +415,25 @@
         "key": {
           "type": "string",
           "description": "Optional key override for this section"
+        },
+        "density": {
+          "type": "object",
+          "description": "Density curve for this section",
+          "properties": {
+            "start": { "type": "number", "minimum": 0, "maximum": 1 },
+            "end": { "type": "number", "minimum": 0, "maximum": 1 },
+            "curve": { "type": "string", "enum": ["linear", "exponential", "logarithmic", "sine"] }
+          }
+        },
+        "automation": {
+          "type": "object",
+          "description": "Parameter automation for this section"
         }
       }
     },
     "track": {
       "type": "object",
+      "additionalProperties": true,
       "properties": {
         "pattern": {
           "type": "string",
@@ -326,6 +443,11 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Sequence of patterns to play"
+        },
+        "parallel": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Patterns to play simultaneously"
         },
         "velocity": {
           "type": "number",
@@ -358,6 +480,20 @@
         "mute": {
           "type": "boolean",
           "default": false
+        },
+        "probability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Probability of playing this track"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Pattern to play if probability check fails"
+        },
+        "instrument": {
+          "type": "string",
+          "description": "Override instrument for this track"
         }
       }
     }

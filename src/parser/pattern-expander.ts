@@ -1,5 +1,5 @@
-import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset, MarkovConfig, ContinuationConfig, VoiceLeadConfig } from '../schema/types.js';
-import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers } from './note-parser.js';
+import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset, MarkovConfig, ContinuationConfig, VoiceLeadConfig, ConditionalConfig, TupletConfig } from '../schema/types.js';
+import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers, expandNoteStrings, isCompactNotation } from './note-parser.js';
 import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
 import { snapToScale, parseKey } from '../theory/scales.js';
@@ -19,6 +19,10 @@ export interface ExpandedPattern {
     timingOffset?: number;    // Timing offset in ms
     probability?: number;     // Probability 0.0-1.0
     portamento?: boolean;     // Glide to next note
+    // v0.8 articulation fields
+    jazzArticulation?: 'fall' | 'doit' | 'scoop' | 'bend';
+    bendAmount?: number;      // Semitones for bend
+    ornament?: 'tr' | 'mord' | 'turn';
   }>;
   totalBeats: number;
 }
@@ -140,6 +144,9 @@ export interface PatternContext {
   octaveOffset?: number;
   transpose?: number;
   allPatterns?: Record<string, Pattern>;  // For resolving transforms (v0.3)
+  // v0.7: Context for conditional pattern evaluation
+  density?: number;           // Current density value (0-1)
+  sectionIndex?: number;      // Index of current section in arrangement
 }
 
 /**
@@ -208,6 +215,211 @@ export function resolvePattern(pattern: Pattern, allPatterns?: Record<string, Pa
   return pattern;
 }
 
+// ============================================================================
+// Pattern Inheritance (v0.7)
+// ============================================================================
+
+/**
+ * Resolve pattern inheritance (extends/overrides)
+ * Returns a merged pattern with parent properties and child overrides applied
+ */
+export function resolveInheritance(pattern: Pattern, allPatterns?: Record<string, Pattern>): Pattern {
+  if (!pattern.extends || !allPatterns) {
+    return pattern;
+  }
+
+  const parentPattern = allPatterns[pattern.extends];
+  if (!parentPattern) {
+    console.warn(`Pattern inheritance: parent pattern "${pattern.extends}" not found`);
+    return pattern;
+  }
+
+  // Recursively resolve parent (in case parent also has inheritance)
+  const resolvedParent = resolveInheritance(parentPattern, allPatterns);
+
+  // Start with parent's properties
+  const merged: Pattern = { ...resolvedParent };
+
+  // Apply overrides
+  if (pattern.overrides) {
+    // Override notes if specified
+    if (pattern.overrides.notes) {
+      merged.notes = pattern.overrides.notes;
+    }
+
+    // Override velocity will be handled at expand time
+
+    // Apply transpose to existing notes
+    if (pattern.overrides.transpose && merged.notes) {
+      merged.notes = transposePattern(merged.notes, pattern.overrides.transpose);
+    }
+
+    // Apply octave shift to existing notes
+    if (pattern.overrides.octave && merged.notes) {
+      merged.notes = shiftOctave(merged.notes, pattern.overrides.octave);
+    }
+  }
+
+  // Copy any non-inherited properties from child
+  const childOnlyProps = ['envelope', 'constrainToScale'];
+  for (const prop of childOnlyProps) {
+    if ((pattern as Record<string, unknown>)[prop] !== undefined) {
+      (merged as Record<string, unknown>)[prop] = (pattern as Record<string, unknown>)[prop];
+    }
+  }
+
+  // Clear inheritance markers
+  delete merged.extends;
+  delete merged.overrides;
+
+  return merged;
+}
+
+// ============================================================================
+// Conditional Patterns (v0.7)
+// ============================================================================
+
+/**
+ * Evaluate a conditional pattern and return the selected pattern name
+ */
+export function evaluateConditional(
+  conditional: ConditionalConfig,
+  context: PatternContext
+): string {
+  let leftValue: number;
+
+  // Get the value to check
+  switch (conditional.condition) {
+    case 'density':
+      leftValue = context.density ?? 0.5;
+      break;
+    case 'probability':
+      leftValue = Math.random();
+      break;
+    case 'section_index':
+      leftValue = context.sectionIndex ?? 0;
+      break;
+    default:
+      leftValue = 0;
+  }
+
+  // Evaluate condition
+  let result: boolean;
+  switch (conditional.operator) {
+    case '>':
+      result = leftValue > conditional.value;
+      break;
+    case '<':
+      result = leftValue < conditional.value;
+      break;
+    case '>=':
+      result = leftValue >= conditional.value;
+      break;
+    case '<=':
+      result = leftValue <= conditional.value;
+      break;
+    case '==':
+      result = leftValue === conditional.value;
+      break;
+    case '!=':
+      result = leftValue !== conditional.value;
+      break;
+    default:
+      result = false;
+  }
+
+  // Return appropriate pattern name
+  return result ? conditional.then : (conditional.else || conditional.then);
+}
+
+// ============================================================================
+// Tuplet Pattern Expansion (v0.7)
+// ============================================================================
+
+/**
+ * Expand a tuplet configuration into notes
+ * Tuplet ratio [actual, normal] means 'actual' notes in the time of 'normal'
+ * e.g., [3, 2] = triplet (3 notes in space of 2)
+ */
+function expandTuplet(
+  config: TupletConfig,
+  octaveOffset: number,
+  transpose: number,
+  velocity: number
+): ExpandedPattern {
+  const [actual, normal] = config.ratio;
+  const notes: ExpandedPattern['notes'] = [];
+  let currentBeat = 0;
+  let totalNormalBeats = 0;
+
+  // Parse all notes to get their base durations
+  const parsedNotes: Array<{ noteStr: string; isRest: boolean; parsed?: ReturnType<typeof parseNote>; restDuration?: number }> = [];
+
+  for (const noteStr of config.notes) {
+    if (isRest(noteStr)) {
+      parsedNotes.push({
+        noteStr,
+        isRest: true,
+        restDuration: parseRest(noteStr),
+      });
+    } else {
+      parsedNotes.push({
+        noteStr,
+        isRest: false,
+        parsed: parseNote(noteStr),
+      });
+    }
+  }
+
+  // Calculate total base duration
+  for (const item of parsedNotes) {
+    if (item.isRest) {
+      totalNormalBeats += item.restDuration!;
+    } else {
+      totalNormalBeats += item.parsed!.durationBeats;
+    }
+  }
+
+  // Tuplet scaling factor: notes fit into (normal/actual) of their written duration
+  const scaleFactor = normal / actual;
+
+  // Generate notes with adjusted durations
+  for (const item of parsedNotes) {
+    if (item.isRest) {
+      currentBeat += item.restDuration! * scaleFactor;
+    } else {
+      const parsed = item.parsed!;
+      const adjustedOctave = parsed.octave + octaveOffset;
+      const adjustedPitch = applyTranspose(`${parsed.noteName}${parsed.accidental}${adjustedOctave}`, transpose);
+
+      const articulationMods = getArticulationModifiers(parsed.articulation);
+      const baseVel = parsed.velocity !== undefined ? parsed.velocity : velocity;
+      const noteVelocity = Math.min(1.0, baseVel + articulationMods.velocityBoost);
+      const scaledDuration = parsed.durationBeats * scaleFactor;
+      const noteDuration = scaledDuration * articulationMods.gate;
+
+      const noteData: ExpandedPattern['notes'][0] = {
+        pitch: adjustedPitch,
+        startBeat: currentBeat,
+        durationBeats: noteDuration,
+        velocity: noteVelocity,
+      };
+
+      if (parsed.timingOffset !== undefined) noteData.timingOffset = parsed.timingOffset;
+      if (parsed.probability !== undefined) noteData.probability = parsed.probability;
+      if (parsed.portamento) noteData.portamento = true;
+
+      notes.push(noteData);
+      currentBeat += scaledDuration;
+    }
+  }
+
+  return {
+    notes,
+    totalBeats: totalNormalBeats * scaleFactor,
+  };
+}
+
 /**
  * Expand a pattern into individual note events
  */
@@ -216,17 +428,40 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
   const octaveOffset = context.octaveOffset ?? 0;
   const transpose = context.transpose ?? 0;
 
-  // Resolve transforms first (v0.3)
-  const resolvedPattern = pattern.transform
-    ? resolvePattern(pattern, context.allPatterns)
-    : pattern;
+  // v0.7: Handle conditional patterns - evaluate and redirect to the selected pattern
+  if (pattern.conditional && context.allPatterns) {
+    const selectedPatternName = evaluateConditional(pattern.conditional, context);
+    const selectedPattern = context.allPatterns[selectedPatternName];
+    if (selectedPattern) {
+      return expandPattern(selectedPattern, context);
+    }
+    console.warn(`Conditional pattern target "${selectedPatternName}" not found`);
+    return { notes: [], totalBeats: 0 };
+  }
+
+  // v0.7: Handle pattern inheritance
+  let workingPattern = pattern;
+  if (pattern.extends && context.allPatterns) {
+    workingPattern = resolveInheritance(pattern, context.allPatterns);
+  }
+
+  // Resolve transforms (v0.3)
+  const resolvedPattern = workingPattern.transform
+    ? resolvePattern(workingPattern, context.allPatterns)
+    : workingPattern;
 
   let notes: ExpandedPattern['notes'] = [];
   let currentBeat = 0;
 
   // Handle notes array
+  // v0.8: Support compact notation (space-separated notes like "C4:q E4:q G4:h")
   if (resolvedPattern.notes) {
-    for (const noteStr of resolvedPattern.notes) {
+    // Handle both string (compact notation) and array formats
+    const noteInput = typeof resolvedPattern.notes === 'string'
+      ? [resolvedPattern.notes]  // Wrap string in array for expandNoteStrings
+      : resolvedPattern.notes;
+    const expandedNotes = expandNoteStrings(noteInput);
+    for (const noteStr of expandedNotes) {
       if (isRest(noteStr)) {
         currentBeat += parseRest(noteStr);
       } else {
@@ -241,12 +476,8 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
         const noteVelocity = Math.min(1.0, baseVel + articulationMods.velocityBoost);
         const noteDuration = parsed.durationBeats * articulationMods.gate;
 
-        // v0.4: Store additional expression data for rendering
-        const noteData: ExpandedPattern['notes'][0] & {
-          timingOffset?: number;
-          probability?: number;
-          portamento?: boolean;
-        } = {
+        // v0.4/v0.8: Store additional expression data for rendering
+        const noteData: ExpandedPattern['notes'][0] = {
           pitch: adjustedPitch,
           startBeat: currentBeat,
           durationBeats: noteDuration,
@@ -257,6 +488,11 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
         if (parsed.timingOffset !== undefined) noteData.timingOffset = parsed.timingOffset;
         if (parsed.probability !== undefined) noteData.probability = parsed.probability;
         if (parsed.portamento) noteData.portamento = true;
+
+        // Add v0.8 articulation fields if present
+        if (parsed.jazzArticulation) noteData.jazzArticulation = parsed.jazzArticulation;
+        if (parsed.bendAmount !== undefined) noteData.bendAmount = parsed.bendAmount;
+        if (parsed.ornament) noteData.ornament = parsed.ornament;
 
         notes.push(noteData);
         currentBeat += parsed.durationBeats; // Advance by original duration, not gated
@@ -382,6 +618,18 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
   // Handle voice leading (v0.6)
   if (resolvedPattern.voiceLead) {
     const expanded = expandVoiceLead(resolvedPattern.voiceLead, octaveOffset, transpose, velocity);
+    for (const note of expanded.notes) {
+      notes.push({
+        ...note,
+        startBeat: currentBeat + note.startBeat,
+      });
+    }
+    currentBeat += expanded.totalBeats;
+  }
+
+  // Handle tuplet patterns (v0.7)
+  if (resolvedPattern.tuplet) {
+    const expanded = expandTuplet(resolvedPattern.tuplet, octaveOffset, transpose, velocity);
     for (const note of expanded.notes) {
       notes.push({
         ...note,

@@ -9,7 +9,7 @@ import { pitchToMidi, midiToPitch } from './note-parser.js';
  * Voicings: @drop2, @drop3, @shell, @open, @close, @rootless_a
  * Articulations: * (staccato), ~ (legato), > (accent), ^ (marcato)
  */
-const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
+const CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:alt)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
 
 /**
  * Chord quality intervals (semitones from root)
@@ -49,6 +49,13 @@ const CHORD_INTERVALS: Record<string, number[]> = {
   'add11': [0, 4, 7, 17],  // add 11
   '6': [0, 4, 7, 9],       // major 6th
   'm6': [0, 3, 7, 9],      // minor 6th
+
+  // Altered chords
+  '7alt': [0, 4, 6, 10, 13],   // altered dominant (7 b5 b9)
+  '7b5': [0, 4, 6, 10],        // dominant 7 flat 5
+  '7#5': [0, 4, 8, 10],        // dominant 7 sharp 5
+  '7b9': [0, 4, 7, 10, 13],    // dominant 7 flat 9
+  '7#9': [0, 4, 7, 10, 15],    // dominant 7 sharp 9
 };
 
 /**

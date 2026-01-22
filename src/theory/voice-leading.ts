@@ -380,9 +380,9 @@ export function generateVoiceLeading(config: VoiceLeadConfig): VoiceLeadingResul
   const { progression, voices, constraints, voiceRanges, style = 'jazz' } = config;
 
   // Get constraints from style preset
-  let effectiveConstraints = [...constraints];
+  let effectiveConstraints = [...(constraints || [])];
   if (style !== 'custom' && CONSTRAINT_PRESETS[style]) {
-    effectiveConstraints = [...CONSTRAINT_PRESETS[style], ...constraints];
+    effectiveConstraints = [...CONSTRAINT_PRESETS[style], ...(constraints || [])];
   }
 
   // Remove duplicates

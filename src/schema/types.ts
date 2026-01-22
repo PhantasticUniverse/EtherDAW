@@ -34,6 +34,91 @@ export interface Effect {
   options?: Record<string, unknown>;
 }
 
+// ============================================================================
+// NEW v0.8: Sound Design Features
+// ============================================================================
+
+/**
+ * LFO Shape types for modulation
+ */
+export type LFOShape = 'sine' | 'triangle' | 'square' | 'sawtooth';
+
+/**
+ * LFO target parameters
+ */
+export type LFOTarget = 'filterCutoff' | 'pan' | 'volume' | 'pitch' | 'brightness';
+
+/**
+ * LFO Configuration (v0.8)
+ * Adds movement and modulation to static sounds
+ */
+export interface LFOConfig {
+  rate: string | number;      // Tempo-synced ('4n', '8n') or Hz
+  shape: LFOShape;            // Waveform shape
+  depth: number;              // Modulation amount 0-1
+  target: LFOTarget;          // Parameter to modulate
+}
+
+/**
+ * Instrument Layer Configuration (v0.8)
+ * Allows combining multiple synths into one rich instrument
+ */
+export interface InstrumentLayer {
+  preset: string;             // Preset for this layer
+  params?: SemanticSynthParams; // Override semantic params
+  volume?: number;            // Layer volume in dB (relative)
+  pan?: number;               // Layer pan -1 to 1
+  detune?: number;            // Detune in cents
+  octave?: number;            // Octave shift
+}
+
+/**
+ * Per-track EQ Configuration (v0.8)
+ * Parametric EQ for frequency shaping
+ */
+export interface EQConfig {
+  lowCut?: number;            // High-pass frequency (Hz)
+  lowShelf?: {
+    freq: number;             // Frequency
+    gain: number;             // dB
+  };
+  mid?: {
+    freq: number;             // Center frequency
+    gain: number;             // dB
+    q?: number;               // Q/bandwidth (default: 1)
+  };
+  highShelf?: {
+    freq: number;             // Frequency
+    gain: number;             // dB
+  };
+  highCut?: number;           // Low-pass frequency (Hz)
+}
+
+/**
+ * Per-track Compression Configuration (v0.8)
+ * Dynamics control for professional mixing
+ */
+export interface CompressionConfig {
+  threshold: number;          // dB (-60 to 0)
+  ratio: number;              // Compression ratio (1:1 to 20:1)
+  attack: number;             // Attack time in ms
+  release: number;            // Release time in ms
+  knee?: number;              // Soft knee width in dB (default: 0)
+  makeupGain?: number;        // Auto or manual gain compensation in dB
+}
+
+/**
+ * Sidechain Configuration (v0.8)
+ * Duck audio based on another track's signal
+ */
+export interface SidechainConfig {
+  source: string;             // Track name to trigger ducking (e.g., 'kick')
+  amount: number;             // Duck amount 0-1
+  attack: number;             // Attack time in ms
+  release: number;            // Release time in ms
+  threshold?: number;         // Trigger threshold in dB (default: -24)
+}
+
 /**
  * Semantic synth parameters (v0.5)
  * All values are 0-1 scale for LLM-friendly usage
@@ -73,7 +158,7 @@ export interface ToneJsOverrides {
 }
 
 /**
- * Instrument definition (v0.5 - supports semantic params)
+ * Instrument definition (v0.5 - supports semantic params, v0.8 - layering, LFO, mixing)
  */
 export interface Instrument {
   // Preset-based (recommended)
@@ -92,6 +177,17 @@ export interface Instrument {
   volume?: number;  // dB
   pan?: number;     // -1 to 1
   effects?: Effect[];
+
+  // NEW v0.8: Instrument Layering
+  layers?: InstrumentLayer[];  // Multiple synths combined into one
+
+  // NEW v0.8: LFO Modulation
+  lfo?: LFOConfig;            // Add movement to parameters
+
+  // NEW v0.8: Per-track mixing
+  eq?: EQConfig;              // Parametric EQ
+  compression?: CompressionConfig;  // Dynamics compression
+  sidechain?: SidechainConfig;      // Sidechain ducking
 
   // Legacy (deprecated, use params/overrides instead)
   options?: Record<string, unknown>;
@@ -176,18 +272,28 @@ export interface PatternTransform {
 // ============================================================================
 
 /**
- * Markov Chain Configuration (v0.6)
+ * Markov Chain Configuration (v0.6, enhanced v0.7, v0.8)
  * Generate sequences based on probabilistic state transitions
  */
 export interface MarkovConfig {
   states: string[];                              // State names (scale degrees, pitches, or 'rest'/'approach')
-  transitions: Record<string, Record<string, number>>; // Probability matrix (each row sums to 1.0)
+  transitions?: Record<string, Record<string, number>>; // Probability matrix (each row sums to 1.0)
+  preset?: MarkovPreset;                         // v0.7: Use a built-in preset instead of explicit transitions
   initialState?: string;                         // Starting state (default: first state)
   steps: number;                                 // Number of notes to generate
   duration: string | string[];                   // Note duration(s)
   octave?: number;                               // Base octave for scale degrees (default: 3)
   seed?: number;                                 // Random seed for reproducibility
+  // NEW v0.8: Scale-aware generation
+  constrainToScale?: boolean;                    // Constrain outputs to current key's scale
+  chordScale?: string;                           // Use chord-scale relationship (e.g., "Dm7" → dorian)
 }
+
+/**
+ * Markov Preset Names (v0.7)
+ * Built-in transition distributions for common use cases
+ */
+export type MarkovPreset = 'uniform' | 'neighbor_weighted' | 'walking_bass' | 'melody_stepwise' | 'root_heavy';
 
 /**
  * Density Curve Configuration (v0.6)
@@ -217,9 +323,81 @@ export interface ContinuationConfig {
 export interface VoiceLeadConfig {
   progression: string[];                         // Chord symbols to voice
   voices: number;                                // Number of voices (2-6)
-  constraints: string[];                         // Constraint names or 'custom'
+  constraints?: string[];                        // Constraint names or 'custom'
   voiceRanges?: Record<string, [string, string]>; // Voice name -> [low, high] pitch range
   style?: 'bach' | 'jazz' | 'pop' | 'custom';   // Preset constraint set
+}
+
+/**
+ * Conditional Pattern Configuration (v0.7)
+ * Apply pattern conditionally based on runtime conditions
+ */
+export interface ConditionalConfig {
+  condition: 'density' | 'probability' | 'section_index';  // What to check
+  operator: '>' | '<' | '>=' | '<=' | '==' | '!=';         // Comparison operator
+  value: number;                                            // Threshold value
+  then: string;                                             // Pattern name if condition is true
+  else?: string;                                            // Pattern name if condition is false (optional)
+}
+
+/**
+ * Tuplet Pattern Configuration (v0.7)
+ * Group notes into tuplet groupings
+ */
+export interface TupletConfig {
+  ratio: [number, number];                       // [actual, normal] e.g., [3, 2] for triplet
+  notes: string[];                               // Notes to fit into the tuplet
+}
+
+/**
+ * Pattern Inheritance Configuration (v0.7)
+ * Extend an existing pattern with overrides
+ */
+export interface PatternInheritance {
+  extends: string;                               // Name of pattern to inherit from
+  overrides?: {
+    notes?: string[];                            // Override specific notes
+    velocity?: number;                           // Override velocity
+    transpose?: number;                          // Transpose in semitones
+    octave?: number;                             // Shift octaves
+  };
+}
+
+// ============================================================================
+// NEW v0.8: Tension Curves & Higher-Level Intent
+// ============================================================================
+
+/**
+ * Tension Mapping Configuration (v0.8)
+ * Maps tension value to multiple parameters
+ */
+export interface TensionMapping {
+  density?: [number, number];      // [min, max] note density
+  brightness?: [number, number];   // [min, max] filter brightness
+  register?: [number, number];     // [min, max] octave range (0=low, 1=high)
+  velocity?: [number, number];     // [min, max] velocity
+  activity?: [number, number];     // [min, max] rhythmic activity
+}
+
+/**
+ * Tension Curve Configuration (v0.8)
+ * Express "build tension" as a single concept affecting multiple parameters
+ */
+export interface TensionConfig {
+  start: number;                   // Starting tension 0-1
+  end: number;                     // Ending tension 0-1
+  curve?: 'linear' | 'exponential' | 'logarithmic' | 'sine';  // Interpolation
+  mappings?: TensionMapping;       // What parameters tension affects
+}
+
+/**
+ * Fill Configuration (v0.8)
+ * Automatic fills at specified intervals
+ */
+export interface FillConfig {
+  every: number;                   // Every N bars
+  pattern: string;                 // Pattern name to use for fill
+  probability?: number;            // Probability of fill (default: 1)
 }
 
 // NEW v0.4: Velocity envelope types
@@ -250,6 +428,14 @@ export interface Pattern {
   markov?: MarkovConfig;       // Generate from Markov chain
   continuation?: ContinuationConfig; // Generate melodic continuation
   voiceLead?: VoiceLeadConfig; // Generate voice-led progression
+  // NEW v0.7: Pattern composition
+  tuplet?: TupletConfig;       // Group notes into tuplet
+  conditional?: ConditionalConfig; // Apply pattern conditionally
+  extends?: string;            // Inherit from another pattern
+  overrides?: PatternInheritance['overrides']; // Override inherited properties
+  // NEW v0.8: Expression
+  dynamics?: DynamicsMarking;  // Pattern-level dynamics (pp, p, mp, mf, f, ff)
+  groove?: GrooveTemplateName; // Apply groove feel to pattern
 }
 
 // ============================================================================
@@ -271,6 +457,8 @@ export interface Track {
   probability?: number;
   // NEW v0.5: Fallback pattern if probability check fails
   fallback?: string;
+  // NEW v0.8: Groove template - applies timing/velocity feel
+  groove?: GrooveTemplateName;
 }
 
 // NEW v0.5: Automation curve types
@@ -297,12 +485,17 @@ export interface Section {
   key?: string;
   // NEW v0.5: Section-level automation
   // Keys can be:
+  //   - "tempo" (v0.7: tempo automation - ritardando/accelerando)
   //   - "instrument.params.brightness" (semantic params)
   //   - "instrument.filter.frequency" (effect params)
   //   - "instrument.volume" (channel params)
   automation?: Record<string, AutomationConfig>;
   // NEW v0.6: Density curve - controls overall activity level
   density?: DensityConfig;
+  // NEW v0.8: Tension curves - affect multiple parameters at once
+  tension?: TensionConfig;
+  // NEW v0.8: Automatic fills at intervals
+  fill?: FillConfig;
 }
 
 // ============================================================================
@@ -330,7 +523,37 @@ export type Accidental = '#' | 'b' | '';
 // ~ = legato (110% gate)
 // > = accent (velocity boost)
 // ^ = marcato (accent + staccato)
-export type Articulation = '*' | '~' | '>' | '^' | '';
+// NEW v0.8: Jazz articulations
+// .fall = pitch falls at end of note
+// .doit = pitch rises at end of note
+// .scoop = pitch scoops up into note
+// .bend = pitch bend
+// NEW v0.8: Ornaments
+// .tr = trill
+// .mord = mordent
+// .turn = turn
+export type Articulation = '*' | '~' | '>' | '^' | 'fall' | 'doit' | 'scoop' | 'bend' | 'tr' | 'mord' | 'turn' | '';
+
+/**
+ * NEW v0.8: Jazz Articulation Types
+ */
+export type JazzArticulation = 'fall' | 'doit' | 'scoop' | 'bend';
+
+/**
+ * NEW v0.8: Ornament Types
+ */
+export type Ornament = 'tr' | 'mord' | 'turn';
+
+/**
+ * NEW v0.8: Dynamics Markings
+ * Traditional notation for velocity
+ */
+export type DynamicsMarking = 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff';
+
+/**
+ * NEW v0.8: Groove Template Names
+ */
+export type GrooveTemplateName = 'straight' | 'shuffle' | 'dilla' | 'reggae' | 'dnb' | 'trap' | 'gospel' | 'laid_back' | 'pushed' | 'funk' | 'hip_hop';
 
 export interface ArticulationModifiers {
   gate: number;       // 0.3 for staccato, 1.1 for legato, 1.0 default
@@ -352,6 +575,15 @@ export interface ParsedNote {
   probability?: number;   // Note probability 0.0-1.0 (e.g., C4:q?0.7)
   timingOffset?: number;  // Timing offset in ms (e.g., C4:q+10ms or C4:q-5ms)
   portamento?: boolean;   // Glide to next note (e.g., C4:q~>)
+  // NEW v0.7: Tuplets
+  tupletRatio?: number;   // Tuplet ratio (e.g., 3 for triplet, 5 for quintuplet) - C4:8t3
+  // NEW v0.8: Jazz articulations
+  jazzArticulation?: JazzArticulation;  // fall, doit, scoop, bend
+  bendAmount?: number;    // Semitones for bend (e.g., C4:q.bend+2)
+  // NEW v0.8: Ornaments
+  ornament?: Ornament;    // tr, mord, turn
+  // NEW v0.8: Dynamics
+  dynamics?: DynamicsMarking;  // pp, p, mp, mf, f, ff
 }
 
 export interface ParsedChord {
@@ -389,6 +621,10 @@ export interface NoteEvent extends BaseTimelineEvent {
   probability?: number;    // Probability of playing 0.0-1.0
   portamento?: boolean;    // Glide to next note
   humanize?: number;       // Humanization amount 0.0-1.0
+  // NEW v0.8: Articulation effects
+  jazzArticulation?: JazzArticulation;  // Pitch modulation at note end
+  bendAmount?: number;     // Semitones for bend
+  ornament?: Ornament;     // Trill, mordent, turn
 }
 
 export interface ChordEvent extends BaseTimelineEvent {

@@ -125,7 +125,7 @@
     "solo_section": {
       "bars": 16,
       "tracks": {
-        "piano": { "pattern": "comping_a", "repeat": 8, "velocity": 0.45, "humanize": 0.15 },
+        "piano": { "pattern": "comping_a", "repeat": 4, "velocity": 0.45, "humanize": 0.15 },
         "bass": { "patterns": ["walking_a", "walking_b"], "repeat": 2, "velocity": 0.7, "humanize": 0.12 }
       }
     },

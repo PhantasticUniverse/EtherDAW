@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "title": "Convergence Study: Subject & City Lights",
+    "composer": "GPT-5.2 Thinking",
+    "version": "etherscore-v0.6",
+    "notes": "Exercises Markov bass, density curves, motif continuation, and voice-leading chorale. Minimalist / electro-baroque sketch."
+  },
+  "settings": {
+    "tempo": 112,
+    "key": "D minor",
+    "swing": 0.12
+  },
+  "instruments": {
+    "bass": { "preset": "analog_mono", "params": { "warmth": 0.55, "brightness": 0.25 } },
+    "lead": { "preset": "fm_epiano", "params": { "brightness": 0.6, "warmth": 0.35 } },
+    "pad":  { "preset": "chorale_pad", "params": { "warmth": 0.75, "brightness": 0.2 } },
+    "drums": { "preset": "drum_kit_basic", "params": { "punch": 0.55 } }
+  },
+  "patterns": {
+    "kick_basic": {
+      "drums": ["K:1", "K:1", "K:1", "K:1"],
+      "durations": ["q", "q", "q", "q"]
+    },
+    "hat_pulse": {
+      "drums": ["H:1", "H:1", "H:1", "H:1", "H:1", "H:1", "H:1", "H:1"],
+      "durations": ["e", "e", "e", "e", "e", "e", "e", "e"]
+    },
+    "subject_head": {
+      "notes": ["D4:e", "F4:e", "E4:e", "D4:e", "A3:q", "C4:e", "Bb3:e", "A3:q"]
+    },
+    "subject_answer": {
+      "continuation": {
+        "source": "subject_head",
+        "technique": "descending_sequence",
+        "steps": 2,
+        "interval": -2
+      }
+    },
+    "walking_bass": {
+      "markov": {
+        "states": ["1", "5", "b7", "approachUp", "approachDown"],
+        "transitions": {
+          "1": { "5": 0.45, "approachUp": 0.25, "approachDown": 0.2, "b7": 0.1 },
+          "5": { "1": 0.45, "b7": 0.25, "approachUp": 0.15, "approachDown": 0.15 },
+          "b7": { "1": 0.4, "5": 0.35, "approachDown": 0.25 },
+          "approachUp": { "1": 0.55, "5": 0.35, "b7": 0.1 },
+          "approachDown": { "1": 0.55, "5": 0.35, "b7": 0.1 }
+        },
+        "steps": 64,
+        "duration": "e",
+        "seed": 42,
+        "mapping": {
+          "1": "D2",
+          "5": "A1",
+          "b7": "C2",
+          "approachUp": "C#2",
+          "approachDown": "Eb2"
+        }
+      }
+    },
+    "chorale_dmin": {
+      "voiceLead": {
+        "progression": ["Dm7", "Gm7", "A7", "Dm7", "Bbmaj7", "Gm7", "A7", "Dm7"],
+        "voices": 4,
+        "style": "bach"
+      }
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "chorale_dmin" },
+        "lead": { "pattern": "subject_head" }
+      }
+    },
+    "groove_in": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_basic" },
+        "bass": { "pattern": "walking_bass" },
+        "pad": { "pattern": "chorale_dmin" },
+        "lead": { "pattern": "subject_head" }
+      }
+    },
+    "buildup": {
+      "bars": 16,
+      "density": { "start": 0.25, "end": 0.9, "curve": "exponential" },
+      "tracks": {
+        "drums": { "pattern": "hat_pulse" },
+        "bass": { "pattern": "walking_bass" },
+        "pad": { "pattern": "chorale_dmin" },
+        "lead": { "pattern": "subject_answer" }
+      }
+    },
+    "resolve": {
+      "bars": 8,
+      "tracks": {
+        "bass": { "pattern": "walking_bass" },
+        "pad": { "pattern": "chorale_dmin" },
+        "lead": { "pattern": "subject_head" }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "chorale_dmin" }
+      }
+    }
+  },
+  "arrangement": ["intro", "groove_in", "buildup", "resolve", "outro"]
+}

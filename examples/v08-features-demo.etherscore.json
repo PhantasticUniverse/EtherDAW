@@ -1,0 +1,278 @@
+{
+  "$schema": "../src/schema/etherscore.schema.json",
+  "// FILE": "v0.8 Features Demo - Tests all new features",
+  "meta": {
+    "title": "v0.8 Features Demo",
+    "composer": "EtherDAW",
+    "genre": "demo",
+    "description": "Comprehensive demo of all v0.8 features: layering, LFO, articulations, grooves, tension"
+  },
+  "settings": {
+    "tempo": 100,
+    "timeSignature": "4/4",
+    "key": "C major",
+    "swing": 0
+  },
+
+  "// INSTRUMENTS": "Testing layered instruments, LFOs, EQ, compression",
+  "instruments": {
+    "// LAYERED PAD": "Two detuned saws + sub layer",
+    "thick_pad": {
+      "layers": [
+        { "preset": "sawtooth", "detune": -7, "volume": -3 },
+        { "preset": "sawtooth", "detune": 7, "volume": -3 },
+        { "preset": "sub_bass", "octave": -1, "volume": -9 }
+      ]
+    },
+
+    "// LFO BASS": "Wobble bass with filter LFO",
+    "wobble_bass": {
+      "preset": "synth_bass",
+      "lfo": {
+        "rate": "8n",
+        "shape": "sine",
+        "depth": 0.7,
+        "target": "filterCutoff"
+      }
+    },
+
+    "// AUTOPAN LEAD": "Lead with auto-panning",
+    "autopan_lead": {
+      "preset": "fm_lead",
+      "lfo": {
+        "rate": "4n",
+        "shape": "triangle",
+        "depth": 0.5,
+        "target": "pan"
+      },
+      "params": { "brightness": 0.8 }
+    },
+
+    "// EQ'D DRUMS": "Drums with EQ shaping",
+    "shaped_drums": {
+      "preset": "drums:acoustic",
+      "eq": {
+        "lowCut": 40,
+        "lowShelf": { "freq": 100, "gain": 2 },
+        "mid": { "freq": 3000, "gain": -2, "q": 1.5 },
+        "highShelf": { "freq": 8000, "gain": 1 }
+      }
+    },
+
+    "// NEW PRESETS": "Testing new v0.8 presets",
+    "lofi_keys": { "preset": "lofi_keys" },
+    "kalimba": { "preset": "kalimba" },
+    "808": { "preset": "808_bass" }
+  },
+
+  "patterns": {
+    "// COMPACT SYNTAX": "Testing compact note syntax",
+    "compact_melody": {
+      "notes": "C4:q E4:q G4:q E4:q | F4:q A4:q C5:q A4:q | G4:q B4:q D5:q B4:q | C5:h. R:q"
+    },
+
+    "// JAZZ ARTICULATIONS": "Testing falls, doits, scoops, bends",
+    "jazz_line": {
+      "notes": [
+        "C4:q.fall",
+        "E4:q.doit",
+        "G4:q.scoop",
+        "C5:q.bend+2",
+        "A4:h.fall",
+        "G4:q.doit",
+        "E4:q.scoop",
+        "C4:h"
+      ]
+    },
+
+    "// ORNAMENTS": "Testing trills, mordents, turns",
+    "ornament_line": {
+      "notes": [
+        "C4:q.tr",
+        "D4:q.mord",
+        "E4:q.turn",
+        "F4:q",
+        "G4:q.tr",
+        "A4:q.mord",
+        "B4:q.turn",
+        "C5:h"
+      ]
+    },
+
+    "// DYNAMICS": "Testing pp to ff",
+    "dynamics_line": {
+      "notes": [
+        "C4:q@pp",
+        "D4:q@p",
+        "E4:q@mp",
+        "F4:q@mf",
+        "G4:q@f",
+        "A4:q@ff",
+        "B4:q@f",
+        "C5:h@mf"
+      ]
+    },
+
+    "// COMBINED": "Articulation + dynamics + timing",
+    "expressive_line": {
+      "notes": [
+        "C4:q.fall@mf",
+        "E4:q.tr@f+5ms",
+        "G4:q.scoop@mp-5ms",
+        "C5:h.doit@ff"
+      ]
+    },
+
+    "// LAYERED PAD CHORDS": "Simple pad progression",
+    "pad_chords": {
+      "chords": ["Cmaj7:w", "Am7:w", "Fmaj7:w", "G7:w"]
+    },
+
+    "// WOBBLE PATTERN": "Bass for wobble synth",
+    "wobble_line": {
+      "notes": ["C2:h", "C2:h", "G2:h", "G2:h", "A2:h", "A2:h", "F2:h", "F2:h"]
+    },
+
+    "// SIMPLE DRUMS": "Basic beat",
+    "basic_beat": {
+      "drums": {
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "snare": "....x.......x...",
+          "hihat": "x.x.x.x.x.x.x.x."
+        }
+      }
+    },
+
+    "// GROOVE DRUMS": "With shuffle groove",
+    "shuffle_beat": {
+      "drums": {
+        "lines": {
+          "kick":  "x...x...x...x...",
+          "snare": "....x.......x...",
+          "hihat": "x.x.x.x.x.x.x.x."
+        }
+      },
+      "groove": "shuffle"
+    },
+
+    "// MARKOV SCALE-AWARE": "Constrained to scale",
+    "markov_melody": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "melody_stepwise",
+        "steps": 16,
+        "duration": "8",
+        "octave": 4,
+        "seed": 42,
+        "constrainToScale": true
+      }
+    },
+
+    "// MARKOV CHORD-SCALE": "Using chord-scale relationship",
+    "markov_over_dm7": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "melody_stepwise",
+        "steps": 8,
+        "duration": "q",
+        "octave": 4,
+        "seed": 123,
+        "chordScale": "Dm7"
+      }
+    },
+
+    "// NEW PRESET PATTERNS": "Testing lo-fi keys",
+    "lofi_chords": {
+      "chords": ["Cmaj9:w", "Am9:w", "Fmaj9:w", "G9:w"]
+    },
+
+    "kalimba_melody": {
+      "notes": "E5:q G5:q A5:q G5:q | E5:q D5:q C5:h | D5:q E5:q G5:q E5:q | D5:w"
+    },
+
+    "808_line": {
+      "notes": ["C1:h", "R:q", "C1:8", "C1:8", "G1:h", "R:q", "G1:8", "G1:8"]
+    }
+  },
+
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "melody": { "pattern": "compact_melody", "instrument": "autopan_lead" },
+        "drums": { "pattern": "basic_beat", "instrument": "shaped_drums" }
+      }
+    },
+    "jazz_section": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "jazz_line", "instrument": "autopan_lead" },
+        "pad": { "pattern": "pad_chords", "instrument": "thick_pad" }
+      }
+    },
+    "ornaments_section": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "ornament_line", "instrument": "autopan_lead" },
+        "pad": { "pattern": "pad_chords", "instrument": "thick_pad" }
+      }
+    },
+    "dynamics_section": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "dynamics_line", "instrument": "autopan_lead" },
+        "drums": { "pattern": "basic_beat", "instrument": "shaped_drums" }
+      }
+    },
+    "wobble_section": {
+      "bars": 4,
+      "tracks": {
+        "bass": { "pattern": "wobble_line", "instrument": "wobble_bass" },
+        "drums": { "pattern": "basic_beat", "instrument": "shaped_drums" }
+      }
+    },
+    "shuffle_section": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "shuffle_beat", "instrument": "shaped_drums" },
+        "bass": { "pattern": "wobble_line", "instrument": "wobble_bass" }
+      }
+    },
+    "markov_section": {
+      "bars": 4,
+      "tracks": {
+        "melody": { "pattern": "markov_melody", "instrument": "autopan_lead" },
+        "pad": { "pattern": "pad_chords", "instrument": "thick_pad" }
+      }
+    },
+    "new_presets": {
+      "bars": 4,
+      "tracks": {
+        "keys": { "pattern": "lofi_chords", "instrument": "lofi_keys" },
+        "melody": { "pattern": "kalimba_melody", "instrument": "kalimba" },
+        "bass": { "pattern": "808_line", "instrument": "808" }
+      }
+    },
+    "expressive": {
+      "bars": 2,
+      "tracks": {
+        "lead": { "pattern": "expressive_line", "instrument": "autopan_lead" },
+        "pad": { "pattern": "pad_chords", "instrument": "thick_pad" },
+        "drums": { "pattern": "shuffle_beat", "instrument": "shaped_drums" }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "jazz_section",
+    "ornaments_section",
+    "dynamics_section",
+    "wobble_section",
+    "shuffle_section",
+    "markov_section",
+    "new_presets",
+    "expressive"
+  ]
+}

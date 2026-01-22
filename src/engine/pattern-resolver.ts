@@ -32,6 +32,7 @@ export interface PatternResolutionContext {
 /**
  * Resolve a track to an array of notes
  * v0.5: Supports parallel patterns and probability
+ * v0.8: Fixed bar-aligned pattern placement when patterns array is used
  */
 export function resolveTrack(
   track: Track,
@@ -65,12 +66,19 @@ export function resolveTrack(
   }
 
   const results: ResolvedNote[] = [];
-  let currentBeat = 0;
-
   const repeatCount = track.repeat || 1;
+  const beatsPerBar = getBeatsPerBar(ctx.settings.timeSignature || '4/4');
+
+  // v0.8: When using patterns array, each pattern should fill one bar
+  // This ensures proper alignment when patterns are shorter than a bar
+  const useBarAlignment = track.patterns && track.patterns.length > 1;
+
+  // Track cumulative beat offset for sequential pattern placement
+  let cumulativeBeat = 0;
 
   for (let r = 0; r < repeatCount; r++) {
-    for (const patternName of patternNames) {
+    for (let i = 0; i < patternNames.length; i++) {
+      const patternName = patternNames[i];
       const pattern = ctx.patterns[patternName];
 
       if (!pattern) {
@@ -88,20 +96,82 @@ export function resolveTrack(
 
       const expanded = expandPattern(pattern, patternCtx);
 
+      // Calculate the beat offset for this pattern
+      // v0.8: When bar-aligned, each pattern gets one bar regardless of its natural length
+      const patternIndex = r * patternNames.length + i;
+      const currentBeat = useBarAlignment
+        ? patternIndex * beatsPerBar  // Each pattern starts at a bar boundary
+        : cumulativeBeat;  // Use cumulative beat count (pattern's totalBeats, not note positions)
+
+      // For bar-aligned patterns, loop the pattern to fill the bar
+      let notesToAdd: ExpandedPattern['notes'];
+      let actualPatternLength: number;
+
+      if (useBarAlignment && expanded.totalBeats < beatsPerBar) {
+        // Loop the pattern to fill the bar
+        notesToAdd = loopPatternToFill(expanded.notes, expanded.totalBeats, beatsPerBar);
+        actualPatternLength = beatsPerBar;
+      } else {
+        notesToAdd = expanded.notes;
+        // Use the pattern's declared totalBeats, not where notes end
+        actualPatternLength = expanded.totalBeats;
+      }
+
       // Apply humanization and swing
       const processedNotes = processExpandedNotes(
-        expanded,
+        { notes: notesToAdd, totalBeats: actualPatternLength },
         currentBeat,
         track.humanize || 0,
         ctx.settings.swing || 0
       );
 
       results.push(...processedNotes);
-      currentBeat += expanded.totalBeats;
+
+      // Update cumulative beat for next pattern (only used when not bar-aligned)
+      if (!useBarAlignment) {
+        cumulativeBeat += actualPatternLength;
+      }
     }
   }
 
   return results;
+}
+
+/**
+ * Calculate the beat offset by finding where the last note ends
+ */
+function calculateSequentialOffset(notes: ResolvedNote[]): number {
+  if (notes.length === 0) return 0;
+  return Math.max(...notes.map(n => n.startBeat + n.durationBeats));
+}
+
+/**
+ * Loop pattern notes to fill a target duration
+ */
+function loopPatternToFill(
+  notes: ExpandedPattern['notes'],
+  patternLength: number,
+  targetLength: number
+): ExpandedPattern['notes'] {
+  if (notes.length === 0 || patternLength <= 0) return notes;
+
+  const result: ExpandedPattern['notes'] = [];
+  let offset = 0;
+
+  while (offset < targetLength) {
+    for (const note of notes) {
+      const newStart = note.startBeat + offset;
+      if (newStart >= targetLength) break;
+
+      result.push({
+        ...note,
+        startBeat: newStart,
+      });
+    }
+    offset += patternLength;
+  }
+
+  return result;
 }
 
 /**

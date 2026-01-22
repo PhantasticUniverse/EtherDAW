@@ -176,6 +176,79 @@ Use the same preset with different settings on multiple tracks:
     }
   }
 }
+```
+
+### Instrument Layering (v0.8)
+
+Combine multiple synth voices into one rich instrument:
+
+```json
+{
+  "instruments": {
+    "thick_lead": {
+      "layers": [
+        { "preset": "sawtooth", "detune": -5 },
+        { "preset": "sawtooth", "detune": +5 },
+        { "preset": "sub_bass", "octave": -1, "volume": -6 }
+      ],
+      "params": { "brightness": 0.7 }
+    }
+  }
+}
+```
+
+| Layer Field | Type | Description |
+|-------------|------|-------------|
+| `preset` | string | Synth preset for this layer |
+| `detune` | number | Pitch offset in cents |
+| `octave` | integer | Octave offset (-2 to +2) |
+| `volume` | number | Volume offset in dB |
+
+### LFO Modulation (v0.8)
+
+Add movement to sounds with tempo-synced modulation:
+
+```json
+{
+  "instruments": {
+    "wobble_bass": {
+      "preset": "synth_bass",
+      "lfo": {
+        "rate": "8n",
+        "shape": "sine",
+        "depth": 0.5,
+        "target": "filterCutoff"
+      }
+    }
+  }
+}
+```
+
+| LFO Field | Type | Description |
+|-----------|------|-------------|
+| `rate` | string | Tempo-synced rate: `"1n"`, `"2n"`, `"4n"`, `"8n"`, `"16n"` |
+| `shape` | string | Waveform: `"sine"`, `"triangle"`, `"square"`, `"sawtooth"` |
+| `depth` | number | Modulation amount (0-1) |
+| `target` | string | Parameter to modulate: `"filterCutoff"`, `"pan"`, `"volume"`, `"pitch"` |
+
+### Per-Track EQ (v0.8)
+
+Shape frequency content per instrument:
+
+```json
+{
+  "instruments": {
+    "bass": {
+      "preset": "synth_bass",
+      "eq": {
+        "lowCut": 30,
+        "lowShelf": { "freq": 80, "gain": 3 },
+        "mid": { "freq": 800, "gain": -2, "q": 1.5 },
+        "highShelf": { "freq": 8000, "gain": -3 }
+      }
+    }
+  }
+}
 
 ### Drum Kit Presets
 For drums, use the format `drums:KITNAME`:
@@ -239,6 +312,81 @@ Fine-grained per-note control:
 - `~>` - Portamento (glide to next note)
 
 Examples: `C4:q@0.8` (80% velocity), `D4:8?0.5` (50% chance), `E4:q*@0.9?0.5-5ms` (combined)
+
+#### Tuplets (v0.7)
+Add `tN` after duration for tuplet ratios:
+- `t3` - Triplet (3 notes in space of 2)
+- `t5` - Quintuplet (5 notes in space of 4)
+- `t7` - Septuplet (7 notes in space of 4)
+
+Examples:
+- `C4:8t3` - Eighth note triplet
+- `D4:qt3` - Quarter note triplet
+- `E4:16t5` - Sixteenth note quintuplet
+
+The duration is scaled so N tuplet notes fit into the space of N-1 regular notes (for odd ratios).
+
+**Tuplet Pattern Block:** For complex tuplets, use the `tuplet` pattern type:
+```json
+{
+  "patterns": {
+    "triplet_run": {
+      "tuplet": {
+        "ratio": [3, 2],
+        "notes": ["C4:8", "D4:8", "E4:8"]
+      }
+    }
+  }
+}
+```
+
+#### Jazz Articulations (v0.8)
+
+Expressive articulations for jazz and other styles:
+
+| Syntax | Name | Effect |
+|--------|------|--------|
+| `.fall` | Fall | Descending pitch slide after note |
+| `.doit` | Doit | Ascending pitch slide after note |
+| `.scoop` | Scoop | Ascending slide into note |
+| `.bend+N` | Bend | Pitch bend up N semitones |
+
+Examples:
+- `C4:q.fall` - Quarter note with fall-off
+- `D4:h.doit` - Half note with doit
+- `E4:q.bend+2` - Quarter note bending up 2 semitones
+
+#### Ornaments (v0.8)
+
+Classical and jazz ornaments:
+
+| Syntax | Name | Effect |
+|--------|------|--------|
+| `.tr` | Trill | Rapid alternation with upper neighbor |
+| `.mord` | Mordent | Quick lower neighbor |
+| `.turn` | Turn | Upper-main-lower-main pattern |
+
+Examples:
+- `C4:h.tr` - Half note with trill
+- `D4:q.mord` - Quarter note with mordent
+- `E4:q.turn` - Quarter note with turn
+
+#### Dynamics Markings (v0.8)
+
+Use musical dynamics instead of numeric velocity:
+
+| Marking | Name | Velocity |
+|---------|------|----------|
+| `@pp` | Pianissimo | 0.20 |
+| `@p` | Piano | 0.35 |
+| `@mp` | Mezzo-piano | 0.50 |
+| `@mf` | Mezzo-forte | 0.65 |
+| `@f` | Forte | 0.80 |
+| `@ff` | Fortissimo | 0.95 |
+
+Examples:
+- `C4:q@mf` - Quarter note at mezzo-forte
+- `D4:h.fall@f` - Half note with fall at forte
 
 #### Rests
 Use `r` for rests: `"r:q"` (quarter rest), `"r:h"` (half rest)
@@ -538,12 +686,36 @@ Generate sequences using probabilistic state transitions:
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `states` | string[] | **required** | State names |
-| `transitions` | object | **required** | Probability matrix (rows sum to 1.0) |
+| `transitions` | object | - | Probability matrix (rows sum to 1.0) |
+| `preset` | string | - | Use built-in transitions (v0.7) |
 | `initialState` | string | first state | Starting state |
 | `steps` | number | **required** | Notes to generate |
 | `duration` | string\|string[] | **required** | Note duration(s) |
 | `octave` | number | 3 | Base octave for scale degrees |
 | `seed` | number | random | Seed for reproducibility |
+
+Either `transitions` or `preset` is required.
+
+**Markov Presets (v0.7):**
+Use preset instead of explicit transitions for common patterns:
+```json
+{
+  "markov": {
+    "states": ["1", "3", "5", "7"],
+    "preset": "walking_bass",
+    "steps": 32,
+    "duration": "q"
+  }
+}
+```
+
+| Preset | Behavior |
+|--------|----------|
+| `uniform` | Equal probability to all states |
+| `neighbor_weighted` | Prefer adjacent states (stepwise motion) |
+| `walking_bass` | Strong root tendency with approach patterns |
+| `melody_stepwise` | Prefer steps, occasional leaps |
+| `root_heavy` | Strong pull back to root (degree 1) |
 
 **State types:**
 - Scale degrees: `"1"`, `"3"`, `"5"`, `"7"`, `"b3"`, `"#4"`
@@ -631,6 +803,95 @@ Generate chord voicings with voice leading constraints:
 
 **Individual constraints:** `no_parallel_fifths`, `no_parallel_octaves`, `resolve_leading_tones`, `resolve_sevenths`, `smooth_motion`, `contrary_outer_motion`, `avoid_voice_crossing`
 
+### Pattern Inheritance (v0.7)
+
+Create variations by extending existing patterns:
+
+```json
+{
+  "patterns": {
+    "main_theme": {
+      "notes": ["C4:q", "E4:q", "G4:h", "E4:q", "C4:q"]
+    },
+    "theme_loud": {
+      "extends": "main_theme",
+      "overrides": {
+        "velocity": 0.9
+      }
+    },
+    "theme_high": {
+      "extends": "main_theme",
+      "overrides": {
+        "octave": 1
+      }
+    },
+    "theme_variation": {
+      "extends": "main_theme",
+      "overrides": {
+        "transpose": 5,
+        "notes": ["C4:q", "E4:q", "A4:h", "E4:q", "C4:q"]
+      }
+    }
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `extends` | string | Name of parent pattern |
+| `overrides.notes` | string[] | Replace all notes |
+| `overrides.velocity` | number | Override velocity |
+| `overrides.transpose` | number | Transpose in semitones |
+| `overrides.octave` | number | Shift octaves |
+
+Inheritance chains are resolved recursively (patterns can extend patterns that extend other patterns).
+
+### Conditional Patterns (v0.7)
+
+Select patterns dynamically based on conditions:
+
+```json
+{
+  "patterns": {
+    "adaptive_line": {
+      "conditional": {
+        "condition": "density",
+        "operator": ">",
+        "value": 0.5,
+        "then": "dense_melody",
+        "else": "sparse_melody"
+      }
+    },
+    "random_fill": {
+      "conditional": {
+        "condition": "probability",
+        "operator": "<",
+        "value": 0.3,
+        "then": "fill_pattern",
+        "else": "main_pattern"
+      }
+    }
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `condition` | string | What to evaluate |
+| `operator` | string | Comparison operator |
+| `value` | number | Threshold value |
+| `then` | string | Pattern if condition is true |
+| `else` | string | Pattern if condition is false (optional) |
+
+**Conditions:**
+| Condition | Description |
+|-----------|-------------|
+| `density` | Current section density value (0-1) |
+| `probability` | Random value (0-1) each evaluation |
+| `section_index` | Position in arrangement (0, 1, 2...) |
+
+**Operators:** `>`, `<`, `>=`, `<=`, `==`, `!=`
+
 ## Sections
 
 Sections combine patterns into musical passages:
@@ -690,6 +951,37 @@ Sections combine patterns into musical passages:
 | `humanize` | number | 0 | Timing randomization |
 | `mute` | boolean | false | Mute this track |
 | `probability` | number | 1 | Probability pattern plays (0-1, v0.5) |
+| `groove` | string | - | Apply a groove template (v0.8) |
+
+#### Groove Templates (v0.8)
+
+Named grooves that add rhythmic feel to tracks:
+
+| Template | Description |
+|----------|-------------|
+| `straight` | Quantized, metronomic timing |
+| `shuffle` | Classic swing feel with delayed offbeats |
+| `funk` | Tight, syncopated groove |
+| `laid_back` | Slightly behind the beat, relaxed |
+| `pushed` | Slightly ahead of the beat, energetic |
+| `hip_hop` | Boom-bap influenced swing |
+| `dilla` | J Dilla-inspired loose timing |
+| `reggae` | One-drop emphasis |
+| `dnb` | Fast breakbeat dynamics |
+| `trap` | Modern trap timing |
+| `gospel` | Gospel shuffle feel |
+| `new_orleans` | Second-line New Orleans groove |
+| `bossa` | Bossa nova feel |
+| `afrobeat` | West African-inspired timing |
+
+Example:
+```json
+{
+  "tracks": {
+    "drums": { "pattern": "beat", "groove": "dilla" }
+  }
+}
+```
 | `fallback` | string | - | Pattern to use if probability fails (v0.5) |
 
 #### Parallel Patterns (v0.5)
@@ -796,9 +1088,29 @@ Add dynamic parameter changes within a section:
 ```
 
 **Automation paths:**
+- `tempo` - Global tempo automation (v0.7 - ritardando/accelerando)
 - `instrument.params.brightness` - Semantic parameter (LLM-friendly)
 - `instrument.filter.frequency` - Effect parameter (direct)
 - `instrument.volume` - Channel parameter
+
+**Tempo Automation (v0.7):**
+```json
+{
+  "sections": {
+    "ritardando_ending": {
+      "bars": 4,
+      "tracks": { ... },
+      "automation": {
+        "tempo": {
+          "start": 120,
+          "end": 60,
+          "curve": "exponential"
+        }
+      }
+    }
+  }
+}
+```
 
 **Curve types:** `linear`, `exponential`, `sine`, `step`
 
@@ -913,8 +1225,20 @@ Some musical expressions are not yet supported:
 | **Rests don't support modifiers** | `r:h?0.5` fails | Use plain rests: `r:h` |
 | **Combined chord qualities** | `B7sus4`, `Dm7b5#9` | Use simpler chords: `Bsus4`, `Dm7b5` |
 | **Compound time signatures** | `6/8`, `12/8` display | Use `4/4` with triplet feel via swing |
+| **Real-time tempo changes** | Per-note tempo | Use section-level tempo automation (v0.7) |
 
 These may be addressed in future versions.
+
+## Version History
+
+| Version | Features |
+|---------|----------|
+| v0.8 | Instrument layering, LFO modulation, 62 presets, 14 groove templates, jazz articulations (fall, doit, scoop, bend), ornaments (trill, mordent, turn), dynamics markings (pp-ff), per-track EQ, tension curves, audio analysis |
+| v0.7 | Tuplets, tempo automation, Markov presets, conditional patterns, pattern inheritance, better error messages |
+| v0.6 | Markov chains, density curves, melodic continuation, voice leading |
+| v0.5 | Semantic params, multi-line drums, section automation, parallel patterns |
+| v0.4 | Velocity envelopes, expression modifiers |
+| v0.3 | Articulations, pattern transforms, scale constraint |
 
 ## See Also
 

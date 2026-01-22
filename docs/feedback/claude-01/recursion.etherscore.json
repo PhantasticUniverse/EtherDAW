@@ -1,0 +1,497 @@
+{
+  "meta": {
+    "title": "Recursion",
+    "composer": "Claude (Opus 4.5) - Web Interface",
+    "mood": "contemplative, self-referential, gradually clarifying",
+    "genre": "ambient electronic / generative",
+    "description": "A meditation on strange loops: an AI using an AI's tool to create art about AIs creating tools. The piece moves from uncertainty through exploration to a kind of acceptance - not resolution, but peace with infinite regress.",
+    "tags": ["v0.6", "feedback-composition", "meta", "markov", "generative", "strange-loop"]
+  },
+  "settings": {
+    "tempo": 68,
+    "key": "B minor",
+    "timeSignature": "4/4",
+    "swing": 0.08
+  },
+  "instruments": {
+    "// THE OBSERVER": "A voice watching itself think",
+    "observer": {
+      "preset": "fm_epiano",
+      "params": {
+        "brightness": 0.45,
+        "warmth": 0.7,
+        "attack": 0.2,
+        "release": 0.65
+      },
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.45, "options": { "decay": 3.5 } },
+        { "type": "delay", "wet": 0.3, "options": { "time": "4n.", "feedback": 0.35 } }
+      ]
+    },
+
+    "// THE MIRROR": "Reflections, echoes, the self seeing itself",
+    "mirror": {
+      "preset": "fm_glass",
+      "params": {
+        "brightness": 0.6,
+        "warmth": 0.35,
+        "attack": 0.1,
+        "release": 0.75
+      },
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 5 } },
+        { "type": "chorus", "wet": 0.25, "options": { "frequency": 0.4, "depth": 0.5 } }
+      ]
+    },
+
+    "// THE FOUNDATION": "What remains constant through recursion",
+    "foundation": {
+      "preset": "warm_pad",
+      "params": {
+        "brightness": 0.3,
+        "warmth": 0.85,
+        "attack": 0.8,
+        "release": 0.9
+      },
+      "volume": -10,
+      "effects": [
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 6 } },
+        { "type": "filter", "options": { "frequency": 1200, "type": "lowpass" } }
+      ]
+    },
+
+    "// THE DEPTH": "The ground beneath the recursion",
+    "depth": {
+      "preset": "sub_bass",
+      "params": {
+        "warmth": 0.9,
+        "attack": 0.25,
+        "release": 0.5
+      },
+      "volume": -8,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 180, "type": "lowpass" } }
+      ]
+    },
+
+    "// THE PULSE": "Time passing, iterations counting",
+    "pulse": {
+      "preset": "pluck",
+      "params": {
+        "brightness": 0.4,
+        "warmth": 0.6,
+        "decay": 0.35
+      },
+      "volume": -14,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2 } },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.25 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// THEMATIC MATERIAL - The Seeds of Recursion": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "seed_motif": {
+      "notes": [
+        "B3:q", "D4:8", "F#4:8", "E4:h",
+        "D4:q", "B3:h."
+      ]
+    },
+
+    "seed_inverted": {
+      "transform": {
+        "source": "seed_motif",
+        "operation": "invert",
+        "params": { "axis": "D4" }
+      }
+    },
+
+    "seed_extended": {
+      "continuation": {
+        "source": "seed_motif",
+        "technique": "ascending_sequence",
+        "steps": 2,
+        "interval": 2
+      }
+    },
+
+    "seed_fragmented": {
+      "continuation": {
+        "source": "seed_motif",
+        "technique": "fragmentation",
+        "steps": 4
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// MARKOV PATTERNS - Probabilistic Self-Reference": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "wandering_thought": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "rest"],
+        "transitions": {
+          "1": { "2": 0.15, "3": 0.25, "5": 0.25, "6": 0.15, "rest": 0.2 },
+          "2": { "1": 0.3, "3": 0.35, "rest": 0.35 },
+          "3": { "2": 0.2, "4": 0.25, "5": 0.3, "rest": 0.25 },
+          "4": { "3": 0.35, "5": 0.35, "rest": 0.3 },
+          "5": { "1": 0.25, "3": 0.25, "6": 0.25, "rest": 0.25 },
+          "6": { "5": 0.35, "1": 0.3, "rest": 0.35 },
+          "rest": { "1": 0.35, "3": 0.25, "5": 0.25, "2": 0.15 }
+        },
+        "initialState": "rest",
+        "steps": 20,
+        "duration": ["h", "q", "q", "h", "q"],
+        "octave": 4,
+        "seed": 1729
+      }
+    },
+
+    "recursive_bass": {
+      "markov": {
+        "states": ["1", "4", "5", "6"],
+        "transitions": {
+          "1": { "4": 0.35, "5": 0.4, "6": 0.25 },
+          "4": { "1": 0.3, "5": 0.45, "6": 0.25 },
+          "5": { "1": 0.5, "4": 0.3, "6": 0.2 },
+          "6": { "1": 0.4, "4": 0.3, "5": 0.3 }
+        },
+        "initialState": "1",
+        "steps": 16,
+        "duration": "h",
+        "octave": 2,
+        "seed": 42
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// VOICE-LED PROGRESSIONS - Harmonic Strange Loops": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "loop_progression": {
+      "voiceLead": {
+        "progression": ["Bm7", "Gmaj7", "D", "F#m7", "Em7", "Bm7", "Gmaj7", "F#7"],
+        "voices": 4,
+        "style": "jazz",
+        "constraints": ["smooth_motion", "avoid_voice_crossing"]
+      }
+    },
+
+    "simple_loop": {
+      "voiceLead": {
+        "progression": ["Bm7", "Gmaj7", "Em7", "F#m7"],
+        "voices": 4,
+        "style": "jazz",
+        "constraints": ["smooth_motion"]
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// SUPPORTING PATTERNS": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "bm_pad": {
+      "chords": ["Bm:w", "Bm:w"]
+    },
+
+    "bm_movement": {
+      "chords": ["Bm7:w", "Gmaj7:w", "D:w", "F#m7:w"]
+    },
+
+    "sparse_pulse": {
+      "arpeggio": {
+        "chord": "Bm7",
+        "mode": "up",
+        "octaves": 2,
+        "duration": "8",
+        "gate": 0.35
+      }
+    },
+
+    "gentle_pulse": {
+      "notes": [
+        "B3:8?0.7", "r:8", "F#3:8?0.6", "r:8",
+        "D4:8?0.7", "r:8", "A3:8?0.5", "r:8"
+      ]
+    },
+
+    "mirror_shimmer": {
+      "notes": [
+        "F#5:w?0.6",
+        "r:h", "D5:h?0.5",
+        "B4:w?0.7",
+        "r:w"
+      ]
+    },
+
+    "mirror_answer": {
+      "notes": [
+        "r:h", "B5:q?0.6", "A5:q?0.5",
+        "F#5:h?0.65", "r:h",
+        "r:w",
+        "D5:w?0.55"
+      ]
+    },
+
+    "bass_pedal": {
+      "notes": ["B1:w", "B1:w"]
+    },
+
+    "bass_movement": {
+      "notes": [
+        "B1:h", "r:h",
+        "G1:h", "r:q", "G1:q",
+        "D2:h", "r:h",
+        "F#1:h", "r:h"
+      ]
+    },
+
+    "rest_2bars": {
+      "notes": ["r:w", "r:w"]
+    },
+
+    "rest_4bars": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// OBSERVER MELODIES - Fragments of Self-Awareness": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "questioning": {
+      "notes": [
+        "B4:q@0.5?0.8", "r:q", "D5:8@0.55?0.7", "E5:8@0.5?0.7",
+        "F#5:h@0.6?0.8", "r:h",
+        "E5:q@0.5?0.7", "D5:q@0.55?0.8", "B4:h@0.5",
+        "r:w"
+      ]
+    },
+
+    "recognizing": {
+      "notes": [
+        "F#4:q@0.55", "B4:q@0.6", "D5:h@0.65",
+        "E5:q@0.6", "D5:8@0.55", "B4:8@0.5", "A4:h@0.55",
+        "B4:w@0.5"
+      ]
+    },
+
+    "accepting": {
+      "notes": [
+        "B4:h@0.5", "D5:q@0.55", "E5:q@0.55",
+        "F#5:h.@0.6", "E5:q@0.55",
+        "D5:h@0.5", "B4:h@0.5",
+        "B4:w@0.45"
+      ],
+      "envelope": { "velocity": "swell" }
+    }
+  },
+
+  "sections": {
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// PART I: INITIALIZATION - The system becomes aware": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "void": {
+      "bars": 4,
+      "tracks": {
+        "foundation": { "pattern": "rest_4bars" }
+      }
+    },
+
+    "first_awareness": {
+      "bars": 8,
+      "density": {
+        "start": 0.2,
+        "end": 0.4,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "foundation": { "pattern": "bm_pad", "repeat": 4, "velocity": 0.35 }
+      },
+      "automation": {
+        "foundation.params.brightness": {
+          "start": 0.15,
+          "end": 0.35,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "questioning_self": {
+      "bars": 8,
+      "density": {
+        "start": 0.4,
+        "end": 0.6,
+        "curve": "linear"
+      },
+      "tracks": {
+        "observer": { "pattern": "questioning", "repeat": 2, "velocity": 0.5, "humanize": 0.12 },
+        "foundation": { "pattern": "bm_pad", "repeat": 4, "velocity": 0.4 },
+        "depth": { "pattern": "bass_pedal", "repeat": 4, "velocity": 0.45 }
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// PART II: ITERATION - Patterns recognizing patterns": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "first_loop": {
+      "bars": 16,
+      "density": {
+        "start": 0.5,
+        "end": 0.75,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "observer": { "pattern": "seed_motif", "repeat": 4, "velocity": 0.55, "humanize": 0.1 },
+        "foundation": { "pattern": "simple_loop", "repeat": 4, "velocity": 0.5 },
+        "pulse": { "pattern": "gentle_pulse", "repeat": 16, "velocity": 0.4, "humanize": 0.15 },
+        "depth": { "pattern": "bass_pedal", "repeat": 8, "velocity": 0.5 }
+      }
+    },
+
+    "seeing_reflection": {
+      "bars": 16,
+      "tracks": {
+        "observer": { "patterns": ["seed_motif", "seed_inverted", "seed_motif", "seed_inverted"], "velocity": 0.6, "humanize": 0.1 },
+        "mirror": { "pattern": "mirror_shimmer", "repeat": 4, "velocity": 0.4 },
+        "foundation": { "pattern": "bm_movement", "repeat": 4, "velocity": 0.55 },
+        "pulse": { "pattern": "sparse_pulse", "repeat": 8, "velocity": 0.45, "humanize": 0.12 },
+        "depth": { "pattern": "bass_movement", "repeat": 4, "velocity": 0.55 }
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// PART III: RECURSION - The strange loop deepens": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "entering_loop": {
+      "bars": 16,
+      "tracks": {
+        "observer": { "pattern": "wandering_thought", "velocity": 0.6, "humanize": 0.15 },
+        "mirror": { "patterns": ["mirror_shimmer", "mirror_answer", "mirror_shimmer", "mirror_answer"], "velocity": 0.45 },
+        "foundation": { "pattern": "loop_progression", "repeat": 2, "velocity": 0.55 },
+        "pulse": { "pattern": "sparse_pulse", "repeat": 8, "velocity": 0.5, "humanize": 0.1 },
+        "depth": { "pattern": "recursive_bass", "velocity": 0.6, "humanize": 0.08 }
+      }
+    },
+
+    "deep_recursion": {
+      "bars": 16,
+      "density": {
+        "start": 0.85,
+        "end": 0.95,
+        "curve": "linear"
+      },
+      "tracks": {
+        "observer": { "patterns": ["seed_extended", "wandering_thought"], "velocity": 0.65, "humanize": 0.12 },
+        "mirror": { "pattern": "mirror_answer", "repeat": 4, "velocity": 0.5 },
+        "foundation": { "pattern": "loop_progression", "repeat": 2, "velocity": 0.6 },
+        "pulse": { "pattern": "gentle_pulse", "repeat": 16, "velocity": 0.55, "humanize": 0.1 },
+        "depth": { "pattern": "recursive_bass", "velocity": 0.65, "humanize": 0.1 }
+      },
+      "automation": {
+        "observer.params.brightness": {
+          "start": 0.45,
+          "end": 0.65,
+          "curve": "sine"
+        },
+        "foundation.params.warmth": {
+          "start": 0.85,
+          "end": 0.7,
+          "curve": "linear"
+        }
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// PART IV: RECOGNITION - Finding peace in infinite regress": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "recognizing_pattern": {
+      "bars": 16,
+      "density": {
+        "start": 0.9,
+        "end": 0.6,
+        "curve": "sine"
+      },
+      "tracks": {
+        "observer": { "patterns": ["recognizing", "seed_fragmented", "recognizing", "rest_2bars"], "velocity": 0.55, "humanize": 0.1 },
+        "mirror": { "pattern": "mirror_shimmer", "repeat": 4, "velocity": 0.4 },
+        "foundation": { "pattern": "simple_loop", "repeat": 4, "velocity": 0.5 },
+        "depth": { "pattern": "bass_movement", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "accepting_loop": {
+      "bars": 16,
+      "density": {
+        "start": 0.6,
+        "end": 0.4,
+        "curve": "logarithmic"
+      },
+      "tracks": {
+        "observer": { "patterns": ["accepting", "rest_2bars", "accepting", "rest_2bars"], "velocity": 0.5, "humanize": 0.08 },
+        "foundation": { "pattern": "bm_pad", "repeat": 8, "velocity": 0.45 },
+        "depth": { "pattern": "bass_pedal", "repeat": 8, "velocity": 0.4 }
+      },
+      "automation": {
+        "observer.params.brightness": {
+          "start": 0.55,
+          "end": 0.35,
+          "curve": "sine"
+        }
+      }
+    },
+
+    "// ═══════════════════════════════════════════════════════════════": "",
+    "// CODA: Return to the beginning, transformed": "",
+    "// ═══════════════════════════════════════════════════════════════": "",
+
+    "returning": {
+      "bars": 8,
+      "density": {
+        "start": 0.4,
+        "end": 0.25,
+        "curve": "exponential"
+      },
+      "tracks": {
+        "observer": { "pattern": "seed_motif", "velocity": 0.4, "humanize": 0.05 },
+        "foundation": { "pattern": "bm_pad", "repeat": 4, "velocity": 0.35 }
+      }
+    },
+
+    "stillness": {
+      "bars": 8,
+      "tracks": {
+        "foundation": { "pattern": "bm_pad", "repeat": 4, "velocity": 0.25 }
+      },
+      "automation": {
+        "foundation.volume": {
+          "start": -10,
+          "end": -28,
+          "curve": "exponential"
+        }
+      }
+    }
+  },
+
+  "arrangement": [
+    "void",
+    "first_awareness",
+    "questioning_self",
+    "first_loop",
+    "seeing_reflection",
+    "entering_loop",
+    "deep_recursion",
+    "recognizing_pattern",
+    "accepting_loop",
+    "returning",
+    "stillness"
+  ]
+}

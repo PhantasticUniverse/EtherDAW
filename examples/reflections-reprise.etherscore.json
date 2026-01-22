@@ -157,7 +157,7 @@
       "notes": ["B5:16", "r:h.", "r:8", "r:w", "G5:8", "r:h.", "r:8", "r:w"]
     },
     "bells_constellation": {
-      "notes": ["E6:16", "r:q..", "B5:16", "r:q..", "G5:16", "r:q..", "r:q"]
+      "notes": ["E6:16", "r:q.", "B5:16", "r:q.", "G5:16", "r:q.", "r:q"]
     },
     "bells_farewell": {
       "notes": ["E6:q", "r:h.", "B5:q", "r:h.", "r:w", "r:w"]

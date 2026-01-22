@@ -16,7 +16,7 @@ import type { AutomationConfig, AutomationCurve, Section } from '../schema/types
  */
 export interface ParsedAutomationPath {
   instrument: string;
-  target: 'params' | 'effects' | 'channel';
+  target: 'params' | 'effects' | 'channel' | 'tempo';
   // For params: the semantic parameter name
   paramName?: string;
   // For effects: effect type and parameter
@@ -43,12 +43,21 @@ export interface ResolvedAutomation {
  * Parse an automation path string
  *
  * Formats:
+ * - "tempo" → global tempo automation (v0.7)
  * - "bass.params.brightness" → semantic param
  * - "bass.filter.frequency" → effect param
  * - "bass.volume" → channel param
  * - "bass.pan" → channel param
  */
 export function parseAutomationPath(path: string): ParsedAutomationPath | null {
+  // Handle global tempo automation (v0.7)
+  if (path === 'tempo') {
+    return {
+      instrument: '_global',
+      target: 'tempo',
+    };
+  }
+
   const parts = path.split('.');
 
   if (parts.length < 2) {

@@ -62,6 +62,65 @@ export const ARTICULATION = {
   normal: { gate: 1.0, velocityBoost: 0 },       // default
 } as const;
 
+// ============ NEW v0.8: Dynamics Markings ============
+/**
+ * Traditional dynamics notation mapped to velocity (0-1)
+ */
+export const DYNAMICS = {
+  pp: 0.20,   // pianissimo - very soft
+  p: 0.35,    // piano - soft
+  mp: 0.50,   // mezzo-piano - medium soft
+  mf: 0.65,   // mezzo-forte - medium loud
+  f: 0.80,    // forte - loud
+  ff: 0.95,   // fortissimo - very loud
+} as const;
+
+export type DynamicsMarking = keyof typeof DYNAMICS;
+
+// ============ NEW v0.8: Jazz Articulations ============
+/**
+ * Jazz articulation parameters
+ */
+export const JAZZ_ARTICULATION = {
+  fall: {
+    startRatio: 0.7,      // When fall starts (% of note duration)
+    semitones: 7,         // How far to fall (about a fifth)
+    velocityFade: 0.5,    // How much velocity fades during fall
+  },
+  doit: {
+    startRatio: 0.75,
+    semitones: 5,         // How far to rise (about a fourth)
+    velocityFade: 0.4,
+  },
+  scoop: {
+    maxDuration: 0.08,    // Max scoop duration in seconds
+    semitones: 3,         // Start from minor third below
+  },
+  bend: {
+    startRatio: 0.2,      // When bend starts
+    duration: 0.5,        // Duration as ratio of note
+    defaultSemitones: 2,  // Default bend amount
+  },
+} as const;
+
+// ============ NEW v0.8: Ornament Parameters ============
+export const ORNAMENTS = {
+  trill: {
+    speed: 0.06,          // 60ms per note
+    upperInterval: 2,      // Semitones (whole step)
+    velocityRatio: 0.85,   // Upper note velocity relative to main
+  },
+  mordent: {
+    maxDuration: 0.1,     // Max ornament duration in seconds
+    lowerInterval: 2,      // Semitones below
+  },
+  turn: {
+    maxDuration: 0.2,     // Max turn duration
+    upperInterval: 2,      // Semitones above
+    lowerInterval: 2,      // Semitones below
+  },
+} as const;
+
 // ============ Effect Defaults ============
 export const EFFECT_DEFAULTS = {
   reverb: {
@@ -185,45 +244,101 @@ export const SCALE_INTERVALS: Record<string, number[]> = {
   'locrian': [0, 1, 3, 5, 6, 8, 10],
 } as const;
 
-// ============ Groove Templates ============
+// ============ Groove Templates (v0.8: expanded) ============
 /**
  * Timing offsets and velocity multipliers for each 16th note position
  * Note: Not using `as const` to allow mutable array assignment
  */
 export const GROOVE_TEMPLATES: Record<string, {
   name: string;
+  description: string;
   timingOffsets: number[];
   velocityMultipliers: number[];
 }> = {
   straight: {
     name: 'Straight',
+    description: 'Quantized, metronomic timing',
     timingOffsets: [0, 0, 0, 0],
     velocityMultipliers: [1, 0.8, 0.9, 0.8],
   },
   shuffle: {
     name: 'Shuffle',
+    description: 'Classic swing feel with delayed offbeats',
     timingOffsets: [0, 0.08, 0, 0.08],
     velocityMultipliers: [1, 0.7, 0.9, 0.7],
   },
   funk: {
     name: 'Funk',
+    description: 'Tight, syncopated funk groove',
     timingOffsets: [0, -0.02, 0.02, -0.01],
     velocityMultipliers: [1, 0.9, 0.85, 0.95],
   },
   laid_back: {
     name: 'Laid Back',
+    description: 'Slightly behind the beat, relaxed feel',
     timingOffsets: [0.03, 0.03, 0.03, 0.03],
     velocityMultipliers: [1, 0.85, 0.9, 0.85],
   },
   pushed: {
     name: 'Pushed',
+    description: 'Slightly ahead of the beat, energetic',
     timingOffsets: [-0.02, -0.02, -0.02, -0.02],
     velocityMultipliers: [1, 0.9, 0.95, 0.9],
   },
   hip_hop: {
     name: 'Hip Hop',
+    description: 'Boom-bap influenced with swing on 2 and 4',
     timingOffsets: [0, 0.05, 0, 0.07],
     velocityMultipliers: [1, 0.75, 0.9, 0.8],
+  },
+  // NEW v0.8 groove templates
+  dilla: {
+    name: 'Dilla',
+    description: 'J Dilla-inspired drunk/loose timing',
+    timingOffsets: [0, 0.06, -0.02, 0.09],
+    velocityMultipliers: [1, 0.7, 0.85, 0.65],
+  },
+  reggae: {
+    name: 'Reggae',
+    description: 'One-drop emphasis with delayed backbeat',
+    timingOffsets: [0, 0.04, 0, 0.06],
+    velocityMultipliers: [0.7, 0.9, 1, 0.8],
+  },
+  dnb: {
+    name: 'Drum and Bass',
+    description: 'Fast breakbeat with ghost note dynamics',
+    timingOffsets: [0, -0.01, 0.01, -0.01],
+    velocityMultipliers: [1, 0.6, 0.85, 0.55],
+  },
+  trap: {
+    name: 'Trap',
+    description: 'Modern trap with hi-hat roll dynamics',
+    timingOffsets: [0, 0.02, 0, 0.03],
+    velocityMultipliers: [1, 0.65, 0.9, 0.6],
+  },
+  gospel: {
+    name: 'Gospel',
+    description: 'Church feel with strong backbeat',
+    timingOffsets: [0, 0.04, 0, 0.05],
+    velocityMultipliers: [0.9, 1, 0.85, 0.95],
+  },
+  new_orleans: {
+    name: 'New Orleans',
+    description: 'Second line parade feel',
+    timingOffsets: [0, 0.07, 0.02, 0.05],
+    velocityMultipliers: [1, 0.8, 0.9, 0.85],
+  },
+  bossa: {
+    name: 'Bossa Nova',
+    description: 'Brazilian bossa nova subtle swing',
+    timingOffsets: [0, 0.03, 0, 0.04],
+    velocityMultipliers: [1, 0.75, 0.85, 0.8],
+  },
+  afrobeat: {
+    name: 'Afrobeat',
+    description: 'Fela-inspired African polyrhythm feel',
+    timingOffsets: [0, 0.02, 0.04, 0.01],
+    velocityMultipliers: [1, 0.85, 0.9, 0.8],
   },
 };
 

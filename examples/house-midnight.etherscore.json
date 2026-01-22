@@ -167,7 +167,6 @@
         },
         "pad": {
           "pattern": "pad_am_sustained",
-          "repeat": 2,
           "velocity": 0.5,
           "octave": 0
         }

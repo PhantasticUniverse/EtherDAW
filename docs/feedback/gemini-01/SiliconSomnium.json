@@ -1,0 +1,289 @@
+{
+
+  "meta": {
+
+    "title": "Silicon Somnium",
+
+    "composer": "Gemini 2.0 Pro",
+
+    "mood": "cyber-noir, mysterious",
+
+    "genre": "dark ambient electronic",
+
+    "description": "An exploration of generative textures and voice-led transitions in a G Minor landscape."
+
+  },
+
+  "settings": {
+
+    "tempo": 82,
+
+    "key": "G minor",
+
+    "timeSignature": "4/4",
+
+    "swing": 0.1
+
+  },
+
+  "instruments": {
+
+    "neon_pad": {
+
+      "preset": "warm_pad",
+
+      "params": {
+
+        "warmth": 0.8,
+
+        "richness": 0.7,
+
+        "attack": 0.6
+
+      },
+
+      "volume": -10,
+
+      "effects": [
+
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } }
+
+      ]
+
+    },
+
+    "binary_lead": {
+
+      "preset": "fm_glass",
+
+      "params": {
+
+        "brightness": 0.7,
+
+        "punch": 0.9,
+
+        "release": 0.4
+
+      },
+
+      "volume": -12,
+
+      "effects": [
+
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n.", "feedback": 0.4 } }
+
+      ]
+
+    },
+
+    "logic_bass": {
+
+      "preset": "fm_bass",
+
+      "params": {
+
+        "punch": 0.8,
+
+        "warmth": 0.4,
+
+        "brightness": 0.3
+
+      },
+
+      "volume": -8
+
+    },
+
+    "glitch_kit": {
+
+      "preset": "drums:lofi",
+
+      "volume": -14
+
+    }
+
+  },
+
+  "patterns": {
+
+    "// GENERATIVE BASS": "Using Markov chain for a non-repetitive foundation",
+
+    "markov_bass": {
+
+      "markov": {
+
+        "states": ["1", "b3", "4", "5", "rest"],
+
+        "transitions": {
+
+          "1": { "b3": 0.3, "5": 0.4, "rest": 0.3 },
+
+          "b3": { "1": 0.4, "4": 0.4, "5": 0.2 },
+
+          "4": { "b3": 0.5, "5": 0.5 },
+
+          "5": { "1": 0.6, "4": 0.2, "rest": 0.2 },
+
+          "rest": { "1": 0.8, "5": 0.2 }
+
+        },
+
+        "steps": 16,
+
+        "duration": "q",
+
+        "octave": 2,
+
+        "seed": 777
+
+      }
+
+    },
+
+    "// SMOOTH VOICING": "Jazz-noir progression using voice leading",
+
+    "chorale_progression": {
+
+      "voiceLead": {
+
+        "progression": ["Gm9", "Ebmaj7#11", "Cm9", "D7alt"],
+
+        "voices": 4,
+
+        "style": "jazz"
+
+      }
+
+    },
+
+    "short_motif": {
+
+      "notes": ["G4:8", "Bb4:8", "D5:q", "r:q"]
+
+    },
+
+    "motif_dev": {
+
+      "continuation": {
+
+        "source": "short_motif",
+
+        "technique": "descending_sequence",
+
+        "steps": 3,
+
+        "interval": -2
+
+      }
+
+    },
+
+    "glitch_beat": {
+
+      "drums": {
+
+        "kit": "lofi",
+
+        "lines": {
+
+          "kick":  "x...x...x.......",
+
+          "snare": "....x.......x...",
+
+          "hihat": "xxxxxxxxxxxxxxxx"
+
+        }
+
+      }
+
+    }
+
+  },
+
+  "sections": {
+
+    "initiation": {
+
+      "bars": 8,
+
+      "tracks": {
+
+        "neon_pad": { "pattern": "chorale_progression", "repeat": 2, "velocity": 0.4 }
+
+      }
+
+    },
+
+    "processing": {
+
+      "bars": 16,
+
+      "density": {
+
+        "start": 0.3,
+
+        "end": 0.8,
+
+        "curve": "exponential"
+
+      },
+
+      "tracks": {
+
+        "neon_pad": { "pattern": "chorale_progression", "repeat": 4, "velocity": 0.5 },
+
+        "logic_bass": { "pattern": "markov_bass", "repeat": 4, "velocity": 0.6 },
+
+        "glitch_kit": { "pattern": "glitch_beat", "repeat": 4, "velocity": 0.5, "humanize": 0.05 }
+
+      }
+
+    },
+
+    "thought_stream": {
+
+      "bars": 16,
+
+      "tracks": {
+
+        "neon_pad": { "pattern": "chorale_progression", "repeat": 4, "velocity": 0.6 },
+
+        "logic_bass": { "pattern": "markov_bass", "repeat": 4, "velocity": 0.7 },
+
+        "binary_lead": { "patterns": ["short_motif", "motif_dev"], "repeat": 2, "velocity": 0.65, "humanize": 0.1 },
+
+        "glitch_kit": { "pattern": "glitch_beat", "repeat": 4, "velocity": 0.7 }
+
+      }
+
+    },
+
+    "hibernation": {
+
+      "bars": 8,
+
+      "tracks": {
+
+        "neon_pad": { "pattern": "chorale_progression", "repeat": 2, "velocity": 0.3 },
+
+        "binary_lead": { "pattern": "short_motif", "repeat": 2, "velocity": 0.4, "probability": 0.3 }
+
+      }
+
+    }
+
+  },
+
+  "arrangement": [
+
+    "initiation",
+
+    "processing",
+
+    "thought_stream",
+
+    "hibernation"
+
+  ]
+
+}

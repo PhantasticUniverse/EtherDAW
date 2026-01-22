@@ -10,9 +10,9 @@
 import type { SynthType, SemanticSynthParams, ToneJsOverrides } from './semantic-params.js';
 
 /**
- * Preset category for organization
+ * Preset category for organization (v0.8: added lofi, cinematic, world, ambient, modern)
  */
-export type PresetCategory = 'synth' | 'bass' | 'pad' | 'lead' | 'keys' | 'pluck' | 'fm' | 'texture' | 'drums';
+export type PresetCategory = 'synth' | 'bass' | 'pad' | 'lead' | 'keys' | 'pluck' | 'fm' | 'texture' | 'drums' | 'lofi' | 'cinematic' | 'world' | 'ambient' | 'modern';
 
 /**
  * Declarative preset definition
@@ -610,6 +610,367 @@ export const PRESET_DEFINITIONS: Record<string, PresetDefinition> = {
       envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.05 },
     },
   },
+
+  // ============================================================================
+  // NEW v0.8: Lo-fi Presets
+  // ============================================================================
+  'lofi_keys': {
+    name: 'Lo-fi Keys',
+    category: 'lofi',
+    description: 'Dusty, warm keys with tape-like character',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 1.005,  // Slight detune for warmth
+      modulationIndex: 2.5,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.01, decay: 1.2, sustain: 0.1, release: 0.8 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.05, release: 0.2 },
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.9, punch: 0.4 },
+  },
+
+  'lofi_pad': {
+    name: 'Lo-fi Pad',
+    category: 'lofi',
+    description: 'Tape-saturated pad with gentle warmth',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.8, decay: 0.5, sustain: 0.6, release: 1.5 },
+    },
+    semanticDefaults: { brightness: 0.25, warmth: 0.95, attack: 0.6 },
+  },
+
+  'vinyl_texture': {
+    name: 'Vinyl Texture',
+    category: 'lofi',
+    description: 'Subtle crackle and warmth for atmosphere',
+    type: 'noise',
+    base: {
+      noise: { type: 'brown' },
+      envelope: { attack: 0.5, decay: 0.5, sustain: 0.3, release: 1.0 },
+    },
+    semanticDefaults: { brightness: 0.1, warmth: 0.8 },
+  },
+
+  'dusty_piano': {
+    name: 'Dusty Piano',
+    category: 'lofi',
+    description: 'Worn piano with vintage character',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 1.01,  // Slightly detuned
+      modulationIndex: 3,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.005, decay: 1.8, sustain: 0.05, release: 1.0 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.005, decay: 0.25, sustain: 0.02, release: 0.15 },
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.85, decay: 0.7 },
+  },
+
+  // ============================================================================
+  // NEW v0.8: Cinematic Presets
+  // ============================================================================
+  'cinematic_brass': {
+    name: 'Cinematic Brass',
+    category: 'cinematic',
+    description: 'Massive orchestral brass for epic moments',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 1,
+      modulationIndex: 18,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.15, decay: 0.3, sustain: 0.8, release: 0.5 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.2, decay: 0.4, sustain: 0.7, release: 0.4 },
+    },
+    semanticDefaults: { punch: 0.8, brightness: 0.75, attack: 0.3 },
+  },
+
+  'tension_strings': {
+    name: 'Tension Strings',
+    category: 'cinematic',
+    description: 'Dark, suspenseful string texture',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.6, decay: 0.4, sustain: 0.7, release: 1.8 },
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.4, attack: 0.5 },
+  },
+
+  'impact_hit': {
+    name: 'Impact Hit',
+    category: 'cinematic',
+    description: 'Deep cinematic impact for transitions',
+    type: 'membrane',
+    base: {
+      pitchDecay: 0.15,
+      octaves: 8,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 1.5, sustain: 0, release: 2.0 },
+      pitch: 'C1',
+    },
+    semanticDefaults: { punch: 1.0, decay: 0.8 },
+  },
+
+  'epic_pad': {
+    name: 'Epic Pad',
+    category: 'cinematic',
+    description: 'Huge evolving pad for emotional moments',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.9, release: 3.0 },
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.7, attack: 0.8, release: 0.9 },
+  },
+
+  'riser': {
+    name: 'Riser',
+    category: 'cinematic',
+    description: 'Building tension riser sound',
+    type: 'noise',
+    base: {
+      noise: { type: 'white' },
+      envelope: { attack: 4.0, decay: 0.5, sustain: 0.8, release: 0.5 },
+    },
+    semanticDefaults: { brightness: 0.7, attack: 0.95 },
+  },
+
+  // ============================================================================
+  // NEW v0.8: World Music Presets
+  // ============================================================================
+  'kalimba': {
+    name: 'Kalimba',
+    category: 'world',
+    description: 'African thumb piano with metallic tines',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 5.5,
+      modulationIndex: 4,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 1.2, sustain: 0.05, release: 0.8 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.2 },
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.5, decay: 0.5 },
+  },
+
+  'sitar_lead': {
+    name: 'Sitar Lead',
+    category: 'world',
+    description: 'Sitar-inspired lead with characteristic buzz',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 3,
+      modulationIndex: 7,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.02, decay: 0.5, sustain: 0.4, release: 0.6 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.5, release: 0.4 },
+    },
+    semanticDefaults: { brightness: 0.7, warmth: 0.6 },
+  },
+
+  'steel_drum': {
+    name: 'Steel Drum',
+    category: 'world',
+    description: 'Caribbean steel pan with bright overtones',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 4.5,
+      modulationIndex: 5,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 1.0, sustain: 0.1, release: 0.6 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.001, decay: 0.3, sustain: 0.05, release: 0.2 },
+    },
+    semanticDefaults: { brightness: 0.75, warmth: 0.5, decay: 0.5 },
+  },
+
+  'koto': {
+    name: 'Koto',
+    category: 'world',
+    description: 'Japanese stringed instrument with delicate attack',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 6,
+      modulationIndex: 2.5,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 1.5, sustain: 0.02, release: 0.8 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 },
+    },
+    semanticDefaults: { brightness: 0.55, warmth: 0.4, decay: 0.6 },
+  },
+
+  // ============================================================================
+  // NEW v0.8: Ambient Presets
+  // ============================================================================
+  'granular_pad': {
+    name: 'Granular Pad',
+    category: 'ambient',
+    description: 'Textured evolving pad with cloud-like quality',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 2.0, decay: 1.0, sustain: 0.95, release: 4.0 },
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.8, attack: 0.9, release: 0.95 },
+  },
+
+  'drone': {
+    name: 'Drone',
+    category: 'ambient',
+    description: 'Deep sustained drone for atmospheric beds',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 3.0, decay: 1.0, sustain: 1.0, release: 5.0 },
+    },
+    semanticDefaults: { brightness: 0.15, warmth: 0.9, attack: 0.95, sustain: 1.0, release: 1.0 },
+  },
+
+  'shimmer': {
+    name: 'Shimmer',
+    category: 'ambient',
+    description: 'Ethereal shimmering texture with high harmonics',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 7.5,
+      modulationIndex: 2,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.7, release: 3.0 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 1.0, decay: 0.5, sustain: 0.4, release: 2.0 },
+    },
+    semanticDefaults: { brightness: 0.8, warmth: 0.5, attack: 0.7 },
+  },
+
+  'atmosphere': {
+    name: 'Atmosphere',
+    category: 'ambient',
+    description: 'Breathy, wind-like atmospheric texture',
+    type: 'noise',
+    base: {
+      noise: { type: 'pink' },
+      envelope: { attack: 2.0, decay: 1.0, sustain: 0.6, release: 3.0 },
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.6, attack: 0.8 },
+  },
+
+  'space_pad': {
+    name: 'Space Pad',
+    category: 'ambient',
+    description: 'Vast, cosmic pad with deep reverb character',
+    type: 'fmsynth',
+    base: {
+      harmonicity: 2,
+      modulationIndex: 1.5,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 2.5, decay: 1.5, sustain: 0.85, release: 4.5 },
+      modulation: { type: 'sine' },
+      modulationEnvelope: { attack: 2.0, decay: 1.0, sustain: 0.6, release: 3.0 },
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.7, attack: 0.85, release: 0.9 },
+  },
+
+  // ============================================================================
+  // NEW v0.8: Modern/Trap Presets
+  // ============================================================================
+  '808_bass': {
+    name: '808 Bass',
+    category: 'modern',
+    description: 'Classic 808 bass with long sustain',
+    type: 'membrane',
+    base: {
+      pitchDecay: 0.08,
+      octaves: 6,
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 0.8, sustain: 0.3, release: 0.4 },
+      pitch: 'C2',
+    },
+    semanticDefaults: { punch: 0.9, decay: 0.6, sustain: 0.3 },
+  },
+
+  'trap_hihat': {
+    name: 'Trap Hi-Hat',
+    category: 'modern',
+    description: 'Crisp trap hi-hat with tight envelope',
+    type: 'noise',
+    base: {
+      noise: { type: 'white' },
+      envelope: { attack: 0.001, decay: 0.04, sustain: 0, release: 0.02 },
+    },
+    semanticDefaults: { brightness: 0.9, decay: 0.1 },
+  },
+
+  'future_bass_lead': {
+    name: 'Future Bass Lead',
+    category: 'modern',
+    description: 'Supersawed lead for future bass drops',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.15, sustain: 0.5, release: 0.2 },
+    },
+    semanticDefaults: { brightness: 0.85, richness: 0.9, punch: 0.7 },
+  },
+
+  'wobble_bass': {
+    name: 'Wobble Bass',
+    category: 'modern',
+    description: 'Dubstep/EDM wobble bass foundation',
+    type: 'monosynth',
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.8, release: 0.2 },
+      filterEnvelope: {
+        attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.2,
+        baseFrequency: 100, octaves: 4,
+      },
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.8, warmth: 0.5 },
+  },
+
+  'pluck_lead': {
+    name: 'Pluck Lead',
+    category: 'modern',
+    description: 'Bright pluck for modern pop melodies',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.001, decay: 0.3, sustain: 0.1, release: 0.2 },
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.6, decay: 0.3 },
+  },
+
+  'supersaw': {
+    name: 'Supersaw',
+    category: 'modern',
+    description: 'Classic supersaw for trance and EDM leads',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.02, decay: 0.2, sustain: 0.6, release: 0.4 },
+    },
+    semanticDefaults: { brightness: 0.9, richness: 1.0, warmth: 0.4 },
+  },
+
+  'chiptune': {
+    name: 'Chiptune',
+    category: 'modern',
+    description: 'Retro 8-bit square wave for chiptune style',
+    type: 'polysynth',
+    base: {
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.001, decay: 0.1, sustain: 0.4, release: 0.1 },
+    },
+    semanticDefaults: { brightness: 0.8, punch: 0.5 },
+  },
 };
 
 /**
@@ -636,8 +997,8 @@ export function getAllPresetNames(): string[] {
 }
 
 /**
- * Get all categories
+ * Get all categories (v0.8: added lofi, cinematic, world, ambient, modern)
  */
 export function getAllCategories(): PresetCategory[] {
-  return ['synth', 'bass', 'pad', 'lead', 'keys', 'pluck', 'fm', 'texture', 'drums'];
+  return ['synth', 'bass', 'pad', 'lead', 'keys', 'pluck', 'fm', 'texture', 'drums', 'lofi', 'cinematic', 'world', 'ambient', 'modern'];
 }

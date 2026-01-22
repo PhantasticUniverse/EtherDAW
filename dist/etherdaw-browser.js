@@ -535,6 +535,20 @@ var ARTICULATION = {
   normal: { gate: 1, velocityBoost: 0 }
   // default
 };
+var DYNAMICS = {
+  pp: 0.2,
+  // pianissimo - very soft
+  p: 0.35,
+  // piano - soft
+  mp: 0.5,
+  // mezzo-piano - medium soft
+  mf: 0.65,
+  // mezzo-forte - medium loud
+  f: 0.8,
+  // forte - loud
+  ff: 0.95
+  // fortissimo - very loud
+};
 var EFFECT_DEFAULTS = {
   reverb: {
     decay: 2,
@@ -653,33 +667,88 @@ var SCALE_INTERVALS = {
 var GROOVE_TEMPLATES = {
   straight: {
     name: "Straight",
+    description: "Quantized, metronomic timing",
     timingOffsets: [0, 0, 0, 0],
     velocityMultipliers: [1, 0.8, 0.9, 0.8]
   },
   shuffle: {
     name: "Shuffle",
+    description: "Classic swing feel with delayed offbeats",
     timingOffsets: [0, 0.08, 0, 0.08],
     velocityMultipliers: [1, 0.7, 0.9, 0.7]
   },
   funk: {
     name: "Funk",
+    description: "Tight, syncopated funk groove",
     timingOffsets: [0, -0.02, 0.02, -0.01],
     velocityMultipliers: [1, 0.9, 0.85, 0.95]
   },
   laid_back: {
     name: "Laid Back",
+    description: "Slightly behind the beat, relaxed feel",
     timingOffsets: [0.03, 0.03, 0.03, 0.03],
     velocityMultipliers: [1, 0.85, 0.9, 0.85]
   },
   pushed: {
     name: "Pushed",
+    description: "Slightly ahead of the beat, energetic",
     timingOffsets: [-0.02, -0.02, -0.02, -0.02],
     velocityMultipliers: [1, 0.9, 0.95, 0.9]
   },
   hip_hop: {
     name: "Hip Hop",
+    description: "Boom-bap influenced with swing on 2 and 4",
     timingOffsets: [0, 0.05, 0, 0.07],
     velocityMultipliers: [1, 0.75, 0.9, 0.8]
+  },
+  // NEW v0.8 groove templates
+  dilla: {
+    name: "Dilla",
+    description: "J Dilla-inspired drunk/loose timing",
+    timingOffsets: [0, 0.06, -0.02, 0.09],
+    velocityMultipliers: [1, 0.7, 0.85, 0.65]
+  },
+  reggae: {
+    name: "Reggae",
+    description: "One-drop emphasis with delayed backbeat",
+    timingOffsets: [0, 0.04, 0, 0.06],
+    velocityMultipliers: [0.7, 0.9, 1, 0.8]
+  },
+  dnb: {
+    name: "Drum and Bass",
+    description: "Fast breakbeat with ghost note dynamics",
+    timingOffsets: [0, -0.01, 0.01, -0.01],
+    velocityMultipliers: [1, 0.6, 0.85, 0.55]
+  },
+  trap: {
+    name: "Trap",
+    description: "Modern trap with hi-hat roll dynamics",
+    timingOffsets: [0, 0.02, 0, 0.03],
+    velocityMultipliers: [1, 0.65, 0.9, 0.6]
+  },
+  gospel: {
+    name: "Gospel",
+    description: "Church feel with strong backbeat",
+    timingOffsets: [0, 0.04, 0, 0.05],
+    velocityMultipliers: [0.9, 1, 0.85, 0.95]
+  },
+  new_orleans: {
+    name: "New Orleans",
+    description: "Second line parade feel",
+    timingOffsets: [0, 0.07, 0.02, 0.05],
+    velocityMultipliers: [1, 0.8, 0.9, 0.85]
+  },
+  bossa: {
+    name: "Bossa Nova",
+    description: "Brazilian bossa nova subtle swing",
+    timingOffsets: [0, 0.03, 0, 0.04],
+    velocityMultipliers: [1, 0.75, 0.85, 0.8]
+  },
+  afrobeat: {
+    name: "Afrobeat",
+    description: "Fela-inspired African polyrhythm feel",
+    timingOffsets: [0, 0.02, 0.04, 0.01],
+    velocityMultipliers: [1, 0.85, 0.9, 0.8]
   }
 };
 
@@ -687,12 +756,12 @@ var GROOVE_TEMPLATES = {
 var DURATION_MAP = DURATIONS;
 
 // src/parser/note-parser.ts
-var NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:([*>^])|(~>)|(~))?(?:@((?:0|1)?\.?\d+))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?$/;
-var REST_REGEX = /^r:(\d+|[whq])(\.?)$/;
+var NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|pp|p|mp|mf|f|ff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?$/;
+var REST_REGEX = /^r:(\d+|[whq])(\.?)$/i;
 function parseNote(noteStr) {
   const match = noteStr.trim().match(NOTE_REGEX);
   if (!match) {
-    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[articulation][@velocity][+/-timing][?probability] (e.g., "C4:q", "C4:q*", "C4:q@0.8")`);
+    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[tN][articulation][.jazzArt][.ornament][@velocity][+/-timing][?probability] (e.g., "C4:q", "C4:q*", "C4:q@0.8", "C4:8t3", "C4:q.fall", "C4:q.tr")`);
   }
   const [
     ,
@@ -706,31 +775,54 @@ function parseNote(noteStr) {
     // 4: Duration
     dotted,
     // 5: Dot
+    tupletRaw,
+    // 6: Tuplet ratio
     articulationRaw,
-    // 6: Articulation (*>^)
+    // 7: Articulation (*>^)
     portamentoRaw,
-    // 7: Portamento (~>)
+    // 8: Portamento (~>) - before modifiers
     legatoRaw,
-    // 8: Legato (~)
+    // 9: Legato (~)
+    jazzArtRaw,
+    // 10: Jazz articulation (fall, doit, scoop, bend)
+    bendAmountRaw,
+    // 11: Bend amount for .bend+N
+    ornamentRaw,
+    // 12: Ornament (tr, mord, turn)
     velocityRaw,
-    // 9: Velocity
+    // 13: Velocity
     timingRaw,
-    // 10: Timing offset
-    probabilityRaw
-    // 11: Probability
+    // 14: Timing offset
+    probabilityRaw,
+    // 15: Probability
+    portamentoTrailing
+    // 16: Portamento (~>) - after modifiers (alternate position)
   ] = match;
   const noteName = noteNameRaw.toUpperCase();
   const accidental = accidentalRaw || "";
   const octave = octaveStr ? parseInt(octaveStr, 10) : 4;
   const isDotted = dotted === ".";
+  const tupletRatio = tupletRaw ? parseInt(tupletRaw, 10) : void 0;
   let articulation = "";
   if (articulationRaw) {
     articulation = articulationRaw;
   } else if (legatoRaw) {
     articulation = "~";
   }
-  const portamento = portamentoRaw === "~>";
-  const velocity = velocityRaw ? parseFloat(velocityRaw) : void 0;
+  const portamento = portamentoRaw === "~>" || portamentoTrailing === "~>";
+  const jazzArticulation = jazzArtRaw;
+  const bendAmount = bendAmountRaw ? parseInt(bendAmountRaw, 10) : void 0;
+  const ornament = ornamentRaw;
+  let velocity;
+  let dynamics;
+  if (velocityRaw) {
+    if (velocityRaw in DYNAMICS) {
+      dynamics = velocityRaw;
+      velocity = DYNAMICS[dynamics];
+    } else {
+      velocity = parseFloat(velocityRaw);
+    }
+  }
   const timingOffset = timingRaw ? parseInt(timingRaw, 10) : void 0;
   const probability = probabilityRaw ? parseFloat(probabilityRaw) : void 0;
   if (velocity !== void 0 && (velocity < 0 || velocity > 1)) {
@@ -739,11 +831,21 @@ function parseNote(noteStr) {
   if (probability !== void 0 && (probability < 0 || probability > 1)) {
     throw new Error(`Invalid probability ${probability} in "${noteStr}". Must be 0.0-1.0`);
   }
+  if (tupletRatio !== void 0 && (tupletRatio < 2 || tupletRatio > 9)) {
+    throw new Error(`Invalid tuplet ratio ${tupletRatio} in "${noteStr}". Must be 2-9 (e.g., t3 for triplet, t5 for quintuplet)`);
+  }
+  if (bendAmount !== void 0 && (bendAmount < 1 || bendAmount > 12)) {
+    throw new Error(`Invalid bend amount ${bendAmount} in "${noteStr}". Must be 1-12 semitones`);
+  }
   const baseDuration = DURATION_MAP[durationCode];
   if (baseDuration === void 0) {
     throw new Error(`Invalid duration code: "${durationCode}"`);
   }
-  const durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
+  let durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
+  if (tupletRatio) {
+    const tupletBase = tupletRatio % 2 === 0 ? tupletRatio / 2 : Math.floor(tupletRatio / 2) + 1;
+    durationBeats = durationBeats * tupletBase / tupletRatio;
+  }
   const pitch = `${noteName}${accidental}${octave}`;
   const result = {
     pitch,
@@ -759,6 +861,11 @@ function parseNote(noteStr) {
   if (probability !== void 0) result.probability = probability;
   if (timingOffset !== void 0) result.timingOffset = timingOffset;
   if (portamento) result.portamento = true;
+  if (tupletRatio !== void 0) result.tupletRatio = tupletRatio;
+  if (jazzArticulation) result.jazzArticulation = jazzArticulation;
+  if (bendAmount !== void 0) result.bendAmount = bendAmount;
+  if (ornament) result.ornament = ornament;
+  if (dynamics) result.dynamics = dynamics;
   return result;
 }
 function getArticulationModifiers(articulation) {
@@ -788,7 +895,8 @@ function parseRest(restStr) {
   return dotted === "." ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
 }
 function isRest(str) {
-  return str.trim().startsWith("r:");
+  const lower = str.trim().toLowerCase();
+  return lower.startsWith("r:");
 }
 function parseDuration(durationStr, dotted = false) {
   const baseDuration = DURATION_MAP[durationStr];
@@ -824,9 +932,24 @@ function transposePitch(pitch, semitones) {
 function parseNotes(noteStrings) {
   return noteStrings.map(parseNote);
 }
+function isCompactNotation(str) {
+  return str.trim().includes(" ") || str.includes("|");
+}
+function parseCompactNotes(compactStr) {
+  const withoutBars = compactStr.replace(/\|/g, " ");
+  return withoutBars.split(/\s+/).map((s) => s.trim()).filter((s) => s.length > 0);
+}
+function expandNoteStrings(noteStrings) {
+  return noteStrings.flatMap((str) => {
+    if (isCompactNotation(str)) {
+      return parseCompactNotes(str);
+    }
+    return [str];
+  });
+}
 
 // src/parser/chord-parser.ts
-var CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
+var CHORD_REGEX = /^([A-G][#b]?)((?:maj|min|m|M|dim|aug|sus[24]?|add)?(?:\d+)?(?:alt)?(?:b\d+|#\d+)*)(?:@(\w+))?(?:\/([A-G][#b]?))?:(\d+|[whq])(\.?)([*~>^]?)$/;
 var CHORD_INTERVALS = {
   // Triads
   "": [0, 4, 7],
@@ -884,8 +1007,19 @@ var CHORD_INTERVALS = {
   // add 11
   "6": [0, 4, 7, 9],
   // major 6th
-  "m6": [0, 3, 7, 9]
+  "m6": [0, 3, 7, 9],
   // minor 6th
+  // Altered chords
+  "7alt": [0, 4, 6, 10, 13],
+  // altered dominant (7 b5 b9)
+  "7b5": [0, 4, 6, 10],
+  // dominant 7 flat 5
+  "7#5": [0, 4, 8, 10],
+  // dominant 7 sharp 5
+  "7b9": [0, 4, 7, 10, 13],
+  // dominant 7 flat 9
+  "7#9": [0, 4, 7, 10, 15]
+  // dominant 7 sharp 9
 };
 var CHORD_VOICINGS = {
   // Major 7th voicings
@@ -1387,7 +1521,227 @@ function shiftOctave(pattern, octaves) {
   return transposePattern(pattern, octaves * 12);
 }
 
+// src/generative/markov-presets.ts
+function generateUniform(states) {
+  const transitions = {};
+  const prob = 1 / states.length;
+  for (const state of states) {
+    transitions[state] = {};
+    for (const target of states) {
+      transitions[state][target] = prob;
+    }
+  }
+  return transitions;
+}
+function generateNeighborWeighted(states) {
+  const transitions = {};
+  for (let i = 0; i < states.length; i++) {
+    const state = states[i];
+    transitions[state] = {};
+    let totalWeight = 0;
+    const weights = [];
+    for (let j = 0; j < states.length; j++) {
+      const distance = Math.abs(i - j);
+      const weight = 1 / (distance + 1);
+      weights.push(weight);
+      totalWeight += weight;
+    }
+    for (let j = 0; j < states.length; j++) {
+      transitions[state][states[j]] = weights[j] / totalWeight;
+    }
+  }
+  return transitions;
+}
+function generateWalkingBass(states) {
+  const transitions = {};
+  const hasApproach = states.includes("approach");
+  const hasRest = states.includes("rest");
+  const hasRoot = states.includes("1");
+  for (const state of states) {
+    transitions[state] = {};
+    if (state === "1") {
+      const others = states.filter((s) => s !== "1" && s !== "rest");
+      const baseProbEach = 0.85 / others.length;
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.1;
+        } else if (target === "5") {
+          transitions[state][target] = baseProbEach + 0.05;
+        } else if (target === "rest") {
+          transitions[state][target] = 0.05;
+        } else {
+          transitions[state][target] = baseProbEach;
+        }
+      }
+    } else if (state === "approach") {
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.6;
+        } else if (target === "5") {
+          transitions[state][target] = 0.3;
+        } else {
+          transitions[state][target] = 0.1 / (states.length - 2);
+        }
+      }
+    } else if (state === "rest") {
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.5;
+        } else if (target === "rest") {
+          transitions[state][target] = 0.1;
+        } else {
+          transitions[state][target] = 0.4 / (states.length - 2);
+        }
+      }
+    } else {
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.35;
+        } else if (target === "approach" && hasApproach) {
+          transitions[state][target] = 0.2;
+        } else if (target === state) {
+          transitions[state][target] = 0.05;
+        } else {
+          const remaining = hasApproach ? 0.4 : 0.6;
+          const otherCount = states.filter((s) => s !== "1" && s !== "approach" && s !== state).length;
+          transitions[state][target] = remaining / Math.max(1, otherCount);
+        }
+      }
+    }
+  }
+  return normalizeTransitions(transitions);
+}
+function generateMelodyStepwise(states) {
+  const transitions = {};
+  for (let i = 0; i < states.length; i++) {
+    const state = states[i];
+    transitions[state] = {};
+    for (let j = 0; j < states.length; j++) {
+      const target = states[j];
+      const distance = Math.abs(i - j);
+      if (distance === 0) {
+        transitions[state][target] = 0.05;
+      } else if (distance === 1) {
+        transitions[state][target] = 0.35;
+      } else if (distance === 2) {
+        transitions[state][target] = 0.15;
+      } else {
+        transitions[state][target] = 0.05 / distance;
+      }
+    }
+  }
+  return normalizeTransitions(transitions);
+}
+function generateRootHeavy(states) {
+  const transitions = {};
+  const hasRoot = states.includes("1");
+  for (const state of states) {
+    transitions[state] = {};
+    if (state === "1") {
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.3;
+        } else if (target === "5") {
+          transitions[state][target] = 0.25;
+        } else {
+          transitions[state][target] = 0.45 / (states.length - 2);
+        }
+      }
+    } else {
+      for (const target of states) {
+        if (target === "1") {
+          transitions[state][target] = 0.5;
+        } else if (target === state) {
+          transitions[state][target] = 0.1;
+        } else {
+          transitions[state][target] = 0.4 / (states.length - 2);
+        }
+      }
+    }
+  }
+  return normalizeTransitions(transitions);
+}
+function normalizeTransitions(transitions) {
+  const normalized = {};
+  for (const [state, probs] of Object.entries(transitions)) {
+    normalized[state] = {};
+    const sum = Object.values(probs).reduce((a, b) => a + b, 0);
+    if (sum === 0) {
+      const count = Object.keys(probs).length;
+      for (const target of Object.keys(probs)) {
+        normalized[state][target] = 1 / count;
+      }
+    } else {
+      for (const [target, prob] of Object.entries(probs)) {
+        normalized[state][target] = prob / sum;
+      }
+    }
+  }
+  return normalized;
+}
+var PRESET_GENERATORS = {
+  "uniform": generateUniform,
+  "neighbor_weighted": generateNeighborWeighted,
+  "walking_bass": generateWalkingBass,
+  "melody_stepwise": generateMelodyStepwise,
+  "root_heavy": generateRootHeavy
+};
+function getPresetTransitions(preset, states) {
+  const generator = PRESET_GENERATORS[preset];
+  if (!generator) {
+    console.warn(`Unknown Markov preset: ${preset}, using uniform`);
+    return generateUniform(states);
+  }
+  return generator(states);
+}
+function isValidPreset(preset) {
+  return preset in PRESET_GENERATORS;
+}
+
 // src/generative/markov.ts
+var CHORD_SCALE_MAP = {
+  // Major family
+  "maj": "major",
+  "maj7": "major",
+  "maj9": "major",
+  "maj6": "major",
+  "6": "major",
+  "6/9": "major",
+  "add9": "major",
+  // Minor family
+  "m": "minor",
+  "min": "minor",
+  "m7": "dorian",
+  // Minor 7 often uses dorian for brighter sound
+  "min7": "dorian",
+  "m9": "dorian",
+  "m6": "dorian",
+  "m11": "dorian",
+  // Dominant family
+  "7": "mixolydian",
+  "dom7": "mixolydian",
+  "9": "mixolydian",
+  "11": "mixolydian",
+  "13": "mixolydian",
+  "7sus4": "mixolydian",
+  "7#9": "mixolydian",
+  // Hendrix chord
+  "7b9": "phrygian",
+  // Altered sound
+  // Half-diminished
+  "m7b5": "locrian",
+  "half-dim": "locrian",
+  // Diminished
+  "dim": "locrian",
+  "dim7": "locrian",
+  // Sus chords
+  "sus2": "major",
+  "sus4": "major",
+  // Augmented
+  "aug": "major",
+  // Whole tone implied but use major for simplicity
+  "+": "major"
+};
 var SeededRandom = class {
   state;
   constructor(seed) {
@@ -1425,6 +1779,55 @@ function normalizeMode(mode) {
     "locrian": "locrian"
   };
   return modeMap[mode?.toLowerCase() ?? "major"] || "major";
+}
+function parseChordSymbol(chord) {
+  const match = chord.match(/^([A-G][#b]?)(.*)$/);
+  if (!match) {
+    return { root: "C", quality: "maj" };
+  }
+  const [, root, quality] = match;
+  return { root, quality: quality || "maj" };
+}
+function getChordScale(chordSymbol) {
+  const { root, quality } = parseChordSymbol(chordSymbol);
+  const mode = CHORD_SCALE_MAP[quality] || "major";
+  return { root, mode };
+}
+function isNoteInScale2(midiNote, scaleRoot, mode) {
+  const intervals = SCALE_INTERVALS[mode] || SCALE_INTERVALS["major"];
+  const rootMatch = scaleRoot.match(/^([A-G])([#b]?)$/);
+  if (!rootMatch) return true;
+  let rootValue = NOTE_VALUES[rootMatch[1]];
+  if (rootMatch[2] === "#") rootValue += 1;
+  if (rootMatch[2] === "b") rootValue -= 1;
+  rootValue = (rootValue % 12 + 12) % 12;
+  const noteValue = (midiNote % 12 + 12) % 12;
+  const intervalFromRoot = (noteValue - rootValue + 12) % 12;
+  return intervals.includes(intervalFromRoot);
+}
+function constrainToScale(pitch, key) {
+  const { root, mode } = parseKey2(key);
+  const intervals = SCALE_INTERVALS[mode] || SCALE_INTERVALS["major"];
+  const pitchMatch = pitch.match(/^([A-G][#b]?)(-?\d+)$/);
+  if (!pitchMatch) return pitch;
+  const [, noteName, octaveStr] = pitchMatch;
+  const midi = noteNameToMidi(noteName, parseInt(octaveStr, 10));
+  if (isNoteInScale2(midi, root, mode)) {
+    return pitch;
+  }
+  if (isNoteInScale2(midi + 1, root, mode)) {
+    return midiToPitch2(midi + 1);
+  }
+  if (isNoteInScale2(midi - 1, root, mode)) {
+    return midiToPitch2(midi - 1);
+  }
+  if (isNoteInScale2(midi + 2, root, mode)) {
+    return midiToPitch2(midi + 2);
+  }
+  if (isNoteInScale2(midi - 2, root, mode)) {
+    return midiToPitch2(midi - 2);
+  }
+  return pitch;
 }
 function noteNameToMidi(noteName, octave) {
   const match = noteName.match(/^([A-G])([#b]?)$/);
@@ -1512,18 +1915,37 @@ function parseDuration3(durationStr) {
 function generateMarkovPattern(config, options) {
   const {
     states,
-    transitions,
+    transitions: explicitTransitions,
+    preset,
     initialState,
     steps,
     duration,
     octave = 3,
-    seed
+    seed,
+    constrainToScale: shouldConstrainToScale = false,
+    // v0.8
+    chordScale
+    // v0.8
   } = config;
-  const key = options.key || "C major";
+  let effectiveKey = options.key || "C major";
+  if (chordScale) {
+    const { root, mode } = getChordScale(chordScale);
+    effectiveKey = `${root} ${mode}`;
+  }
+  const key = effectiveKey;
   const rng = new SeededRandom(seed);
   if (!states || states.length === 0) {
     console.warn("Markov config has no states");
     return [];
+  }
+  let transitions;
+  if (explicitTransitions) {
+    transitions = explicitTransitions;
+  } else if (preset && isValidPreset(preset)) {
+    transitions = getPresetTransitions(preset, states);
+  } else {
+    console.warn("Markov config has no transitions or valid preset, using uniform distribution");
+    transitions = getPresetTransitions("uniform", states);
   }
   let currentState = initialState || states[0];
   const stateSequence = [currentState];
@@ -1540,7 +1962,10 @@ function generateMarkovPattern(config, options) {
     const durationBeats = parseDuration3(durationStr);
     const nextState = i < stateSequence.length - 1 ? stateSequence[i + 1] : void 0;
     const nextPitch = nextState ? resolveState(nextState, key, octave) || void 0 : void 0;
-    const pitch = resolveState(state, key, octave, nextPitch);
+    let pitch = resolveState(state, key, octave, nextPitch);
+    if (pitch !== null && shouldConstrainToScale) {
+      pitch = constrainToScale(pitch, key);
+    }
     if (pitch !== null) {
       notes.push({
         pitch,
@@ -1901,9 +2326,9 @@ function findBestVoicingSequence(chords, voices, constraints, ranges) {
 function generateVoiceLeading(config) {
   const warnings = [];
   const { progression, voices, constraints, voiceRanges, style = "jazz" } = config;
-  let effectiveConstraints = [...constraints];
+  let effectiveConstraints = [...constraints || []];
   if (style !== "custom" && CONSTRAINT_PRESETS[style]) {
-    effectiveConstraints = [...CONSTRAINT_PRESETS[style], ...constraints];
+    effectiveConstraints = [...CONSTRAINT_PRESETS[style], ...constraints || []];
   }
   effectiveConstraints = [...new Set(effectiveConstraints)];
   const ranges = [];
@@ -2042,15 +2467,161 @@ function resolvePattern(pattern, allPatterns) {
   console.warn(`Transform on pattern with no notes array - transforms only work on notes`);
   return pattern;
 }
+function resolveInheritance(pattern, allPatterns) {
+  if (!pattern.extends || !allPatterns) {
+    return pattern;
+  }
+  const parentPattern = allPatterns[pattern.extends];
+  if (!parentPattern) {
+    console.warn(`Pattern inheritance: parent pattern "${pattern.extends}" not found`);
+    return pattern;
+  }
+  const resolvedParent = resolveInheritance(parentPattern, allPatterns);
+  const merged = { ...resolvedParent };
+  if (pattern.overrides) {
+    if (pattern.overrides.notes) {
+      merged.notes = pattern.overrides.notes;
+    }
+    if (pattern.overrides.transpose && merged.notes) {
+      merged.notes = transposePattern(merged.notes, pattern.overrides.transpose);
+    }
+    if (pattern.overrides.octave && merged.notes) {
+      merged.notes = shiftOctave(merged.notes, pattern.overrides.octave);
+    }
+  }
+  const childOnlyProps = ["envelope", "constrainToScale"];
+  for (const prop of childOnlyProps) {
+    if (pattern[prop] !== void 0) {
+      merged[prop] = pattern[prop];
+    }
+  }
+  delete merged.extends;
+  delete merged.overrides;
+  return merged;
+}
+function evaluateConditional(conditional, context2) {
+  let leftValue;
+  switch (conditional.condition) {
+    case "density":
+      leftValue = context2.density ?? 0.5;
+      break;
+    case "probability":
+      leftValue = Math.random();
+      break;
+    case "section_index":
+      leftValue = context2.sectionIndex ?? 0;
+      break;
+    default:
+      leftValue = 0;
+  }
+  let result;
+  switch (conditional.operator) {
+    case ">":
+      result = leftValue > conditional.value;
+      break;
+    case "<":
+      result = leftValue < conditional.value;
+      break;
+    case ">=":
+      result = leftValue >= conditional.value;
+      break;
+    case "<=":
+      result = leftValue <= conditional.value;
+      break;
+    case "==":
+      result = leftValue === conditional.value;
+      break;
+    case "!=":
+      result = leftValue !== conditional.value;
+      break;
+    default:
+      result = false;
+  }
+  return result ? conditional.then : conditional.else || conditional.then;
+}
+function expandTuplet(config, octaveOffset, transpose, velocity) {
+  const [actual, normal] = config.ratio;
+  const notes = [];
+  let currentBeat = 0;
+  let totalNormalBeats = 0;
+  const parsedNotes = [];
+  for (const noteStr of config.notes) {
+    if (isRest(noteStr)) {
+      parsedNotes.push({
+        noteStr,
+        isRest: true,
+        restDuration: parseRest(noteStr)
+      });
+    } else {
+      parsedNotes.push({
+        noteStr,
+        isRest: false,
+        parsed: parseNote(noteStr)
+      });
+    }
+  }
+  for (const item of parsedNotes) {
+    if (item.isRest) {
+      totalNormalBeats += item.restDuration;
+    } else {
+      totalNormalBeats += item.parsed.durationBeats;
+    }
+  }
+  const scaleFactor = normal / actual;
+  for (const item of parsedNotes) {
+    if (item.isRest) {
+      currentBeat += item.restDuration * scaleFactor;
+    } else {
+      const parsed = item.parsed;
+      const adjustedOctave = parsed.octave + octaveOffset;
+      const adjustedPitch = applyTranspose(`${parsed.noteName}${parsed.accidental}${adjustedOctave}`, transpose);
+      const articulationMods = getArticulationModifiers(parsed.articulation);
+      const baseVel = parsed.velocity !== void 0 ? parsed.velocity : velocity;
+      const noteVelocity = Math.min(1, baseVel + articulationMods.velocityBoost);
+      const scaledDuration = parsed.durationBeats * scaleFactor;
+      const noteDuration = scaledDuration * articulationMods.gate;
+      const noteData = {
+        pitch: adjustedPitch,
+        startBeat: currentBeat,
+        durationBeats: noteDuration,
+        velocity: noteVelocity
+      };
+      if (parsed.timingOffset !== void 0) noteData.timingOffset = parsed.timingOffset;
+      if (parsed.probability !== void 0) noteData.probability = parsed.probability;
+      if (parsed.portamento) noteData.portamento = true;
+      notes.push(noteData);
+      currentBeat += scaledDuration;
+    }
+  }
+  return {
+    notes,
+    totalBeats: totalNormalBeats * scaleFactor
+  };
+}
 function expandPattern(pattern, context2) {
   const velocity = context2.velocity ?? VELOCITY_ENVELOPE.DEFAULT_VELOCITY;
   const octaveOffset = context2.octaveOffset ?? 0;
   const transpose = context2.transpose ?? 0;
-  const resolvedPattern = pattern.transform ? resolvePattern(pattern, context2.allPatterns) : pattern;
+  if (pattern.conditional && context2.allPatterns) {
+    const selectedPatternName = evaluateConditional(pattern.conditional, context2);
+    const selectedPattern = context2.allPatterns[selectedPatternName];
+    if (selectedPattern) {
+      return expandPattern(selectedPattern, context2);
+    }
+    console.warn(`Conditional pattern target "${selectedPatternName}" not found`);
+    return { notes: [], totalBeats: 0 };
+  }
+  let workingPattern = pattern;
+  if (pattern.extends && context2.allPatterns) {
+    workingPattern = resolveInheritance(pattern, context2.allPatterns);
+  }
+  const resolvedPattern = workingPattern.transform ? resolvePattern(workingPattern, context2.allPatterns) : workingPattern;
   let notes = [];
   let currentBeat = 0;
   if (resolvedPattern.notes) {
-    for (const noteStr of resolvedPattern.notes) {
+    const noteInput = typeof resolvedPattern.notes === "string" ? [resolvedPattern.notes] : resolvedPattern.notes;
+    const expandedNotes = expandNoteStrings(noteInput);
+    for (const noteStr of expandedNotes) {
       if (isRest(noteStr)) {
         currentBeat += parseRest(noteStr);
       } else {
@@ -2070,6 +2641,9 @@ function expandPattern(pattern, context2) {
         if (parsed.timingOffset !== void 0) noteData.timingOffset = parsed.timingOffset;
         if (parsed.probability !== void 0) noteData.probability = parsed.probability;
         if (parsed.portamento) noteData.portamento = true;
+        if (parsed.jazzArticulation) noteData.jazzArticulation = parsed.jazzArticulation;
+        if (parsed.bendAmount !== void 0) noteData.bendAmount = parsed.bendAmount;
+        if (parsed.ornament) noteData.ornament = parsed.ornament;
         notes.push(noteData);
         currentBeat += parsed.durationBeats;
       }
@@ -2168,6 +2742,16 @@ function expandPattern(pattern, context2) {
   }
   if (resolvedPattern.voiceLead) {
     const expanded = expandVoiceLead(resolvedPattern.voiceLead, octaveOffset, transpose, velocity);
+    for (const note of expanded.notes) {
+      notes.push({
+        ...note,
+        startBeat: currentBeat + note.startBeat
+      });
+    }
+    currentBeat += expanded.totalBeats;
+  }
+  if (resolvedPattern.tuplet) {
+    const expanded = expandTuplet(resolvedPattern.tuplet, octaveOffset, transpose, velocity);
     for (const note of expanded.notes) {
       notes.push({
         ...note,
@@ -3140,10 +3724,13 @@ function resolveTrack(track, ctx) {
     return [];
   }
   const results = [];
-  let currentBeat = 0;
   const repeatCount = track.repeat || 1;
+  const beatsPerBar = getBeatsPerBar(ctx.settings.timeSignature || "4/4");
+  const useBarAlignment = track.patterns && track.patterns.length > 1;
+  let cumulativeBeat = 0;
   for (let r = 0; r < repeatCount; r++) {
-    for (const patternName of patternNames) {
+    for (let i = 0; i < patternNames.length; i++) {
+      const patternName = patternNames[i];
       const pattern = ctx.patterns[patternName];
       if (!pattern) {
         console.warn(`Pattern not found: ${patternName}`);
@@ -3157,17 +3744,47 @@ function resolveTrack(track, ctx) {
         transpose: track.transpose
       };
       const expanded = expandPattern(pattern, patternCtx);
+      const patternIndex = r * patternNames.length + i;
+      const currentBeat = useBarAlignment ? patternIndex * beatsPerBar : cumulativeBeat;
+      let notesToAdd;
+      let actualPatternLength;
+      if (useBarAlignment && expanded.totalBeats < beatsPerBar) {
+        notesToAdd = loopPatternToFill(expanded.notes, expanded.totalBeats, beatsPerBar);
+        actualPatternLength = beatsPerBar;
+      } else {
+        notesToAdd = expanded.notes;
+        actualPatternLength = expanded.totalBeats;
+      }
       const processedNotes = processExpandedNotes(
-        expanded,
+        { notes: notesToAdd, totalBeats: actualPatternLength },
         currentBeat,
         track.humanize || 0,
         ctx.settings.swing || 0
       );
       results.push(...processedNotes);
-      currentBeat += expanded.totalBeats;
+      if (!useBarAlignment) {
+        cumulativeBeat += actualPatternLength;
+      }
     }
   }
   return results;
+}
+function loopPatternToFill(notes, patternLength, targetLength) {
+  if (notes.length === 0 || patternLength <= 0) return notes;
+  const result = [];
+  let offset = 0;
+  while (offset < targetLength) {
+    for (const note of notes) {
+      const newStart = note.startBeat + offset;
+      if (newStart >= targetLength) break;
+      result.push({
+        ...note,
+        startBeat: newStart
+      });
+    }
+    offset += patternLength;
+  }
+  return result;
 }
 function resolveParallelPatterns(track, ctx) {
   const results = [];
@@ -3508,6 +4125,12 @@ function createSimpleScore(patterns, bars = 4, tempo = 120, key = "C major") {
 
 // src/engine/automation.ts
 function parseAutomationPath(path) {
+  if (path === "tempo") {
+    return {
+      instrument: "_global",
+      target: "tempo"
+    };
+  }
   const parts = path.split(".");
   if (parts.length < 2) {
     console.warn(`Invalid automation path: ${path}`);
@@ -24822,6 +25445,348 @@ var PRESET_DEFINITIONS = {
       noise: { type: "pink" },
       envelope: { attack: 1e-3, decay: 0.2, sustain: 0, release: 0.05 }
     }
+  },
+  // ============================================================================
+  // NEW v0.8: Lo-fi Presets
+  // ============================================================================
+  "lofi_keys": {
+    name: "Lo-fi Keys",
+    category: "lofi",
+    description: "Dusty, warm keys with tape-like character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.005,
+      // Slight detune for warmth
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 1.2, sustain: 0.1, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.05, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.9, punch: 0.4 }
+  },
+  "lofi_pad": {
+    name: "Lo-fi Pad",
+    category: "lofi",
+    description: "Tape-saturated pad with gentle warmth",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.8, decay: 0.5, sustain: 0.6, release: 1.5 }
+    },
+    semanticDefaults: { brightness: 0.25, warmth: 0.95, attack: 0.6 }
+  },
+  "vinyl_texture": {
+    name: "Vinyl Texture",
+    category: "lofi",
+    description: "Subtle crackle and warmth for atmosphere",
+    type: "noise",
+    base: {
+      noise: { type: "brown" },
+      envelope: { attack: 0.5, decay: 0.5, sustain: 0.3, release: 1 }
+    },
+    semanticDefaults: { brightness: 0.1, warmth: 0.8 }
+  },
+  "dusty_piano": {
+    name: "Dusty Piano",
+    category: "lofi",
+    description: "Worn piano with vintage character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.01,
+      // Slightly detuned
+      modulationIndex: 3,
+      oscillator: { type: "sine" },
+      envelope: { attack: 5e-3, decay: 1.8, sustain: 0.05, release: 1 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 5e-3, decay: 0.25, sustain: 0.02, release: 0.15 }
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.85, decay: 0.7 }
+  },
+  // ============================================================================
+  // NEW v0.8: Cinematic Presets
+  // ============================================================================
+  "cinematic_brass": {
+    name: "Cinematic Brass",
+    category: "cinematic",
+    description: "Massive orchestral brass for epic moments",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 18,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.15, decay: 0.3, sustain: 0.8, release: 0.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.2, decay: 0.4, sustain: 0.7, release: 0.4 }
+    },
+    semanticDefaults: { punch: 0.8, brightness: 0.75, attack: 0.3 }
+  },
+  "tension_strings": {
+    name: "Tension Strings",
+    category: "cinematic",
+    description: "Dark, suspenseful string texture",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.6, decay: 0.4, sustain: 0.7, release: 1.8 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.4, attack: 0.5 }
+  },
+  "impact_hit": {
+    name: "Impact Hit",
+    category: "cinematic",
+    description: "Deep cinematic impact for transitions",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.15,
+      octaves: 8,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0, release: 2 },
+      pitch: "C1"
+    },
+    semanticDefaults: { punch: 1, decay: 0.8 }
+  },
+  "epic_pad": {
+    name: "Epic Pad",
+    category: "cinematic",
+    description: "Huge evolving pad for emotional moments",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.9, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.7, attack: 0.8, release: 0.9 }
+  },
+  "riser": {
+    name: "Riser",
+    category: "cinematic",
+    description: "Building tension riser sound",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 4, decay: 0.5, sustain: 0.8, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 0.7, attack: 0.95 }
+  },
+  // ============================================================================
+  // NEW v0.8: World Music Presets
+  // ============================================================================
+  "kalimba": {
+    name: "Kalimba",
+    category: "world",
+    description: "African thumb piano with metallic tines",
+    type: "fmsynth",
+    base: {
+      harmonicity: 5.5,
+      modulationIndex: 4,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.2, sustain: 0.05, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.4, sustain: 0, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.5, decay: 0.5 }
+  },
+  "sitar_lead": {
+    name: "Sitar Lead",
+    category: "world",
+    description: "Sitar-inspired lead with characteristic buzz",
+    type: "fmsynth",
+    base: {
+      harmonicity: 3,
+      modulationIndex: 7,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.02, decay: 0.5, sustain: 0.4, release: 0.6 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.5, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.7, warmth: 0.6 }
+  },
+  "steel_drum": {
+    name: "Steel Drum",
+    category: "world",
+    description: "Caribbean steel pan with bright overtones",
+    type: "fmsynth",
+    base: {
+      harmonicity: 4.5,
+      modulationIndex: 5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1, sustain: 0.1, release: 0.6 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.3, sustain: 0.05, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.75, warmth: 0.5, decay: 0.5 }
+  },
+  "koto": {
+    name: "Koto",
+    category: "world",
+    description: "Japanese stringed instrument with delicate attack",
+    type: "fmsynth",
+    base: {
+      harmonicity: 6,
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0.02, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.2, sustain: 0, release: 0.1 }
+    },
+    semanticDefaults: { brightness: 0.55, warmth: 0.4, decay: 0.6 }
+  },
+  // ============================================================================
+  // NEW v0.8: Ambient Presets
+  // ============================================================================
+  "granular_pad": {
+    name: "Granular Pad",
+    category: "ambient",
+    description: "Textured evolving pad with cloud-like quality",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 2, decay: 1, sustain: 0.95, release: 4 }
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.8, attack: 0.9, release: 0.95 }
+  },
+  "drone": {
+    name: "Drone",
+    category: "ambient",
+    description: "Deep sustained drone for atmospheric beds",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 3, decay: 1, sustain: 1, release: 5 }
+    },
+    semanticDefaults: { brightness: 0.15, warmth: 0.9, attack: 0.95, sustain: 1, release: 1 }
+  },
+  "shimmer": {
+    name: "Shimmer",
+    category: "ambient",
+    description: "Ethereal shimmering texture with high harmonics",
+    type: "fmsynth",
+    base: {
+      harmonicity: 7.5,
+      modulationIndex: 2,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.7, release: 3 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1, decay: 0.5, sustain: 0.4, release: 2 }
+    },
+    semanticDefaults: { brightness: 0.8, warmth: 0.5, attack: 0.7 }
+  },
+  "atmosphere": {
+    name: "Atmosphere",
+    category: "ambient",
+    description: "Breathy, wind-like atmospheric texture",
+    type: "noise",
+    base: {
+      noise: { type: "pink" },
+      envelope: { attack: 2, decay: 1, sustain: 0.6, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.6, attack: 0.8 }
+  },
+  "space_pad": {
+    name: "Space Pad",
+    category: "ambient",
+    description: "Vast, cosmic pad with deep reverb character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 1.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 2.5, decay: 1.5, sustain: 0.85, release: 4.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 2, decay: 1, sustain: 0.6, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.7, attack: 0.85, release: 0.9 }
+  },
+  // ============================================================================
+  // NEW v0.8: Modern/Trap Presets
+  // ============================================================================
+  "808_bass": {
+    name: "808 Bass",
+    category: "modern",
+    description: "Classic 808 bass with long sustain",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.08,
+      octaves: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.8, sustain: 0.3, release: 0.4 },
+      pitch: "C2"
+    },
+    semanticDefaults: { punch: 0.9, decay: 0.6, sustain: 0.3 }
+  },
+  "trap_hihat": {
+    name: "Trap Hi-Hat",
+    category: "modern",
+    description: "Crisp trap hi-hat with tight envelope",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.04, sustain: 0, release: 0.02 }
+    },
+    semanticDefaults: { brightness: 0.9, decay: 0.1 }
+  },
+  "future_bass_lead": {
+    name: "Future Bass Lead",
+    category: "modern",
+    description: "Supersawed lead for future bass drops",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.15, sustain: 0.5, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.85, richness: 0.9, punch: 0.7 }
+  },
+  "wobble_bass": {
+    name: "Wobble Bass",
+    category: "modern",
+    description: "Dubstep/EDM wobble bass foundation",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.8, release: 0.2 },
+      filterEnvelope: {
+        attack: 0.01,
+        decay: 0.2,
+        sustain: 0.5,
+        release: 0.2,
+        baseFrequency: 100,
+        octaves: 4
+      }
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.8, warmth: 0.5 }
+  },
+  "pluck_lead": {
+    name: "Pluck Lead",
+    category: "modern",
+    description: "Bright pluck for modern pop melodies",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 1e-3, decay: 0.3, sustain: 0.1, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.6, decay: 0.3 }
+  },
+  "supersaw": {
+    name: "Supersaw",
+    category: "modern",
+    description: "Classic supersaw for trance and EDM leads",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.02, decay: 0.2, sustain: 0.6, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.9, richness: 1, warmth: 0.4 }
+  },
+  "chiptune": {
+    name: "Chiptune",
+    category: "modern",
+    description: "Retro 8-bit square wave for chiptune style",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "square" },
+      envelope: { attack: 1e-3, decay: 0.1, sustain: 0.4, release: 0.1 }
+    },
+    semanticDefaults: { brightness: 0.8, punch: 0.5 }
   }
 };
 function getPresetDefinition(name) {

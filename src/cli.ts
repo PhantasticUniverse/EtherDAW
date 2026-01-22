@@ -411,5 +411,297 @@ function getTemplate(name: string): object {
   return templates[name];
 }
 
+/**
+ * Spectrogram command - analyze audio visually
+ */
+program
+  .command('spectrogram <file>')
+  .description('Generate a spectrogram image from a WAV file')
+  .option('-o, --output <file>', 'Output PNG file path')
+  .option('--width <pixels>', 'Image width', '1200')
+  .option('--height <pixels>', 'Image height', '400')
+  .option('--colormap <name>', 'Color map (viridis, magma, inferno, plasma, grayscale)', 'viridis')
+  .option('--window <samples>', 'FFT window size', '2048')
+  .option('--hop <samples>', 'Hop size', '512')
+  .option('--waveform', 'Also generate waveform image')
+  .option('--stats', 'Show audio statistics')
+  .action(async (file: string, options: {
+    output?: string;
+    width: string;
+    height: string;
+    colormap: string;
+    window: string;
+    hop: string;
+    waveform?: boolean;
+    stats?: boolean;
+  }) => {
+    try {
+      const { generateSpectrogramFromFile, generateWaveformPng } = await import('./analysis/spectrogram.js');
+      const { readWavFile, getAudioStats } = await import('./analysis/wav-reader.js');
+      const { writeFile: writeFileAsync } = await import('fs/promises');
+
+      const inputName = basename(file, extname(file));
+      const outputPath = options.output || `${inputName}-spectrogram.png`;
+
+      console.log(`Analyzing: ${file}`);
+
+      // Generate spectrogram
+      const spectrogramPng = generateSpectrogramFromFile(resolve(file), {
+        width: parseInt(options.width),
+        height: parseInt(options.height),
+        colorMap: options.colormap as 'viridis' | 'magma' | 'inferno' | 'plasma' | 'grayscale',
+        windowSize: parseInt(options.window),
+        hopSize: parseInt(options.hop),
+      });
+
+      await writeFileAsync(resolve(outputPath), spectrogramPng);
+      console.log(`✓ Spectrogram saved to ${outputPath}`);
+
+      // Optionally generate waveform
+      if (options.waveform) {
+        const wavData = readWavFile(resolve(file));
+        const waveformPng = generateWaveformPng(wavData.mono, {
+          width: parseInt(options.width),
+          height: 150,
+        });
+        const waveformPath = outputPath.replace('.png', '-waveform.png');
+        await writeFileAsync(resolve(waveformPath), waveformPng);
+        console.log(`✓ Waveform saved to ${waveformPath}`);
+      }
+
+      // Optionally show stats
+      if (options.stats) {
+        const wavData = readWavFile(resolve(file));
+        const stats = getAudioStats(wavData.mono);
+        console.log('\nAudio Statistics:');
+        console.log(`  Sample Rate: ${wavData.sampleRate} Hz`);
+        console.log(`  Duration: ${formatDuration(wavData.duration)}`);
+        console.log(`  Channels: ${wavData.numChannels}`);
+        console.log(`  Peak: ${stats.peakDb.toFixed(1)} dB`);
+        console.log(`  RMS: ${stats.rmsDb.toFixed(1)} dB`);
+        console.log(`  Crest Factor: ${stats.crestFactor.toFixed(2)}`);
+        console.log(`  DC Offset: ${(stats.dcOffset * 100).toFixed(3)}%`);
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Compare command - compare two audio files visually
+ */
+program
+  .command('compare <file1> <file2>')
+  .description('Compare two WAV files and generate difference visualization')
+  .option('-o, --output <file>', 'Output PNG file path', 'comparison.png')
+  .option('--width <pixels>', 'Image width', '1200')
+  .option('--height <pixels>', 'Image height', '400')
+  .action(async (file1: string, file2: string, options: {
+    output: string;
+    width: string;
+    height: string;
+  }) => {
+    try {
+      const { compareWavFiles } = await import('./analysis/spectrogram.js');
+      const { writeFile: writeFileAsync } = await import('fs/promises');
+
+      console.log(`Comparing: ${file1} vs ${file2}`);
+
+      const result = compareWavFiles(
+        resolve(file1),
+        resolve(file2),
+        {
+          width: parseInt(options.width),
+          height: parseInt(options.height),
+        }
+      );
+
+      await writeFileAsync(resolve(options.output), result.diffImage);
+      console.log(`✓ Comparison saved to ${options.output}`);
+      console.log(`  Similarity: ${(result.similarity * 100).toFixed(1)}%`);
+      console.log(`  Max difference: ${(result.maxDifference * 100).toFixed(1)}%`);
+
+      if (result.changedRegions.length > 0) {
+        console.log('\n  Changed regions:');
+        for (const region of result.changedRegions) {
+          console.log(`    - ${region}`);
+        }
+      }
+
+      if (result.similarity < 0.95) {
+        console.log('\n⚠ Significant differences detected!');
+      } else {
+        console.log('\n✓ Files are very similar');
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Generate test signals
+ */
+program
+  .command('generate <type>')
+  .description('Generate test signals (sine, sweep, noise, metronome, scale, a440)')
+  .option('-o, --output <file>', 'Output WAV file path')
+  .option('-d, --duration <seconds>', 'Duration in seconds', '3')
+  .option('-f, --frequency <hz>', 'Frequency in Hz (for sine)', '440')
+  .option('--start-freq <hz>', 'Start frequency for sweep', '20')
+  .option('--end-freq <hz>', 'End frequency for sweep', '20000')
+  .option('--bpm <tempo>', 'BPM for metronome', '120')
+  .option('--sample-rate <hz>', 'Sample rate', '44100')
+  .action(async (type: string, options: {
+    output?: string;
+    duration: string;
+    frequency: string;
+    startFreq: string;
+    endFreq: string;
+    bpm: string;
+    sampleRate: string;
+  }) => {
+    try {
+      const testSignals = await import('./analysis/test-signals.js');
+
+      const duration = parseFloat(options.duration);
+      const sampleRate = parseInt(options.sampleRate);
+      let samples: Float32Array;
+      let defaultName: string;
+
+      switch (type.toLowerCase()) {
+        case 'sine':
+          samples = testSignals.generateSine(parseFloat(options.frequency), duration, sampleRate);
+          defaultName = `sine-${options.frequency}hz.wav`;
+          break;
+
+        case 'square':
+          samples = testSignals.generateSquare(parseFloat(options.frequency), duration, sampleRate);
+          defaultName = `square-${options.frequency}hz.wav`;
+          break;
+
+        case 'sawtooth':
+        case 'saw':
+          samples = testSignals.generateSawtooth(parseFloat(options.frequency), duration, sampleRate);
+          defaultName = `saw-${options.frequency}hz.wav`;
+          break;
+
+        case 'triangle':
+          samples = testSignals.generateTriangle(parseFloat(options.frequency), duration, sampleRate);
+          defaultName = `triangle-${options.frequency}hz.wav`;
+          break;
+
+        case 'sweep':
+          samples = testSignals.generateSweep(
+            parseFloat(options.startFreq),
+            parseFloat(options.endFreq),
+            duration,
+            sampleRate
+          );
+          defaultName = `sweep-${options.startFreq}-${options.endFreq}hz.wav`;
+          break;
+
+        case 'white':
+        case 'whitenoise':
+          samples = testSignals.generateWhiteNoise(duration, sampleRate);
+          defaultName = 'white-noise.wav';
+          break;
+
+        case 'pink':
+        case 'pinknoise':
+          samples = testSignals.generatePinkNoise(duration, sampleRate);
+          defaultName = 'pink-noise.wav';
+          break;
+
+        case 'brown':
+        case 'brownnoise':
+          samples = testSignals.generateBrownNoise(duration, sampleRate);
+          defaultName = 'brown-noise.wav';
+          break;
+
+        case 'metronome':
+        case 'click':
+          samples = testSignals.generateMetronome(parseInt(options.bpm), duration, sampleRate);
+          defaultName = `metronome-${options.bpm}bpm.wav`;
+          break;
+
+        case 'scale':
+          samples = testSignals.generateScale(60, 0.5, sampleRate);
+          defaultName = 'scale-c-major.wav';
+          break;
+
+        case 'a440':
+        case 'tuning':
+          samples = testSignals.generateA440(duration, sampleRate);
+          defaultName = 'a440-tuning.wav';
+          break;
+
+        case 'testtones':
+          samples = testSignals.generateTestTones(duration, sampleRate);
+          defaultName = 'test-tones.wav';
+          break;
+
+        default:
+          console.error(`Unknown signal type: ${type}`);
+          console.log('Available types: sine, square, sawtooth, triangle, sweep,');
+          console.log('                 white, pink, brown, metronome, scale, a440, testtones');
+          process.exit(1);
+          return;
+      }
+
+      const outputPath = options.output || defaultName;
+      testSignals.writeWavFile(samples, resolve(outputPath), sampleRate);
+      console.log(`✓ Generated ${outputPath} (${formatDuration(duration)})`);
+
+      // Generate spectrogram for visual reference
+      const spectrogramPath = outputPath.replace('.wav', '-spectrogram.png');
+      const { generateSpectrogramFromFile } = await import('./analysis/spectrogram.js');
+      const png = generateSpectrogramFromFile(resolve(outputPath), { width: 800, height: 300 });
+      const { writeFile: writeFileAsync } = await import('fs/promises');
+      await writeFileAsync(resolve(spectrogramPath), png);
+      console.log(`✓ Spectrogram saved to ${spectrogramPath}`);
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * MIDI to audio - render MIDI to WAV for comparison
+ */
+program
+  .command('midi-render <file>')
+  .description('Render a MIDI file to WAV using basic synthesis')
+  .option('-o, --output <file>', 'Output WAV file path')
+  .option('--sample-rate <hz>', 'Sample rate', '44100')
+  .action(async (file: string, options: {
+    output?: string;
+    sampleRate: string;
+  }) => {
+    try {
+      const { renderMidiToWav } = await import('./analysis/midi-renderer.js');
+
+      const inputName = basename(file, extname(file));
+      const outputPath = options.output || `${inputName}.wav`;
+      const sampleRate = parseInt(options.sampleRate);
+
+      console.log(`Rendering MIDI: ${file}`);
+      await renderMidiToWav(resolve(file), resolve(outputPath), sampleRate);
+      console.log(`✓ Rendered to ${outputPath}`);
+
+      // Also generate spectrogram
+      const spectrogramPath = outputPath.replace('.wav', '-spectrogram.png');
+      const { generateSpectrogramFromFile } = await import('./analysis/spectrogram.js');
+      const { writeFile: writeFileAsync } = await import('fs/promises');
+      const png = generateSpectrogramFromFile(resolve(outputPath), { width: 800, height: 300 });
+      await writeFileAsync(resolve(spectrogramPath), png);
+      console.log(`✓ Spectrogram saved to ${spectrogramPath}`);
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
 // Run CLI
 program.parse();
