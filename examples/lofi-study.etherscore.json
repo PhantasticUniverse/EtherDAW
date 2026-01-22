@@ -1,0 +1,374 @@
+{
+  "meta": {
+    "title": "Late Night Study",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "Chill, Nostalgic, Hypnotic",
+    "genre": "Lo-fi Hip Hop",
+    "description": "A rhythm-focused lo-fi beat designed to stress-test EtherDAW's drum patterns, euclidean rhythms, and swing. Perfect for studying or late-night vibes.",
+    "tags": ["lofi", "hiphop", "chill", "beats", "study", "drums", "euclidean"]
+  },
+
+  "settings": {
+    "tempo": 75,
+    "key": "C minor",
+    "timeSignature": "4/4",
+    "swing": 0.18
+  },
+
+  "instruments": {
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -2,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 8000, "type": "lowpass" } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -4,
+      "pan": 0,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 600, "type": "lowpass" } }
+      ]
+    },
+    "keys": {
+      "preset": "fm_epiano",
+      "volume": -8,
+      "pan": -0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2.5 } },
+        { "type": "filter", "options": { "frequency": 3000, "type": "lowpass" } }
+      ]
+    },
+    "texture": {
+      "preset": "warm_pad",
+      "volume": -14,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 4 } },
+        { "type": "filter", "options": { "frequency": 2000, "type": "lowpass" } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// DRUM PATTERNS (COMBINED)": "----------------------------------------",
+    "// NOTE: Patterns array plays sequentially, not simultaneously!",
+    "// All drum layers must be in same hits array to play together.",
+
+    "beat_basic": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.35 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "hihat", "time": "q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.35 },
+          { "drum": "hihat", "time": "h", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.35 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    },
+
+    "beat_with_open": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.35 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "hihat", "time": "q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.35 },
+          { "drum": "hihat", "time": "h", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.35 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.5 },
+          { "drum": "hihat_open", "time": "h+q+8", "velocity": 0.45 }
+        ]
+      }
+    },
+
+    "beat_variation": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.35 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "hihat", "time": "q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.35 },
+          { "drum": "kick", "time": "h", "velocity": 0.65 },
+          { "drum": "hihat", "time": "h", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.35 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+q+8", "velocity": 0.6 },
+          { "drum": "hihat_open", "time": "h+q+8", "velocity": 0.45 }
+        ]
+      }
+    },
+
+    "// KICK/SNARE ONLY (for euclidean sections)": "----------------------------------------",
+
+    "drums_main": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.7 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 }
+        ]
+      }
+    },
+
+    "drums_kick_variation": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "kick", "time": "h", "velocity": 0.65 },
+          { "drum": "kick", "time": "h+q+8", "velocity": 0.6 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 }
+        ]
+      }
+    },
+
+    "// EUCLIDEAN PATTERNS (cannot be merged with hits)": "----------------------------------------",
+
+    "hihat_euclidean": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+
+    "rim_pattern": {
+      "euclidean": {
+        "hits": 3,
+        "steps": 16,
+        "rotation": 2,
+        "duration": "16",
+        "drum": "rim"
+      }
+    },
+
+    "// BASS PATTERNS": "----------------------------------------",
+
+    "bass_cm": {
+      "notes": ["C2:h.", "r:q", "C2:q", "r:h"]
+    },
+
+    "bass_fm": {
+      "notes": ["F2:h.", "r:q", "F2:q", "r:h"]
+    },
+
+    "bass_ab": {
+      "notes": ["Ab2:h.", "r:q", "Ab2:q", "r:h"]
+    },
+
+    "bass_g": {
+      "notes": ["G2:h.", "r:q", "G2:q", "r:h"]
+    },
+
+    "bass_walking": {
+      "notes": ["C2:q", "r:8", "C2:8", "Eb2:q", "r:q", "G2:q", "r:8", "C3:8"]
+    },
+
+    "bass_minimal": {
+      "notes": ["C2:w", "C2:w", "F2:w", "G2:w"],
+      "velocityEnvelope": [0.7, 0.65, 0.7, 0.75]
+    },
+
+    "// CHORD PATTERNS": "----------------------------------------",
+
+    "chords_main": {
+      "chords": ["Cm7:h", "r:h", "Fm7:h", "r:h"],
+      "velocityEnvelope": [0.6, 0.5, 0.6, 0.5]
+    },
+
+    "chords_full": {
+      "chords": ["Cm7:h", "r:h", "Fm7:h", "r:h", "Abmaj7:h", "r:h", "G7:h", "r:h"],
+      "velocityEnvelope": [0.6, 0.5, 0.6, 0.5, 0.65, 0.55, 0.7, 0.5]
+    },
+
+    "chords_sparse": {
+      "chords": ["Cm7:w", "r:w", "Fm7:w", "r:w"],
+      "velocityEnvelope": [0.5, 0.4, 0.5, 0.45]
+    },
+
+    "chords_stabs": {
+      "chords": ["Cm9:q*", "r:q.", "r:8", "Cm9:8*", "r:h", "Fm9:q*", "r:q.", "r:8", "Fm9:8*", "r:h"],
+      "velocityEnvelope": [0.65, 0.5, 0.55, 0.65, 0.5, 0.55]
+    },
+
+    "// TEXTURE PATTERNS": "----------------------------------------",
+
+    "texture_cm_drone": {
+      "chords": ["Cm:w", "Cm:w"],
+      "velocityEnvelope": [0.3, 0.35]
+    },
+
+    "texture_progression": {
+      "chords": ["Cm:w", "Fm:w", "Ab:w", "G:w"],
+      "velocityEnvelope": [0.3, 0.35, 0.4, 0.35]
+    },
+
+    "texture_shimmer": {
+      "arpeggio": {
+        "chord": "Cm9",
+        "mode": "random",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.3,
+        "steps": 16
+      }
+    },
+
+    "texture_melody": {
+      "notes": [
+        "Eb5:q?0.7", "r:8", "D5:8?0.6", "C5:q?0.7", "r:q",
+        "r:h", "G4:q?0.5", "Bb4:8?0.6", "C5:8?0.5",
+        "r:w"
+      ],
+      "velocityEnvelope": "swell"
+    },
+
+    "// SILENCE": "----------------------------------------",
+    "silence": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "// INTRO - FILTERED DRUMS": "----------------------------------------",
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 8, "velocity": 0.7 }
+      }
+    },
+
+    "intro_hats": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.75 }
+      }
+    },
+
+    "// VERSE A - ADD BASS AND CHORDS": "----------------------------------------",
+    "verse_a": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.8 },
+        "bass": { "patterns": ["bass_cm", "bass_fm"], "repeat": 2, "velocity": 0.75 },
+        "keys": { "pattern": "chords_sparse", "repeat": 2, "velocity": 0.6 }
+      }
+    },
+
+    "verse_a2": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_with_open", "repeat": 8, "velocity": 0.8 },
+        "bass": { "patterns": ["bass_cm", "bass_fm", "bass_ab", "bass_g"], "repeat": 2, "velocity": 0.75 },
+        "keys": { "pattern": "chords_full", "velocity": 0.65 }
+      }
+    },
+
+    "// VERSE B - FULL TEXTURE (euclidean hi-hat - still sequential)": "----------------------------------------",
+    "verse_b": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": ["drums_main", "hihat_euclidean"], "repeat": 4, "velocity": 0.85 },
+        "bass": { "patterns": ["bass_cm", "bass_fm", "bass_ab", "bass_g"], "repeat": 2, "velocity": 0.8 },
+        "keys": { "pattern": "chords_stabs", "repeat": 2, "velocity": 0.7 },
+        "texture": { "pattern": "texture_progression", "repeat": 2, "velocity": 0.5 }
+      }
+    },
+
+    "verse_b2": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": ["beat_variation", "rim_pattern"], "repeat": 4, "velocity": 0.85 },
+        "bass": { "pattern": "bass_walking", "repeat": 4, "velocity": 0.8 },
+        "keys": { "pattern": "chords_full", "velocity": 0.7 },
+        "texture": { "patterns": ["texture_progression", "texture_melody"], "velocity": 0.55 }
+      }
+    },
+
+    "// BREAKDOWN - STRIP BACK (euclidean hi-hat - still sequential)": "----------------------------------------",
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": ["drums_main", "hihat_euclidean"], "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_minimal", "repeat": 2, "velocity": 0.7 },
+        "texture": { "pattern": "texture_cm_drone", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+
+    "// VERSE C - RETURN": "----------------------------------------",
+    "verse_c": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.85 },
+        "bass": { "patterns": ["bass_cm", "bass_fm", "bass_ab", "bass_g"], "repeat": 2, "velocity": 0.8 },
+        "keys": { "pattern": "chords_full", "velocity": 0.7 },
+        "texture": { "pattern": "texture_progression", "repeat": 2, "velocity": 0.5 }
+      }
+    },
+
+    "verse_c2": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "patterns": ["beat_variation", "rim_pattern"], "repeat": 4, "velocity": 0.9 },
+        "bass": { "pattern": "bass_walking", "repeat": 4, "velocity": 0.85 },
+        "keys": { "pattern": "chords_stabs", "repeat": 2, "velocity": 0.75 },
+        "texture": { "patterns": ["texture_shimmer", "texture_melody"], "velocity": 0.6 }
+      }
+    },
+
+    "// OUTRO - FADE OUT": "----------------------------------------",
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 4, "velocity": 0.7 },
+        "bass": { "pattern": "bass_minimal", "velocity": 0.6 },
+        "texture": { "pattern": "texture_cm_drone", "repeat": 2, "velocity": 0.35 }
+      }
+    },
+
+    "outro_final": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 4, "velocity": 0.5 },
+        "texture": { "pattern": "texture_cm_drone", "repeat": 2, "velocity": 0.25 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "intro_hats",
+    "verse_a",
+    "verse_a2",
+    "verse_b",
+    "verse_b2",
+    "breakdown",
+    "verse_c",
+    "verse_c2",
+    "outro",
+    "outro_final"
+  ]
+}

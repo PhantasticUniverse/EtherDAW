@@ -1,0 +1,321 @@
+{
+  "meta": {
+    "title": "Machine State",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "Hypnotic, Driving, Mechanical",
+    "genre": "Minimal Techno",
+    "description": "A minimal techno track exploring step notation and the 909 drum kit. Four-on-the-floor kicks, offbeat hi-hats, and hypnotic repetition. Session #003 stress test.",
+    "tags": ["techno", "minimal", "909", "electronic", "dance", "step-notation"]
+  },
+
+  "settings": {
+    "tempo": 128,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": 0
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -4,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass" } }
+      ]
+    },
+    "stab": {
+      "preset": "sawtooth",
+      "volume": -10,
+      "effects": [
+        { "type": "delay", "wet": 0.3, "options": { "delayTime": "8n", "feedback": 0.3 } },
+        { "type": "filter", "options": { "frequency": 2500, "type": "lowpass" } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -16,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 4 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// DRUM PATTERNS - STEP NOTATION (KICK ONLY)": "----------------------------------------",
+
+    "kick_four": {
+      "drums": {
+        "kit": "909",
+        "steps": "x...x...x...x..."
+      }
+    },
+
+    "kick_accent": {
+      "drums": {
+        "kit": "909",
+        "steps": ">...x...x...x..."
+      }
+    },
+
+    "// DRUM PATTERNS - COMBINED (FULL BEAT)": "----------------------------------------",
+
+    "beat_basic": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.95 },
+          { "drum": "hihat", "time": "8", "velocity": 0.5 },
+          { "drum": "kick", "time": "q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.5 },
+          { "drum": "clap", "time": "q", "velocity": 0.75 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.5 },
+          { "drum": "clap", "time": "h+q", "velocity": 0.8 }
+        ]
+      }
+    },
+
+    "beat_full": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.95 },
+          { "drum": "hihat", "time": "8", "velocity": 0.5 },
+          { "drum": "kick", "time": "q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.55 },
+          { "drum": "clap", "time": "q", "velocity": 0.75 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.5 },
+          { "drum": "tom_mid", "time": "h+8+16", "velocity": 0.4 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.55 },
+          { "drum": "clap", "time": "h+q", "velocity": 0.8 },
+          { "drum": "hihat_open", "time": "h+q+8+16", "velocity": 0.35 }
+        ]
+      }
+    },
+
+    "beat_variation": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.95 },
+          { "drum": "hihat", "time": "8", "velocity": 0.5 },
+          { "drum": "kick", "time": "q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.55 },
+          { "drum": "clap", "time": "q", "velocity": 0.75 },
+          { "drum": "kick", "time": "h", "velocity": 0.85 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+8+16", "velocity": 0.7 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.55 },
+          { "drum": "clap", "time": "h+q", "velocity": 0.8 },
+          { "drum": "rim", "time": "h+q+8+16", "velocity": 0.5 }
+        ]
+      }
+    },
+
+    "beat_kick_only_hats": {
+      "drums": {
+        "kit": "909",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.95 },
+          { "drum": "hihat", "time": "8", "velocity": 0.4 },
+          { "drum": "kick", "time": "q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h+q", "velocity": 0.9 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    },
+
+    "// BASS PATTERNS": "----------------------------------------",
+
+    "bass_am_root": {
+      "notes": ["A1:h", "r:h"]
+    },
+
+    "bass_am_drive": {
+      "notes": ["A1:q", "A1:8", "A1:8", "A1:q", "r:q"]
+    },
+
+    "bass_am_octave": {
+      "notes": ["A1:q", "A2:q", "A1:q", "A2:8", "A1:8"]
+    },
+
+    "bass_am_high": {
+      "notes": ["A2:h", "r:h"]
+    },
+
+    "bass_am_buildup": {
+      "notes": ["A1:8", "A1:8", "A1:8", "A1:8", "A2:8", "A2:8", "A1:8", "A1:8"]
+    },
+
+    "// SYNTH STAB PATTERNS": "----------------------------------------",
+
+    "stab_am": {
+      "chords": ["Am:8*", "r:q.", "Am:8*", "r:h"]
+    },
+
+    "stab_am_variation": {
+      "chords": ["Am:8*", "r:8", "Am:8*", "r:q", "Am:8*", "r:q."]
+    },
+
+    "stab_am_sparse": {
+      "chords": ["Am:8*", "r:h.", "r:h"]
+    },
+
+    "stab_e": {
+      "chords": ["E:8*", "r:q.", "E:8*", "r:h"]
+    },
+
+    "// PAD PATTERNS": "----------------------------------------",
+
+    "pad_am_drone": {
+      "chords": ["Am:w"],
+      "velocityEnvelope": [0.3]
+    },
+
+    "pad_am_swell": {
+      "chords": ["Am:w", "Am:w"],
+      "velocityEnvelope": "swell"
+    },
+
+    "// SILENCE": "----------------------------------------",
+    "silence": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "// INTRO - KICK ONLY (STEP NOTATION)": "----------------------------------------",
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_four", "repeat": 8, "velocity": 0.8 }
+      }
+    },
+
+    "intro_hats": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_kick_only_hats", "repeat": 8, "velocity": 0.85 }
+      }
+    },
+
+    "// BUILD A - FULL DRUMS + BASS": "----------------------------------------",
+    "build_a": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.9 },
+        "bass": { "pattern": "bass_am_root", "repeat": 8, "velocity": 0.7 }
+      }
+    },
+
+    "build_a2": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.9 },
+        "bass": { "pattern": "bass_am_drive", "repeat": 5, "velocity": 0.75 }
+      }
+    },
+
+    "// MAIN A - ADD STAB": "----------------------------------------",
+    "main_a": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_full", "repeat": 16, "velocity": 0.95 },
+        "bass": { "pattern": "bass_am_octave", "repeat": 16, "velocity": 0.8 },
+        "stab": { "pattern": "stab_am", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+
+    "main_a2": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_variation", "repeat": 16, "velocity": 0.95 },
+        "bass": { "pattern": "bass_am_octave", "repeat": 16, "velocity": 0.8 },
+        "stab": { "pattern": "stab_am_variation", "repeat": 8, "velocity": 0.65 },
+        "pad": { "pattern": "pad_am_drone", "repeat": 16, "velocity": 0.4 }
+      }
+    },
+
+    "// BREAKDOWN - STRIP BACK": "----------------------------------------",
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_accent", "repeat": 8, "velocity": 0.7 },
+        "bass": { "pattern": "bass_am_high", "repeat": 8, "velocity": 0.6 },
+        "pad": { "pattern": "pad_am_swell", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "breakdown2": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_kick_only_hats", "repeat": 8, "velocity": 0.75 },
+        "bass": { "pattern": "bass_am_buildup", "repeat": 8, "velocity": 0.7 },
+        "pad": { "pattern": "pad_am_drone", "repeat": 8, "velocity": 0.45 }
+      }
+    },
+
+    "// MAIN B - FULL RETURN": "----------------------------------------",
+    "main_b": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_full", "repeat": 16, "velocity": 1.0 },
+        "bass": { "pattern": "bass_am_octave", "repeat": 16, "velocity": 0.85 },
+        "stab": { "pattern": "stab_am", "repeat": 8, "velocity": 0.7 },
+        "pad": { "pattern": "pad_am_drone", "repeat": 16, "velocity": 0.35 }
+      }
+    },
+
+    "main_b2": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "beat_variation", "repeat": 16, "velocity": 1.0 },
+        "bass": { "pattern": "bass_am_drive", "repeat": 10, "velocity": 0.85 },
+        "stab": { "patterns": ["stab_am", "stab_e"], "repeat": 4, "velocity": 0.7 },
+        "pad": { "pattern": "pad_am_swell", "repeat": 8, "velocity": 0.4 }
+      }
+    },
+
+    "// OUTRO - ELEMENTS DROP": "----------------------------------------",
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "beat_basic", "repeat": 8, "velocity": 0.85 },
+        "bass": { "pattern": "bass_am_root", "repeat": 8, "velocity": 0.7 }
+      }
+    },
+
+    "outro_final": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_four", "repeat": 8, "velocity": 0.6 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "intro_hats",
+    "build_a",
+    "build_a2",
+    "main_a",
+    "main_a2",
+    "breakdown",
+    "breakdown2",
+    "main_b",
+    "main_b2",
+    "outro",
+    "outro_final"
+  ]
+}
