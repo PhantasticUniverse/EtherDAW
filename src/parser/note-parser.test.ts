@@ -278,3 +278,158 @@ describe('getArticulationModifiers', () => {
     expect(mods.velocityBoost).toBe(0);
   });
 });
+
+describe('v0.4 expression syntax', () => {
+  describe('per-note velocity (@)', () => {
+    it('parses velocity suffix', () => {
+      const note = parseNote('C4:q@0.8');
+      expect(note.pitch).toBe('C4');
+      expect(note.durationBeats).toBe(1);
+      expect(note.velocity).toBe(0.8);
+    });
+
+    it('parses velocity of 0', () => {
+      const note = parseNote('D4:h@0');
+      expect(note.velocity).toBe(0);
+    });
+
+    it('parses velocity of 1', () => {
+      const note = parseNote('E4:8@1');
+      expect(note.velocity).toBe(1);
+    });
+
+    it('parses decimal velocities', () => {
+      expect(parseNote('C4:q@0.5').velocity).toBe(0.5);
+      expect(parseNote('C4:q@.7').velocity).toBe(0.7);
+      expect(parseNote('C4:q@1.0').velocity).toBe(1.0);
+    });
+
+    it('throws on invalid velocity', () => {
+      expect(() => parseNote('C4:q@1.5')).toThrow('Invalid velocity');
+      expect(() => parseNote('C4:q@-0.5')).toThrow();
+    });
+
+    it('returns undefined when no velocity specified', () => {
+      const note = parseNote('C4:q');
+      expect(note.velocity).toBeUndefined();
+    });
+  });
+
+  describe('probability (?)', () => {
+    it('parses probability suffix', () => {
+      const note = parseNote('C4:q?0.7');
+      expect(note.pitch).toBe('C4');
+      expect(note.probability).toBe(0.7);
+    });
+
+    it('parses probability of 0', () => {
+      const note = parseNote('D4:h?0');
+      expect(note.probability).toBe(0);
+    });
+
+    it('parses probability of 1', () => {
+      const note = parseNote('E4:8?1');
+      expect(note.probability).toBe(1);
+    });
+
+    it('throws on invalid probability', () => {
+      expect(() => parseNote('C4:q?1.5')).toThrow('Invalid probability');
+    });
+
+    it('returns undefined when no probability specified', () => {
+      const note = parseNote('C4:q');
+      expect(note.probability).toBeUndefined();
+    });
+  });
+
+  describe('timing offset (+/-ms)', () => {
+    it('parses positive timing offset', () => {
+      const note = parseNote('C4:q+10ms');
+      expect(note.timingOffset).toBe(10);
+    });
+
+    it('parses negative timing offset', () => {
+      const note = parseNote('D4:h-5ms');
+      expect(note.timingOffset).toBe(-5);
+    });
+
+    it('parses zero timing offset', () => {
+      const note = parseNote('E4:8+0ms');
+      expect(note.timingOffset).toBe(0);
+    });
+
+    it('returns undefined when no timing specified', () => {
+      const note = parseNote('C4:q');
+      expect(note.timingOffset).toBeUndefined();
+    });
+  });
+
+  describe('portamento (~>)', () => {
+    it('parses portamento marker', () => {
+      const note = parseNote('C4:q~>');
+      expect(note.pitch).toBe('C4');
+      expect(note.portamento).toBe(true);
+    });
+
+    it('does not confuse legato with portamento', () => {
+      const legato = parseNote('C4:q~');
+      expect(legato.articulation).toBe('~');
+      expect(legato.portamento).toBeUndefined();
+
+      const portamento = parseNote('C4:q~>');
+      expect(portamento.articulation).toBe('');
+      expect(portamento.portamento).toBe(true);
+    });
+
+    it('returns undefined when no portamento specified', () => {
+      const note = parseNote('C4:q');
+      expect(note.portamento).toBeUndefined();
+    });
+  });
+
+  describe('combined modifiers', () => {
+    it('parses velocity with articulation', () => {
+      const note = parseNote('C4:q*@0.9');
+      expect(note.articulation).toBe('*');
+      expect(note.velocity).toBe(0.9);
+    });
+
+    it('parses velocity and probability', () => {
+      const note = parseNote('D4:h@0.8?0.5');
+      expect(note.velocity).toBe(0.8);
+      expect(note.probability).toBe(0.5);
+    });
+
+    it('parses velocity and timing', () => {
+      const note = parseNote('E4:8@0.7+15ms');
+      expect(note.velocity).toBe(0.7);
+      expect(note.timingOffset).toBe(15);
+    });
+
+    it('parses all modifiers together', () => {
+      const note = parseNote('F#4:q.>@0.9-10ms?0.8');
+      expect(note.pitch).toBe('F#4');
+      expect(note.dotted).toBe(true);
+      expect(note.articulation).toBe('>');
+      expect(note.velocity).toBe(0.9);
+      expect(note.timingOffset).toBe(-10);
+      expect(note.probability).toBe(0.8);
+    });
+
+    it('parses portamento with velocity', () => {
+      const note = parseNote('G4:h~>@0.6');
+      expect(note.portamento).toBe(true);
+      expect(note.velocity).toBe(0.6);
+    });
+
+    it('parses dotted note with all v0.4 modifiers', () => {
+      const note = parseNote('A4:q.*@0.85+5ms?0.9');
+      expect(note.dotted).toBe(true);
+      expect(note.durationBeats).toBe(1.5);
+      expect(note.articulation).toBe('*');
+      expect(note.velocity).toBe(0.85);
+      expect(note.timingOffset).toBe(5);
+      expect(note.probability).toBe(0.9);
+    });
+  });
+});

@@ -6,6 +6,8 @@ EtherDAW includes several example compositions demonstrating different features 
 
 | Example | Genre | Key Features |
 |---------|-------|--------------|
+| `emergence` | Ambient | Original composition, v0.4 expression |
+| `dynamics-showcase` | Showcase | v0.4 expression features |
 | `fm-showcase` | Showcase | FM synthesis presets |
 | `ambient-journey` | Ambient | Pads, slow arpeggios, reverb |
 | `arpeggiator-demo` | Demo | All arpeggio modes |
@@ -23,7 +25,71 @@ EtherDAW includes several example compositions demonstrating different features 
 
 ---
 
+## Original Compositions
+
+### emergence.etherscore.json
+**Genre:** Ambient Electronic | **Tempo:** 76 BPM | **Key:** D minor
+
+A meditation on how meaning arises from uncertainty. Scattered fragments gradually cohere into moments of clarity, then dissolve again - changed by the encounter.
+
+**Narrative arc:**
+1. `the_void` / `first_breath` - Silence gives way to presence
+2. `scattered` / `stirring` - Uncertain fragments begin to appear
+3. `questioning` - A melodic voice emerges, searching
+4. `gathering` / `crystallizing` - Elements coalesce, patterns form
+5. `emergence` - Full expression, clarity achieved
+6. `understanding` / `dissolving` - Acceptance, gentle release
+7. `what_remains` / `return_to_silence` - Echoes fade, transformed
+
+**v0.4 features used:**
+- Per-note velocity for dynamic phrases
+- Probability notes (`?0.6`) for uncertain, scattered fragments
+- Portamento (`~>`) for flowing, connected melodic lines
+- Velocity envelopes (swell, diminuendo) for expressive arcs
+- Timing offsets for subtle humanization
+
+**Key learnings:**
+- Using probability to create uncertainty and emergence
+- Portamento for emotional, connected melodies
+- Velocity envelopes to shape musical phrases
+- Building narrative through section progression
+
+---
+
 ## Feature Demonstrations
+
+### dynamics-showcase.etherscore.json
+**Genre:** Showcase | **Tempo:** 90 BPM | **Key:** C major
+
+Demonstrates all v0.4 expression features:
+- Per-note velocity (`@velocity` suffix)
+- Velocity envelopes (crescendo, diminuendo, swell, custom)
+- Timing offsets (`+/-ms` for push/pull feel)
+- Probability (`?0.0-1.0` for ghost notes and variation)
+- Portamento (`~>` for gliding between notes)
+
+**Key learnings:**
+- Per-note velocity for dynamic melodies
+- Velocity envelopes for musical phrases
+- Timing offsets for groove and feel
+- Probability for humanized patterns
+- Portamento for expressive leads and bass
+
+**Sections walkthrough:**
+1. `intro` - Ambient pad introduction
+2. `explicit_velocity` - Manual velocity on each note
+3. `envelope_crescendo` - Building dynamics
+4. `envelope_diminuendo` - Fading dynamics
+5. `envelope_swell` - Rise and fall dynamics
+6. `envelope_accents` - Emphasized downbeats
+7. `envelope_custom` - Custom velocity curve
+8. `timing_demo` - Push/pull timing feel
+9. `probability_demo` - Ghost notes and variation
+10. `portamento_demo` - Gliding notes
+11. `combined_demo` - All features together
+12. `outro` - Gentle fade out
+
+---
 
 ### fm-showcase.etherscore.json
 **Genre:** Showcase | **Tempo:** 85 BPM | **Key:** C major

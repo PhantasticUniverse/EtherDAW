@@ -1,4 +1,4 @@
-import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform } from '../schema/types.js';
+import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset } from '../schema/types.js';
 import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers } from './note-parser.js';
 import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
@@ -11,8 +11,122 @@ export interface ExpandedPattern {
     startBeat: number;
     durationBeats: number;
     velocity: number;
+    // v0.4 expression fields
+    timingOffset?: number;    // Timing offset in ms
+    probability?: number;     // Probability 0.0-1.0
+    portamento?: boolean;     // Glide to next note
   }>;
   totalBeats: number;
+}
+
+// ============================================================================
+// Velocity Envelopes (v0.4)
+// ============================================================================
+
+/**
+ * Generate velocity values for a preset envelope type
+ * Returns an array of velocities to apply across notes
+ */
+function generateVelocityPreset(preset: VelocityEnvelopePreset, noteCount: number, baseVelocity: number): number[] {
+  if (noteCount === 0) return [];
+  if (noteCount === 1) return [baseVelocity];
+
+  const velocities: number[] = [];
+  const minVel = Math.max(0.1, baseVelocity * 0.3); // Floor at 30% of base or 0.1
+  const maxVel = Math.min(1.0, baseVelocity * 1.2); // Ceiling at 120% of base or 1.0
+
+  switch (preset) {
+    case 'crescendo':
+      // Start quiet, end loud
+      for (let i = 0; i < noteCount; i++) {
+        const t = i / (noteCount - 1);
+        velocities.push(minVel + t * (maxVel - minVel));
+      }
+      break;
+
+    case 'diminuendo':
+      // Start loud, end quiet
+      for (let i = 0; i < noteCount; i++) {
+        const t = i / (noteCount - 1);
+        velocities.push(maxVel - t * (maxVel - minVel));
+      }
+      break;
+
+    case 'swell':
+      // Quiet → loud → quiet (peak in middle)
+      for (let i = 0; i < noteCount; i++) {
+        const t = i / (noteCount - 1);
+        // Use sine wave for smooth swell
+        const factor = Math.sin(t * Math.PI);
+        velocities.push(minVel + factor * (maxVel - minVel));
+      }
+      break;
+
+    case 'accent_first':
+      // First note accented, rest at base velocity
+      for (let i = 0; i < noteCount; i++) {
+        velocities.push(i === 0 ? maxVel : baseVelocity);
+      }
+      break;
+
+    case 'accent_downbeats':
+      // Accent notes at beat boundaries (approximated by every 2nd note for now)
+      // In a real implementation, we'd use startBeat to determine downbeats
+      for (let i = 0; i < noteCount; i++) {
+        velocities.push(i % 2 === 0 ? maxVel : baseVelocity * 0.7);
+      }
+      break;
+
+    default:
+      // Fallback to uniform base velocity
+      for (let i = 0; i < noteCount; i++) {
+        velocities.push(baseVelocity);
+      }
+  }
+
+  return velocities;
+}
+
+/**
+ * Apply a velocity envelope to a set of notes
+ * Notes are modified in place with new velocity values
+ */
+function applyVelocityEnvelope(
+  notes: ExpandedPattern['notes'],
+  envelope: VelocityEnvelope,
+  baseVelocity: number
+): void {
+  if (notes.length === 0) return;
+
+  let velocities: number[];
+
+  if (typeof envelope.velocity === 'string') {
+    // Preset envelope
+    velocities = generateVelocityPreset(envelope.velocity, notes.length, baseVelocity);
+  } else {
+    // Custom velocity array - interpolate across notes
+    const customVels = envelope.velocity;
+    if (customVels.length === 0) return;
+
+    velocities = [];
+    for (let i = 0; i < notes.length; i++) {
+      // Map note index to position in custom array
+      const t = notes.length === 1 ? 0 : i / (notes.length - 1);
+      const arrayPos = t * (customVels.length - 1);
+      const lowerIdx = Math.floor(arrayPos);
+      const upperIdx = Math.min(lowerIdx + 1, customVels.length - 1);
+      const frac = arrayPos - lowerIdx;
+
+      // Linear interpolation between array values
+      const interpolated = customVels[lowerIdx] * (1 - frac) + customVels[upperIdx] * frac;
+      velocities.push(Math.max(0, Math.min(1, interpolated)));
+    }
+  }
+
+  // Apply velocities to notes
+  for (let i = 0; i < notes.length; i++) {
+    notes[i].velocity = velocities[i];
+  }
 }
 
 export interface PatternContext {
@@ -118,15 +232,29 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
 
         // Apply articulation modifiers (v0.3)
         const articulationMods = getArticulationModifiers(parsed.articulation);
-        const noteVelocity = Math.min(1.0, velocity + articulationMods.velocityBoost);
+        // v0.4: Use per-note velocity if specified, otherwise track velocity + articulation boost
+        const baseVel = parsed.velocity !== undefined ? parsed.velocity : velocity;
+        const noteVelocity = Math.min(1.0, baseVel + articulationMods.velocityBoost);
         const noteDuration = parsed.durationBeats * articulationMods.gate;
 
-        notes.push({
+        // v0.4: Store additional expression data for rendering
+        const noteData: ExpandedPattern['notes'][0] & {
+          timingOffset?: number;
+          probability?: number;
+          portamento?: boolean;
+        } = {
           pitch: adjustedPitch,
           startBeat: currentBeat,
           durationBeats: noteDuration,
           velocity: noteVelocity,
-        });
+        };
+
+        // Add v0.4 expression fields if present
+        if (parsed.timingOffset !== undefined) noteData.timingOffset = parsed.timingOffset;
+        if (parsed.probability !== undefined) noteData.probability = parsed.probability;
+        if (parsed.portamento) noteData.portamento = true;
+
+        notes.push(noteData);
         currentBeat += parsed.durationBeats; // Advance by original duration, not gated
       }
     }
@@ -226,6 +354,11 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
   // Handle rest pattern
   if (resolvedPattern.rest) {
     currentBeat += parseRest(resolvedPattern.rest);
+  }
+
+  // Apply velocity envelope if specified (v0.4)
+  if (resolvedPattern.envelope) {
+    applyVelocityEnvelope(notes, resolvedPattern.envelope, velocity);
   }
 
   // Apply scale constraint if enabled (v0.3)

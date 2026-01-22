@@ -103,12 +103,26 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
     // Add notes to timeline
     for (const [instrumentName, notes] of resolvedTracks) {
       for (const note of notes) {
+        // v0.4: Build expression options if present
+        const options = (note.timingOffset !== undefined ||
+                         note.probability !== undefined ||
+                         note.portamento !== undefined ||
+                         note.humanize !== undefined)
+          ? {
+              timingOffset: note.timingOffset,
+              probability: note.probability,
+              portamento: note.portamento,
+              humanize: note.humanize,
+            }
+          : undefined;
+
         builder.addNote(
           note.pitch,
           currentBeat + note.startBeat,
           note.durationBeats,
           note.velocity,
-          instrumentName
+          instrumentName,
+          options
         );
         totalNotes++;
       }

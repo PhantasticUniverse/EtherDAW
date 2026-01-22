@@ -306,6 +306,8 @@
       <div class="song-selector">
         <label for="song-select">Choose a composition</label>
         <select id="song-select">
+          <option value="examples/emergence.etherscore.json">Emergence (Original Composition)</option>
+          <option value="examples/dynamics-showcase.etherscore.json">Dynamics Showcase (v0.4 Feature)</option>
           <option value="examples/fm-showcase.etherscore.json">FM Synthesis Showcase (v0.3 Feature)</option>
           <option value="examples/drum-kit-demo.etherscore.json">Drum Kit Demo (v0.2 Feature)</option>
           <option value="examples/euclidean-demo.etherscore.json">Euclidean Rhythms Demo (v0.2 Feature)</option>
@@ -626,16 +628,33 @@
     }
 
     function parseNote(noteStr) {
-      // Updated regex to support articulation markers: C4:q*, D4:8>, E4:h~
-      const match = noteStr.trim().match(/^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)([*~>^]?)$/);
+      // v0.4: Extended regex to support expression modifiers
+      // Format: {note}{accidental?}{octave?}:{duration}{dot?}{articulation?}{~>?}{@velocity?}{+/-timing?}{?probability?}
+      // Examples: C4:q, C4:q*, C4:q@0.8, C4:q?0.7, C4:q+10ms, C4:q~>, C4:q*@0.9-5ms?0.8
+      const match = noteStr.trim().match(/^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:([*>^])|(~>)|(~))?(?:@((?:0|1)?\.?\d+))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?$/);
       if (!match) return null;
-      const [, noteNameRaw, accidental, octaveStr, durationCode, dotted, articulation] = match;
+      const [, noteNameRaw, accidental, octaveStr, durationCode, dotted,
+             articulationBasic, portamentoMarker, legatoMarker,
+             velocityRaw, timingRaw, probabilityRaw] = match;
       const noteName = noteNameRaw.toUpperCase();
       const octave = octaveStr ? parseInt(octaveStr, 10) : 4;
       const baseDuration = DURATION_MAP[durationCode] || 1;
       const durationBeats = dotted === '.' ? baseDuration * 1.5 : baseDuration;
       const pitch = noteName + accidental + octave;
-      return { pitch, durationBeats, articulation: articulation || '' };
+
+      // Determine articulation: basic (*>^), legato (~), or none
+      let articulation = '';
+      if (articulationBasic) articulation = articulationBasic;
+      else if (legatoMarker) articulation = '~';
+
+      // v0.4 expression fields
+      const result = { pitch, durationBeats, articulation };
+      if (portamentoMarker) result.portamento = true;
+      if (velocityRaw !== undefined) result.velocity = parseFloat(velocityRaw);
+      if (timingRaw !== undefined) result.timingOffset = parseInt(timingRaw, 10);
+      if (probabilityRaw !== undefined) result.probability = parseFloat(probabilityRaw);
+
+      return result;
     }
 
     function parseChord(chordStr, defaultOctave) {
@@ -921,14 +940,21 @@
               var midi = pitchToMidi(parsed.pitch);
               // Apply articulation modifiers (v0.3)
               var artMods = getArticulationModifiers(parsed.articulation);
-              var noteVel = Math.min(1.0, velocity + artMods.velocityBoost);
+              // v0.4: Use per-note velocity if specified, otherwise track velocity
+              var baseVel = parsed.velocity !== undefined ? parsed.velocity : velocity;
+              var noteVel = Math.min(1.0, baseVel + artMods.velocityBoost);
               var noteDur = parsed.durationBeats * artMods.gate;
-              notes.push({
+              var noteData = {
                 pitch: midiToPitch(midi + octaveOffset * 12),
                 startBeat: currentBeat,
                 durationBeats: noteDur,
                 velocity: noteVel
-              });
+              };
+              // v0.4: Pass through expression fields
+              if (parsed.timingOffset !== undefined) noteData.timingOffset = parsed.timingOffset;
+              if (parsed.probability !== undefined) noteData.probability = parsed.probability;
+              if (parsed.portamento) noteData.portamento = true;
+              notes.push(noteData);
               currentBeat += parsed.durationBeats; // Advance by original duration
             }
           }
@@ -1138,6 +1164,11 @@
         currentBeat += euc.steps * eucDur;
       }
 
+      // Apply velocity envelope if specified (v0.4)
+      if (resolvedPattern.envelope && resolvedPattern.envelope.velocity && notes.length > 0) {
+        applyVelocityEnvelope(notes, resolvedPattern.envelope.velocity, velocity);
+      }
+
       // Apply scale constraint if enabled (v0.3)
       if (resolvedPattern.constrainToScale && key) {
         for (var ci = 0; ci < notes.length; ci++) {
@@ -1149,6 +1180,68 @@
       }
 
       return { notes: notes, totalBeats: currentBeat };
+    }
+
+    // v0.4: Apply velocity envelope to notes
+    function applyVelocityEnvelope(notes, envelopeType, baseVelocity) {
+      if (notes.length === 0) return;
+      var velocities = [];
+      var minVel = Math.max(0.1, baseVelocity * 0.3);
+      var maxVel = Math.min(1.0, baseVelocity * 1.2);
+      var count = notes.length;
+
+      if (Array.isArray(envelopeType)) {
+        // Custom velocity array - interpolate across notes
+        for (var i = 0; i < count; i++) {
+          var t = count === 1 ? 0 : i / (count - 1);
+          var arrayPos = t * (envelopeType.length - 1);
+          var lowerIdx = Math.floor(arrayPos);
+          var upperIdx = Math.min(lowerIdx + 1, envelopeType.length - 1);
+          var frac = arrayPos - lowerIdx;
+          var interpolated = envelopeType[lowerIdx] * (1 - frac) + envelopeType[upperIdx] * frac;
+          velocities.push(Math.max(0, Math.min(1, interpolated)));
+        }
+      } else {
+        // Preset envelope
+        switch (envelopeType) {
+          case 'crescendo':
+            for (var i = 0; i < count; i++) {
+              var t = count === 1 ? 1 : i / (count - 1);
+              velocities.push(minVel + t * (maxVel - minVel));
+            }
+            break;
+          case 'diminuendo':
+            for (var i = 0; i < count; i++) {
+              var t = count === 1 ? 0 : i / (count - 1);
+              velocities.push(maxVel - t * (maxVel - minVel));
+            }
+            break;
+          case 'swell':
+            for (var i = 0; i < count; i++) {
+              var t = count === 1 ? 0.5 : i / (count - 1);
+              var factor = Math.sin(t * Math.PI);
+              velocities.push(minVel + factor * (maxVel - minVel));
+            }
+            break;
+          case 'accent_first':
+            for (var i = 0; i < count; i++) {
+              velocities.push(i === 0 ? maxVel : baseVelocity);
+            }
+            break;
+          case 'accent_downbeats':
+            for (var i = 0; i < count; i++) {
+              velocities.push(i % 2 === 0 ? maxVel : baseVelocity * 0.7);
+            }
+            break;
+          default:
+            return; // Unknown envelope, don't modify
+        }
+      }
+
+      // Apply velocities to notes
+      for (var i = 0; i < notes.length; i++) {
+        notes[i].velocity = velocities[i];
+      }
     }
 
     // Parse drum hit time string: "0", "q", "h+8", etc.
@@ -1277,12 +1370,17 @@
             var expanded = expandPattern(pattern, velocity, octave, sectionKey, drumKit, score.patterns);
             for (var n = 0; n < expanded.notes.length; n++) {
               var note = expanded.notes[n];
-              baseNotes.push({
+              var noteData = {
                 pitch: note.pitch,
                 startBeat: baseLength + note.startBeat,
                 durationBeats: note.durationBeats,
                 velocity: note.velocity
-              });
+              };
+              // v0.4: Copy expression fields
+              if (note.timingOffset !== undefined) noteData.timingOffset = note.timingOffset;
+              if (note.probability !== undefined) noteData.probability = note.probability;
+              if (note.portamento) noteData.portamento = true;
+              baseNotes.push(noteData);
             }
             baseLength += expanded.totalBeats;
           }
@@ -1303,12 +1401,17 @@
               for (var bn = 0; bn < baseNotes.length; bn++) {
                 var newStart = baseNotes[bn].startBeat + offset;
                 if (newStart >= sectionBeats) break;
-                trackNotes.push({
+                var copyNote = {
                   pitch: baseNotes[bn].pitch,
                   startBeat: newStart,
                   durationBeats: baseNotes[bn].durationBeats,
                   velocity: baseNotes[bn].velocity
-                });
+                };
+                // v0.4: Copy expression fields
+                if (baseNotes[bn].timingOffset !== undefined) copyNote.timingOffset = baseNotes[bn].timingOffset;
+                if (baseNotes[bn].probability !== undefined) copyNote.probability = baseNotes[bn].probability;
+                if (baseNotes[bn].portamento) copyNote.portamento = true;
+                trackNotes.push(copyNote);
               }
               offset += baseLength;
             }
@@ -1318,12 +1421,17 @@
               for (var bn2 = 0; bn2 < baseNotes.length; bn2++) {
                 var newStart2 = baseNotes[bn2].startBeat + (r * baseLength);
                 if (newStart2 >= sectionBeats) break;
-                trackNotes.push({
+                var copyNote2 = {
                   pitch: baseNotes[bn2].pitch,
                   startBeat: newStart2,
                   durationBeats: baseNotes[bn2].durationBeats,
                   velocity: baseNotes[bn2].velocity
-                });
+                };
+                // v0.4: Copy expression fields
+                if (baseNotes[bn2].timingOffset !== undefined) copyNote2.timingOffset = baseNotes[bn2].timingOffset;
+                if (baseNotes[bn2].probability !== undefined) copyNote2.probability = baseNotes[bn2].probability;
+                if (baseNotes[bn2].portamento) copyNote2.portamento = true;
+                trackNotes.push(copyNote2);
               }
             }
           }
@@ -1340,14 +1448,19 @@
               var transposedMidi = pitchToMidi(fnote.pitch) + transpose;
               finalPitch = midiToPitch(transposedMidi);
             }
-            events.push({
+            var eventData = {
               instrument: instrument,
               pitch: finalPitch,
               time: currentBeat + fnote.startBeat,
               duration: fnote.durationBeats,
               velocity: fnote.velocity,
               humanize: humanize
-            });
+            };
+            // v0.4: Copy expression fields to final event
+            if (fnote.timingOffset !== undefined) eventData.timingOffset = fnote.timingOffset;
+            if (fnote.probability !== undefined) eventData.probability = fnote.probability;
+            if (fnote.portamento) eventData.portamento = true;
+            events.push(eventData);
           }
         }
         currentBeat += sectionBeats;
@@ -2447,6 +2560,13 @@
         var isDrumHit = event.pitch && event.pitch.startsWith('drum:');
         if (!inst && !isDrumHit) continue;
 
+        // v0.4: Apply probability - skip note if random roll fails
+        if (event.probability !== undefined && event.probability < 1.0) {
+          if (Math.random() > event.probability) {
+            continue; // Skip this note
+          }
+        }
+
         var startBeats = event.time;
         var durationBeats = event.duration;
 
@@ -2465,6 +2585,12 @@
         // Convert beats to seconds
         var startSeconds = startBeats * secondsPerBeat;
         var durationSeconds = durationBeats * secondsPerBeat;
+
+        // v0.4: Apply timing offset (convert ms to seconds)
+        if (event.timingOffset) {
+          startSeconds += event.timingOffset / 1000;
+          if (startSeconds < 0) startSeconds = 0;
+        }
 
         (function(ev, instrument, start, dur, vel, instName) {
           Tone.Transport.schedule(function(time) {
@@ -2511,6 +2637,14 @@
             } else {
               // Regular instrument
               var type = synthTypes[instName] || 'pitched';
+
+              // v0.4: Apply portamento if enabled
+              if (ev.portamento && instrument.portamento !== undefined) {
+                instrument.portamento = 0.1; // 100ms glide time
+              } else if (instrument.portamento !== undefined) {
+                instrument.portamento = 0; // No glide
+              }
+
               if (type === 'noise') {
                 instrument.triggerAttackRelease(dur, time, vel);
               } else if (type === 'membrane') {

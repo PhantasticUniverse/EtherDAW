@@ -1,0 +1,375 @@
+{
+  "meta": {
+    "title": "Emergence",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "searching, hopeful, crystallizing",
+    "genre": "ambient electronic",
+    "description": "A meditation on how meaning arises from uncertainty. Scattered fragments gradually cohere into moments of clarity, then dissolve again - changed by the encounter. The piece asks: what emerges when we allow ourselves to not know?"
+  },
+  "settings": {
+    "tempo": 76,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "void": {
+      "preset": "ambient_pad",
+      "volume": -10,
+      "effects": [
+        { "type": "reverb", "wet": 0.85, "options": { "decay": 6 } }
+      ]
+    },
+    "fragments": {
+      "preset": "bell",
+      "volume": -14,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 4 } },
+        { "type": "delay", "wet": 0.35, "options": { "time": "4n.", "feedback": 0.4 } }
+      ]
+    },
+    "seeking": {
+      "preset": "soft_lead",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.5 },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.25 } }
+      ]
+    },
+    "pulse": {
+      "preset": "sine",
+      "volume": -12,
+      "effects": [
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.4 } }
+      ]
+    },
+    "ground": {
+      "preset": "sub_bass",
+      "volume": -11
+    },
+    "crystalline": {
+      "preset": "fm_glass",
+      "volume": -13,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 3 } }
+      ]
+    },
+    "heartbeat": {
+      "preset": "drums",
+      "volume": -14
+    }
+  },
+  "patterns": {
+    "silence": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "void_dm": {
+      "chords": ["Dm9:w", "Dm9:w", "Dm9:w", "Dm9:w"]
+    },
+    "void_breathing": {
+      "chords": ["Dm7:w", "r:w", "Dm7:w", "r:w"]
+    },
+    "void_expand": {
+      "chords": ["Dm9:w", "Am7:w", "Bbmaj7:w", "Gm7:w"]
+    },
+    "void_resolve": {
+      "chords": ["Bbmaj7:w", "Am7:w", "Gm7:w", "Dm:w"]
+    },
+
+    "fragments_scattered": {
+      "notes": [
+        "D5:8@0.3?0.6", "r:q.", "r:w",
+        "F5:8@0.25?0.5", "r:h", "A5:8@0.35?0.7", "r:q",
+        "r:w", "E5:8@0.3?0.4", "r:h."
+      ]
+    },
+    "fragments_gathering": {
+      "notes": [
+        "D5:8@0.4?0.8", "r:q", "F5:8@0.45?0.75", "r:q",
+        "A5:8@0.5?0.85", "r:q", "D6:8@0.55?0.9", "r:q"
+      ]
+    },
+    "fragments_constellation": {
+      "notes": [
+        "D6:16@0.5", "r:8.", "A5:16@0.45", "r:8.", "F5:16@0.4", "r:8.", "D5:16@0.35", "r:8.",
+        "E5:16@0.4", "r:8.", "G5:16@0.45", "r:8.", "Bb5:16@0.5", "r:8.", "D6:16@0.55", "r:8."
+      ]
+    },
+
+    "seeking_question": {
+      "notes": [
+        "D4:q@0.5~>", "F4:q@0.55~>", "A4:h@0.6",
+        "r:h", "G4:q@0.5~>", "F4:q@0.45"
+      ]
+    },
+    "seeking_answer": {
+      "notes": [
+        "A4:q@0.55~>", "Bb4:q@0.6~>", "A4:q@0.55~>", "G4:q@0.5",
+        "F4:h@0.6~>", "E4:h@0.55"
+      ]
+    },
+    "seeking_rising": {
+      "notes": [
+        "D4:8@0.5", "E4:8@0.55", "F4:8@0.6", "G4:8@0.65",
+        "A4:8@0.7", "Bb4:8@0.75", "C5:8@0.8", "D5:8@0.85"
+      ]
+    },
+    "seeking_finding": {
+      "notes": [
+        "D5:q@0.8~>", "E5:q@0.75~>", "F5:h@0.85",
+        "E5:q@0.7~>", "D5:q@0.65~>", "A4:h@0.75"
+      ],
+      "envelope": { "velocity": "swell" }
+    },
+    "seeking_knowing": {
+      "notes": [
+        "F5:q@0.8", "E5:8@0.7~>", "D5:8@0.75~>", "C5:q@0.7~>", "D5:h@0.85",
+        "r:q", "A4:q@0.6~>", "Bb4:q@0.65~>", "A4:q@0.7"
+      ]
+    },
+    "seeking_peace": {
+      "notes": [
+        "D5:h@0.7", "r:h",
+        "A4:q@0.5~>", "F4:q@0.45~>", "D4:h@0.4"
+      ],
+      "envelope": { "velocity": "diminuendo" }
+    },
+
+    "pulse_tentative": {
+      "notes": [
+        "D3:8@0.3?0.6", "r:8", "r:q", "A3:8@0.25?0.5", "r:8", "r:q",
+        "D3:8@0.35?0.7", "r:8", "r:q", "r:q"
+      ]
+    },
+    "pulse_steady": {
+      "notes": [
+        "D3:8@0.5", "r:8", "A3:8@0.4", "r:8",
+        "D3:8@0.5", "r:8", "A3:8@0.4", "r:8"
+      ]
+    },
+    "pulse_confident": {
+      "notes": [
+        "D3:8@0.6", "A3:8@0.4", "D3:8@0.55", "A3:8@0.35",
+        "D3:8@0.6", "A3:8@0.4", "F3:8@0.5", "A3:8@0.35"
+      ],
+      "envelope": { "velocity": "accent_downbeats" }
+    },
+
+    "ground_anchor": {
+      "notes": ["D2:w~>", "D2:w"]
+    },
+    "ground_movement": {
+      "notes": ["D2:h~>", "A2:h", "Bb2:h~>", "A2:h"]
+    },
+    "ground_walking": {
+      "notes": [
+        "D2:q@0.6~>", "E2:q@0.55~>", "F2:q@0.6~>", "G2:q@0.55",
+        "A2:q@0.6~>", "G2:q@0.55~>", "F2:q@0.6~>", "E2:q@0.55"
+      ]
+    },
+    "ground_resolve": {
+      "notes": ["D2:w", "r:w", "r:w", "r:w"]
+    },
+
+    "crystalline_single": {
+      "notes": ["D6:8@0.4", "r:h.", "r:w", "r:w", "A5:8@0.35", "r:h."]
+    },
+    "crystalline_chime": {
+      "notes": [
+        "D6:16@0.5", "A5:16@0.45-10ms", "F5:16@0.4+5ms", "r:q.",
+        "r:h",
+        "E6:16@0.45", "Bb5:16@0.4-8ms", "G5:16@0.35+3ms", "r:q."
+      ]
+    },
+    "crystalline_cascade": {
+      "notes": [
+        "D6:16@0.6", "C6:16@0.55", "Bb5:16@0.5", "A5:16@0.45",
+        "G5:16@0.5", "F5:16@0.55", "E5:16@0.6", "D5:16@0.65"
+      ],
+      "envelope": { "velocity": "swell" }
+    },
+
+    "heartbeat_distant": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.25 },
+          { "drum": "kick", "time": "h", "velocity": 0.2 }
+        ]
+      }
+    },
+    "heartbeat_present": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.4 },
+          { "drum": "hihat", "time": "q", "velocity": 0.2 },
+          { "drum": "kick", "time": "h", "velocity": 0.35 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.15 }
+        ]
+      }
+    },
+    "heartbeat_alive": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.15 },
+          { "drum": "hihat", "time": "q", "velocity": 0.25 },
+          { "drum": "snare", "time": "q+8", "velocity": 0.2 },
+          { "drum": "kick", "time": "h", "velocity": 0.45 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.15 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.25 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.2 }
+        ]
+      }
+    },
+
+    "arp_emerging": {
+      "arpeggio": {
+        "chord": "Dm7",
+        "mode": "up",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.6
+      }
+    },
+    "arp_flowing": {
+      "arpeggio": {
+        "chord": "Dm9",
+        "mode": "updown",
+        "duration": "16",
+        "octaves": 2,
+        "gate": 0.7
+      }
+    }
+  },
+  "sections": {
+    "the_void": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "silence", "velocity": 0 }
+      }
+    },
+
+    "first_breath": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_dm", "velocity": 0.2 }
+      }
+    },
+
+    "scattered": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_breathing", "repeat": 2, "velocity": 0.25 },
+        "fragments": { "pattern": "fragments_scattered", "velocity": 0.4 }
+      }
+    },
+
+    "stirring": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_dm", "velocity": 0.3 },
+        "fragments": { "pattern": "fragments_gathering", "repeat": 2, "velocity": 0.45 },
+        "pulse": { "pattern": "pulse_tentative", "repeat": 2, "velocity": 0.35, "humanize": 0.15 }
+      }
+    },
+
+    "questioning": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_expand", "velocity": 0.35 },
+        "seeking": { "patterns": ["seeking_question", "seeking_answer"], "velocity": 0.55, "humanize": 0.1 },
+        "pulse": { "pattern": "pulse_steady", "repeat": 4, "velocity": 0.4 },
+        "ground": { "pattern": "ground_anchor", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+
+    "gathering": {
+      "bars": 16,
+      "tracks": {
+        "void": { "pattern": "void_expand", "repeat": 2, "velocity": 0.4 },
+        "seeking": { "patterns": ["seeking_rising", "seeking_finding", "seeking_rising", "seeking_finding"], "velocity": 0.6, "humanize": 0.08 },
+        "pulse": { "pattern": "pulse_confident", "repeat": 4, "velocity": 0.5 },
+        "ground": { "pattern": "ground_movement", "repeat": 2, "velocity": 0.5 },
+        "fragments": { "pattern": "fragments_constellation", "repeat": 4, "velocity": 0.45 },
+        "heartbeat": { "pattern": "heartbeat_distant", "repeat": 8, "velocity": 0.5 }
+      }
+    },
+
+    "crystallizing": {
+      "bars": 16,
+      "tracks": {
+        "void": { "pattern": "void_resolve", "repeat": 2, "velocity": 0.45 },
+        "seeking": { "patterns": ["seeking_knowing", "seeking_finding", "seeking_knowing", "seeking_finding"], "velocity": 0.65, "humanize": 0.06 },
+        "pulse": { "pattern": "arp_emerging", "repeat": 4, "velocity": 0.45, "octave": 1 },
+        "ground": { "pattern": "ground_walking", "repeat": 2, "velocity": 0.55 },
+        "crystalline": { "pattern": "crystalline_chime", "repeat": 4, "velocity": 0.5 },
+        "heartbeat": { "pattern": "heartbeat_present", "repeat": 8, "velocity": 0.55 }
+      }
+    },
+
+    "emergence": {
+      "bars": 16,
+      "tracks": {
+        "void": { "pattern": "void_expand", "repeat": 2, "velocity": 0.5 },
+        "seeking": { "patterns": ["seeking_finding", "seeking_knowing", "seeking_finding", "seeking_peace"], "velocity": 0.7, "humanize": 0.05 },
+        "pulse": { "pattern": "arp_flowing", "repeat": 4, "velocity": 0.5, "octave": 1 },
+        "ground": { "pattern": "ground_walking", "repeat": 2, "velocity": 0.55 },
+        "crystalline": { "pattern": "crystalline_cascade", "repeat": 8, "velocity": 0.55 },
+        "heartbeat": { "pattern": "heartbeat_alive", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+
+    "understanding": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_resolve", "velocity": 0.45 },
+        "seeking": { "pattern": "seeking_peace", "repeat": 2, "velocity": 0.55, "humanize": 0.08 },
+        "pulse": { "pattern": "pulse_steady", "repeat": 4, "velocity": 0.35 },
+        "ground": { "pattern": "ground_anchor", "repeat": 2, "velocity": 0.45 },
+        "crystalline": { "pattern": "crystalline_single", "velocity": 0.4 }
+      }
+    },
+
+    "dissolving": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_breathing", "repeat": 2, "velocity": 0.35 },
+        "fragments": { "pattern": "fragments_scattered", "velocity": 0.35 },
+        "ground": { "pattern": "ground_resolve", "velocity": 0.35 }
+      }
+    },
+
+    "what_remains": {
+      "bars": 8,
+      "tracks": {
+        "void": { "pattern": "void_dm", "velocity": 0.2 },
+        "crystalline": { "pattern": "crystalline_single", "velocity": 0.25 }
+      }
+    },
+
+    "return_to_silence": {
+      "bars": 4,
+      "tracks": {
+        "void": { "pattern": "silence", "velocity": 0 }
+      }
+    }
+  },
+  "arrangement": [
+    "the_void",
+    "first_breath",
+    "scattered",
+    "stirring",
+    "questioning",
+    "gathering",
+    "crystallizing",
+    "emergence",
+    "understanding",
+    "dissolving",
+    "what_remains",
+    "return_to_silence"
+  ]
+}

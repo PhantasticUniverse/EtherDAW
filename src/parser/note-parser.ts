@@ -3,11 +3,31 @@ import { DURATION_MAP } from '../schema/types.js';
 
 /**
  * Regular expression for parsing note notation
- * Format: {pitch}{octave}:{duration}[.][articulation]
- * Examples: C4:q, Eb3:8, F#5:h., Bb2:16, C4:q*, D4:8>, E4:h~
+ * Format: {pitch}{octave}:{duration}[.][articulation][~>][velocity][timing][probability]
+ *
+ * v0.3 Examples: C4:q, Eb3:8, F#5:h., Bb2:16, C4:q*, D4:8>, E4:h~
+ * v0.4 Examples: C4:q@0.8, D4:8?0.7, E4:h+10ms, F4:q~>, G4:q*@0.9?0.5-5ms
+ *
  * Articulations: * (staccato), ~ (legato), > (accent), ^ (marcato)
+ * Portamento: ~> (glide to next note)
+ * Velocity: @0.0-1.0 (per-note velocity)
+ * Timing: +/-Nms (timing offset in milliseconds)
+ * Probability: ?0.0-1.0 (chance of note playing)
+ *
+ * Capture groups:
+ * 1: Note name (A-G)
+ * 2: Accidental (#, b, or empty)
+ * 3: Octave (optional, default 4)
+ * 4: Duration code
+ * 5: Dot (optional)
+ * 6: Articulation (*>^) - staccato, accent, marcato
+ * 7: Portamento (~>)
+ * 8: Legato (~)
+ * 9: Velocity (number after @)
+ * 10: Timing offset (signed number before ms)
+ * 11: Probability (number after ?)
  */
-const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)([*~>^]?)$/;
+const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:([*>^])|(~>)|(~))?(?:@((?:0|1)?\.?\d+))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?$/;
 
 /**
  * Regular expression for parsing rest notation
@@ -17,23 +37,60 @@ const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)([*~>^]?)$/;
 const REST_REGEX = /^r:(\d+|[whq])(\.?)$/;
 
 /**
- * Parse a note string in the format "pitch:duration[articulation]"
- * @param noteStr - Note string (e.g., "C4:q", "Eb3:8", "F#5:h.", "C4:q*", "D4:8>")
+ * Parse a note string in the format "pitch:duration[articulation][~>][@velocity][+/-ms][?probability]"
+ * @param noteStr - Note string (e.g., "C4:q", "Eb3:8", "F#5:h.", "C4:q*", "D4:8>", "C4:q@0.8", "D4:8?0.7")
  * @returns Parsed note object
  */
 export function parseNote(noteStr: string): ParsedNote {
   const match = noteStr.trim().match(NOTE_REGEX);
 
   if (!match) {
-    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[articulation] (e.g., "C4:q", "Eb3:8", "C4:q*")`);
+    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[articulation][@velocity][+/-timing][?probability] (e.g., "C4:q", "C4:q*", "C4:q@0.8")`);
   }
 
-  const [, noteNameRaw, accidentalRaw, octaveStr, durationCode, dotted, articulationRaw] = match;
+  const [
+    ,
+    noteNameRaw,      // 1: Note name
+    accidentalRaw,    // 2: Accidental
+    octaveStr,        // 3: Octave
+    durationCode,     // 4: Duration
+    dotted,           // 5: Dot
+    articulationRaw,  // 6: Articulation (*>^)
+    portamentoRaw,    // 7: Portamento (~>)
+    legatoRaw,        // 8: Legato (~)
+    velocityRaw,      // 9: Velocity
+    timingRaw,        // 10: Timing offset
+    probabilityRaw,   // 11: Probability
+  ] = match;
+
   const noteName = noteNameRaw.toUpperCase() as NoteName;
   const accidental = (accidentalRaw || '') as Accidental;
   const octave = octaveStr ? parseInt(octaveStr, 10) : 4;
   const isDotted = dotted === '.';
-  const articulation = (articulationRaw || '') as Articulation;
+
+  // Handle articulation: regular articulations (*>^), legato (~), or none
+  let articulation: Articulation = '';
+  if (articulationRaw) {
+    articulation = articulationRaw as Articulation;
+  } else if (legatoRaw) {
+    articulation = '~';
+  }
+
+  // Portamento (~>) is a separate boolean flag
+  const portamento = portamentoRaw === '~>';
+
+  // Parse optional v0.4 expression modifiers
+  const velocity = velocityRaw ? parseFloat(velocityRaw) : undefined;
+  const timingOffset = timingRaw ? parseInt(timingRaw, 10) : undefined;
+  const probability = probabilityRaw ? parseFloat(probabilityRaw) : undefined;
+
+  // Validate ranges
+  if (velocity !== undefined && (velocity < 0 || velocity > 1)) {
+    throw new Error(`Invalid velocity ${velocity} in "${noteStr}". Must be 0.0-1.0`);
+  }
+  if (probability !== undefined && (probability < 0 || probability > 1)) {
+    throw new Error(`Invalid probability ${probability} in "${noteStr}". Must be 0.0-1.0`);
+  }
 
   const baseDuration = DURATION_MAP[durationCode];
   if (baseDuration === undefined) {
@@ -43,7 +100,8 @@ export function parseNote(noteStr: string): ParsedNote {
   const durationBeats = isDotted ? baseDuration * 1.5 : baseDuration;
   const pitch = `${noteName}${accidental}${octave}`;
 
-  return {
+  // Build result object, only including v0.4 fields if they were specified
+  const result: ParsedNote = {
     pitch,
     noteName,
     accidental,
@@ -53,6 +111,14 @@ export function parseNote(noteStr: string): ParsedNote {
     dotted: isDotted,
     articulation,
   };
+
+  // Add v0.4 expression fields only when present
+  if (velocity !== undefined) result.velocity = velocity;
+  if (probability !== undefined) result.probability = probability;
+  if (timingOffset !== undefined) result.timingOffset = timingOffset;
+  if (portamento) result.portamento = true;
+
+  return result;
 }
 
 /**

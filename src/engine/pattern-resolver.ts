@@ -11,6 +11,11 @@ export interface ResolvedNote {
   startBeat: number;
   durationBeats: number;
   velocity: number;
+  // v0.4 expression fields
+  timingOffset?: number;
+  probability?: number;
+  portamento?: boolean;
+  humanize?: number;
 }
 
 export interface PatternResolutionContext {
@@ -79,6 +84,7 @@ export function resolveTrack(
 
 /**
  * Process expanded notes with humanization and swing
+ * v0.4: Passes through expression fields (timingOffset, probability, portamento)
  */
 function processExpandedNotes(
   expanded: ExpandedPattern,
@@ -103,12 +109,20 @@ function processExpandedNotes(
       durationBeats = humanizeDuration(durationBeats, humanize);
     }
 
-    return {
+    const result: ResolvedNote = {
       pitch: note.pitch,
       startBeat: Math.max(0, startBeat),
       durationBeats,
       velocity: Math.min(1, Math.max(0, velocity)),
     };
+
+    // v0.4: Pass through expression fields
+    if (note.timingOffset !== undefined) result.timingOffset = note.timingOffset;
+    if (note.probability !== undefined) result.probability = note.probability;
+    if (note.portamento !== undefined) result.portamento = note.portamento;
+    if (humanize > 0) result.humanize = humanize;
+
+    return result;
   });
 }
 

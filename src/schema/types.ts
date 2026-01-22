@@ -112,6 +112,15 @@ export interface PatternTransform {
   };
 }
 
+// NEW v0.4: Velocity envelope types
+// Presets: 'crescendo', 'diminuendo', 'swell', 'accent_first', 'accent_downbeats'
+// Custom: array of velocity values [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+export type VelocityEnvelopePreset = 'crescendo' | 'diminuendo' | 'swell' | 'accent_first' | 'accent_downbeats';
+
+export interface VelocityEnvelope {
+  velocity: VelocityEnvelopePreset | number[];
+}
+
 export interface Pattern {
   notes?: string[];
   chords?: string[];
@@ -125,6 +134,8 @@ export interface Pattern {
   // NEW v0.3
   constrainToScale?: boolean;  // Snap notes to current key's scale
   transform?: PatternTransform; // Generate from transforming another pattern
+  // NEW v0.4
+  envelope?: VelocityEnvelope; // Apply velocity curve across pattern's notes
 }
 
 // ============================================================================
@@ -191,6 +202,11 @@ export interface ParsedNote {
   dotted: boolean;
   // NEW v0.3
   articulation?: Articulation;
+  // NEW v0.4: Expression
+  velocity?: number;      // Per-note velocity 0.0-1.0 (e.g., C4:q@0.8)
+  probability?: number;   // Note probability 0.0-1.0 (e.g., C4:q?0.7)
+  timingOffset?: number;  // Timing offset in ms (e.g., C4:q+10ms or C4:q-5ms)
+  portamento?: boolean;   // Glide to next note (e.g., C4:q~>)
 }
 
 export interface ParsedChord {
@@ -223,6 +239,11 @@ export interface NoteEvent extends BaseTimelineEvent {
   durationSeconds: number;
   velocity: number;
   instrument: string;
+  // NEW v0.4: Expression fields
+  timingOffset?: number;   // Timing offset in ms (positive=late, negative=early)
+  probability?: number;    // Probability of playing 0.0-1.0
+  portamento?: boolean;    // Glide to next note
+  humanize?: number;       // Humanization amount 0.0-1.0
 }
 
 export interface ChordEvent extends BaseTimelineEvent {

@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "title": "Dynamics Showcase",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "expressive, dynamic, demonstrative",
+    "genre": "showcase",
+    "description": "Demonstrates v0.4 expression features: per-note velocity, velocity envelopes, timing offsets, probability, and portamento."
+  },
+  "settings": {
+    "tempo": 90,
+    "key": "C major",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "piano": {
+      "preset": "piano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25, "options": { "decay": 2 } }
+      ]
+    },
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.35 },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    },
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -10
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } }
+      ]
+    },
+    "drums": {
+      "preset": "drums",
+      "volume": -8
+    }
+  },
+  "patterns": {
+    "silence": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "velocity_explicit": {
+      "notes": [
+        "C4:8@0.3", "D4:8@0.4", "E4:8@0.5", "F4:8@0.6",
+        "G4:8@0.7", "A4:8@0.8", "B4:8@0.9", "C5:8@1.0"
+      ]
+    },
+
+    "velocity_crescendo": {
+      "notes": ["C4:8", "D4:8", "E4:8", "F4:8", "G4:8", "A4:8", "B4:8", "C5:8"],
+      "envelope": { "velocity": "crescendo" }
+    },
+
+    "velocity_diminuendo": {
+      "notes": ["C5:8", "B4:8", "A4:8", "G4:8", "F4:8", "E4:8", "D4:8", "C4:8"],
+      "envelope": { "velocity": "diminuendo" }
+    },
+
+    "velocity_swell": {
+      "notes": [
+        "C4:8", "E4:8", "G4:8", "C5:8",
+        "E5:8", "G5:8", "E5:8", "C5:8"
+      ],
+      "envelope": { "velocity": "swell" }
+    },
+
+    "velocity_accent_downbeats": {
+      "notes": [
+        "C4:q", "E4:q", "G4:q", "E4:q",
+        "F4:q", "A4:q", "C5:q", "A4:q"
+      ],
+      "envelope": { "velocity": "accent_downbeats" }
+    },
+
+    "velocity_custom": {
+      "notes": [
+        "C4:q", "E4:q", "G4:q", "C5:q",
+        "B4:q", "G4:q", "E4:q", "C4:q"
+      ],
+      "envelope": { "velocity": [0.4, 0.6, 0.9, 1.0, 0.9, 0.6, 0.4, 0.2] }
+    },
+
+    "timing_push": {
+      "notes": [
+        "E4:q+15ms", "G4:q+10ms", "B4:q+5ms", "E5:q",
+        "D5:q-5ms", "B4:q-10ms", "G4:q-15ms", "E4:q"
+      ]
+    },
+
+    "timing_groove": {
+      "notes": [
+        "C4:8+8ms", "r:8", "G4:8-5ms", "r:8",
+        "E4:8+12ms", "r:8", "C5:8-8ms", "r:8"
+      ]
+    },
+
+    "probability_ghost_notes": {
+      "notes": [
+        "C4:8@1.0", "C4:8@0.3?0.5", "C4:8@1.0", "C4:8@0.3?0.6",
+        "C4:8@1.0", "C4:8@0.3?0.4", "C4:8@1.0", "C4:8@0.3?0.7"
+      ]
+    },
+
+    "probability_variation": {
+      "notes": [
+        "E4:q", "G4:8?0.8", "G4:8?0.6", "B4:q?0.9", "r:q",
+        "D5:q?0.7", "B4:8?0.5", "G4:8?0.8", "E4:h"
+      ]
+    },
+
+    "portamento_melody": {
+      "notes": [
+        "E4:q~>", "G4:q~>", "B4:h",
+        "D5:q~>", "B4:q~>", "G4:h"
+      ]
+    },
+
+    "portamento_bass": {
+      "notes": [
+        "C2:h~>", "G2:h",
+        "F2:h~>", "C3:h"
+      ]
+    },
+
+    "combined_expression": {
+      "notes": [
+        "C4:q@0.7+5ms", "E4:q@0.8?0.9", "G4:q@0.9~>", "C5:h@1.0",
+        "B4:q@0.8-5ms?0.95", "G4:q@0.7~>", "E4:q@0.6", "C4:h@0.5"
+      ]
+    },
+
+    "chord_pad_cmaj": {
+      "chords": ["Cmaj7:w", "Cmaj7:w"]
+    },
+    "chord_pad_fmaj": {
+      "chords": ["Fmaj7:w", "Fmaj7:w"]
+    },
+    "chord_pad_am": {
+      "chords": ["Am7:w", "Am7:w"]
+    },
+    "chord_pad_g": {
+      "chords": ["G:w", "G:w"]
+    },
+
+    "bass_simple": {
+      "notes": [
+        "C2:q", "r:q", "G2:q", "r:q",
+        "C2:q", "E2:q", "G2:q", "r:q"
+      ]
+    },
+
+    "drums_basic": {
+      "drums": {
+        "kit": "acoustic",
+        "hits": [
+          { "drum": "kick", "time": "0" },
+          { "drum": "hihat", "time": "0", "velocity": 0.6 },
+          { "drum": "hihat", "time": "8", "velocity": 0.4 },
+          { "drum": "snare", "time": "q" },
+          { "drum": "hihat", "time": "q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h" },
+          { "drum": "hihat", "time": "h", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.4 },
+          { "drum": "snare", "time": "h+q" },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "chord_pad_cmaj", "velocity": 0.3 }
+      }
+    },
+
+    "explicit_velocity": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_explicit", "repeat": 4, "velocity": 0.8 },
+        "pad": { "pattern": "chord_pad_cmaj", "velocity": 0.35 }
+      }
+    },
+
+    "envelope_crescendo": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_crescendo", "repeat": 4, "velocity": 0.8 },
+        "pad": { "pattern": "chord_pad_fmaj", "velocity": 0.35 }
+      }
+    },
+
+    "envelope_diminuendo": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_diminuendo", "repeat": 4, "velocity": 0.8 },
+        "pad": { "pattern": "chord_pad_am", "velocity": 0.35 }
+      }
+    },
+
+    "envelope_swell": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_swell", "repeat": 4, "velocity": 0.8 },
+        "pad": { "pattern": "chord_pad_g", "velocity": 0.35 }
+      }
+    },
+
+    "envelope_accents": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_accent_downbeats", "velocity": 0.75 },
+        "bass": { "pattern": "bass_simple", "velocity": 0.6 },
+        "drums": { "pattern": "drums_basic", "velocity": 0.7 }
+      }
+    },
+
+    "envelope_custom": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "velocity_custom", "velocity": 0.8 },
+        "pad": { "pattern": "chord_pad_cmaj", "velocity": 0.35 }
+      }
+    },
+
+    "timing_demo": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "timing_push", "velocity": 0.75 },
+        "lead": { "pattern": "timing_groove", "repeat": 2, "velocity": 0.7, "octave": 1 },
+        "bass": { "pattern": "bass_simple", "velocity": 0.6 },
+        "drums": { "pattern": "drums_basic", "velocity": 0.7 }
+      }
+    },
+
+    "probability_demo": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "probability_variation", "velocity": 0.75 },
+        "drums": { "pattern": "probability_ghost_notes", "repeat": 4, "velocity": 0.8 },
+        "bass": { "pattern": "bass_simple", "velocity": 0.6 }
+      }
+    },
+
+    "portamento_demo": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "portamento_melody", "velocity": 0.75 },
+        "bass": { "pattern": "portamento_bass", "velocity": 0.65 },
+        "pad": { "pattern": "chord_pad_cmaj", "velocity": 0.3 }
+      }
+    },
+
+    "combined_demo": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "pattern": "combined_expression", "velocity": 0.8 },
+        "bass": { "pattern": "bass_simple", "velocity": 0.6 },
+        "pad": { "pattern": "chord_pad_fmaj", "velocity": 0.35 },
+        "drums": { "pattern": "drums_basic", "velocity": 0.7 }
+      }
+    },
+
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "chord_pad_cmaj", "velocity": 0.25 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "explicit_velocity",
+    "envelope_crescendo",
+    "envelope_diminuendo",
+    "envelope_swell",
+    "envelope_accents",
+    "envelope_custom",
+    "timing_demo",
+    "probability_demo",
+    "portamento_demo",
+    "combined_demo",
+    "outro"
+  ]
+}

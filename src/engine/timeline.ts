@@ -29,13 +29,20 @@ export class TimelineBuilder {
 
   /**
    * Add a note event
+   * v0.4: Supports optional expression fields via options parameter
    */
   addNote(
     pitch: string,
     startBeat: number,
     durationBeats: number,
     velocity: number,
-    instrument: string
+    instrument: string,
+    options?: {
+      timingOffset?: number;
+      probability?: number;
+      portamento?: boolean;
+      humanize?: number;
+    }
   ): this {
     this.instruments.add(instrument);
 
@@ -52,6 +59,14 @@ export class TimelineBuilder {
       velocity,
       instrument,
     };
+
+    // Add v0.4 expression fields if provided
+    if (options) {
+      if (options.timingOffset !== undefined) event.timingOffset = options.timingOffset;
+      if (options.probability !== undefined) event.probability = options.probability;
+      if (options.portamento !== undefined) event.portamento = options.portamento;
+      if (options.humanize !== undefined) event.humanize = options.humanize;
+    }
 
     this.events.push(event);
     return this;
