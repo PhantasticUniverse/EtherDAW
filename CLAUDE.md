@@ -155,6 +155,12 @@ Examples of DAW improvements over workarounds:
 - No noise presets? Add them to presets.ts, not use a different sound
 - Drums require verbose `"lines"` wrapper? Add shorthand detection
 
+## Claude Code Integration (v0.82.5)
+
+Commands: `/compose`, `/verify`, `/plan`, `/onboard`, `/validate`
+
+See `.claude/README.md` for skills, agents, hooks, and full documentation.
+
 ## Conventions
 
 - Duration: `w` `h` `q` `8` `16` `32`

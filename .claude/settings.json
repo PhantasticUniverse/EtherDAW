@@ -7,6 +7,9 @@
     "Bash(npm run test:run)",
     "Bash(npm run build)",
     "Bash(npm run build:browser)",
+    "Bash(npm run build:all)",
+    "Bash(npx tsx src/cli.ts validate *)",
+    "Bash(npx tsx src/cli.ts compile *)",
     "Bash(git status)",
     "Bash(git diff *)",
     "Bash(git log *)",
@@ -18,5 +21,29 @@
     "Bash(rm -rf *)",
     "Bash(sudo *)",
     "Bash(chmod 777 *)"
-  ]
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-tool-validate.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-tool-format.sh"
+          }
+        ]
+      }
+    ]
+  }
 }

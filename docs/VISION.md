@@ -158,7 +158,7 @@ Saved to techno-signal.etherscore.json
 
 ## Roadmap
 
-### v0.82: Foundation for Live Coding
+### v0.82: Foundation for Live Coding (Complete)
 
 Build the foundation: REPL, pattern preview, basic transforms.
 
@@ -168,6 +168,24 @@ Build the foundation: REPL, pattern preview, basic transforms.
 - Pattern transforms: transpose, stretch, velocity
 - Composition templates for quick starts
 - Workflow analysis comparing REPL vs JSON editing
+
+### v0.82.5: Claude Code Architecture (Complete)
+
+Comprehensive AI-assisted development infrastructure.
+
+- **Hooks**: PreToolUse/PostToolUse for auto-validation of EtherScore files
+- **Skills**: Auto-loading context (etherscore-composition, preset-discovery, verification-patterns)
+- **Agents**: Specialized reviewers (composition-reviewer, benchmark-analyzer)
+- **Commands**: /compose, /verify, /plan, /onboard, /validate
+- **Rules**: Modular validation and checklist rules
+- **CI/CD**: GitHub Actions for tests and composition validation
+
+**Learnings:**
+- Skills work best with specific trigger words and comprehensive reference content
+- Hooks should be lightweight (notes/warnings, not blocking validation)
+- The EtherScore schema requires `settings`, `sections`, `arrangement` - document this in skills
+- Evidence-based verification (/verify) improves composition quality
+- Two-layer validation (schema + semantic) catches different error classes
 
 ### v0.83: Pattern Algebra
 

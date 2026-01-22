@@ -1,0 +1,279 @@
+{
+  "meta": {
+    "title": "v0.82.5 Verification",
+    "composer": "Claude (v0.82.5 Architecture Review)",
+    "mood": "Chill, Reflective, Warm",
+    "genre": "Lo-fi Ambient",
+    "description": "Test composition demonstrating EtherDAW v0.82.5 features and Claude Code integration. Features FM keys, warm pads, vinyl texture, and dilla-style drums.",
+    "tags": ["verification", "lofi", "ambient", "fm", "dilla"]
+  },
+
+  "settings": {
+    "tempo": 85,
+    "key": "A minor",
+    "timeSignature": "4/4",
+    "swing": 0.15
+  },
+
+  "instruments": {
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 400, "type": "lowpass" } }
+      ]
+    },
+    "keys": {
+      "preset": "fm_epiano",
+      "volume": -5,
+      "pan": -0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.5 } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "pan": 0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4.0 } }
+      ]
+    },
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "delay", "wet": 0.25, "options": { "delayTime": "8n", "feedback": 0.3 } }
+      ]
+    },
+    "texture": {
+      "preset": "vinyl_crackle",
+      "volume": -20
+    },
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -3
+    }
+  },
+
+  "patterns": {
+    "// BASS PATTERNS": "----------------------------------------",
+
+    "bass_verse": {
+      "notes": ["A2:q", "r:8", "A2:8", "G2:q", "r:8", "G2:8", "F2:q", "r:8", "F2:8", "E2:h."]
+    },
+
+    "bass_chorus": {
+      "notes": ["A2:8", "A2:8", "r:8", "A3:8", "G2:8", "G2:8", "r:8", "G3:8", "F2:8", "F2:8", "r:8", "F3:8", "E2:q", "E2:8", "r:8"]
+    },
+
+    "bass_minimal": {
+      "notes": ["A2:w", "G2:w", "F2:w", "E2:w"],
+      "velocityEnvelope": [0.7, 0.65, 0.7, 0.75]
+    },
+
+    "// KEYS PATTERNS": "----------------------------------------",
+
+    "keys_melody": {
+      "notes": ["E5:q@mf", "C5:8@mp", "A4:8@mp", "G4:h@mf", "r:q", "D5:q@mf", "B4:8@mp", "G4:8@mp", "A4:h.@f"],
+      "velocityEnvelope": "swell"
+    },
+
+    "keys_chords": {
+      "chords": ["Am7:h", "Fmaj7:h", "Dm7:h", "E7:h"],
+      "velocityEnvelope": [0.6, 0.55, 0.6, 0.65]
+    },
+
+    "keys_sparse": {
+      "chords": ["Am7:w", "r:w", "Fmaj7:w", "r:w"],
+      "velocityEnvelope": [0.5, 0.4, 0.5, 0.45]
+    },
+
+    "// PAD PATTERNS": "----------------------------------------",
+
+    "pad_sustain": {
+      "chords": ["Am:w", "G:w", "F:w", "E:w"],
+      "velocityEnvelope": [0.35, 0.4, 0.45, 0.4]
+    },
+
+    "pad_intro": {
+      "chords": ["Am:w", "Am:w"],
+      "velocityEnvelope": [0.3, 0.35]
+    },
+
+    "// LEAD PATTERNS": "----------------------------------------",
+
+    "lead_hook": {
+      "notes": ["r:h", "E5:q~", "A5:q~", "G5:h~", "E5:h", "r:h", "D5:q~", "G5:q~", "F5:h~", "E5:h"],
+      "velocityEnvelope": "crescendo"
+    },
+
+    "// TEXTURE PATTERNS": "----------------------------------------",
+
+    "texture_loop": {
+      "notes": ["C4:w", "C4:w"]
+    },
+
+    "texture_shimmer": {
+      "arpeggio": {
+        "chord": "Am9",
+        "mode": "random",
+        "duration": "8",
+        "octaves": 2,
+        "gate": 0.3,
+        "steps": 16
+      }
+    },
+
+    "// DRUM PATTERNS": "----------------------------------------",
+
+    "drums_verse": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.5 },
+          { "drum": "hihat", "time": "8", "velocity": 0.35 },
+          { "drum": "snare", "time": "q", "velocity": 0.75 },
+          { "drum": "hihat", "time": "q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.35 },
+          { "drum": "hihat", "time": "h", "velocity": 0.5 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.35 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.8 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.5 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    },
+
+    "drums_chorus": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.9 },
+          { "drum": "hihat", "time": "0", "velocity": 0.55 },
+          { "drum": "hihat", "time": "8", "velocity": 0.4 },
+          { "drum": "snare", "time": "q", "velocity": 0.8 },
+          { "drum": "hihat", "time": "q", "velocity": 0.55 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.4 },
+          { "drum": "kick", "time": "h", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h", "velocity": 0.55 },
+          { "drum": "hihat_open", "time": "h+8", "velocity": 0.45 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.85 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.55 },
+          { "drum": "kick", "time": "h+q+8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.4 }
+        ]
+      }
+    },
+
+    "drums_minimal": {
+      "drums": {
+        "kit": "lofi",
+        "hits": [
+          { "drum": "kick", "time": "0", "velocity": 0.85 },
+          { "drum": "snare", "time": "q", "velocity": 0.7 },
+          { "drum": "kick", "time": "h+8", "velocity": 0.65 },
+          { "drum": "snare", "time": "h+q", "velocity": 0.75 }
+        ]
+      }
+    },
+
+    "// EUCLIDEAN PATTERNS": "----------------------------------------",
+
+    "hihat_euclidean": {
+      "euclidean": {
+        "hits": 5,
+        "steps": 8,
+        "duration": "8",
+        "drum": "hihat"
+      }
+    },
+
+    "// SILENCE": "----------------------------------------",
+    "silence": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "// INTRO - PAD AND TEXTURE": "----------------------------------------",
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "pad": { "pattern": "pad_intro", "repeat": 2, "velocity": 0.5 },
+        "texture": { "pattern": "texture_loop", "repeat": 2, "velocity": 0.6 }
+      }
+    },
+
+    "// VERSE - ADD DRUMS AND BASS": "----------------------------------------",
+    "verse": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_verse", "repeat": 8, "velocity": 0.8 },
+        "bass": { "pattern": "bass_verse", "repeat": 2, "velocity": 0.75 },
+        "keys": { "pattern": "keys_melody", "repeat": 2, "velocity": 0.65 },
+        "pad": { "pattern": "pad_sustain", "repeat": 2, "velocity": 0.55 },
+        "texture": { "pattern": "texture_loop", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "// CHORUS - FULLER ARRANGEMENT": "----------------------------------------",
+    "chorus": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_chorus", "repeat": 8, "velocity": 0.85 },
+        "bass": { "pattern": "bass_chorus", "repeat": 2, "velocity": 0.8 },
+        "keys": { "pattern": "keys_chords", "repeat": 2, "velocity": 0.75 },
+        "lead": { "pattern": "lead_hook", "velocity": 0.7 },
+        "pad": { "pattern": "pad_sustain", "repeat": 2, "velocity": 0.6 },
+        "texture": { "pattern": "texture_loop", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "// BREAKDOWN - STRIP BACK": "----------------------------------------",
+    "breakdown": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "patterns": ["drums_minimal", "hihat_euclidean"], "repeat": 2, "velocity": 0.7 },
+        "bass": { "pattern": "bass_minimal", "velocity": 0.65 },
+        "keys": { "pattern": "keys_sparse", "velocity": 0.5 },
+        "pad": { "pattern": "pad_intro", "repeat": 2, "velocity": 0.45 },
+        "texture": { "patterns": ["texture_shimmer", "texture_loop"], "velocity": 0.55 }
+      }
+    },
+
+    "// RETURN": "----------------------------------------",
+    "return": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_chorus", "repeat": 8, "velocity": 0.85 },
+        "bass": { "pattern": "bass_verse", "repeat": 2, "velocity": 0.8 },
+        "keys": { "pattern": "keys_chords", "repeat": 2, "velocity": 0.75 },
+        "lead": { "pattern": "lead_hook", "velocity": 0.7 },
+        "pad": { "pattern": "pad_sustain", "repeat": 2, "velocity": 0.6 },
+        "texture": { "pattern": "texture_loop", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "// OUTRO - FADE": "----------------------------------------",
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "drums_minimal", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "pad_intro", "repeat": 2, "velocity": 0.4 },
+        "texture": { "pattern": "texture_loop", "repeat": 2, "velocity": 0.35 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "verse",
+    "chorus",
+    "breakdown",
+    "return",
+    "outro"
+  ]
+}

@@ -1,0 +1,92 @@
+name: Validate Compositions
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'examples/**/*.etherscore.json'
+      - 'src/validation/**'
+      - 'etherscore.schema.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Validate all benchmark files
+        run: |
+          echo "Validating all benchmark files..."
+          FAILED=0
+          for file in examples/benchmark-*.etherscore.json; do
+            if [ -f "$file" ]; then
+              echo "=== Validating: $file ==="
+              if npx tsx src/cli.ts validate "$file"; then
+                echo "PASS: $file"
+              else
+                echo "FAIL: $file"
+                FAILED=1
+              fi
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo "Some benchmark validations failed!"
+            exit 1
+          fi
+          echo "All benchmark validations passed!"
+
+      - name: Validate archive compositions
+        run: |
+          echo "Validating archive compositions..."
+          FAILED=0
+          for file in examples/archive/*.etherscore.json; do
+            if [ -f "$file" ]; then
+              echo "=== Validating: $file ==="
+              if npx tsx src/cli.ts validate "$file"; then
+                echo "PASS: $file"
+              else
+                echo "FAIL: $file"
+                FAILED=1
+              fi
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo "Some archive validations failed!"
+            exit 1
+          fi
+          echo "All archive validations passed!"
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Validation Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Benchmark Files" >> "$GITHUB_STEP_SUMMARY"
+          echo "| File | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          for file in examples/benchmark-*.etherscore.json; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              if npx tsx src/cli.ts validate "$file" > /dev/null 2>&1; then
+                echo "| $filename | Pass |" >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "| $filename | Fail |" >> "$GITHUB_STEP_SUMMARY"
+              fi
+            fi
+          done

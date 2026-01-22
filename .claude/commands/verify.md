@@ -1,47 +1,98 @@
-# /verify - Verify task completion
+---
+name: verify
+description: Evidence-based task verification protocol
+auto_load_skills:
+  - verification-patterns
+---
 
-Verify that a task has been fully completed with evidence.
+# /verify - Evidence-Based Task Verification
 
-## Philosophy
+Verify task completion with tangible evidence, not just claims.
 
-Always verify completion with tangible evidence, not just claims:
-- Test output showing passes
-- File diffs showing changes
-- Working functionality demonstrated
-- Browser console showing no errors
+## Protocol
 
-## Verification Checklist
+Follow this evidence-gathering process:
 
-### Code Changes
-- [ ] TypeScript compiles: `npm run build`
-- [ ] All tests pass: `npm run test:run`
-- [ ] Browser bundle builds: `npm run build:browser`
+### Step 1: Code Verification
+```bash
+# Build check
+npm run build
 
-### Player Testing
-- [ ] Open player.html in browser
-- [ ] Composition loads without errors
-- [ ] Playback works correctly
-- [ ] No console errors
+# Test check
+npm run test:run
 
-### Documentation
-- [ ] CHANGELOG.md updated if version changed
-- [ ] README.md updated if features added
-- [ ] Code comments for non-obvious logic
+# Browser build (if UI changes)
+npm run build:browser
+```
 
-### Git
-- [ ] Changes staged appropriately
-- [ ] Commit message is descriptive
-- [ ] No sensitive files included
+**Show the actual output** - don't just say "tests pass".
 
-## Evidence Types
+### Step 2: EtherScore Validation (if applicable)
+```bash
+npx tsx src/cli.ts validate <file.etherscore.json>
+```
 
-| Type | How to Verify |
-|------|---------------|
-| Tests pass | Show test output |
-| Build works | Show no errors |
-| Player works | Take screenshot or describe behavior |
-| Feature works | Demonstrate usage |
+**Report validation results** including any warnings.
 
-## Usage
+### Step 3: Audio Verification (for compositions)
+1. Open player.html
+2. Load and play the composition
+3. Listen for:
+   - Expected sounds playing
+   - No clicks or pops
+   - Proper timing and rhythm
+   - Correct dynamics
 
-After completing a task, run through relevant checklist items and report evidence of completion.
+**Describe what you hear** or take screenshots.
+
+### Step 4: Git Status
+```bash
+git status
+git diff --stat
+```
+
+**Show what files changed** and summarize modifications.
+
+## Evidence Checklist
+
+| Claim | Required Evidence |
+|-------|-------------------|
+| "Tests pass" | Show test output with pass count |
+| "Build works" | Show build output (no errors) |
+| "Player works" | Describe playback or screenshot |
+| "Feature works" | Demonstrate with specific example |
+| "Validation passes" | Show validator output |
+
+## Example Evidence Report
+
+```
+## Verification Report
+
+### Build
+✓ TypeScript compiled with no errors
+✓ Browser bundle: 78.2kb
+
+### Tests
+✓ 127 tests passed in 4.2s
+  - note-parser: 23 passed
+  - pattern-expander: 45 passed
+  ...
+
+### Audio Check
+✓ Loaded in player.html
+✓ Playback: 4 bars, drums and bass audible
+✓ No audio artifacts detected
+
+### Files Changed
+- src/synthesis/presets.ts (+15 lines)
+- examples/new-track.etherscore.json (new file)
+```
+
+## When to Use
+
+Run `/verify` after:
+- Completing a feature implementation
+- Fixing a bug
+- Making significant code changes
+- Creating or modifying compositions
+- Before committing changes
