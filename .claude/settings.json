@@ -1,20 +1,22 @@
 {
-  "permissions": {
-    "allow": [
-      "Read any file in the project",
-      "Edit src/**/*.ts files",
-      "Edit docs/**/*.md files",
-      "Run npm test",
-      "Run npm run build"
-    ],
-    "ask": [
-      "Create new files",
-      "Modify package.json",
-      "Run git commands"
-    ],
-    "deny": [
-      "Delete files without confirmation",
-      "Modify .env or credentials"
-    ]
-  }
+  "allowedTools": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Bash(npm test)",
+    "Bash(npm run test:run)",
+    "Bash(npm run build)",
+    "Bash(npm run build:browser)",
+    "Bash(git status)",
+    "Bash(git diff *)",
+    "Bash(git log *)",
+    "Bash(git branch *)",
+    "Bash(open player.html)",
+    "Bash(python3 -m http.server *)"
+  ],
+  "denyTools": [
+    "Bash(rm -rf *)",
+    "Bash(sudo *)",
+    "Bash(chmod 777 *)"
+  ]
 }

@@ -5,7 +5,39 @@ All notable changes to EtherDAW will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.45.0] - 2025-01-22
+## [Unreleased]
+
+*No unreleased changes*
+
+---
+
+## [0.49.0] - 2026-01-22
+
+### Added
+
+#### Enhanced Claude Code Integration
+- Updated `.claude/settings.json` to use proper `allowedTools` format
+- Added `.claude/.gitignore` for local settings files
+- Added new custom commands:
+  - `/test` - Run test suite with verification
+  - `/build` - Build TypeScript and browser bundle
+  - `/verify` - Verification checklist (cc-prime pattern)
+
+### Changed
+
+- Settings format now uses `allowedTools`/`denyTools` arrays
+- Documentation improvements for versioning clarity
+
+### Technical Notes
+
+This release focuses on **developer workflow**:
+- Better Claude Code permission management
+- Verification-first development pattern
+- Cleaner changelog with proper dating
+
+---
+
+## [0.45.0] - 2026-01-22
 
 ### Added
 
@@ -32,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Browser Bundle
 - Added `npm run build:browser` script using esbuild
 - Created `src/browser/index.ts` entry point
-- Browser bundle exports shared code for player.html (~89KB)
+- Browser bundle exports shared code for player.html (~78KB)
 - Tone.js and MIDI dependencies remain external
 
 ### Changed
@@ -70,7 +102,7 @@ For developers extending EtherDAW:
 
 ---
 
-## [0.4.0] - 2025-01-22
+## [0.4.0] - 2026-01-22
 
 ### Added
 

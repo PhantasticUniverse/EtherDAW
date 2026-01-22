@@ -201,4 +201,4 @@ export {
 } from '../synthesis/drum-kits.js';
 
 // ============ Version ============
-export const VERSION = '0.45.0';
+export const VERSION = '0.49.0';

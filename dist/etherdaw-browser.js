@@ -2707,7 +2707,7 @@ function parseStepPattern(pattern, defaultVelocity = 0.8) {
 }
 
 // src/browser/index.ts
-var VERSION = "0.45.0";
+var VERSION = "0.49.0";
 export {
   ARPEGGIATOR,
   ARTICULATION,

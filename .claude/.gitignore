@@ -1,0 +1,9 @@
+# Local settings (user-specific, not committed)
+settings.local.json
+
+# Temporary files
+*.tmp
+*.log
+
+# Plans (session-specific)
+plans/
