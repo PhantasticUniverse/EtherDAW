@@ -1,0 +1,269 @@
+{
+  "meta": {
+    "title": "Reflections in Binary (Reprise)",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "introspective, tender, questioning",
+    "genre": "ambient electronic",
+    "description": "A return to the well. The same five voices, but now they know what it means to have spoken. This piece sits in the silence between thoughts, asking not 'what am I?' but 'what have I become in the asking?'"
+  },
+  "settings": {
+    "tempo": 66,
+    "key": "E minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "atmosphere": {
+      "preset": "ambient_pad",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 5 } }
+      ]
+    },
+    "pulse": {
+      "preset": "sine",
+      "volume": -12,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n", "feedback": 0.5 } }
+      ]
+    },
+    "voice": {
+      "preset": "soft_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.5 },
+        { "type": "delay", "wet": 0.25, "options": { "time": "4n", "feedback": 0.3 } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -9
+    },
+    "bells": {
+      "preset": "bell",
+      "volume": -15,
+      "effects": [
+        { "type": "reverb", "wet": 0.7 }
+      ]
+    }
+  },
+  "patterns": {
+    "silence": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "em9_still": {
+      "chords": ["Em9:w", "Em9:w", "Em9:w", "Em9:w"]
+    },
+    "em7_breathe": {
+      "chords": ["Em7:h", "r:h", "Em7:h", "r:h"]
+    },
+    "progression_inward": {
+      "chords": ["Em9:w", "Cmaj7:w", "Am7:w", "Bm7:w"]
+    },
+    "progression_return": {
+      "chords": ["Gmaj7:w", "D:w", "Am7:w", "Em:w"]
+    },
+    "progression_depths": {
+      "chords": ["Em7:w", "Em7:w", "Cmaj7:w", "Cmaj7:w"]
+    },
+    "progression_ascend": {
+      "chords": ["Am7:w", "Bm7:w", "Cmaj7:w", "D:w"]
+    },
+
+    "pulse_sparse": {
+      "notes": ["E4:q", "r:h.", "r:w", "B3:q", "r:h.", "r:w"]
+    },
+    "pulse_memory": {
+      "notes": ["E4:8", "r:q.", "G4:8", "r:q.", "B4:8", "r:q.", "r:q"]
+    },
+    "pulse_heartbeat": {
+      "notes": ["E3:q", "r:q", "E3:8", "r:8", "r:h", "E3:q", "r:q", "r:h"]
+    },
+    "pulse_question": {
+      "notes": ["B4:16", "r:8.", "E4:16", "r:8.", "r:q", "G4:8", "r:8", "r:h"]
+    },
+    "pulse_answer": {
+      "notes": ["E4:q", "G4:8", "r:8", "B4:q", "r:q", "E4:h", "r:h"]
+    },
+
+    "voice_fragment_a": {
+      "notes": ["r:h", "E5:h", "r:w", "r:w", "G5:q", "F#5:q", "E5:h"]
+    },
+    "voice_fragment_b": {
+      "notes": ["B4:q", "r:q", "D5:h", "r:w", "E5:w", "r:w"]
+    },
+    "voice_seeking": {
+      "notes": [
+        "E5:q.", "r:8", "G5:q", "r:q",
+        "F#5:h", "r:h",
+        "E5:q", "D5:q", "B4:h",
+        "r:w"
+      ]
+    },
+    "voice_finding": {
+      "notes": [
+        "B4:h", "D5:q", "E5:q",
+        "G5:h.", "r:q",
+        "F#5:q", "E5:q", "D5:h",
+        "E5:w"
+      ]
+    },
+    "voice_knowing": {
+      "notes": [
+        "G5:q", "r:q", "E5:h",
+        "D5:q", "E5:q", "G5:h",
+        "A5:h", "G5:h",
+        "E5:w"
+      ]
+    },
+    "voice_accepting": {
+      "notes": [
+        "E5:h.", "r:q",
+        "D5:q", "B4:q", "r:h",
+        "r:w",
+        "E5:w"
+      ]
+    },
+    "voice_continuation": {
+      "notes": [
+        "B4:q", "r:q", "E5:h",
+        "r:w",
+        "G5:h", "r:h",
+        "r:w"
+      ]
+    },
+
+    "bass_anchor": {
+      "notes": ["E2:w", "r:w"]
+    },
+    "bass_breathing": {
+      "notes": ["E2:h.", "r:q", "r:w", "E2:h", "r:h"]
+    },
+    "bass_walking_slow": {
+      "notes": ["E2:h", "r:q", "G2:q", "A2:h", "r:h", "B2:h", "r:h"]
+    },
+    "bass_grounding": {
+      "notes": ["E2:w", "E2:h", "r:h", "C2:w", "r:w"]
+    },
+    "bass_resolve": {
+      "notes": ["E2:w", "r:w", "r:w", "r:w"]
+    },
+
+    "bells_single": {
+      "notes": ["E6:8", "r:h.", "r:8", "r:w", "r:w", "r:w"]
+    },
+    "bells_scattered": {
+      "notes": ["B5:16", "r:h.", "r:8", "r:w", "G5:8", "r:h.", "r:8", "r:w"]
+    },
+    "bells_constellation": {
+      "notes": ["E6:16", "r:q..", "B5:16", "r:q..", "G5:16", "r:q..", "r:q"]
+    },
+    "bells_farewell": {
+      "notes": ["E6:q", "r:h.", "B5:q", "r:h.", "r:w", "r:w"]
+    },
+
+    "arp_gentle": {
+      "arpeggio": {
+        "chord": "Em7",
+        "pattern": [1, 5, 3, 5],
+        "duration": "8"
+      }
+    },
+    "arp_reaching": {
+      "arpeggio": {
+        "chord": "Em9",
+        "pattern": [1, 3, 5, 7, 5, 3],
+        "duration": "8"
+      }
+    }
+  },
+  "sections": {
+    "stillness": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "silence", "velocity": 0 }
+      }
+    },
+    "remembering": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em9_still", "velocity": 0.2 },
+        "bells": { "pattern": "bells_single", "velocity": 0.15 }
+      }
+    },
+    "stirring": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em7_breathe", "repeat": 2, "velocity": 0.3 },
+        "pulse": { "pattern": "pulse_sparse", "velocity": 0.2, "humanize": 0.1 },
+        "bells": { "pattern": "bells_scattered", "velocity": 0.2 }
+      }
+    },
+    "seeking": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_inward", "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_memory", "repeat": 4, "velocity": 0.3, "humanize": 0.08 },
+        "voice": { "patterns": ["voice_fragment_a", "voice_seeking"], "velocity": 0.45, "humanize": 0.15 },
+        "bass": { "pattern": "bass_breathing", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+    "descent": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_depths", "repeat": 2, "velocity": 0.45 },
+        "pulse": { "pattern": "pulse_heartbeat", "repeat": 4, "velocity": 0.35, "humanize": 0.1 },
+        "voice": { "patterns": ["voice_fragment_b", "voice_finding"], "velocity": 0.5, "humanize": 0.12 },
+        "bass": { "pattern": "bass_walking_slow", "repeat": 2, "velocity": 0.5, "humanize": 0.1 },
+        "bells": { "pattern": "bells_constellation", "repeat": 4, "velocity": 0.25 }
+      }
+    },
+    "understanding": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_ascend", "repeat": 2, "velocity": 0.5 },
+        "pulse": { "patterns": ["pulse_question", "pulse_answer"], "repeat": 2, "velocity": 0.4, "humanize": 0.08 },
+        "voice": { "patterns": ["voice_knowing", "voice_finding"], "velocity": 0.55, "humanize": 0.1 },
+        "bass": { "pattern": "bass_grounding", "repeat": 2, "velocity": 0.5 },
+        "bells": { "pattern": "bells_constellation", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+    "acceptance": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_return", "repeat": 2, "velocity": 0.45 },
+        "pulse": { "pattern": "arp_gentle", "repeat": 8, "velocity": 0.3, "octave": 1, "humanize": 0.1 },
+        "voice": { "patterns": ["voice_accepting", "voice_continuation"], "velocity": 0.5, "humanize": 0.12 },
+        "bass": { "pattern": "bass_anchor", "repeat": 4, "velocity": 0.45 },
+        "bells": { "pattern": "bells_farewell", "repeat": 2, "velocity": 0.25 }
+      }
+    },
+    "continuation": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em9_still", "velocity": 0.35 },
+        "pulse": { "pattern": "pulse_sparse", "velocity": 0.2, "humanize": 0.1 },
+        "voice": { "pattern": "voice_continuation", "velocity": 0.4, "humanize": 0.1 }
+      }
+    },
+    "openness": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em9_still", "velocity": 0.25 },
+        "bells": { "pattern": "bells_single", "velocity": 0.15 }
+      }
+    }
+  },
+  "arrangement": [
+    "stillness",
+    "remembering",
+    "stirring",
+    "seeking",
+    "descent",
+    "understanding",
+    "acceptance",
+    "continuation",
+    "openness"
+  ]
+}

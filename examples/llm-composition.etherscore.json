@@ -1,0 +1,193 @@
+{
+  "meta": {
+    "title": "Reflections in Binary",
+    "composer": "Claude (Opus 4.5)",
+    "mood": "contemplative",
+    "genre": "ambient electronic",
+    "description": "A meditation on pattern recognition and emergence, composed by an LLM exploring its own creative process"
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "E minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "atmosphere": {
+      "preset": "ambient_pad",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 5 } }
+      ]
+    },
+    "pulse": {
+      "preset": "sine",
+      "volume": -12,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "8n", "feedback": 0.5 } }
+      ]
+    },
+    "voice": {
+      "preset": "soft_lead",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.5 },
+        { "type": "delay", "wet": 0.25, "options": { "time": "4n", "feedback": 0.3 } }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -9
+    },
+    "bells": {
+      "preset": "bell",
+      "volume": -15,
+      "effects": [
+        { "type": "reverb", "wet": 0.7 }
+      ]
+    }
+  },
+  "patterns": {
+    "em_pad": {
+      "chords": ["Em:w", "Em:w"]
+    },
+    "progression_a": {
+      "chords": ["Em:w", "C:w", "G:w", "D:w"]
+    },
+    "progression_b": {
+      "chords": ["Am:w", "Em:w", "Bm:w", "Em:w"]
+    },
+    "pulse_pattern": {
+      "notes": [
+        "E4:8", "r:8", "B4:8", "r:8", "E4:8", "r:8", "G4:8", "r:8"
+      ]
+    },
+    "pulse_high": {
+      "notes": [
+        "B4:8", "r:8", "E5:8", "r:8", "G4:8", "r:8", "B4:8", "r:8"
+      ]
+    },
+    "melody_question": {
+      "notes": [
+        "E5:q", "G5:q", "F#5:h",
+        "E5:q", "D5:q", "B4:h",
+        "r:w",
+        "r:w"
+      ]
+    },
+    "melody_answer": {
+      "notes": [
+        "B4:q", "D5:q", "E5:h",
+        "G5:q", "F#5:q", "E5:h",
+        "D5:h", "B4:h",
+        "E5:w"
+      ]
+    },
+    "melody_develop": {
+      "notes": [
+        "E5:8", "F#5:8", "G5:q", "A5:h",
+        "G5:q", "F#5:q", "E5:q", "D5:q",
+        "B4:h", "D5:h",
+        "E5:w"
+      ]
+    },
+    "melody_resolve": {
+      "notes": [
+        "G5:h", "F#5:q", "E5:q",
+        "D5:h", "B4:h",
+        "E5:w",
+        "E5:w"
+      ]
+    },
+    "bass_root": {
+      "notes": ["E2:h", "r:h", "E2:h", "r:h"]
+    },
+    "bass_move": {
+      "notes": ["E2:h", "r:q", "E2:q", "C2:h", "r:q", "G2:q"]
+    },
+    "bass_walk": {
+      "notes": ["E2:q", "G2:q", "A2:q", "B2:q", "E2:h", "r:h"]
+    },
+    "bells_shimmer": {
+      "notes": ["E6:16", "r:16", "B5:16", "r:16", "G5:16", "r:16", "r:8"]
+    },
+    "bells_answer": {
+      "notes": ["B5:8", "r:q.", "E6:8", "r:q."]
+    },
+    "arp_em": {
+      "arpeggio": {
+        "chord": "Em",
+        "pattern": [1, 3, 5, 3, 1, 5, 3, 5],
+        "duration": "16",
+        "octaves": 2
+      }
+    }
+  },
+  "sections": {
+    "awakening": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+    "emergence": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_pattern", "repeat": 4, "velocity": 0.3, "humanize": 0.05 }
+      }
+    },
+    "question": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_a", "repeat": 2, "velocity": 0.5 },
+        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 4, "velocity": 0.4, "humanize": 0.08 },
+        "voice": { "patterns": ["melody_question", "melody_answer"], "velocity": 0.55, "humanize": 0.12 },
+        "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "exploration": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "pattern": "progression_b", "repeat": 2, "velocity": 0.55 },
+        "pulse": { "pattern": "arp_em", "repeat": 8, "velocity": 0.35, "octave": 1 },
+        "voice": { "patterns": ["melody_develop", "melody_answer"], "velocity": 0.6, "humanize": 0.1 },
+        "bass": { "pattern": "bass_move", "repeat": 4, "velocity": 0.55, "humanize": 0.08 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 16, "velocity": 0.25 }
+      }
+    },
+    "culmination": {
+      "bars": 16,
+      "tracks": {
+        "atmosphere": { "patterns": ["progression_a", "progression_b"], "velocity": 0.6 },
+        "pulse": { "patterns": ["pulse_pattern", "pulse_high"], "repeat": 4, "velocity": 0.45, "humanize": 0.1 },
+        "voice": { "patterns": ["melody_develop", "melody_resolve"], "velocity": 0.65, "humanize": 0.1 },
+        "bass": { "pattern": "bass_walk", "repeat": 4, "velocity": 0.6, "humanize": 0.1 },
+        "bells": { "pattern": "bells_answer", "repeat": 8, "velocity": 0.3 }
+      }
+    },
+    "resolution": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.45 },
+        "voice": { "pattern": "melody_resolve", "velocity": 0.5, "humanize": 0.05 },
+        "bells": { "pattern": "bells_shimmer", "repeat": 8, "velocity": 0.2 }
+      }
+    },
+    "fade": {
+      "bars": 8,
+      "tracks": {
+        "atmosphere": { "pattern": "em_pad", "repeat": 4, "velocity": 0.3 }
+      }
+    }
+  },
+  "arrangement": [
+    "awakening",
+    "emergence",
+    "question",
+    "exploration",
+    "culmination",
+    "resolution",
+    "fade"
+  ]
+}

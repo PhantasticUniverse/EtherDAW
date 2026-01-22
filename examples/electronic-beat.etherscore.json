@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "title": "Digital Pulse",
+    "composer": "EtherDAW",
+    "mood": "energetic",
+    "genre": "electronic",
+    "description": "An upbeat electronic track with driving bass and arpeggiated synths"
+  },
+  "settings": {
+    "tempo": 128,
+    "key": "A minor",
+    "timeSignature": "4/4",
+    "swing": 0
+  },
+  "instruments": {
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -2,
+      "effects": [
+        { "type": "distortion", "wet": 0.15, "options": { "amount": 0.3 } },
+        { "type": "compressor", "options": { "threshold": -20, "ratio": 6 } }
+      ]
+    },
+    "lead": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "delay", "wet": 0.25, "options": { "time": "16n", "feedback": 0.2 } },
+        { "type": "reverb", "wet": 0.2 }
+      ]
+    },
+    "arp": {
+      "preset": "pluck",
+      "volume": -8,
+      "effects": [
+        { "type": "delay", "wet": 0.35, "options": { "time": "8n", "feedback": 0.4 } },
+        { "type": "filter", "options": { "frequency": 3000, "type": "lowpass" } }
+      ]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.6 }
+      ]
+    },
+    "stab": {
+      "preset": "square",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.3 }
+      ]
+    }
+  },
+  "patterns": {
+    "bass_main": {
+      "notes": [
+        "A1:8", "r:8", "A1:8", "A1:8",
+        "r:8", "A1:8", "A2:8", "r:8"
+      ]
+    },
+    "bass_variation": {
+      "notes": [
+        "A1:8", "r:8", "E1:8", "E1:8",
+        "r:8", "G1:8", "A1:8", "r:8"
+      ]
+    },
+    "bass_drop": {
+      "notes": [
+        "A1:16", "A1:16", "r:8", "A1:8", "A1:8",
+        "G1:16", "G1:16", "r:8", "E1:8", "A1:8"
+      ]
+    },
+    "arp_main": {
+      "arpeggio": {
+        "chord": "Am",
+        "pattern": [1, 3, 5, 3, 1, 5, 3, 5],
+        "duration": "16",
+        "octaves": 2
+      }
+    },
+    "arp_high": {
+      "arpeggio": {
+        "chord": "Am",
+        "pattern": [5, 3, 1, 3, 5, 1, 3, 1],
+        "duration": "16",
+        "octaves": 2
+      }
+    },
+    "arp_fm": {
+      "arpeggio": {
+        "chord": "Fmaj7",
+        "pattern": [1, 3, 5, 7, 5, 3, 1, 3],
+        "duration": "16",
+        "octaveSpan": 1
+      }
+    },
+    "lead_hook": {
+      "notes": [
+        "A4:8", "C5:8", "E5:q",
+        "D5:8", "C5:8", "A4:q",
+        "G4:8", "A4:8", "C5:8", "D5:8",
+        "E5:h"
+      ]
+    },
+    "lead_response": {
+      "notes": [
+        "E5:q", "D5:8", "C5:8",
+        "A4:q", "G4:q",
+        "A4:8", "C5:8", "D5:8", "E5:8",
+        "A4:h"
+      ]
+    },
+    "pad_am": {
+      "chords": ["Am:w", "Am:w"]
+    },
+    "pad_progression": {
+      "chords": ["Am:w", "F:w", "C:w", "G:w"]
+    },
+    "stab_hit": {
+      "notes": ["A3:8", "C4:8", "E4:8", "r:8", "r:h", "A3:8", "C4:8", "E4:8", "r:8", "r:h"]
+    },
+    "stab_fill": {
+      "notes": ["C4:8", "E4:8", "G4:8", "r:8", "G3:8", "B3:8", "D4:8", "r:8", "A3:8", "C4:8", "E4:8", "r:8", "E4:q", "G#4:q"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_am", "repeat": 4, "velocity": 0.4 },
+        "arp": { "pattern": "arp_main", "repeat": 4, "velocity": 0.3, "octave": 1 }
+      }
+    },
+    "buildup": {
+      "bars": 8,
+      "tracks": {
+        "bass": { "pattern": "bass_main", "repeat": 4, "velocity": 0.5 },
+        "pad": { "pattern": "pad_am", "repeat": 4, "velocity": 0.45 },
+        "arp": { "pattern": "arp_main", "repeat": 4, "velocity": 0.5, "octave": 1 }
+      }
+    },
+    "drop_a": {
+      "bars": 16,
+      "tracks": {
+        "bass": { "patterns": ["bass_main", "bass_variation"], "repeat": 4, "velocity": 0.8 },
+        "arp": { "patterns": ["arp_main", "arp_high"], "repeat": 4, "velocity": 0.6, "octave": 1 },
+        "lead": { "patterns": ["lead_hook", "lead_response"], "repeat": 2, "velocity": 0.65 },
+        "stab": { "pattern": "stab_hit", "repeat": 8, "velocity": 0.55 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_progression", "repeat": 2, "velocity": 0.5 },
+        "arp": { "pattern": "arp_fm", "repeat": 4, "velocity": 0.4, "octave": 1 }
+      }
+    },
+    "build": {
+      "bars": 8,
+      "tracks": {
+        "bass": { "pattern": "bass_main", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "pad_progression", "repeat": 2, "velocity": 0.55 },
+        "arp": { "patterns": ["arp_main", "arp_high"], "repeat": 2, "velocity": 0.55, "octave": 1 },
+        "stab": { "pattern": "stab_fill", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "drop_b": {
+      "bars": 16,
+      "tracks": {
+        "bass": { "pattern": "bass_drop", "repeat": 8, "velocity": 0.85 },
+        "arp": { "patterns": ["arp_main", "arp_high"], "repeat": 4, "velocity": 0.65, "octave": 1 },
+        "lead": { "patterns": ["lead_hook", "lead_response"], "repeat": 2, "velocity": 0.7, "octave": 1 },
+        "stab": { "patterns": ["stab_hit", "stab_fill"], "repeat": 4, "velocity": 0.6 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "pad": { "pattern": "pad_am", "repeat": 4, "velocity": 0.35 },
+        "arp": { "pattern": "arp_main", "repeat": 4, "velocity": 0.25, "octave": 1 }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "buildup",
+    "drop_a",
+    "breakdown",
+    "build",
+    "drop_b",
+    "breakdown",
+    "outro"
+  ]
+}
