@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output (keep browser bundle for player.html)
+dist/
+!dist/etherdaw-browser.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test/temp files
+*.log
+*.tmp
+coverage/
+
+# Generated files
+*.mid
+.playwright-mcp/
