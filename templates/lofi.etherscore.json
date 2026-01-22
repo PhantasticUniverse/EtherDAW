@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Lo-Fi Template",
+    "composer": "EtherDAW",
+    "mood": "chill"
+  },
+  "settings": {
+    "tempo": 75,
+    "key": "D minor",
+    "timeSignature": "4/4",
+    "swing": 0.15
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -3,
+      "effects": [
+        { "type": "bitcrusher", "wet": 0.2, "options": { "bits": 10 } }
+      ]
+    },
+    "keys": {
+      "preset": "fm_epiano",
+      "params": { "warmth": 0.8 },
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "wet": 0.2 },
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2 } }
+      ]
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 800, "type": "lowpass" } }
+      ]
+    },
+    "vinyl": {
+      "preset": "vinyl_crackle",
+      "volume": -18
+    }
+  },
+  "patterns": {
+    "drums_main": {
+      "drums": {
+        "kit": "lofi",
+        "kick": "x.......x.......",
+        "snare": "....x.......x...",
+        "hihat": "..x...x...x...x."
+      }
+    },
+    "drums_fill": {
+      "drums": {
+        "kit": "lofi",
+        "kick": "x.......x...x...",
+        "snare": "....x.......x.x.",
+        "hihat": "..x...x...x....."
+      }
+    },
+    "chord_prog": {
+      "chords": ["Dm9:h", "Am7:h", "Gm7:h", "A7:h"]
+    },
+    "bass_walk": {
+      "notes": "D2:q E2:q F2:q G2:q | A2:q G2:q F2:q E2:q"
+    },
+    "bass_simple": {
+      "notes": "D2:h r:h | A2:h r:h"
+    },
+    "vinyl_loop": {
+      "notes": ["C4:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "vinyl": { "pattern": "vinyl_loop" },
+        "keys": { "pattern": "chord_prog", "velocity": 0.4 }
+      }
+    },
+    "verse": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 2, "groove": "dilla", "humanize": 0.03 },
+        "keys": { "pattern": "chord_prog", "repeat": 2, "velocity": 0.6 },
+        "bass": { "pattern": "bass_simple", "repeat": 2, "groove": "dilla" },
+        "vinyl": { "pattern": "vinyl_loop", "repeat": 2 }
+      }
+    },
+    "chorus": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "drums_main", "repeat": 2, "groove": "dilla", "humanize": 0.03 },
+        "keys": { "pattern": "chord_prog", "repeat": 2, "velocity": 0.7 },
+        "bass": { "pattern": "bass_walk", "repeat": 2, "groove": "dilla" },
+        "vinyl": { "pattern": "vinyl_loop", "repeat": 2 }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "keys": { "pattern": "chord_prog", "velocity": 0.4 },
+        "vinyl": { "pattern": "vinyl_loop" }
+      }
+    }
+  },
+  "arrangement": ["intro", "verse", "chorus", "verse", "chorus", "outro"]
+}

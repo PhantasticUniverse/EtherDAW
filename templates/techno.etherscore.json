@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "title": "Techno Template",
+    "composer": "EtherDAW",
+    "mood": "driving"
+  },
+  "settings": {
+    "tempo": 130,
+    "key": "A minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": 0
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -3,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 200, "type": "lowpass" } }
+      ]
+    },
+    "lead": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 2000, "type": "lowpass" } },
+        { "type": "delay", "wet": 0.2, "options": { "time": "8n", "feedback": 0.3 } }
+      ]
+    },
+    "pad": {
+      "preset": "string_pad",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 4 } }
+      ]
+    }
+  },
+  "patterns": {
+    "kick_4": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x..."
+      }
+    },
+    "hihat_16": {
+      "drums": {
+        "kit": "909",
+        "hihat": "x.x.x.x.x.x.x.x."
+      }
+    },
+    "full_beat": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x...",
+        "hihat": "x.x.x.x.x.x.x.x.",
+        "clap": "....x.......x..."
+      }
+    },
+    "bass_pulse": {
+      "notes": "A1:8 r:8 A1:8 r:8 A1:8 r:8 A1:8 r:8"
+    },
+    "bass_groove": {
+      "notes": "A1:8 r:8 A1:16 A1:16 r:8 A1:8 r:8 G1:8 r:8"
+    },
+    "lead_riff": {
+      "notes": "A3:16 C4:16 D4:16 E4:8 r:16 D4:8 C4:8 A3:q"
+    },
+    "pad_chord": {
+      "chords": ["Am:w"]
+    },
+    "pad_prog": {
+      "chords": ["Am:h", "G:h", "F:h", "Em:h"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_4", "repeat": 2 }
+      }
+    },
+    "build": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 2 },
+        "bass": { "pattern": "bass_pulse", "repeat": 4 }
+      }
+    },
+    "drop": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 4 },
+        "bass": { "pattern": "bass_groove", "repeat": 8 },
+        "lead": { "pattern": "lead_riff", "repeat": 8, "velocity": 0.8 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_4", "repeat": 2 },
+        "pad": { "pattern": "pad_prog", "velocity": 0.5 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_4", "repeat": 2 },
+        "bass": { "pattern": "bass_pulse", "repeat": 4, "velocity": 0.6 }
+      }
+    }
+  },
+  "arrangement": ["intro", "build", "drop", "breakdown", "drop", "outro"]
+}

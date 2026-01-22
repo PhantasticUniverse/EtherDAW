@@ -87,8 +87,47 @@ npm run build:all          # Full build
 npm test                   # Tests
 npm run generate:benchmarks # MIDI export + analysis
 npm run generate:references # Reference signal spectrograms
-open player.html           # Listen
+open player.html           # Listen (browser)
 ```
+
+## EtherREPL (v0.82)
+
+Interactive composition environment for live coding workflow.
+
+```bash
+npx tsx src/cli.ts repl                                    # Start REPL
+npx tsx src/cli.ts play examples/techno-signal.json        # Play from CLI
+npx tsx src/cli.ts preview file.json --pattern acid_line   # Preview pattern
+```
+
+**REPL Commands:**
+```
+load <file>              Load EtherScore file
+play [pattern]           Play all or specific pattern
+stop                     Stop playback
+tempo <bpm>              Change tempo
+transpose <pat> <semi>   Transpose pattern
+list patterns            List available patterns
+list instruments         List instruments
+save [file]              Save current state
+quit                     Exit REPL
+```
+
+**Pattern Transforms:**
+```
+transpose <pattern> 5    # Up 5 semitones
+stretch <pattern> 0.5    # Half speed
+velocity <pattern> 0.8   # Scale velocity to 80%
+```
+
+**Live Coding Workflow:**
+1. `load` a composition
+2. `play` to hear it
+3. `transpose`, `stretch`, or modify patterns
+4. Hear changes immediately
+5. `save` when satisfied
+
+See [docs/VISION.md](docs/VISION.md) for the long-term architecture.
 
 ## Verification Workflow
 

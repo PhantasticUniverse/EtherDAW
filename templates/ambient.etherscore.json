@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Ambient Template",
+    "composer": "EtherDAW",
+    "mood": "ethereal"
+  },
+  "settings": {
+    "tempo": 60,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "pad1": {
+      "preset": "ambient_pad",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.8, "options": { "decay": 8 } },
+        { "type": "delay", "wet": 0.3, "options": { "time": "4n.", "feedback": 0.4 } }
+      ]
+    },
+    "pad2": {
+      "preset": "string_pad",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 6 } },
+        { "type": "chorus", "wet": 0.3 }
+      ]
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 2 } }
+      ]
+    },
+    "texture": {
+      "preset": "pink_noise",
+      "volume": -24,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 500, "type": "lowpass" } },
+        { "type": "reverb", "wet": 0.9, "options": { "decay": 10 } }
+      ]
+    },
+    "bell": {
+      "preset": "fm_tubular_bell",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 6 } }
+      ]
+    }
+  },
+  "patterns": {
+    "pad_dm": {
+      "chords": ["Dm:w"]
+    },
+    "pad_am": {
+      "chords": ["Am:w"]
+    },
+    "pad_gm": {
+      "chords": ["Gm:w"]
+    },
+    "pad_bb": {
+      "chords": ["Bb:w"]
+    },
+    "pad_prog": {
+      "chords": ["Dm:w", "Am:w", "Gm:w", "Bb:w"]
+    },
+    "bass_drone": {
+      "notes": ["D2:w"]
+    },
+    "bass_move": {
+      "notes": ["D2:w", "A1:w", "G1:w", "Bb1:w"]
+    },
+    "texture_hold": {
+      "notes": ["C4:w"]
+    },
+    "bell_sparse": {
+      "notes": "D5:w | r:w | A4:w | r:w"
+    },
+    "bell_melody": {
+      "notes": "D5:h r:q F5:q | E5:h r:h | A4:w | r:w"
+    }
+  },
+  "sections": {
+    "opening": {
+      "bars": 16,
+      "tracks": {
+        "pad1": { "pattern": "pad_dm", "repeat": 4, "velocity": 0.3 },
+        "texture": { "pattern": "texture_hold", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "emergence": {
+      "bars": 16,
+      "tracks": {
+        "pad1": { "pattern": "pad_prog", "velocity": 0.5 },
+        "bass": { "pattern": "bass_drone", "repeat": 4, "velocity": 0.6 },
+        "texture": { "pattern": "texture_hold", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+    "development": {
+      "bars": 16,
+      "tracks": {
+        "pad1": { "pattern": "pad_prog", "velocity": 0.6 },
+        "pad2": { "pattern": "pad_prog", "velocity": 0.4 },
+        "bass": { "pattern": "bass_move", "velocity": 0.7 },
+        "bell": { "pattern": "bell_sparse", "velocity": 0.5 }
+      }
+    },
+    "climax": {
+      "bars": 16,
+      "tracks": {
+        "pad1": { "pattern": "pad_prog", "velocity": 0.7 },
+        "pad2": { "pattern": "pad_prog", "velocity": 0.5 },
+        "bass": { "pattern": "bass_move", "velocity": 0.8 },
+        "bell": { "pattern": "bell_melody", "velocity": 0.6 },
+        "texture": { "pattern": "texture_hold", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+    "resolution": {
+      "bars": 16,
+      "tracks": {
+        "pad1": { "pattern": "pad_dm", "repeat": 4, "velocity": 0.4 },
+        "bass": { "pattern": "bass_drone", "repeat": 4, "velocity": 0.5 },
+        "texture": { "pattern": "texture_hold", "repeat": 4, "velocity": 0.6 }
+      }
+    }
+  },
+  "arrangement": ["opening", "emergence", "development", "climax", "resolution"]
+}

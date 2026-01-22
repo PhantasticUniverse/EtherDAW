@@ -1,0 +1,253 @@
+{
+  "meta": {
+    "title": "Threshold",
+    "composer": "Claude + EtherDAW",
+    "mood": "contemplative",
+    "description": "A meditation on emergence - the space where intention meets algorithm, where patterns arise from simple rules. Created using v0.82 REPL workflow."
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "E dorian",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "// FOUNDATION": "The ground beneath",
+    "drone": {
+      "preset": "sub_bass",
+      "volume": -9,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 120, "type": "lowpass" } }
+      ]
+    },
+
+    "// TEXTURE": "The atmosphere",
+    "breath": {
+      "preset": "pink_noise",
+      "volume": -24,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 400, "type": "lowpass" } },
+        { "type": "reverb", "wet": 0.9, "options": { "decay": 8 } }
+      ]
+    },
+
+    "// HARMONY": "The emotional core",
+    "pad": {
+      "preset": "ambient_pad",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 6 } },
+        { "type": "chorus", "wet": 0.2 }
+      ]
+    },
+
+    "// EMERGENCE": "The algorithm speaks",
+    "voice": {
+      "preset": "fm_glass",
+      "volume": -9,
+      "effects": [
+        { "type": "delay", "wet": 0.4, "options": { "time": "4n.", "feedback": 0.45 } },
+        { "type": "reverb", "wet": 0.6, "options": { "decay": 5 } }
+      ]
+    },
+
+    "// INTENTION": "The human hand",
+    "bells": {
+      "preset": "fm_tubular_bell",
+      "volume": -12,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 7 } }
+      ]
+    },
+
+    "// TIME": "The pulse of awareness",
+    "pulse": {
+      "preset": "pluck",
+      "volume": -15,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 1200, "type": "lowpass" } },
+        { "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.2 } },
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 3 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// THE GROUND": "Sustained foundation",
+    "drone_e": {
+      "notes": ["E1:w"]
+    },
+    "drone_move": {
+      "notes": ["E1:w", "D1:w", "E1:w", "A1:w"]
+    },
+
+    "// THE BREATH": "Continuous texture",
+    "breath_hold": {
+      "notes": ["C4:w"]
+    },
+
+    "// THE HEART": "Harmonic progression",
+    "heart_open": {
+      "chords": ["Em9:w"]
+    },
+    "heart_move": {
+      "chords": ["Em9:w", "Dmaj7:w", "Cmaj7:w", "Am9:w"]
+    },
+    "heart_resolve": {
+      "chords": ["Em9:w", "Bm7:w", "Cmaj7:w", "Em9:w"]
+    },
+
+    "// THE EMERGENCE": "Markov-generated melody - algorithm finding its voice",
+    "emergence_slow": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "melody_stepwise",
+        "steps": 8,
+        "duration": "h",
+        "octave": 5,
+        "rest_probability": 0.3
+      }
+    },
+    "emergence_active": {
+      "markov": {
+        "states": ["1", "2", "3", "4", "5", "6", "7"],
+        "preset": "melody_stepwise",
+        "steps": 16,
+        "duration": "q",
+        "octave": 5,
+        "rest_probability": 0.2
+      }
+    },
+    "emergence_sparse": {
+      "markov": {
+        "states": ["1", "3", "5", "6"],
+        "preset": "neighbor_weighted",
+        "steps": 8,
+        "duration": "h",
+        "octave": 5,
+        "rest_probability": 0.4
+      }
+    },
+
+    "// THE INTENTION": "Deliberate, composed gestures",
+    "bell_call": {
+      "notes": "E5:h r:h | B4:w | r:w | G5:h E5:h"
+    },
+    "bell_answer": {
+      "notes": "D5:w | r:h A4:h | E5:w | r:w"
+    },
+    "bell_final": {
+      "notes": "E5:h D5:h | B4:w | A4:h G4:h | E4:w"
+    },
+
+    "// THE PULSE": "Gentle rhythmic anchor",
+    "pulse_sparse": {
+      "notes": "E3:q r:q r:h | r:w | B2:q r:q r:h | r:w"
+    },
+    "pulse_steady": {
+      "notes": "E3:q r:q B2:q r:q | E3:q r:q D3:q r:q"
+    }
+  },
+  "sections": {
+    "// ACT I": "Awakening - from silence to awareness",
+    "silence": {
+      "bars": 4,
+      "tracks": {
+        "breath": { "pattern": "breath_hold", "velocity": 0.3 }
+      }
+    },
+    "stirring": {
+      "bars": 8,
+      "tracks": {
+        "drone": { "pattern": "drone_e", "repeat": 2, "velocity": 0.4 },
+        "breath": { "pattern": "breath_hold", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+    "awakening": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_e", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "heart_open", "repeat": 4, "velocity": 0.4 },
+        "breath": { "pattern": "breath_hold", "repeat": 4, "velocity": 0.5 }
+      }
+    },
+
+    "// ACT II": "Emergence - the algorithm begins to speak",
+    "first_voice": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_e", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "heart_move", "velocity": 0.5 },
+        "voice": { "pattern": "emergence_slow", "repeat": 2, "velocity": 0.5, "humanize": 0.02 },
+        "breath": { "pattern": "breath_hold", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+    "dialogue": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_move", "velocity": 0.7 },
+        "pad": { "pattern": "heart_move", "velocity": 0.6 },
+        "voice": { "pattern": "emergence_active", "velocity": 0.6, "humanize": 0.02, "groove": "laid_back" },
+        "bells": { "pattern": "bell_call", "velocity": 0.5 }
+      }
+    },
+
+    "// ACT III": "Convergence - intention and emergence interweave",
+    "interweave": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_move", "velocity": 0.7 },
+        "pad": { "pattern": "heart_resolve", "velocity": 0.6 },
+        "voice": { "pattern": "emergence_active", "velocity": 0.6, "humanize": 0.03, "groove": "laid_back" },
+        "bells": { "pattern": "bell_answer", "velocity": 0.6 },
+        "pulse": { "pattern": "pulse_sparse", "repeat": 2, "velocity": 0.4 }
+      }
+    },
+    "fullness": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_move", "velocity": 0.8 },
+        "pad": { "pattern": "heart_move", "velocity": 0.7 },
+        "voice": { "pattern": "emergence_active", "velocity": 0.7, "humanize": 0.03, "groove": "laid_back" },
+        "bells": { "pattern": "bell_call", "velocity": 0.6 },
+        "pulse": { "pattern": "pulse_steady", "repeat": 4, "velocity": 0.5 },
+        "breath": { "pattern": "breath_hold", "repeat": 4, "velocity": 0.3 }
+      }
+    },
+
+    "// ACT IV": "Return - settling back toward stillness",
+    "settling": {
+      "bars": 16,
+      "tracks": {
+        "drone": { "pattern": "drone_e", "repeat": 4, "velocity": 0.6 },
+        "pad": { "pattern": "heart_resolve", "velocity": 0.5 },
+        "voice": { "pattern": "emergence_sparse", "repeat": 2, "velocity": 0.4, "humanize": 0.02 },
+        "bells": { "pattern": "bell_final", "velocity": 0.4 }
+      }
+    },
+    "threshold": {
+      "bars": 8,
+      "tracks": {
+        "drone": { "pattern": "drone_e", "repeat": 2, "velocity": 0.5 },
+        "pad": { "pattern": "heart_open", "repeat": 2, "velocity": 0.4 },
+        "breath": { "pattern": "breath_hold", "repeat": 2, "velocity": 0.5 }
+      }
+    },
+    "stillness": {
+      "bars": 8,
+      "tracks": {
+        "breath": { "pattern": "breath_hold", "repeat": 2, "velocity": 0.3 }
+      }
+    }
+  },
+  "arrangement": [
+    "silence",
+    "stirring",
+    "awakening",
+    "first_voice",
+    "dialogue",
+    "interweave",
+    "fullness",
+    "settling",
+    "threshold",
+    "stillness"
+  ]
+}

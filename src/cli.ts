@@ -15,6 +15,162 @@ program
   .version('0.1.0');
 
 /**
+ * REPL command - start interactive environment (v0.82)
+ */
+program
+  .command('repl')
+  .description('Start the interactive EtherREPL environment')
+  .option('-f, --file <file>', 'Load a file on startup')
+  .action(async (options: { file?: string }) => {
+    try {
+      const { startREPL } = await import('./cli/repl.js');
+      await startREPL({
+        initialFile: options.file,
+        showWelcome: true,
+      });
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Play command - play an EtherScore file (v0.82)
+ */
+program
+  .command('play <file>')
+  .description('Play an EtherScore file through system audio')
+  .option('-l, --loop', 'Loop playback')
+  .action(async (file: string, options: { loop?: boolean }) => {
+    try {
+      const { createNodePlayer } = await import('./node/player.js');
+      const { isAudioAvailable } = await import('./node/audio-context.js');
+
+      if (!isAudioAvailable()) {
+        console.error('Audio playback not available on this system');
+        process.exit(1);
+      }
+
+      const player = createNodePlayer();
+
+      player.setCallbacks({
+        onProgress: (msg) => console.log(msg),
+        onStateChange: (state) => {
+          if (state === 'stopped') {
+            console.log('Playback stopped');
+          }
+        },
+        onError: (err) => console.error('Playback error:', err.message),
+      });
+
+      console.log(`Loading: ${file}`);
+      await player.loadFile(file);
+
+      const duration = player.getDuration();
+      console.log(`Duration: ${formatDuration(duration)}`);
+      console.log('Press Ctrl+C to stop\n');
+
+      await player.play({ loop: options.loop });
+
+      // Wait for playback to complete
+      await new Promise<void>((resolve) => {
+        const check = setInterval(() => {
+          if (player.getState() === 'stopped') {
+            clearInterval(check);
+            resolve();
+          }
+        }, 100);
+
+        // Handle Ctrl+C
+        process.on('SIGINT', () => {
+          player.stop();
+          clearInterval(check);
+          resolve();
+        });
+      });
+
+      player.dispose();
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Preview command - preview a specific pattern (v0.82)
+ */
+program
+  .command('preview <file>')
+  .description('Preview a specific pattern from an EtherScore file')
+  .option('-p, --pattern <name>', 'Pattern name to preview')
+  .option('-l, --loop', 'Loop playback')
+  .action(async (file: string, options: { pattern?: string; loop?: boolean }) => {
+    try {
+      const { createNodePlayer } = await import('./node/player.js');
+      const { isAudioAvailable } = await import('./node/audio-context.js');
+
+      if (!isAudioAvailable()) {
+        console.error('Audio playback not available on this system');
+        process.exit(1);
+      }
+
+      const player = createNodePlayer();
+
+      player.setCallbacks({
+        onProgress: (msg) => console.log(msg),
+        onStateChange: (state) => {
+          if (state === 'stopped') {
+            console.log('Playback stopped');
+          }
+        },
+        onError: (err) => console.error('Playback error:', err.message),
+      });
+
+      console.log(`Loading: ${file}`);
+      await player.loadFile(file);
+
+      // If no pattern specified, list available patterns
+      if (!options.pattern) {
+        const patterns = player.getPatterns();
+        console.log('\nAvailable patterns:');
+        for (const p of patterns) {
+          console.log(`  - ${p}`);
+        }
+        console.log('\nUse --pattern <name> to preview a specific pattern');
+        player.dispose();
+        return;
+      }
+
+      console.log(`Previewing pattern: ${options.pattern}`);
+      console.log('Press Ctrl+C to stop\n');
+
+      await player.playPattern(options.pattern, { loop: options.loop });
+
+      // Wait for playback to complete
+      await new Promise<void>((resolve) => {
+        const check = setInterval(() => {
+          if (player.getState() === 'stopped') {
+            clearInterval(check);
+            resolve();
+          }
+        }, 100);
+
+        // Handle Ctrl+C
+        process.on('SIGINT', () => {
+          player.stop();
+          clearInterval(check);
+          resolve();
+        });
+      });
+
+      player.dispose();
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
  * Validate command - check EtherScore syntax
  */
 program
@@ -202,21 +358,33 @@ program
   });
 
 /**
- * New command - create a new EtherScore template
+ * New command - create a new EtherScore template (v0.82: added techno, lofi, ambient)
  */
 program
   .command('new')
   .description('Create a new EtherScore file from a template')
-  .option('-t, --template <name>', 'Template name (minimal, ambient, jazz)', 'minimal')
+  .option('-t, --template <name>', 'Template name (minimal, techno, lofi, ambient, jazz)', 'minimal')
   .option('-o, --output <file>', 'Output file path', 'song.etherscore.json')
-  .action(async (options: { template: string; output: string }) => {
+  .option('--list', 'List available templates')
+  .action(async (options: { template: string; output: string; list?: boolean }) => {
     try {
-      const template = getTemplate(options.template);
+      if (options.list) {
+        console.log('\nAvailable Templates:');
+        console.log('====================');
+        console.log('  minimal  - Basic starting point');
+        console.log('  techno   - Driving 4/4 techno template');
+        console.log('  lofi     - Chill lo-fi hip-hop template');
+        console.log('  ambient  - Ethereal ambient template');
+        console.log('  jazz     - Jazz standard template');
+        return;
+      }
+
+      const template = await getTemplate(options.template);
       await writeFile(
         resolve(options.output),
         JSON.stringify(template, null, 2)
       );
-      console.log(`✓ Created ${options.output}`);
+      console.log(`✓ Created ${options.output} from "${options.template}" template`);
     } catch (error) {
       console.error('Error:', (error as Error).message);
       process.exit(1);
@@ -298,7 +466,31 @@ function formatDuration(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-function getTemplate(name: string): object {
+async function getTemplate(name: string): Promise<object> {
+  // v0.82: Load templates from templates/ directory for techno, lofi, ambient
+  const fileTemplates = ['techno', 'lofi', 'ambient'];
+  if (fileTemplates.includes(name)) {
+    const { readFile: readFileAsync } = await import('fs/promises');
+    const { dirname, join } = await import('path');
+    const { fileURLToPath } = await import('url');
+
+    // Try to find templates directory relative to this file or cwd
+    const possiblePaths = [
+      join(process.cwd(), 'templates', `${name}.etherscore.json`),
+      join(dirname(fileURLToPath(import.meta.url)), '..', 'templates', `${name}.etherscore.json`),
+    ];
+
+    for (const templatePath of possiblePaths) {
+      try {
+        const content = await readFileAsync(templatePath, 'utf-8');
+        return JSON.parse(content);
+      } catch {
+        // Try next path
+      }
+    }
+    throw new Error(`Template "${name}" not found`);
+  }
+
   const templates: Record<string, object> = {
     minimal: {
       meta: {

@@ -244,6 +244,112 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.82 (2026-01-23) - Live Coding Foundation
+
+**Vision:** See [docs/VISION.md](./VISION.md) for the long-term architecture and philosophy.
+
+**New Features:**
+- **Node.js audio playback**: Play compositions from the command line without a browser
+- **Pattern preview**: `npx tsx src/cli.ts preview file.json --pattern name` to hear individual patterns
+- **EtherREPL**: Interactive composition environment with load/play/stop/save commands
+- **Pattern transforms**: transpose, stretch, velocity scaling via REPL
+- **Composition templates**: Quick-start templates for techno, lofi, ambient genres
+
+**New Files:**
+- `src/node/player.ts` - Node.js audio playback using Tone.js
+- `src/node/audio-context.ts` - Web Audio API polyfill for Node.js
+- `src/cli/repl.ts` - Main REPL loop
+- `src/cli/repl/commands.ts` - REPL command implementations
+- `src/cli/repl/state.ts` - REPL session state management
+- `src/cli/commands/preview.ts` - Pattern preview command
+- `src/cli/commands/new.ts` - Template-based composition creation
+- `src/transforms/index.ts` - Transform registry
+- `src/transforms/transpose.ts` - Pitch transposition
+- `src/transforms/stretch.ts` - Time stretching
+- `src/transforms/velocity.ts` - Velocity scaling
+- `templates/techno.etherscore.json` - Techno composition template
+- `templates/lofi.etherscore.json` - Lo-fi composition template
+- `templates/ambient.etherscore.json` - Ambient composition template
+
+**REPL Commands (v0.82):**
+| Command | Description |
+|---------|-------------|
+| `load <file>` | Load EtherScore file |
+| `play [pattern/section]` | Play audio |
+| `stop` | Stop playback |
+| `tempo <bpm>` | Change tempo |
+| `transpose <pattern> <semitones>` | Transpose pattern |
+| `list patterns` | List available patterns |
+| `list instruments` | List instruments |
+| `save [file]` | Save current state |
+| `quit` | Exit REPL |
+
+**Workflow Evolution:**
+- Composition feels more like conversation than file editing
+- Immediate feedback loop: change → hear in seconds
+- Patterns become first-class values to transform
+
+---
+
+### v0.83 (Planned) - LLM Feedback & Pattern Algebra
+
+**Problem:** LLMs cannot hear audio. When composing, an LLM needs real-time feedback mechanisms that translate audio into analyzable data.
+
+**Proposed LLM Feedback Features:**
+
+1. **Audio Analysis Reports** - After rendering, generate structured analysis:
+   ```json
+   {
+     "duration": "4:26",
+     "peakAmplitude": -1.2,
+     "rmsLoudness": -12.4,
+     "frequencyBalance": { "low": 0.35, "mid": 0.45, "high": 0.20 },
+     "dynamicRange": 14.2,
+     "clippingEvents": 0,
+     "silenceGaps": ["2:15-2:17"],
+     "instruments": {
+       "bass": { "avgFrequency": 85, "presenceRatio": 0.7 },
+       "drums": { "avgFrequency": 150, "presenceRatio": 0.8 }
+     }
+   }
+   ```
+
+2. **Spectrogram Generation** - ASCII or image-based spectrograms for visual frequency analysis
+
+3. **Comparative Analysis** - Compare two renders:
+   - "Transpose increased brightness by 15%"
+   - "Adding reverb reduced clarity in 2-4kHz range"
+
+4. **Pattern Statistics** - Before rendering, analyze patterns:
+   - Note density per bar
+   - Pitch range and distribution
+   - Rhythmic complexity score
+   - Chord tension analysis
+
+5. **Validation with Audio Context** - Post-render warnings:
+   - "Bass frequency conflicts with kick drum at 80Hz"
+   - "Lead melody masked by pad in 500-2kHz range"
+   - "Sparse section at bars 32-40 may feel empty"
+
+**Pattern Algebra Features (also v0.83):**
+- `reverse` - Retrograde transformation
+- `invert` - Pitch inversion around axis
+- `shuffle` - Randomize note order
+- `slice` - Extract portion of pattern
+- `parallel` - Play multiple patterns together
+- `every N <transform>` - Apply transform every N cycles
+- `sometimes <probability> <transform>` - Probabilistic transforms
+
+**Files to Create:**
+- `src/analysis/audio-analyzer.ts` - Post-render analysis
+- `src/analysis/pattern-stats.ts` - Pre-render pattern statistics
+- `src/analysis/frequency-bands.ts` - Frequency content analysis
+- `src/transforms/reverse.ts` - Retrograde transform
+- `src/transforms/invert.ts` - Pitch inversion
+- `src/cli/repl/feedback.ts` - LLM-friendly feedback formatting
+
+---
+
 ### v0.81 (2026-01-23)
 
 **New Features:**

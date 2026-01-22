@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "title": "Pulse",
+    "composer": "EtherDAW REPL",
+    "mood": "driving",
+    "description": "Composition created via REPL workflow to demonstrate v0.82 features"
+  },
+  "settings": {
+    "tempo": 135,
+    "key": "G minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": 0
+    },
+    "bass": {
+      "preset": "sub_bass",
+      "volume": -3,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 180, "type": "lowpass" } }
+      ]
+    },
+    "lead": {
+      "preset": "sawtooth",
+      "volume": -6,
+      "effects": [
+        { "type": "filter", "wet": 1, "options": { "frequency": 1800, "type": "lowpass" } },
+        { "type": "delay", "wet": 0.25, "options": { "time": "8n", "feedback": 0.35 } }
+      ]
+    },
+    "stab": {
+      "preset": "synth",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 2 } }
+      ]
+    }
+  },
+  "patterns": {
+    "// DRUMS": "Four on the floor foundation",
+    "kick_pulse": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x..."
+      }
+    },
+    "full_beat": {
+      "drums": {
+        "kit": "909",
+        "kick": "x...x...x...x...",
+        "hihat": "..x...x...x...x.",
+        "clap": "....x.......x..."
+      }
+    },
+    "buildup": {
+      "drums": {
+        "kit": "909",
+        "kick": "x.x.x.x.x.x.x.x.",
+        "hihat": "xxxxxxxxxxxx...."
+      }
+    },
+
+    "// BASS": "Transposed -2 from original for darker feel",
+    "bass_pulse": {
+      "notes": "G1:8 r:8 G1:8 r:8 G1:8 r:8 G1:8 r:8"
+    },
+    "bass_groove": {
+      "notes": "G1:8 r:8 G1:16 G1:16 r:8 G1:8 r:8 F1:8 r:8"
+    },
+
+    "// LEAD": "Simple but effective riff",
+    "lead_riff": {
+      "notes": "G3:16 Bb3:16 C4:16 D4:8 r:16 C4:8 Bb3:8 G3:q"
+    },
+    "lead_answer": {
+      "notes": "D4:8 r:8 C4:16 Bb3:16 r:8 G3:8 r:8 F3:8 G3:q"
+    },
+
+    "// STAB": "Chord stab for energy",
+    "stab_hit": {
+      "chords": ["Gm:8", "r:8", "r:q", "r:h"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_pulse", "repeat": 2 }
+      }
+    },
+    "build1": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 2 },
+        "bass": { "pattern": "bass_pulse", "repeat": 4 }
+      }
+    },
+    "drop1": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 4 },
+        "bass": { "pattern": "bass_groove", "repeat": 8 },
+        "lead": { "pattern": "lead_riff", "repeat": 8, "velocity": 0.8 }
+      }
+    },
+    "breakdown": {
+      "bars": 8,
+      "tracks": {
+        "bass": { "pattern": "bass_pulse", "repeat": 4, "velocity": 0.5 },
+        "stab": { "pattern": "stab_hit", "repeat": 4, "velocity": 0.4 }
+      }
+    },
+    "buildup": {
+      "bars": 4,
+      "tracks": {
+        "drums": { "pattern": "buildup" }
+      }
+    },
+    "drop2": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 4 },
+        "bass": { "pattern": "bass_groove", "repeat": 8 },
+        "lead": { "pattern": "lead_riff", "repeat": 4, "velocity": 0.8 },
+        "stab": { "pattern": "stab_hit", "repeat": 8, "velocity": 0.6 }
+      }
+    },
+    "drop2b": {
+      "bars": 16,
+      "tracks": {
+        "drums": { "pattern": "full_beat", "repeat": 4 },
+        "bass": { "pattern": "bass_groove", "repeat": 8 },
+        "lead": { "pattern": "lead_answer", "repeat": 8, "velocity": 0.8 }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "drums": { "pattern": "kick_pulse", "repeat": 2 },
+        "bass": { "pattern": "bass_pulse", "repeat": 4, "velocity": 0.6 }
+      }
+    }
+  },
+  "arrangement": ["intro", "build1", "drop1", "breakdown", "buildup", "drop2", "drop2b", "outro"]
+}
