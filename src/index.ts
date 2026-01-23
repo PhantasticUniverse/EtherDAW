@@ -177,6 +177,86 @@ export {
   type AbcExportOptions,
 } from './output/abc-export.js';
 
+// Transforms
+export {
+  applyTransforms,
+  applyTransform,
+  transposeEvents,
+  stretchEvents,
+  velocityEvents,
+  reverseEvents,
+  invertEvents,
+  type Transform,
+  type TransformType,
+  type TransformChain,
+} from './transforms/index.js';
+
+// Utilities (consolidated helpers)
+export {
+  // Math
+  clamp,
+  clamp01,
+  lerp,
+  inverseLerp,
+  remap,
+  randomBetween,
+  randomInt,
+  randomDeviation,
+  roundTo,
+  approxEqual,
+  dbToLinear,
+  linearToDb,
+  normalize,
+  weightedRandom,
+  // Time
+  beatsToSeconds as beatsToSecondsUtil,
+  secondsToBeats,
+  barsToBeats,
+  beatsToBar,
+  beatInBar,
+  getBarNumber,
+  secondsToSamples,
+  samplesToSeconds,
+  formatBeatPosition,
+  formatTime,
+  parseTimeSignature as parseTimeSigUtil,
+  quantizeBeat,
+  swingOffset,
+  // Pitch
+  pitchToMidi as pitchToMidiUtil,
+  midiToPitch as midiToPitchUtil,
+  midiToPitchFlat,
+  transposePitch as transposePitchUtil,
+  getNoteClass,
+  getOctave,
+  getInterval,
+  midiToFrequency,
+  frequencyToMidi,
+  pitchToFrequency,
+  frequencyToPitch,
+  isValidPitch,
+  parsePitch,
+  comparePitches,
+  normalizePitch,
+  // Format
+  pluralize,
+  pad,
+  truncate,
+  formatNumber,
+  formatPercent,
+  formatHz,
+  formatDb,
+  progressBar,
+  barChartLine,
+  formatBytes,
+  indent,
+  box,
+  capitalize,
+  camelToTitle,
+  snakeToTitle,
+  formatList,
+} from './utils/index.js';
+
 // Version
 export const VERSION = '0.1.0';
 

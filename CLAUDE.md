@@ -74,6 +74,9 @@ r:q            Rest
 | `docs/DEVELOPMENT.md` | Dev guide (validation, adding features) |
 | `docs/LLM_COMPOSER_GUIDE.md` | Practical guide for AI composers |
 | `docs/SPECTROGRAM_WORKFLOW.md` | Visual verification workflow |
+| `src/schema/types.ts` | All TypeScript types/interfaces |
+| `src/config/constants.ts` | Constants (durations, MIDI, grooves) |
+| `src/utils/` | Consolidated utilities (math, time, pitch, format) |
 | `src/synthesis/presets.ts` | 62 synth presets |
 | `src/validation/validator.ts` | Two-layer validation |
 | `src/analysis/benchmark-verifier.ts` | Audio verification tools |
@@ -231,8 +234,24 @@ Commands: `/compose`, `/verify`, `/plan`, `/onboard`, `/validate`
 
 See `.claude/README.md` for skills, agents, hooks, and full documentation.
 
+## Utilities (v0.9.1)
+
+Consolidated utility modules in `src/utils/`:
+
+| Module | Functions |
+|--------|-----------|
+| `math.ts` | `clamp`, `clamp01`, `lerp`, `remap`, `dbToLinear`, `randomDeviation` |
+| `time.ts` | `beatsToSeconds`, `secondsToBeats`, `formatTime`, `parseTimeSignature` |
+| `pitch.ts` | `pitchToMidi`, `midiToPitch`, `transposePitch`, `midiToFrequency` |
+| `format.ts` | `formatHz`, `formatDb`, `progressBar`, `pluralize`, `formatList` |
+
+```typescript
+import { clamp01, beatsToSeconds, pitchToMidi, formatHz } from './utils/index.js';
+```
+
 ## Conventions
 
 - Duration: `w` `h` `q` `8` `16` `32`
 - Velocity: 0-1 internally
 - **Two-layer validation**: Update both `etherscore.schema.json` AND `validator.ts` when adding features
+- **Single source of truth**: Use utilities from `src/utils/` instead of duplicating code

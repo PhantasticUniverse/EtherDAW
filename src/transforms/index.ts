@@ -10,6 +10,12 @@ export * from './stretch.js';
 export * from './velocity.js';
 
 import type { Pattern, NoteEvent } from '../schema/types.js';
+import {
+  pitchToMidi,
+  midiToPitch,
+  transposePitch,
+} from '../utils/pitch.js';
+import { clamp01 } from '../utils/math.js';
 
 /**
  * Transform types
@@ -99,7 +105,7 @@ export function stretchEvents(events: NoteEvent[], factor: number): NoteEvent[] 
 export function velocityEvents(events: NoteEvent[], scale: number): NoteEvent[] {
   return events.map(event => ({
     ...event,
-    velocity: Math.max(0, Math.min(1, event.velocity * scale)),
+    velocity: clamp01(event.velocity * scale),
   }));
 }
 
@@ -141,76 +147,6 @@ export function invertEvents(events: NoteEvent[], pivotPitch: string = 'C4'): No
   });
 }
 
-/**
- * Transpose a pitch string by semitones
- */
-export function transposePitch(pitch: string, semitones: number): string {
-  // Handle drum and rest
-  if (pitch.startsWith('drum:') || pitch === 'r' || pitch.startsWith('r:')) {
-    return pitch;
-  }
-
-  // Parse pitch: C4, C#4, Db4, etc.
-  const match = pitch.match(/^([A-G])([#b]?)(\d+)(.*)$/);
-  if (!match) return pitch;
-
-  const [, noteName, accidental, octaveStr, rest] = match;
-  let octave = parseInt(octaveStr);
-
-  // Convert to MIDI number
-  const noteMap: Record<string, number> = {
-    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
-  };
-
-  let noteIndex = noteMap[noteName] || 0;
-  if (accidental === '#') noteIndex += 1;
-  if (accidental === 'b') noteIndex -= 1;
-
-  // Apply transposition
-  noteIndex += semitones;
-
-  // Handle octave wrapping
-  while (noteIndex < 0) {
-    noteIndex += 12;
-    octave -= 1;
-  }
-  while (noteIndex >= 12) {
-    noteIndex -= 12;
-    octave += 1;
-  }
-
-  // Convert back to note name
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  return `${noteNames[noteIndex]}${octave}${rest}`;
-}
-
-/**
- * Convert pitch string to MIDI number
- */
-export function pitchToMidi(pitch: string): number {
-  const match = pitch.match(/^([A-G])([#b]?)(\d+)/);
-  if (!match) return 60; // Default to middle C
-
-  const [, noteName, accidental, octaveStr] = match;
-  const octave = parseInt(octaveStr);
-
-  const noteMap: Record<string, number> = {
-    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
-  };
-
-  let semitone = noteMap[noteName] || 0;
-  if (accidental === '#') semitone += 1;
-  if (accidental === 'b') semitone -= 1;
-
-  return (octave + 1) * 12 + semitone;
-}
-
-/**
- * Convert MIDI number to pitch string
- */
-export function midiToPitch(midi: number): string {
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const octave = Math.floor(midi / 12) - 1;
-  const noteIndex = midi % 12;
-  return `${noteNames[noteIndex]}${octave}`;
-}
+// Re-export pitch utilities for backward compatibility
+// These were previously defined locally but are now in utils/pitch.ts
+export { pitchToMidi, midiToPitch, transposePitch } from '../utils/pitch.js';
