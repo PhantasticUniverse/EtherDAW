@@ -2,6 +2,64 @@
 
 A DAW built for LLMs to compose music. EtherScore is the native JSON notation: patterns, structure, intent.
 
+## EtherScore Format (v0.9.1)
+
+The canonical structure of an EtherScore file:
+
+```json
+{
+  "meta": {
+    "title": "My Composition",
+    "composer": "Your Name",
+    "genre": "electronic",
+    "description": "A brief description",
+    "tags": ["tag1", "tag2"]
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": { "preset": "fm_epiano", "volume": -6, "effects": [...] },
+    "bass": { "preset": "synth_bass", "volume": -6 },
+    "drums": { "preset": "drums", "volume": -6 }
+  },
+  "patterns": {
+    "melody": { "notes": ["C4:q", "E4:q", "G4:h"] },
+    "chords": { "type": "voiceLead", "chords": ["Cmaj7:w", "Am7:w"] },
+    "beat": { "type": "drums", "kit": "808", "kick": "x...x...", "snare": "....x..." }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "lead": { "patterns": ["melody"], "velocity": 0.8, "humanize": 0.02 },
+        "drums": { "patterns": ["beat", "beat", "beat", "beat"] }
+      }
+    },
+    "verse": {
+      "bars": 8,
+      "tracks": {
+        "lead": { "patterns": ["melody", "melody"] },
+        "bass": { "patterns": ["bassline", "bassline"] },
+        "drums": { "patterns": ["beat", "beat", "beat", "beat", "beat", "beat", "beat", "beat"] }
+      }
+    }
+  },
+  "arrangement": ["intro", "verse", "verse", "outro"]
+}
+```
+
+**Key points:**
+- `meta` - Metadata (title, composer, description)
+- `settings` - Global settings (`tempo` required, not `bpm`)
+- `instruments` - Named instruments with presets and effects
+- `patterns` - Object of named patterns (not an array)
+- `sections` - Object of named sections with `bars` and `tracks`
+- `arrangement` - Array of section names defining playback order
+- Each track's `patterns` array should have one pattern per bar
+
 ## Note Syntax (v0.8)
 
 `<pitch><octave>:<duration>[modifiers]`

@@ -939,9 +939,9 @@ Sections combine patterns into musical passages:
     "verse": {
       "bars": 8,
       "tracks": {
-        "lead": { "pattern": "melody", "repeat": 2 },
-        "bass": { "pattern": "bassline", "repeat": 8 },
-        "drums": { "pattern": "beat", "repeat": 8 }
+        "lead": { "patterns": ["melody", "melody", "melody_var", "melody_var", "melody", "melody", "melody_var", "melody"] },
+        "bass": { "patterns": ["bassline", "bassline", "bassline", "bassline", "bassline", "bassline", "bassline", "bassline"] },
+        "drums": { "patterns": ["beat", "beat", "beat", "beat", "beat", "beat", "beat", "fill"], "velocity": 0.9 }
       },
       "tempo": 110,
       "key": "A minor"
@@ -949,6 +949,8 @@ Sections combine patterns into musical passages:
   }
 }
 ```
+
+**Important:** The `patterns` array should have one pattern per bar. If a section has 8 bars, provide 8 patterns in the array (patterns can repeat). If a pattern spans multiple bars, adjust accordingly.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -963,13 +965,12 @@ Sections combine patterns into musical passages:
 {
   "tracks": {
     "instrument_name": {
-      "pattern": "pattern_name",
-      "patterns": ["pat1", "pat2"],
-      "repeat": 4,
+      "patterns": ["pat1", "pat2", "pat3", "pat4"],
       "velocity": 0.8,
       "octave": 1,
       "transpose": -2,
       "humanize": 0.02,
+      "groove": "funk",
       "mute": false
     }
   }
@@ -978,10 +979,8 @@ Sections combine patterns into musical passages:
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `pattern` | string | - | Single pattern to use |
-| `patterns` | string[] | - | Pattern sequence (plays sequentially) |
+| `patterns` | string[] | **required** | Pattern sequence (one per bar, plays sequentially) |
 | `parallel` | string[] | - | Patterns to play simultaneously (v0.5) |
-| `repeat` | number | 1 | Times to repeat |
 | `velocity` | number | 0.8 | Note velocity (0-1) |
 | `octave` | number | 0 | Octave shift |
 | `transpose` | number | 0 | Semitone transposition |

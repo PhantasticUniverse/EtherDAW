@@ -101,12 +101,17 @@ r:q           Quarter rest
     "intro": {
       "bars": 4,
       "tracks": {
-        "piano": { "pattern": "melody", "repeat": 2 }
+        "piano": { "patterns": ["melody", "melody", "melody", "melody"], "velocity": 0.8 }
       }
     }
   }
 }
 ```
+
+**Note:** The `patterns` array should have one pattern per bar. Track options include:
+- `velocity` - 0-1 velocity scaling
+- `humanize` - 0-0.05 timing variation
+- `groove` - Groove preset name
 
 ### Step 5: Arrange
 
