@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "title": "Pulse",
+    "composer": "Claude Opus 4.5",
+    "genre": "electronic/experimental",
+    "description": "A rhythmic journey through four drum kits. Tests the unified DrumEngine with layered patterns and kit switching.",
+    "tags": ["drums", "v091", "interlude", "breakbeat"]
+  },
+  "settings": {
+    "tempo": 92,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "drums_808": { "preset": "drums", "volume": -3 },
+    "drums_909": { "preset": "drums", "volume": -3 },
+    "drums_acoustic": { "preset": "drums", "volume": -3 },
+    "drums_lofi": { "preset": "drums", "volume": -3 },
+
+    "sub": {
+      "preset": "sub_bass",
+      "volume": -9
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [{ "type": "reverb", "wet": 0.4, "decay": 3 }]
+    },
+    "texture": {
+      "preset": "vinyl_texture",
+      "volume": -18
+    }
+  },
+
+  "patterns": {
+    "// 808 PATTERNS": "Deep, boomy hip-hop foundation",
+    "808_intro_kick": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x...............",
+      "snare": "................"
+    },
+    "808_intro_build": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x.......x.......",
+      "snare": "........x......."
+    },
+    "808_full": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x..x..x...x..x..",
+      "snare": "....x.......x...",
+      "hihat": "x.x.x.x.x.x.x.x.",
+      "hihat_open": "..............x."
+    },
+    "808_variation": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x..x....x.x.....",
+      "snare": "....x..x....x...",
+      "hihat": "x.xxx.x.x.xxx.x.",
+      "clap": "....x.......x..."
+    },
+
+    "// 909 PATTERNS": "Punchy, aggressive techno energy",
+    "909_drive": {
+      "type": "drums",
+      "kit": "909",
+      "kick": "x...x...x...x...",
+      "snare": "....x.......x...",
+      "hihat": "xxxxxxxxxxxxxxxx",
+      "hihat_open": "..x...x...x...x."
+    },
+    "909_intense": {
+      "type": "drums",
+      "kit": "909",
+      "kick": "x..xx..xx..xx..x",
+      "snare": "....x.......x...",
+      "hihat": "x.xxx.xxx.xxx.xx",
+      "clap": "....x.x.....x.x.",
+      "ride": "x...x...x...x..."
+    },
+    "909_fill": {
+      "type": "drums",
+      "kit": "909",
+      "kick": "x...............",
+      "snare": "..x.x.x.x.x.x.x.",
+      "tom_hi": "x...............",
+      "tom_mid": "....x...........",
+      "tom_lo": "........x......."
+    },
+
+    "// ACOUSTIC PATTERNS": "Organic, human feel",
+    "acoustic_groove": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick": "x.....x...x.....",
+      "snare": "....x.......x...",
+      "hihat": "x.x.x.x.x.x.x.x.",
+      "ride": "..x...x...x...x."
+    },
+    "acoustic_jazzy": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick": "x.....x.....x...",
+      "snare": "....x...x...x...",
+      "hihat": "x.xxx.x.x.xxx.x.",
+      "ride": "x.x.x.x.x.x.x.x.",
+      "crash": "x..............."
+    },
+    "acoustic_brush": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick": "x.......x.......",
+      "snare": "....x.......x...",
+      "shaker": "x.x.x.x.x.x.x.x."
+    },
+
+    "// LOFI PATTERNS": "Dusty, nostalgic warmth",
+    "lofi_chill": {
+      "type": "drums",
+      "kit": "lofi",
+      "kick": "x.......x.......",
+      "snare": "....x.......x...",
+      "hihat": "..x...x...x...x.",
+      "shaker": "x.x.x.x.x.x.x.x."
+    },
+    "lofi_haze": {
+      "type": "drums",
+      "kit": "lofi",
+      "kick": "x..x....x..x....",
+      "snare": "....x.......x...",
+      "hihat": "x...x...x...x...",
+      "rim": "..x...x...x...x."
+    },
+    "lofi_tape": {
+      "type": "drums",
+      "kit": "lofi",
+      "kick": "x.......x.x.....",
+      "snare": "....x..x....x...",
+      "hihat": "x.x.x.x.x.x.x.x.",
+      "cowbell": "........x......."
+    },
+
+    "// MELODIC ELEMENTS": "Minimal harmonic grounding",
+    "sub_pulse": {
+      "notes": ["D1:h.", "r:q", "D1:h.", "r:q"]
+    },
+    "sub_moving": {
+      "notes": ["D1:q", "r:q", "F1:q", "r:q", "A1:q", "r:q", "G1:q", "r:q"]
+    },
+    "pad_dm": {
+      "type": "voiceLead",
+      "chords": ["Dm9:w", "Dm9:w", "Dm9:w", "Dm9:w"]
+    },
+    "pad_progression": {
+      "type": "voiceLead",
+      "chords": ["Dm9:w", "Am7:w", "Gm7:w", "Fmaj7:w"]
+    },
+    "texture_crackle": {
+      "notes": ["D4:w", "D4:w", "D4:w", "D4:w"]
+    },
+    "silence": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    }
+  },
+
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "description": "808 - Deep, cavernous space. Single kick echoes, then builds.",
+      "tracks": {
+        "drums_808": {
+          "patterns": ["808_intro_kick", "808_intro_kick", "808_intro_build", "808_intro_build", "808_intro_build", "808_intro_build", "808_full", "808_full"],
+          "velocity": 0.7
+        },
+        "sub": { "patterns": ["silence", "silence", "sub_pulse", "sub_pulse"], "velocity": 0.6 },
+        "pad": { "patterns": ["pad_dm"], "velocity": 0.3 }
+      }
+    },
+
+    "drive": {
+      "bars": 8,
+      "description": "909 - Punchy, aggressive. Forward motion.",
+      "tracks": {
+        "drums_909": {
+          "patterns": ["909_drive", "909_drive", "909_drive", "909_intense", "909_drive", "909_drive", "909_intense", "909_fill"],
+          "velocity": 0.85,
+          "humanize": 0.01
+        },
+        "sub": { "patterns": ["sub_moving", "sub_moving"], "velocity": 0.7 },
+        "pad": { "patterns": ["pad_dm"], "velocity": 0.25 }
+      }
+    },
+
+    "breath": {
+      "bars": 8,
+      "description": "Acoustic - Organic contrast. Real drum textures.",
+      "tracks": {
+        "drums_acoustic": {
+          "patterns": ["acoustic_groove", "acoustic_groove", "acoustic_jazzy", "acoustic_brush", "acoustic_groove", "acoustic_groove", "acoustic_jazzy", "acoustic_jazzy"],
+          "velocity": 0.75,
+          "humanize": 0.025,
+          "groove": "shuffle"
+        },
+        "sub": { "patterns": ["sub_pulse", "sub_moving"], "velocity": 0.5 },
+        "pad": { "patterns": ["pad_progression"], "velocity": 0.4 }
+      }
+    },
+
+    "memory": {
+      "bars": 8,
+      "description": "Lofi - Dusty, degraded, nostalgic. Warm and imperfect.",
+      "tracks": {
+        "drums_lofi": {
+          "patterns": ["lofi_chill", "lofi_chill", "lofi_haze", "lofi_haze", "lofi_tape", "lofi_tape", "lofi_chill", "lofi_haze"],
+          "velocity": 0.7,
+          "humanize": 0.03,
+          "groove": "dilla"
+        },
+        "sub": { "patterns": ["sub_pulse", "sub_pulse"], "velocity": 0.5 },
+        "pad": { "patterns": ["pad_progression"], "velocity": 0.5 },
+        "texture": { "patterns": ["texture_crackle"], "velocity": 0.4 }
+      }
+    },
+
+    "convergence": {
+      "bars": 8,
+      "description": "Outro - Elements layer, pools handling simultaneous voices.",
+      "tracks": {
+        "drums_808": {
+          "patterns": ["808_full", "808_full", "808_variation", "808_variation", "808_full", "808_full", "808_intro_build", "808_intro_kick"],
+          "velocity": 0.6
+        },
+        "drums_lofi": {
+          "patterns": ["lofi_haze", "lofi_haze", "lofi_tape", "lofi_tape", "lofi_chill", "lofi_chill", "silence", "silence"],
+          "velocity": 0.5,
+          "groove": "laid_back"
+        },
+        "sub": { "patterns": ["sub_moving", "sub_pulse"], "velocity": 0.6 },
+        "pad": { "patterns": ["pad_dm", "silence"], "velocity": 0.4 },
+        "texture": { "patterns": ["texture_crackle", "silence"], "velocity": 0.3 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "drive",
+    "breath",
+    "memory",
+    "convergence"
+  ]
+}

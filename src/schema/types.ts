@@ -413,6 +413,10 @@ export interface VelocityEnvelope {
 }
 
 export interface Pattern {
+  // NEW v0.9.1: Pattern type discriminator for shorthand formats
+  // Allows "type": "drums" instead of nested "drums": {...}
+  type?: 'drums' | 'voiceLead';
+
   notes?: string[];
   chords?: string[];
   degrees?: (number | string)[];

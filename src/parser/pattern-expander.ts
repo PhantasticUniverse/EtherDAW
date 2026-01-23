@@ -567,9 +567,13 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
     currentBeat += expanded.totalBeats;
   }
 
-  // Handle drums (v0.2)
-  if (resolvedPattern.drums) {
-    const expanded = expandDrumPattern(resolvedPattern.drums, velocity);
+  // Handle drums (v0.2, v0.9.1: type: "drums" shorthand)
+  // Supports both nested format: { drums: {...} }
+  // And shorthand format: { type: "drums", kit: "808", kick: "x...", ... }
+  if (resolvedPattern.type === 'drums' || resolvedPattern.drums) {
+    // For type: "drums" format, the pattern itself IS the DrumPattern
+    const drumPattern = resolvedPattern.drums || resolvedPattern as unknown as DrumPattern;
+    const expanded = expandDrumPattern(drumPattern, velocity);
     for (const note of expanded.notes) {
       notes.push({
         ...note,

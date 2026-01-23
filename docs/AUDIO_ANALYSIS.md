@@ -18,10 +18,93 @@ src/analysis/
 ├── fft.ts              - Fast Fourier Transform implementation
 ├── wav-reader.ts       - WAV file parsing
 ├── spectrogram.ts      - Spectrogram image generation
+├── perceptual.ts       - Perceptual metrics (chromagram, centroid, flux, RMS)
+├── describe-audio.ts   - Natural language audio descriptions
 ├── test-signals.ts     - Reference signal generators
 ├── midi-renderer.ts    - MIDI to audio conversion
 └── index.ts            - Module exports
 ```
+
+## Perceptual Analysis (v0.9)
+
+Beyond spectrograms, the perceptual analysis system provides text-based metrics that let LLMs "understand" audio through numerical and semantic descriptions.
+
+### Metrics
+
+| Metric | Description | LLM Utility |
+|--------|-------------|-------------|
+| **Chromagram** | 12-semitone pitch class distribution | Shows active pitches, infers key |
+| **Spectral Centroid** | Weighted center of frequency (Hz) | Brightness (warm/bright/harsh) |
+| **Spectral Flux** | Frame-to-frame spectral change | Onset detection, rhythmic activity |
+| **RMS Energy** | Root mean square amplitude (dB) | Loudness measurement |
+| **Zero Crossing Rate** | Sign changes per second | Percussive vs tonal character |
+
+### CLI Usage
+
+```bash
+# Analyze a WAV file
+npx tsx scripts/analyze-wav.ts audio.wav
+```
+
+**Output includes:**
+- Spectral profile (brightness, texture, energy level)
+- Chromagram with pitch class percentages
+- Tonality detection with confidence
+- Natural language observations
+- Character tags (e.g., "warm", "aggressive", "ethereal")
+
+### Programmatic API
+
+```typescript
+import { analyzePerceptual } from './src/analysis/perceptual.js';
+import { describeAudio } from './src/analysis/describe-audio.js';
+import { readWavFile } from './src/analysis/wav-reader.js';
+
+// Load audio
+const { mono, sampleRate } = readWavFile('audio.wav');
+
+// Get metrics
+const analysis = analyzePerceptual(mono, sampleRate);
+// Returns: {
+//   chromagram: { labels, chroma, dominant },
+//   centroid: number,      // Hz
+//   flux: number,          // 0-1
+//   rmsDb: number,         // dB
+//   zcr: number,           // crossings/sec
+//   dynamicRange: number,  // dB
+// }
+
+// Get natural language description
+const description = describeAudio(analysis);
+// Returns: {
+//   brightnessText: "Warm (centroid: 680 Hz)",
+//   textureText: "Smooth (flux: 8%)",
+//   energyText: "Moderate (-21 dB)",
+//   tonality: { text, confidence },
+//   observations: string[],
+//   summary: string,
+//   character: string[],
+// }
+```
+
+### Brightness Categories
+
+| Centroid | Description |
+|----------|-------------|
+| < 500 Hz | Very warm, bass-focused |
+| 500-1000 Hz | Warm, mid-bass focused |
+| 1000-2000 Hz | Neutral, balanced |
+| 2000-4000 Hz | Bright, treble-forward |
+| > 4000 Hz | Harsh, treble-heavy |
+
+### Flux Categories
+
+| Flux | Description |
+|------|-------------|
+| < 10% | Smooth, sustained (pads, drones) |
+| 10-20% | Moderate articulation |
+| 20-40% | Active, articulated (melodies) |
+| > 40% | Very percussive, choppy |
 
 ## CLI Commands
 

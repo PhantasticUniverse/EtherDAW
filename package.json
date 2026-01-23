@@ -16,8 +16,8 @@
     "generate:references": "npx tsx scripts/generate-references.ts",
     "generate:benchmarks": "npx tsx scripts/generate-benchmark-spectrograms.ts",
     "watch": "tsc --watch",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint src --ext .ts",
     "start": "node dist/cli.js"
   },
