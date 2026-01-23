@@ -17,33 +17,37 @@
   "instruments": {
     "synth": {
       "preset": "saw_bass",
-      "volume": -8,
+      "volume": -10,
       "effects": [
-        { "type": "filter", "options": { "frequency": 1200, "type": "lowpass", "Q": 2 } },
-        { "type": "delay", "wet": 0.15, "options": { "delayTime": "16n", "feedback": 0.2 } }
+        { "type": "filter", "options": { "frequency": 600, "type": "lowpass", "Q": 4 } },
+        { "type": "delay", "wet": 0.2, "options": { "delayTime": "16n", "feedback": 0.25 } }
       ]
     },
     "bass": {
       "preset": "sub_bass",
-      "volume": -6,
+      "volume": -5,
       "effects": [
-        { "type": "filter", "options": { "frequency": 200, "type": "lowpass" } }
+        { "type": "filter", "options": { "frequency": 180, "type": "lowpass" } }
       ]
     },
     "pad": {
       "preset": "dark_pad",
-      "volume": -18,
+      "volume": -16,
       "effects": [
-        { "type": "reverb", "wet": 0.7, "options": { "decay": 8 } }
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 6 } },
+        { "type": "filter", "options": { "frequency": 800, "type": "lowpass" } }
       ]
     },
     "perc": {
       "preset": "drums:808",
-      "volume": -4
+      "volume": -3
     },
     "hat": {
       "preset": "drums:808",
-      "volume": -10
+      "volume": -14,
+      "effects": [
+        { "type": "filter", "options": { "frequency": 6000, "type": "lowpass" } }
+      ]
     }
   },
 
@@ -133,6 +137,39 @@
       }
     },
 
+    "hat_16th": {
+      "euclidean": {
+        "hits": 16,
+        "steps": 16,
+        "duration": "16",
+        "drum": "hihat"
+      }
+    },
+
+    "hat_driving": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "hihat", "time": "0", "velocity": 0.7 },
+          { "drum": "hihat", "time": "16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "8+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "q", "velocity": 0.7 },
+          { "drum": "hihat", "time": "q+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q+8+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+8+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h+q", "velocity": 0.7 },
+          { "drum": "hihat", "time": "h+q+16", "velocity": 0.4 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q+8+16", "velocity": 0.4 }
+        ]
+      }
+    },
+
     "// SILENCE": "---",
     "rest": {
       "notes": ["r:w"]
@@ -168,10 +205,10 @@
       "bars": 16,
       "tracks": {
         "synth": { "patterns": ["motif_a", "motif_b"], "repeat": 4, "velocity": 0.7 },
-        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.7 },
-        "perc": { "pattern": "kick_four", "repeat": 16, "velocity": 0.8 },
-        "hat": { "pattern": "hat_offbeat", "repeat": 16, "velocity": 0.5 },
-        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.45 }
+        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.75 },
+        "perc": { "pattern": "kick_four", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_driving", "repeat": 16, "velocity": 0.55 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.35 }
       }
     },
 
@@ -179,10 +216,10 @@
       "bars": 16,
       "tracks": {
         "synth": { "patterns": ["motif_a", "motif_b", "motif_c", "motif_a"], "repeat": 2, "velocity": 0.75 },
-        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.75 },
-        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
-        "hat": { "pattern": "hat_steady", "repeat": 8, "velocity": 0.55 },
-        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.8 },
+        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.9 },
+        "hat": { "pattern": "hat_driving", "repeat": 16, "velocity": 0.6 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.35 }
       }
     },
 
@@ -190,10 +227,10 @@
       "bars": 16,
       "tracks": {
         "synth": { "pattern": "motif_full", "repeat": 16, "velocity": 0.8 },
-        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.8 },
-        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
-        "hat": { "pattern": "hat_steady", "repeat": 8, "velocity": 0.6 },
-        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.85 },
+        "perc": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.9 },
+        "hat": { "pattern": "hat_16th", "repeat": 8, "velocity": 0.6 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.35 }
       }
     },
 

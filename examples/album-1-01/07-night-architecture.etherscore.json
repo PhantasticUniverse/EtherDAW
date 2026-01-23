@@ -17,9 +17,9 @@
   "instruments": {
     "sequence": {
       "preset": "saw_lead",
-      "volume": -8,
+      "volume": -6,
       "effects": [
-        { "type": "filter", "options": { "frequency": 2500, "type": "lowpass", "Q": 3 } },
+        { "type": "filter", "options": { "frequency": 4000, "type": "lowpass", "Q": 4 } },
         { "type": "delay", "wet": 0.25, "options": { "delayTime": "16n", "feedback": 0.35 } }
       ]
     },
@@ -31,28 +31,37 @@
       ]
     },
     "pad": {
-      "preset": "dark_pad",
-      "volume": -16,
+      "preset": "glass_pad",
+      "volume": -18,
       "effects": [
-        { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
+        { "type": "reverb", "wet": 0.5, "options": { "decay": 5 } },
+        { "type": "filter", "options": { "frequency": 3000, "type": "lowpass" } }
       ]
     },
     "pulse": {
       "preset": "square_lead",
-      "volume": -12,
+      "volume": -10,
       "pan": -0.3,
       "effects": [
-        { "type": "filter", "options": { "frequency": 1800, "type": "lowpass" } },
+        { "type": "filter", "options": { "frequency": 3500, "type": "lowpass" } },
         { "type": "delay", "wet": 0.3, "options": { "delayTime": "8n.", "feedback": 0.4 } }
+      ]
+    },
+    "shimmer": {
+      "preset": "fm_glass",
+      "volume": -14,
+      "pan": 0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 3 } }
       ]
     },
     "kick": {
       "preset": "drums:808",
-      "volume": -4
+      "volume": -3
     },
     "hat": {
       "preset": "drums:808",
-      "volume": -12
+      "volume": -8
     }
   },
 
@@ -167,6 +176,40 @@
       }
     },
 
+    "hat_full_16": {
+      "euclidean": {
+        "hits": 16,
+        "steps": 16,
+        "duration": "16",
+        "drum": "hihat"
+      }
+    },
+
+    "hat_with_open": {
+      "drums": {
+        "kit": "808",
+        "hits": [
+          { "drum": "hihat", "time": "0", "velocity": 0.55 },
+          { "drum": "hihat", "time": "8", "velocity": 0.45 },
+          { "drum": "hihat_open", "time": "q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "q+8", "velocity": 0.45 },
+          { "drum": "hihat", "time": "h", "velocity": 0.55 },
+          { "drum": "hihat", "time": "h+8", "velocity": 0.45 },
+          { "drum": "hihat_open", "time": "h+q", "velocity": 0.6 },
+          { "drum": "hihat", "time": "h+q+8", "velocity": 0.45 }
+        ]
+      }
+    },
+
+    "// SHIMMER - High bright texture": "---",
+    "shimmer_high": {
+      "notes": ["B5:16@p", "D6:16@pp", "F#6:16@p", "r:16", "B5:16@pp", "r:16", "r:q"]
+    },
+
+    "shimmer_sparse": {
+      "notes": ["r:h", "F#6:16@pp", "r:16", "r:q", "r:q", "B5:8@ppp"]
+    },
+
     "// REST": "---",
     "rest": {
       "notes": ["r:w"]
@@ -202,36 +245,39 @@
     "towers": {
       "bars": 16,
       "tracks": {
-        "sequence": { "patterns": ["seq_cell", "seq_rise"], "repeat": 4, "velocity": 0.7 },
-        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.75 },
-        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.45 },
-        "pulse": { "pattern": "pulse_high", "repeat": 8, "velocity": 0.4 },
-        "kick": { "pattern": "kick_four", "repeat": 16, "velocity": 0.8 },
-        "hat": { "pattern": "hat_offbeat", "repeat": 16, "velocity": 0.5 }
+        "sequence": { "patterns": ["seq_cell", "seq_rise"], "repeat": 4, "velocity": 0.75 },
+        "bass": { "pattern": "bass_pulse", "repeat": 8, "velocity": 0.8 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_high", "repeat": 8, "velocity": 0.5 },
+        "shimmer": { "pattern": "shimmer_sparse", "repeat": 8, "velocity": 0.35 },
+        "kick": { "pattern": "kick_four", "repeat": 16, "velocity": 0.85 },
+        "hat": { "pattern": "hat_with_open", "repeat": 16, "velocity": 0.55 }
       }
     },
 
     "neon": {
       "bars": 16,
       "tracks": {
-        "sequence": { "pattern": "seq_complex", "repeat": 16, "velocity": 0.75 },
-        "bass": { "pattern": "bass_line", "repeat": 8, "velocity": 0.8 },
-        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.5 },
-        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.5 },
-        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
-        "hat": { "pattern": "hat_16", "repeat": 8, "velocity": 0.55 }
+        "sequence": { "pattern": "seq_complex", "repeat": 16, "velocity": 0.8 },
+        "bass": { "pattern": "bass_line", "repeat": 8, "velocity": 0.85 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.55 },
+        "shimmer": { "pattern": "shimmer_high", "repeat": 8, "velocity": 0.45 },
+        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.9 },
+        "hat": { "pattern": "hat_full_16", "repeat": 8, "velocity": 0.6 }
       }
     },
 
     "skyline": {
       "bars": 16,
       "tracks": {
-        "sequence": { "pattern": "seq_arp", "repeat": 8, "velocity": 0.75 },
-        "bass": { "pattern": "bass_moving", "repeat": 8, "velocity": 0.8 },
-        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.5 },
-        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.55 },
-        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.85 },
-        "hat": { "pattern": "hat_16", "repeat": 8, "velocity": 0.6 }
+        "sequence": { "pattern": "seq_arp", "repeat": 8, "velocity": 0.8 },
+        "bass": { "pattern": "bass_moving", "repeat": 8, "velocity": 0.85 },
+        "pad": { "pattern": "pad_dark", "repeat": 4, "velocity": 0.4 },
+        "pulse": { "pattern": "pulse_echo", "repeat": 8, "velocity": 0.6 },
+        "shimmer": { "pattern": "shimmer_high", "repeat": 8, "velocity": 0.5 },
+        "kick": { "pattern": "kick_syncopate", "repeat": 16, "velocity": 0.9 },
+        "hat": { "pattern": "hat_full_16", "repeat": 8, "velocity": 0.65 }
       }
     },
 

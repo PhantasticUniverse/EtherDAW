@@ -32,18 +32,27 @@
       ]
     },
     "pad": {
-      "preset": "warm_pad",
-      "volume": -16,
+      "preset": "glass_pad",
+      "volume": -14,
       "effects": [
         { "type": "reverb", "wet": 0.6, "options": { "decay": 6 } }
       ]
     },
     "bells": {
       "preset": "music_box",
-      "volume": -12,
+      "volume": -10,
       "pan": 0.25,
       "effects": [
         { "type": "reverb", "wet": 0.5, "options": { "decay": 4 } }
+      ]
+    },
+    "shimmer": {
+      "preset": "fm_glass",
+      "volume": -16,
+      "pan": -0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.7, "options": { "decay": 5 } },
+        { "type": "delay", "wet": 0.3, "options": { "delayTime": "4n", "feedback": 0.4 } }
       ]
     }
   },
@@ -101,6 +110,19 @@
       "notes": ["G5:8@p", "r:8", "D6:q@pp", "r:h", "B5:q@pp", "r:q"]
     },
 
+    "// SHIMMER - Bright texture that grows": "---",
+    "shimmer_hint": {
+      "notes": ["r:w", "G6:h@ppp", "r:h"]
+    },
+
+    "shimmer_grow": {
+      "notes": ["D6:q@pp", "r:q", "G6:h@pp", "B5:q@pp", "r:q", "D6:h@p"]
+    },
+
+    "shimmer_full": {
+      "notes": ["G5:8@p", "B5:8@p", "D6:q@p", "G6:h@p", "D6:q@p", "B5:h@pp"]
+    },
+
     "// SILENCE": "---",
     "rest": {
       "notes": ["r:w"]
@@ -111,34 +133,37 @@
     "dawn": {
       "bars": 8,
       "tracks": {
-        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.3 }
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.25, "velocityEnvelope": "crescendo" }
       }
     },
 
     "emergence": {
       "bars": 8,
       "tracks": {
-        "keys": { "pattern": "keys_seed", "repeat": 4, "velocity": 0.5 },
-        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.4 }
+        "keys": { "pattern": "keys_seed", "repeat": 4, "velocity": 0.4, "velocityEnvelope": "crescendo" },
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.35 },
+        "shimmer": { "pattern": "shimmer_hint", "repeat": 4, "velocity": 0.25 }
       }
     },
 
     "building": {
       "bars": 16,
       "tracks": {
-        "keys": { "pattern": "keys_phrase", "repeat": 4, "velocity": 0.6 },
-        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.5 },
-        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.5 }
+        "keys": { "pattern": "keys_phrase", "repeat": 4, "velocity": 0.55 },
+        "bass": { "pattern": "bass_root", "repeat": 8, "velocity": 0.45 },
+        "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.45 },
+        "shimmer": { "pattern": "shimmer_grow", "repeat": 4, "velocity": 0.35 }
       }
     },
 
     "light": {
       "bars": 16,
       "tracks": {
-        "keys": { "patterns": ["keys_phrase", "keys_answer"], "repeat": 2, "velocity": 0.7 },
-        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.6 },
+        "keys": { "patterns": ["keys_phrase", "keys_answer"], "repeat": 2, "velocity": 0.65 },
+        "bass": { "pattern": "bass_walk", "repeat": 8, "velocity": 0.55 },
         "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.55 },
-        "bells": { "pattern": "bells_sparse", "repeat": 4, "velocity": 0.4 }
+        "bells": { "pattern": "bells_sparse", "repeat": 4, "velocity": 0.45 },
+        "shimmer": { "pattern": "shimmer_grow", "repeat": 4, "velocity": 0.45 }
       }
     },
 
@@ -148,7 +173,8 @@
         "keys": { "pattern": "keys_extended", "repeat": 4, "velocity": 0.75 },
         "bass": { "pattern": "bass_full", "repeat": 4, "velocity": 0.65 },
         "pad": { "pattern": "pad_move", "repeat": 4, "velocity": 0.6 },
-        "bells": { "pattern": "bells_phrase", "repeat": 8, "velocity": 0.5 }
+        "bells": { "pattern": "bells_phrase", "repeat": 8, "velocity": 0.55 },
+        "shimmer": { "pattern": "shimmer_full", "repeat": 4, "velocity": 0.55 }
       }
     },
 
@@ -157,7 +183,8 @@
       "tracks": {
         "keys": { "pattern": "keys_phrase", "repeat": 2, "velocity": 0.6 },
         "bass": { "pattern": "bass_root", "repeat": 4, "velocity": 0.5 },
-        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.45 }
+        "pad": { "pattern": "pad_g", "repeat": 4, "velocity": 0.45 },
+        "shimmer": { "pattern": "shimmer_hint", "repeat": 2, "velocity": 0.3 }
       }
     }
   },
