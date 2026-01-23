@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "title": "Preset Showcase",
+    "composer": "Claude Opus 4.5 + EtherDAW v0.9.1",
+    "genre": "showcase",
+    "description": "A tour through EtherDAW's unified preset registry (67 presets, 14 categories). Each section highlights a different category.",
+    "tags": ["showcase", "presets", "v091"]
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+
+  "instruments": {
+    "// AMBIENT SECTION": "Atmospheric intro",
+    "atmosphere": {
+      "preset": "atmosphere",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.5, "decay": 3 }]
+    },
+    "drone": {
+      "preset": "drone",
+      "volume": -12,
+      "effects": [{ "type": "reverb", "wet": 0.4 }]
+    },
+
+    "// KEYS/FM SECTION": "Rhodes and electric piano",
+    "fm_piano": {
+      "preset": "fm_epiano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25 },
+        { "type": "delay", "delayTime": "8n.", "feedback": 0.2, "wet": 0.15 }
+      ]
+    },
+    "keys": {
+      "preset": "electric_piano",
+      "volume": -6,
+      "effects": [{ "type": "reverb", "wet": 0.2 }]
+    },
+
+    "// BASS SECTION": "Synth bass and sub bass",
+    "bass": {
+      "preset": "synth_bass",
+      "volume": -6,
+      "effects": [{ "type": "distortion", "amount": 0.1 }]
+    },
+    "sub": {
+      "preset": "sub_bass",
+      "volume": -9
+    },
+
+    "// PAD SECTION": "Warm and string pads",
+    "warm_pad": {
+      "preset": "warm_pad",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.35 }]
+    },
+    "string_pad": {
+      "preset": "string_pad",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.4 }]
+    },
+
+    "// LEAD SECTION": "Soft and synthwave leads",
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.3 },
+        { "type": "delay", "delayTime": "8n", "feedback": 0.3, "wet": 0.2 }
+      ]
+    },
+    "synth_lead": {
+      "preset": "synthwave_lead",
+      "volume": -6,
+      "effects": [
+        { "type": "chorus", "depth": 0.3, "frequency": 2, "wet": 0.3 },
+        { "type": "reverb", "wet": 0.25 }
+      ]
+    },
+
+    "// WORLD SECTION": "Kalimba and steel drum",
+    "kalimba": {
+      "preset": "kalimba",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.4 },
+        { "type": "delay", "delayTime": "4n", "feedback": 0.25, "wet": 0.2 }
+      ]
+    },
+    "steel_drum": {
+      "preset": "steel_drum",
+      "volume": -6,
+      "effects": [{ "type": "reverb", "wet": 0.3 }]
+    },
+
+    "// CINEMATIC SECTION": "Epic finale",
+    "epic_pad": {
+      "preset": "epic_pad",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.5, "decay": 4 }]
+    },
+
+    "// TEXTURE": "Vinyl crackle",
+    "texture": {
+      "preset": "vinyl_texture",
+      "volume": -18
+    },
+
+    "// DRUMS": "808 kit",
+    "drums": {
+      "preset": "drums",
+      "volume": -6
+    }
+  },
+
+  "patterns": {
+    "// AMBIENT PATTERNS": "Atmospheric sounds",
+    "atmos_sweep": { "notes": ["C3:w~", "E3:w~", "G3:w~", "C4:w~"] },
+    "drone_low": { "notes": ["C2:w~", "C2:w~", "C2:w~", "C2:w~"] },
+    "texture_vinyl": { "notes": ["C4:w", "C4:w", "C4:w", "C4:w"] },
+    "rest_4bar": { "notes": ["r:w", "r:w", "r:w", "r:w"] },
+
+    "// KEYS PATTERNS": "FM and electric piano",
+    "fm_melody": { "notes": ["E4:8 G4:8 C5:q D5:8 C5:8 B4:q", "A4:8 G4:8 E4:q. r:8 G4:8 A4:8", "B4:8 C5:8 D5:q E5:8 D5:8 C5:q", "B4:h. r:q"] },
+    "keys_chords": {
+      "type": "voiceLead",
+      "chords": ["Cmaj7:h", "Am7:h", "Dm7:h", "G7:h", "Em7:h", "Am7:h", "Dm7:h", "G7sus4:h"]
+    },
+
+    "// BASS PATTERNS": "Groove and sub",
+    "bass_groove": { "notes": ["C2:8 r:8 C2:8 C3:8 r:q E2:8 G2:8", "A2:8 r:8 A2:8 A3:8 r:q G2:8 E2:8", "D2:8 r:8 D2:8 D3:8 r:q F2:8 A2:8", "G2:8 r:8 G2:8 G3:8 r:q D2:8 F2:8"] },
+    "sub_bass": { "notes": ["C1:h. r:q", "A1:h. r:q", "D1:h. r:q", "G1:h. r:q"] },
+
+    "// PAD PATTERNS": "Warm and string",
+    "pad_warm": {
+      "type": "voiceLead",
+      "chords": ["Cmaj9:w", "Am9:w", "Dm9:w", "Gmaj7:w"]
+    },
+    "pad_strings": {
+      "type": "voiceLead",
+      "chords": ["Fmaj7:w", "Em7:w", "Dm7:w", "Cmaj7:w"]
+    },
+
+    "// LEAD PATTERNS": "Soft and synthwave",
+    "lead_melody": { "notes": ["r:h C5:q E5:q", "G5:q. A5:8 G5:h", "r:q E5:q D5:q C5:q", "D5:w"] },
+    "synth_melody": { "notes": ["G5:8 A5:8 B5:q C6:q. B5:8", "A5:8 G5:8 E5:h.", "r:q G5:8 A5:8 B5:q A5:q", "G5:w"] },
+
+    "// WORLD PATTERNS": "Kalimba and steel drum",
+    "kalimba_arp": { "notes": ["C5:8 E5:8 G5:8 C6:8 G5:8 E5:8 C5:8 G4:8", "D5:8 F5:8 A5:8 D6:8 A5:8 F5:8 D5:8 A4:8", "E5:8 G5:8 B5:8 E6:8 B5:8 G5:8 E5:8 B4:8", "C5:8 E5:8 G5:8 C6:q. r:q"] },
+    "steel_rhythm": { "notes": ["C4:q E4:8 G4:8 C5:q r:q", "D4:q F4:8 A4:8 D5:q r:q", "E4:q G4:8 B4:8 E5:q r:q", "C4:h. r:q"] },
+
+    "// CINEMATIC PATTERNS": "Epic chords",
+    "epic_chords": {
+      "type": "voiceLead",
+      "chords": ["Cmaj7:w", "Fmaj7:w", "Gsus4:w", "Cmaj7:w"]
+    },
+
+    "// DRUM PATTERNS": "808 beats",
+    "beat_basic": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x...x...x...x...",
+      "snare": "....x.......x...",
+      "hihat": "x.x.x.x.x.x.x.x."
+    },
+    "beat_groove": {
+      "type": "drums",
+      "kit": "808",
+      "kick": "x..x..x...x..x..",
+      "snare": "....x.......x...",
+      "hihat": "x.xxx.x.x.xxx.x.",
+      "hihat_open": "..............x."
+    }
+  },
+
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "description": "Ambient/Texture - atmospheric introduction",
+      "tracks": {
+        "atmosphere": { "patterns": ["atmos_sweep", "atmos_sweep"], "velocity": 0.5 },
+        "drone": { "patterns": ["drone_low", "drone_low"], "velocity": 0.4 },
+        "texture": { "patterns": ["texture_vinyl", "texture_vinyl"], "velocity": 0.3 }
+      }
+    },
+    "keys_section": {
+      "bars": 8,
+      "description": "Keys/FM - Rhodes and electric piano showcase",
+      "tracks": {
+        "fm_piano": { "patterns": ["fm_melody", "fm_melody"], "humanize": 0.02 },
+        "keys": { "patterns": ["keys_chords", "keys_chords"], "velocity": 0.7, "humanize": 0.01 },
+        "drums": { "patterns": ["beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic"], "velocity": 0.6 },
+        "texture": { "patterns": ["texture_vinyl", "texture_vinyl"], "velocity": 0.2 }
+      }
+    },
+    "bass_section": {
+      "bars": 8,
+      "description": "Bass/Synth - bass and synth groove",
+      "tracks": {
+        "bass": { "patterns": ["bass_groove", "bass_groove"], "humanize": 0.015 },
+        "sub": { "patterns": ["sub_bass", "sub_bass"], "velocity": 0.8 },
+        "keys": { "patterns": ["keys_chords", "keys_chords"], "velocity": 0.5 },
+        "drums": { "patterns": ["beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove"], "groove": "funk" }
+      }
+    },
+    "pad_section": {
+      "bars": 8,
+      "description": "Pads - warm and string pad showcase",
+      "tracks": {
+        "warm_pad": { "patterns": ["pad_warm", "pad_warm"], "velocity": 0.6 },
+        "string_pad": { "patterns": ["pad_strings", "pad_strings"], "velocity": 0.5 },
+        "sub": { "patterns": ["sub_bass", "sub_bass"], "velocity": 0.6 },
+        "drums": { "patterns": ["beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic"], "velocity": 0.5 }
+      }
+    },
+    "lead_section": {
+      "bars": 8,
+      "description": "Leads - soft and synthwave lead showcase",
+      "tracks": {
+        "lead": { "patterns": ["lead_melody", "lead_melody"], "humanize": 0.02 },
+        "synth_lead": { "patterns": ["synth_melody", "synth_melody"], "humanize": 0.02 },
+        "warm_pad": { "patterns": ["pad_warm", "pad_warm"], "velocity": 0.4 },
+        "bass": { "patterns": ["bass_groove", "bass_groove"], "velocity": 0.7 },
+        "drums": { "patterns": ["beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove", "beat_groove"], "groove": "shuffle" }
+      }
+    },
+    "world_section": {
+      "bars": 8,
+      "description": "World - kalimba and steel drum showcase",
+      "tracks": {
+        "kalimba": { "patterns": ["kalimba_arp", "kalimba_arp"], "humanize": 0.025 },
+        "steel_drum": { "patterns": ["steel_rhythm", "steel_rhythm"], "humanize": 0.02 },
+        "string_pad": { "patterns": ["pad_strings", "pad_strings"], "velocity": 0.4 },
+        "drums": { "patterns": ["beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic", "beat_basic"], "velocity": 0.6, "groove": "reggae" }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "description": "Cinematic - epic pad finale",
+      "tracks": {
+        "epic_pad": { "patterns": ["epic_chords", "epic_chords"], "velocity": 0.7 },
+        "atmosphere": { "patterns": ["atmos_sweep", "atmos_sweep"], "velocity": 0.5 },
+        "drone": { "patterns": ["drone_low", "drone_low"], "velocity": 0.3 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "keys_section",
+    "bass_section",
+    "pad_section",
+    "lead_section",
+    "world_section",
+    "outro"
+  ]
+}

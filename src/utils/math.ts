@@ -128,6 +128,7 @@ export function randomInt(min: number, max: number): number {
  * randomDeviation(0.5, 0.02) // Returns value in [-0.01, +0.01]
  */
 export function randomDeviation(amount: number, maxDeviation: number): number {
+  if (amount === 0 || maxDeviation === 0) return 0;
   return (Math.random() * 2 - 1) * maxDeviation * amount;
 }
 
