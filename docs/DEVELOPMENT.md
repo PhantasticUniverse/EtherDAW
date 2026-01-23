@@ -19,7 +19,7 @@ EtherDAW uses a **two-layer validation system**:
 | New instrument property (e.g., `layers`) | Add to `definitions.instrument.properties` | Add validation in `validateInstruments()` |
 | New note syntax (e.g., `.fall`) | N/A (schema doesn't parse notes) | Update `NOTE_REGEX` constant |
 | New effect type | Add to `definitions.effect.properties.type.enum` | Add to `VALID_EFFECT_TYPES` |
-| New synth preset | N/A | Add to `VALID_SYNTH_PRESETS` |
+| New synth preset | N/A | Add to `src/presets/{category}.ts` (auto-registered) |
 
 ### JSON Schema Location
 
@@ -160,22 +160,36 @@ Add tests in the relevant `*.test.ts` file.
 
 ## Adding New Presets
 
-### Synth Presets
+### Synth Presets (v0.9.1)
 
-1. Add to `src/synthesis/presets.ts`:
+Presets are organized by category in `src/presets/`. To add a new preset:
+
+1. Find the appropriate category file (e.g., `bass.ts`, `pad.ts`, `lead.ts`)
+2. Add the preset definition:
 ```typescript
-export const PRESETS: Record<string, PresetConfig> = {
+// In src/presets/bass.ts
+export const BASS_PRESETS: Record<string, PresetDefinition> = {
   // ... existing presets
-  'new_preset': {
-    type: 'monosynth',
-    params: { /* ... */ }
-  }
+
+  new_bass_preset: {
+    name: 'New Bass Preset',
+    category: 'bass',
+    description: 'Description of the sound character',
+    type: 'monosynth',  // polysynth, monosynth, fmsynth, membrane, noise
+    base: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 },
+      filterEnvelope: { /* optional for monosynth */ }
+    },
+    semanticDefaults: { brightness: 0.5, warmth: 0.7 },  // optional
+    tags: ['punchy', 'modern'],  // optional, for discovery
+  },
 };
 ```
 
-2. Add to `VALID_SYNTH_PRESETS` in `src/validation/validator.ts`
+3. The registry automatically picks up new presets (no validator update needed!)
 
-3. Update `docs/PRESETS.md`
+4. If adding aliases for backward compatibility, update `PRESET_ALIASES` in `src/presets/index.ts`
 
 ### Drum Kit Presets
 
@@ -238,11 +252,58 @@ The validators only check structure, not semantics. The actual parsing/rendering
 | `src/parser/chord-parser.ts` | Parses chord syntax |
 | `src/parser/pattern-expander.ts` | Expands patterns to note arrays |
 | `src/engine/pattern-resolver.ts` | Resolves tracks to timelines |
-| `src/synthesis/presets.ts` | Synth preset definitions |
+| `src/presets/` | Preset registry (single source of truth for 67 presets) |
+| `src/presets/index.ts` | Preset query API (getPreset, findPresets, suggestPreset) |
+| `src/synthesis/instruments.ts` | Instrument factory (createInstrument) |
+| `src/synthesis/presets.ts` | [DEPRECATED] Legacy preset definitions |
 | `src/generative/markov-presets.ts` | Markov chain presets |
 | `docs/ETHERSCORE_FORMAT.md` | User-facing format documentation |
 
 ## Changelog
+
+### v0.9.1 Phase 2 (2026-01-23) - Preset Consolidation
+
+**Vision:** A preset system that's joyful for LLMs to discover and use.
+
+**Core Changes:**
+- **Unified Preset Registry**: Single source of truth in `src/presets/` (67 presets across 14 categories)
+- **Query API**: `getPreset()`, `findPresets()`, `suggestPreset()`, `isValidPreset()`
+- **Typo Suggestions**: `suggestPreset('fm_epino')` → `['fm_epiano']`
+- **Backward-Compatible Aliases**: Old names like `rhodes`, `bass_sub` still work
+- **Category Organization**: Presets split into focused files (bass.ts, pad.ts, etc.)
+
+**New Files:**
+| File | Purpose |
+|------|---------|
+| `src/presets/types.ts` | PresetDefinition interface and types |
+| `src/presets/index.ts` | Registry with query API |
+| `src/presets/{category}.ts` | Preset definitions by category |
+
+**API Examples:**
+```typescript
+// Find presets
+const warmPads = findPresets({ category: 'pad', minWarmth: 0.7 });
+const suggestions = suggestPreset('fm_epino');  // → ['fm_epiano']
+
+// Adding a preset: just edit src/presets/{category}.ts - auto-registered!
+```
+
+**Benefits:**
+- Adding a preset requires editing ONE file
+- Validator automatically uses registry (no hardcoded lists)
+- Rich discovery for LLM composers
+- 39 new tests for preset registry
+
+---
+
+### v0.9.1 Phase 1 (2026-01-23) - Consolidated Utilities
+
+**Core Changes:**
+- Created `src/utils/` with consolidated helpers (math, time, pitch, format)
+- 112 new unit tests for utilities
+- Fixed duplicate code in transforms module
+
+---
 
 ### v0.9 (2026-01-23) - Perceptual Foundation
 

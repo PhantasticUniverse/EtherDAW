@@ -401,20 +401,25 @@ program
     switch (type.toLowerCase()) {
       case 'presets':
       case 'instruments': {
-        const { PRESETS } = await import('./synthesis/instruments.js');
+        const { PRESET_REGISTRY, getCategories } = await import('./presets/index.js');
         console.log('\nAvailable Instrument Presets:');
         console.log('=============================');
         const categories = new Map<string, string[]>();
-        for (const [name, preset] of Object.entries(PRESETS)) {
+        for (const [name, preset] of Object.entries(PRESET_REGISTRY)) {
           if (!categories.has(preset.category)) {
             categories.set(preset.category, []);
           }
           categories.get(preset.category)!.push(`${name}: ${preset.description}`);
         }
-        for (const [category, presets] of categories) {
-          console.log(`\n${category.toUpperCase()}:`);
-          for (const preset of presets) {
-            console.log(`  - ${preset}`);
+        // Sort categories by predefined order
+        const categoryOrder = getCategories();
+        for (const category of categoryOrder) {
+          const presets = categories.get(category);
+          if (presets && presets.length > 0) {
+            console.log(`\n${category.toUpperCase()} (${presets.length}):`);
+            for (const preset of presets.sort()) {
+              console.log(`  - ${preset}`);
+            }
           }
         }
         break;

@@ -134,15 +134,38 @@ export {
   type PatternResolutionContext,
 } from './engine/pattern-resolver.js';
 
-// Synthesis
+// Presets (single source of truth)
 export {
-  PRESETS,
+  // Registry
+  PRESET_REGISTRY,
   getPreset,
-  createInstrument,
-  getAvailablePresets,
+  isValidPreset,
+  suggestPreset,
+  getAllPresetNames,
   getPresetsByCategory,
   getCategories,
-  type InstrumentPreset,
+  getCanonicalName,
+  getAllAliases,
+  // Query
+  findPresets,
+  describePreset,
+  getPresetCountByCategory,
+  getTotalPresetCount,
+  listPresetsByCategory,
+  // Types
+  type PresetDefinition,
+  type PresetCategory,
+  type PresetFilter,
+  type PresetSearchResult,
+  type SemanticParams,
+  type SynthType,
+} from './presets/index.js';
+
+// Synthesis (instrument factory)
+export {
+  createInstrument,
+  getAvailablePresets,
+  type SynthInstance,
 } from './synthesis/instruments.js';
 
 export {

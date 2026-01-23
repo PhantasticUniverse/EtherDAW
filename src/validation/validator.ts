@@ -5,6 +5,7 @@
 
 import type { EtherScore, Pattern, Section, Track, Instrument, MarkovConfig } from '../schema/types.js';
 import { DURATION_MAP } from '../schema/types.js';
+import { isValidPreset, suggestPreset, getAllPresetNames } from '../presets/index.js';
 
 export interface ValidationError {
   path: string;           // JSON path to the error (e.g., "patterns.melody.notes[3]")
@@ -22,22 +23,7 @@ export interface ValidationResult {
 // Valid duration codes
 const VALID_DURATIONS = Object.keys(DURATION_MAP);
 
-// Valid preset names (from presets.ts)
-const VALID_SYNTH_PRESETS = [
-  // FM Synths
-  'fm_epiano', 'fm_bass', 'fm_brass', 'fm_bell', 'fm_glass', 'fm_vibraphone', 'fm_tubular_bell', 'fm_lead',
-  // Pads
-  'warm_pad', 'ambient_pad', 'string_pad',
-  // Bass
-  'sub_bass', 'synth_bass', 'pluck_bass',
-  // Leads
-  'soft_lead', 'bright_lead', 'analog_mono',
-  // Other
-  'pluck', 'bell', 'electric_piano', 'sawtooth', 'sine', 'square', 'triangle',
-  // v0.8 new presets
-  'lofi_keys', 'kalimba', '808_bass'
-];
-
+// Valid drum kit presets (kits are separate from synth presets)
 const VALID_DRUM_PRESETS = ['basic', '808', '909', 'acoustic', 'lofi'];
 
 // Valid effect types
@@ -1012,11 +998,16 @@ function validateInstrument(name: string, instrument: Record<string, unknown>, e
           severity: 'warning'
         });
       }
-    } else if (!VALID_SYNTH_PRESETS.includes(preset)) {
+    } else if (!isValidPreset(preset)) {
+      // Try to provide helpful suggestions using the preset registry
+      const suggestions = suggestPreset(preset);
+      const suggestionText = suggestions.length > 0
+        ? `Did you mean: ${suggestions.join(', ')}?`
+        : 'Some valid presets: fm_epiano, fm_bass, warm_pad, pluck, sub_bass';
       warnings.push({
         path: `${path}.preset`,
         message: `Unknown preset: "${preset}"`,
-        suggestion: `Some valid presets: fm_epiano, fm_bass, warm_pad, pluck, sub_bass`,
+        suggestion: suggestionText,
         severity: 'warning'
       });
     }

@@ -77,7 +77,9 @@ r:q            Rest
 | `src/schema/types.ts` | All TypeScript types/interfaces |
 | `src/config/constants.ts` | Constants (durations, MIDI, grooves) |
 | `src/utils/` | Consolidated utilities (math, time, pitch, format) |
-| `src/synthesis/presets.ts` | 62 synth presets |
+| `src/presets/` | **Preset registry** - single source of truth for all 67 presets |
+| `src/presets/index.ts` | Preset query API (getPreset, findPresets, suggestPreset) |
+| `src/synthesis/instruments.ts` | Instrument factory (createInstrument) |
 | `src/validation/validator.ts` | Two-layer validation |
 | `src/analysis/benchmark-verifier.ts` | Audio verification tools |
 | `examples/benchmark-*.etherscore.json` | Feature benchmarks (11 files) |
@@ -249,9 +251,38 @@ Consolidated utility modules in `src/utils/`:
 import { clamp01, beatsToSeconds, pitchToMidi, formatHz } from './utils/index.js';
 ```
 
+## Presets (v0.9.1)
+
+Unified preset registry in `src/presets/` with 67 presets across 14 categories.
+
+**Categories**: synth, bass, pad, lead, keys, pluck, fm, texture, drums, lofi, cinematic, world, ambient, modern
+
+**Query API**:
+```typescript
+import { getPreset, findPresets, suggestPreset, isValidPreset } from './presets/index.js';
+
+// Get preset by name (supports aliases)
+const preset = getPreset('fm_epiano');      // Direct
+const preset = getPreset('rhodes');         // Alias → fm_epiano
+
+// Query presets
+const warmPads = findPresets({ category: 'pad', minWarmth: 0.7 });
+const bassPresets = findPresets({ category: 'bass' });
+
+// Typo suggestions for error messages
+const suggestions = suggestPreset('fm_epino');  // → ['fm_epiano']
+
+// Validation
+if (!isValidPreset(name)) { /* handle error */ }
+```
+
+**Adding a New Preset**: Edit the relevant category file in `src/presets/` (e.g., `bass.ts`, `pad.ts`). The registry automatically aggregates all presets.
+
+**Aliases**: Defined in `src/presets/index.ts`. Support old names and alternative naming conventions.
+
 ## Conventions
 
 - Duration: `w` `h` `q` `8` `16` `32`
 - Velocity: 0-1 internally
 - **Two-layer validation**: Update both `etherscore.schema.json` AND `validator.ts` when adding features
-- **Single source of truth**: Use utilities from `src/utils/` instead of duplicating code
+- **Single source of truth**: Use utilities from `src/utils/` and presets from `src/presets/`
