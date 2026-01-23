@@ -338,6 +338,43 @@ if (!isValidPreset(name)) { /* handle error */ }
 
 **Aliases**: Defined in `src/presets/index.ts`. Support old names and alternative naming conventions.
 
+## Drum Synthesis (v0.9.1)
+
+Unified drum engine in `src/synthesis/drum-engine.ts` for pool management and triggering.
+
+```typescript
+import { DrumEngine, createDrumEngine } from './synthesis/drum-engine.js';
+
+// Create engine
+const engine = createDrumEngine({ poolSize: 4 });
+
+// Get or create a drum synth pool (cached)
+const pool = engine.getOrCreatePool('kick', '808');
+
+// Get next synth (round-robin for simultaneous hits)
+const synth = engine.getNextSynth(pool);
+
+// Trigger with type-aware handling
+engine.trigger(synth, Tone.now(), '8n', 0.8);
+
+// Or use convenience method
+engine.triggerDrum('snare', '909', Tone.now(), '8n', 0.8);
+
+// Cleanup
+engine.dispose();
+```
+
+**Why DrumEngine exists:**
+- Monophonic synths (NoiseSynth, MetalSynth) can't handle simultaneous hits
+- Pool management with round-robin allocation solves this
+- Type-based triggering handles membrane/noise/metal differences
+
+**Kits available:** `808`, `909`, `acoustic`, `lofi`
+
+**Drums:** `kick`, `snare`, `clap`, `hihat`, `hihat_open`, `tom_hi`, `tom_mid`, `tom_lo`, `crash`, `ride`, `rim`, `cowbell`, `shaker`
+
+**Aliases:** `bd`→`kick`, `sd`→`snare`, `hh`→`hihat`, `oh`→`hihat_open`, `ch`→`hihat`
+
 ## Conventions
 
 - Duration: `w` `h` `q` `8` `16` `32`

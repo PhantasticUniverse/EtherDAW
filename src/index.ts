@@ -174,6 +174,33 @@ export {
   type RenderOptions,
 } from './synthesis/tone-renderer.js';
 
+// Drum synthesis (unified engine)
+export {
+  DrumEngine,
+  createDrumEngine,
+  createDrumSynth,
+  getDrumParams,
+  parseDrumPitch,
+  type DrumSynth,
+  type DrumSynthInstance,
+  type DrumSynthPool,
+  type DrumEngineOptions,
+} from './synthesis/drum-engine.js';
+
+export {
+  DRUM_KITS,
+  normalizeDrumName,
+  getDrumParams as getDrumParamsFromKit,
+  getAvailableDrums,
+  getAvailableKits,
+  parseStepPattern,
+  type DrumType,
+  type KitName,
+  type DrumKit,
+  type DrumSynthParams,
+  type StepHit,
+} from './synthesis/drum-kits.js';
+
 // Output
 export {
   exportToMidi,
