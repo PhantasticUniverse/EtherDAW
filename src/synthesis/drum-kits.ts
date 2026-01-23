@@ -207,11 +207,11 @@ export const KIT_909: DrumKit = {
   drums: {
     kick: {
       type: 'membrane',
-      pitch: 'D2',
-      pitchDecay: 0.008,
-      octaves: 12,
-      decay: 0.25,
-      attack: 0.0005,
+      pitch: 'D1',       // Lower base pitch for thump
+      pitchDecay: 0.015, // Faster pitch decay = tighter
+      octaves: 3,        // Reduced from 12 - no more laser!
+      decay: 0.2,        // Slightly shorter body
+      attack: 0.001,
       sustain: 0,
       release: 0.08,
       volume: 6,

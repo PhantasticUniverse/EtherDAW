@@ -33,9 +33,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@mattiasbuelens/web-streams-polyfill": "^0.3.2",
     "@tonejs/midi": "^2.0.28",
     "ajv": "^8.17.1",
     "commander": "^12.1.0",
+    "mpg123-decoder": "^1.0.3",
     "tonal": "^6.3.0",
     "tone": "^15.0.4"
   },

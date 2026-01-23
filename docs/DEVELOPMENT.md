@@ -261,6 +261,48 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.9.2 (2026-01-23) - Node Player Rendering & Sound Design Improvements
+
+**Problem:** Node player WAV exports had poor audio quality and unrealistic instrument sounds.
+
+**Root Causes Fixed:**
+1. **Generic drum synthesis** - Node player only recognized kick/snare/hihat, other drums were noise bursts
+2. **No instrument volumes** - Volume settings from composition were ignored
+3. **No RMS normalization** - Quiet signals weren't boosted to audible levels
+4. **String velocity values** - Track-level `"velocity": "crescendo"` caused NaN values
+5. **Noise/metal presets rendered as pitched tones** - Shekere and agogo played as synth tones instead of noise/bell sounds
+6. **Unrealistic agogo bell** - Simple FM synthesis without proper metallic characteristics
+
+**Changes:**
+- `src/node/player.ts`:
+  - Uses `DRUM_KITS` for proper drum synthesis (membrane/noise/metal types)
+  - **NEW**: `instrumentPresets` option passes preset info to renderer
+  - Looks up world presets (conga, djembe, agogo, shekere) via `getPreset()`
+  - Routes noise/metal/membrane preset types to correct synthesis
+  - Applies instrument volumes from composition
+  - Applies master volume from settings
+  - RMS-based normalization targets -18 dB RMS
+  - Soft limiting (tanh-based) prevents clipping
+  - **Metal synthesis**: Added modulation envelope decay (bells start bright, become pure)
+
+- `src/presets/world.ts`:
+  - **Agogo**: Higher harmonicity (2.414), higher modulation index (15), longer decay (0.5s)
+  - **Shekere**: Changed from white to pink noise for more natural shaker sound
+
+- `src/schema/types.ts` & `etherscore.schema.json`:
+  - Added `masterVolume` to settings (-60 to +12 dB)
+
+- `src/node/player.test.ts`:
+  - New test file with 11 tests for rendering functionality
+  - Tests instrument volumes, drum synthesis, RMS normalization
+
+**Results:**
+- Spectral centroid: 7234 Hz (harsh) → 1948 Hz (balanced)
+- RMS level: -33 dB → -26 dB (audible)
+- Character: "noisy" → "sustained, pad-like"
+
+---
+
 ### v0.9.1 Phase 2 (2026-01-23) - Preset Consolidation
 
 **Vision:** A preset system that's joyful for LLMs to discover and use.
@@ -519,3 +561,35 @@ OBSERVATIONS:
 - Browser bundle uses `presets.ts` (not `instruments.ts`) for synth creation
 - Offline WAV rendering can reveal clipping not audible in realtime playback
 - Drum name aliases improve composer ergonomics significantly
+
+---
+
+## Known Issues
+
+### Guitar Synthesis (Karplus-Strong)
+
+**Status:** Functional but needs refinement
+
+The guitar presets (`clean_guitar`, `rhythm_guitar`, `muted_guitar`) use Karplus-Strong physical modeling synthesis implemented in `src/node/player.ts`. While this provides more realistic guitar timbres than simple oscillators, there are known limitations:
+
+**Current Issues:**
+1. **Sustain/Resonance**: Guitar strings don't resonate quite as long as real guitars. The decay feels slightly artificial - closer to a damped string than a freely ringing one. This is particularly noticeable on rhythm guitar parts.
+
+2. **Body resonance**: The body resonance simulation is simplistic (single-pole lowpass). Real guitar bodies have complex resonant modes that contribute to warmth and fullness.
+
+3. **String interaction**: Currently each string is synthesized independently. Real guitars have sympathetic resonance between strings that adds richness.
+
+**Technical Details:**
+- Implementation: `synthesizeGuitarKS()` in `src/node/player.ts`
+- Algorithm: Karplus-Strong with allpass interpolation, pickup comb filter, body resonance
+- Strum timing: `addGuitarStrumTiming()` adds per-string offsets (6ms/string, alternating up/down)
+
+**Potential Improvements:**
+- Extended Karplus-Strong with two-point averaging for more natural decay
+- Multi-mode body resonance filter
+- Sympathetic string resonance between chord notes
+- Per-string brightness variation based on string gauge
+
+**References:**
+- [Karplus-Strong Algorithm (Wikipedia)](https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis)
+- [MATLAB Guitar Chord Generation](https://www.mathworks.com/help/signal/ug/generate-guitar-chords-using-the-karplus-strong-algorithm.html)

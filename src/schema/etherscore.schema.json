@@ -49,6 +49,13 @@
           "maximum": 1,
           "default": 0,
           "description": "Swing amount (0 = straight, 1 = full triplet swing)"
+        },
+        "masterVolume": {
+          "type": "number",
+          "minimum": -60,
+          "maximum": 12,
+          "default": 0,
+          "description": "Master volume in dB (default 0)"
         }
       }
     },

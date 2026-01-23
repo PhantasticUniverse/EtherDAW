@@ -1,0 +1,326 @@
+{
+  "$schema": "../../../dist/schema/etherscore.schema.json",
+  "metadata": {
+    "title": "Lagos Midnight",
+    "composer": "Claude",
+    "description": "Afrobeat composition inspired by Fela Kuti. Features layered polyrhythms, kalimba melodies, and authentic African percussion.",
+    "tags": ["afrobeat", "african", "fela-inspired", "polyrhythm"],
+    "bpm": 110,
+    "key": "F",
+    "scale": "mixolydian",
+    "timeSignature": "4/4"
+  },
+  "settings": {
+    "tempo": 110,
+    "swing": 0,
+    "masterVolume": 0
+  },
+  "instruments": {
+    "drums": {
+      "preset": "drums:909",
+      "volume": -6
+    },
+    "conga_hi": {
+      "preset": "conga_high",
+      "volume": -12,
+      "pan": 0.3
+    },
+    "conga_lo": {
+      "preset": "conga_low",
+      "volume": -12,
+      "pan": -0.3
+    },
+    "agogo_bell": {
+      "preset": "agogo",
+      "volume": -9,
+      "pan": 0.4
+    },
+    "shekere_perc": {
+      "preset": "shekere",
+      "volume": -15,
+      "pan": -0.4
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": 0,
+      "effects": [
+        { "type": "compressor", "threshold": -12, "ratio": 4 }
+      ]
+    },
+    "kalimba_lead": {
+      "preset": "kalimba",
+      "volume": -6,
+      "pan": 0.2,
+      "effects": [
+        { "type": "delay", "wet": 0.1, "options": { "delayTime": "8n", "feedback": 0.2 } }
+      ]
+    },
+    "rhythm_gtr": {
+      "preset": "rhythm_guitar",
+      "volume": -9,
+      "pan": -0.25,
+      "effects": [
+        { "type": "chorus", "wet": 0.1 }
+      ]
+    }
+  },
+  "patterns": {
+    "kick_tony_allen": {
+      "drums": {
+        "kick": ">..x..x.>..x.xx."
+      },
+      "humanize": 0.012
+    },
+    "snare_displaced": {
+      "drums": {
+        "snare": "...x..x....x..x.",
+        "rim": ".x....x..x....x."
+      },
+      "velocity": [0, 0.5, 0, 0.9, 0, 0, 0.7, 0, 0, 0.4, 0, 0.9, 0, 0, 0.7, 0],
+      "humanize": 0.02
+    },
+    "hihat_basic": {
+      "drums": {
+        "hihat": "x.x.x.x.x.x.x.x."
+      },
+      "velocity": [0.6, 0, 0.4, 0, 0.5, 0, 0.4, 0, 0.6, 0, 0.4, 0, 0.5, 0, 0.4, 0],
+      "humanize": 0.01
+    },
+    "hihat_allen_style": {
+      "drums": {
+        "hihat": "x.xxx.xxx.xxx.xx",
+        "hihat_open": ".....x.......x.."
+      },
+      "velocity": [0.6, 0, 0.4, 0.45, 0.4, 0.7, 0, 0.4, 0.45, 0, 0.4, 0.45, 0.4, 0.7, 0, 0.45],
+      "humanize": 0.008
+    },
+    "ride_pattern": {
+      "drums": {
+        "ride": "x..x..x.x..x..x."
+      },
+      "velocity": [0.5, 0, 0, 0.4, 0, 0, 0.45, 0, 0.5, 0, 0, 0.4, 0, 0, 0.45, 0],
+      "humanize": 0.01
+    },
+    "conga_pattern_hi": {
+      "notes": ["D3:8", "r:8", "D3:8", "r:8", "D3:8", "D3:8", "r:8", "D3:8",
+                "r:8", "D3:8", "r:8", "D3:8", "D3:8", "r:8", "D3:8", "r:8"],
+      "velocity": [0.7, 0, 0.5, 0, 0.7, 0.4, 0, 0.6, 0, 0.5, 0, 0.7, 0.5, 0, 0.6, 0],
+      "humanize": 0.02
+    },
+    "conga_pattern_lo": {
+      "notes": ["G2:8", "r:8", "r:8", "G2:8", "r:8", "G2:8", "G2:8", "r:8",
+                "G2:8", "r:8", "r:8", "G2:8", "r:8", "r:8", "G2:8", "G2:8"],
+      "velocity": [0.7, 0, 0, 0.5, 0, 0.6, 0.4, 0, 0.7, 0, 0, 0.5, 0, 0, 0.6, 0.5],
+      "humanize": 0.02
+    },
+    "agogo_clave": {
+      "notes": ["F5:8", "r:8", "r:8", "F5:8", "r:8", "F5:8", "r:8", "F5:8",
+                "r:8", "r:8", "F5:8", "r:8", "F5:8", "r:8", "r:8", "r:8"],
+      "velocity": [0.8, 0, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0, 0.7, 0, 0.6, 0, 0, 0],
+      "humanize": 0.01
+    },
+    "shekere_groove": {
+      "notes": ["C4:8", "r:8", "C4:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8",
+                "C4:8", "r:8", "C4:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8"],
+      "velocity": [0.5, 0, 0.3, 0.4, 0, 0.5, 0, 0.3, 0.4, 0, 0.3, 0.45, 0, 0.5, 0, 0.35],
+      "humanize": 0.015
+    },
+    "bass_groove": {
+      "notes": ["F2:8", "r:8", "F2:8", "r:8", "C3:8", "r:8", "Bb2:8", "r:8",
+                "F2:8", "F2:8", "r:8", "C3:8", "r:8", "Bb2:8", "r:8", "C3:8"],
+      "velocity": [0.85, 0, 0.65, 0, 0.75, 0, 0.65, 0, 0.85, 0.55, 0, 0.75, 0, 0.65, 0, 0.75],
+      "humanize": 0.02,
+      "groove": "afrobeat"
+    },
+    "bass_variation": {
+      "notes": ["F2:8", "r:8", "G2:8", "r:8", "Bb2:8", "C3:8", "r:8", "F2:8",
+                "r:8", "F2:8", "r:8", "C3:8", "Bb2:8", "r:8", "C3:8", "r:8"],
+      "velocity": [0.85, 0, 0.65, 0, 0.75, 0.65, 0, 0.85, 0, 0.65, 0, 0.75, 0.65, 0, 0.75, 0],
+      "humanize": 0.02,
+      "groove": "afrobeat"
+    },
+    "kalimba_pattern": {
+      "notes": ["F5:8", "C5:8", "r:8", "A4:8", "F5:8", "r:8", "C5:8", "A4:8",
+                "r:8", "F4:8", "A4:8", "C5:8", "r:8", "F5:8", "r:8", "C5:8"],
+      "velocity": [0.65, 0.55, 0, 0.6, 0.65, 0, 0.55, 0.6, 0, 0.55, 0.6, 0.65, 0, 0.7, 0, 0.55],
+      "humanize": 0.02
+    },
+    "kalimba_melody": {
+      "notes": ["F5:q", "Eb5:8", "C5:8", "F5:q", "r:q",
+                "Eb5:q", "C5:8", "Bb4:8", "C5:h"],
+      "velocity": [0.7, 0.6, 0.55, 0.7, 0, 0.65, 0.55, 0.5, 0.65],
+      "humanize": 0.02
+    },
+    "guitar_chop_1": {
+      "chords": ["r:8", "F:8", "r:8", "F:8", "r:8", "F:8", "Bb:8", "r:8",
+                 "r:8", "Bb:8", "r:8", "F:8", "r:8", "F:8", "r:8", "r:8"],
+      "voicing": "close",
+      "velocity": [0, 0.6, 0, 0.5, 0, 0.55, 0.6, 0, 0, 0.55, 0, 0.6, 0, 0.5, 0, 0],
+      "humanize": 0.012
+    },
+    "guitar_chop_2": {
+      "chords": ["r:8", "Cm:8", "r:8", "Dm:8", "r:8", "Cm:8", "F:8", "r:8",
+                 "r:8", "F:8", "r:8", "Bb:8", "r:8", "F:8", "r:8", "r:8"],
+      "voicing": "close",
+      "velocity": [0, 0.55, 0, 0.6, 0, 0.55, 0.65, 0, 0, 0.6, 0, 0.55, 0, 0.6, 0, 0],
+      "humanize": 0.012
+    },
+    "silence": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "hihat_basic"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        }
+      }
+    },
+    "buildup": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "shekere_perc": {
+          "patterns": ["shekere_groove"]
+        },
+        "bass": {
+          "patterns": ["bass_groove"]
+        }
+      }
+    },
+    "verse_a": {
+      "bars": 16,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
+        },
+        "conga_hi": {
+          "patterns": ["conga_pattern_hi"]
+        },
+        "conga_lo": {
+          "patterns": ["conga_pattern_lo"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "shekere_perc": {
+          "patterns": ["shekere_groove"]
+        },
+        "bass": {
+          "patterns": ["bass_groove", "bass_groove", "bass_groove", "bass_variation"]
+        },
+        "rhythm_gtr": {
+          "patterns": ["guitar_chop_1", "guitar_chop_1", "guitar_chop_2", "guitar_chop_1"]
+        }
+      }
+    },
+    "kalimba_verse": {
+      "bars": 16,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_basic"]
+        },
+        "conga_hi": {
+          "patterns": ["conga_pattern_hi"]
+        },
+        "conga_lo": {
+          "patterns": ["conga_pattern_lo"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "shekere_perc": {
+          "patterns": ["shekere_groove"]
+        },
+        "bass": {
+          "patterns": ["bass_variation", "bass_groove", "bass_groove", "bass_variation"]
+        },
+        "kalimba_lead": {
+          "patterns": ["kalimba_pattern"]
+        }
+      }
+    },
+    "kalimba_melody_section": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
+        },
+        "conga_hi": {
+          "patterns": ["conga_pattern_hi"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "bass": {
+          "patterns": ["bass_groove"]
+        },
+        "kalimba_lead": {
+          "patterns": ["kalimba_melody"]
+        },
+        "rhythm_gtr": {
+          "patterns": ["guitar_chop_1"]
+        }
+      }
+    },
+    "climax": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style", "ride_pattern"]
+        },
+        "conga_hi": {
+          "patterns": ["conga_pattern_hi"]
+        },
+        "conga_lo": {
+          "patterns": ["conga_pattern_lo"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "bass": {
+          "patterns": ["bass_groove"]
+        },
+        "kalimba_lead": {
+          "patterns": ["kalimba_pattern"]
+        },
+        "rhythm_gtr": {
+          "patterns": ["guitar_chop_1", "guitar_chop_2"]
+        }
+      }
+    },
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "drums": {
+          "patterns": ["kick_tony_allen", "hihat_basic"]
+        },
+        "agogo_bell": {
+          "patterns": ["agogo_clave"]
+        },
+        "bass": {
+          "patterns": ["bass_groove"]
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "buildup",
+    "verse_a",
+    "kalimba_verse",
+    "kalimba_melody_section",
+    "climax",
+    "outro"
+  ]
+}

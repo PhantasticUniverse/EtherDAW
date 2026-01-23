@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../dist/schema/etherscore.schema.json",
+  "settings": {
+    "tempo": 110,
+    "masterVolume": 0
+  },
+  "instruments": {
+    "rhythm_gtr": {
+      "preset": "rhythm_guitar",
+      "volume": 0
+    }
+  },
+  "patterns": {
+    "guitar_test": {
+      "chords": ["F:q", "r:q", "F:q", "r:q", "Bb:q", "r:q", "F:q", "r:q"],
+      "voicing": "close",
+      "velocity": 0.7
+    }
+  },
+  "sections": {
+    "test": {
+      "bars": 4,
+      "tracks": {
+        "rhythm_gtr": {
+          "patterns": ["guitar_test"]
+        }
+      }
+    }
+  },
+  "arrangement": ["test"]
+}

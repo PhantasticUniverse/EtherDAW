@@ -20,6 +20,8 @@ export interface EtherScoreSettings {
   key?: string;
   timeSignature?: string;
   swing?: number;
+  /** Master volume in dB (default 0) */
+  masterVolume?: number;
 }
 
 // ============================================================================

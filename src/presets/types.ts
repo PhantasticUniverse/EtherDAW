@@ -93,6 +93,10 @@ export interface SynthBaseParams {
 
   // Noise parameters
   noise?: { type: NoiseType };
+
+  // Metal synth parameters (hi-hats, cymbals, bells)
+  frequency?: number;
+  resonance?: number;
 }
 
 /**

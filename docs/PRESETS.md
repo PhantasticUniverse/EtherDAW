@@ -1,6 +1,6 @@
 # Instrument Presets Reference
 
-EtherDAW includes 67 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
+EtherDAW includes 73 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
 
 ## Preset Overview
 
@@ -11,13 +11,13 @@ EtherDAW includes 67 synthesizer presets organized across 14 categories. This do
 | Pad | warm_pad, string_pad, ambient_pad, synthwave_pad |
 | Lead | lead, soft_lead, synthwave_lead |
 | Keys | electric_piano, organ, fm_epiano, fm_organ |
-| Pluck | pluck, bell, marimba |
+| Pluck | pluck, bell, marimba, clean_guitar, rhythm_guitar, muted_guitar |
 | FM | fm_epiano, fm_bass, fm_brass, fm_church_bell, fm_tubular_bell, fm_glass, fm_vibraphone, fm_organ |
 | Texture | noise, pink_noise, brown_noise, vinyl_crackle, noise_sweep |
 | Drums | drums:808, drums:909, drums:acoustic, drums:lofi |
 | Lo-Fi | lofi_piano, lofi_keys, tape_wobble |
 | Cinematic | cinematic_pad, tension_drone, impact_hit |
-| World | kalimba, steel_drum, sitar_drone |
+| World | kalimba, steel_drum, koto, sitar_lead, conga_high, conga_low, djembe, talking_drum, agogo, shekere |
 | Ambient | shimmer_pad, granular_texture, breath_pad |
 | Modern | supersaw, bass_growl, pluck_stab |
 
@@ -217,6 +217,38 @@ See `src/presets/` for full definitions. Use `findPresets({ category: 'bass' })`
 - Attack: 1ms, Decay: 500ms
 - Best for: World music, gentle melodies, rhythmic patterns
 
+### `clean_guitar`
+**Clean electric guitar tone** *(Karplus-Strong synthesis)*
+- Character: Warm, resonant, natural string sound
+- Synthesis: Karplus-Strong physical modeling with pickup simulation
+- Brightness: 0.85 (brighter, more harmonics)
+- Decay: ~2s natural ring-out
+- Best for: Ballads, jazz, clean leads, chord work
+
+### `rhythm_guitar`
+**Rhythm guitar for funk/Afrobeat** *(Karplus-Strong synthesis)*
+- Character: Bright, resonant, funky
+- Synthesis: Karplus-Strong with strum timing (alternating up/down strokes)
+- Brightness: 0.75
+- Decay: ~1.5s sustain (tighter than clean)
+- Best for: Afrobeat, funk, disco, rhythmic comping
+- Note: Chords automatically get strum timing with per-string offsets
+
+### `muted_guitar`
+**Palm-muted guitar - tight and percussive** *(Karplus-Strong synthesis)*
+- Character: Tight, punchy, muted
+- Synthesis: Karplus-Strong with aggressive damping
+- Decay: ~0.3s (quick cutoff simulates palm muting)
+- Best for: Rock riffs, tight rhythms, percussive accents
+
+> **Technical Note:** Guitar presets use Karplus-Strong physical modeling synthesis,
+> which simulates a plucked string using a delay line with filtered feedback. This
+> provides more realistic guitar timbres than simple oscillators. Features include:
+> - Pickup position simulation (comb filtering)
+> - Body resonance (low-frequency warmth)
+> - Strum timing for chords (6ms per string, alternating direction)
+> - Allpass interpolation for accurate tuning
+
 ---
 
 ## FM Synthesis Presets (v0.3)
@@ -317,6 +349,75 @@ For ambient textures, risers, and lo-fi effects.
 - Long attack envelope
 - Great for builds
 - Best for: Risers, transitions, tension
+
+---
+
+## World Presets (v0.9.2)
+
+Ethnic instruments and world percussion, with new African percussion for Afrobeat.
+
+### `kalimba`
+**African Thumb Piano**
+- Character: Metallic tines, bell-like
+- FM synthesis with high harmonicity (5.5)
+- Best for: African melodies, ambient textures
+- Tags: african, metallic, thumb piano
+
+### `steel_drum`
+**Caribbean Steel Pan**
+- Character: Bright, melodic overtones
+- Best for: Tropical, Caribbean, calypso
+
+### `koto`
+**Japanese Koto**
+- Character: Delicate pluck, long sustain
+- Best for: Asian-inspired music, meditative
+
+### `sitar_lead`
+**Sitar-Inspired Lead**
+- Character: Buzzy, drone-like
+- Best for: Indian fusion, psychedelic
+
+### African Percussion (v0.9.2)
+
+These presets are designed for authentic Afrobeat and West African music.
+
+### `conga_high`
+**High Conga (Quinto)**
+- Character: Slap and open tones, pitched at D3
+- Membrane synthesis with quick decay
+- Best for: Afrobeat, salsa, Latin rhythms
+
+### `conga_low`
+**Low Conga (Tumba)**
+- Character: Deep, resonant, pitched at G2
+- Best for: Foundation rhythm, Latin bass
+
+### `djembe`
+**West African Djembe**
+- Character: Punchy attack, goblet drum resonance
+- Pitched at C3, versatile for bass/tone/slap
+- Best for: West African, Afrobeat, drum circles
+
+### `talking_drum`
+**Nigerian Talking Drum**
+- Character: Pitch-bendable, hourglass drum
+- Long pitch decay (0.08s) for expressive tones
+- Best for: Yoruba music, Afrobeat fills
+- Note: Real talking drums bend pitch with arm pressure
+
+### `agogo`
+**Double Bell**
+- Character: Bright, cutting metallic bell
+- Metal synth at 1200 Hz
+- Best for: Afrobeat clave patterns, timeline keeping
+- Note: Essential for Afrobeat - provides rhythmic skeleton
+
+### `shekere`
+**Gourd Shaker**
+- Character: Beaded gourd texture
+- White noise with quick envelope
+- Best for: Afrobeat texture, polyrhythm layers
 
 ---
 
