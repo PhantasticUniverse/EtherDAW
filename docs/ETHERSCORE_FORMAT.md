@@ -510,6 +510,24 @@ The `lines` wrapper is optional. Drum names can be direct keys:
 }
 ```
 
+#### Top-Level Drum Pattern (v0.9.1)
+
+The `drums` wrapper itself is optional. Use `type: "drums"` for the flattest format:
+
+```json
+{
+  "patterns": {
+    "beat": {
+      "type": "drums",
+      "kit": "909",
+      "kick":   "x...x...x...x...",
+      "hihat":  "..x...x...x...x.",
+      "clap":   "....x.......x..."
+    }
+  }
+}
+```
+
 #### Drum Name Aliases (v0.81)
 
 Common aliases are automatically resolved:
@@ -1269,8 +1287,13 @@ These may be addressed in future versions.
 
 | Version | Features |
 |---------|----------|
-| v0.8 | Instrument layering, LFO modulation, 62 presets, 14 groove templates, jazz articulations (fall, doit, scoop, bend), ornaments (trill, mordent, turn), dynamics markings (pp-ff), per-track EQ, tension curves, audio analysis |
-| v0.7 | Tuplets, tempo automation, Markov presets, conditional patterns, pattern inheritance, better error messages |
+| v0.9.1 | Consolidated utilities, unified preset registry (67 presets, 14 categories), DrumEngine, WAV export, perceptual analysis CLI |
+| v0.9 | Perceptual analysis (chromagram, spectral centroid, flux, RMS), 80+ chord types, 25+ jazz progressions, semantic audio descriptions |
+| v0.83 | Pattern algebra (reverse, invert, shuffle, slice, rotate), LLM feedback tools (preview, describe, suggest), album "Threshold" |
+| v0.82 | EtherREPL live coding, Node.js playback, pattern transforms (transpose, stretch, velocity), composition templates |
+| v0.81 | Noise presets, drum name aliases, drum shorthand notation (no `lines` wrapper needed) |
+| v0.8 | Instrument layering, LFO modulation, 14 groove templates, jazz articulations (fall, doit, scoop, bend), ornaments (trill, mordent, turn), dynamics markings (pp-ff), per-track EQ |
+| v0.7 | Tuplets, tempo automation, Markov presets, conditional patterns, pattern inheritance |
 | v0.6 | Markov chains, density curves, melodic continuation, voice leading |
 | v0.5 | Semantic params, multi-line drums, section automation, parallel patterns |
 | v0.4 | Velocity envelopes, expression modifiers |

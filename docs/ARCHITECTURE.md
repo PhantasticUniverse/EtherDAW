@@ -95,10 +95,14 @@ src/
 │   ├── density.ts         # Note density curves
 │   └── tension.ts         # Tension mapping
 │
+├── presets/               # Preset registry (v0.9.1)
+│   ├── index.ts           # Query API (getPreset, findPresets)
+│   ├── types.ts           # PresetDefinition interface
+│   ├── bass.ts, pad.ts... # Category files (67 presets total)
+│
 ├── synthesis/             # Audio synthesis
-│   ├── instruments.ts     # 62 instrument presets
-│   ├── presets.ts         # Detailed configurations
-│   ├── instrument-factory.ts # Create from specs
+│   ├── instruments.ts     # Instrument factory
+│   ├── drum-engine.ts     # DrumEngine for pool management
 │   ├── tone-renderer.ts   # Render via Tone.js
 │   ├── drum-kits.ts       # Drum kit definitions
 │   ├── layer-synth.ts     # Multi-layer instruments
@@ -110,7 +114,10 @@ src/
 │   ├── wav-export.ts      # WAV export
 │   └── abc-export.ts      # ABC notation
 │
-├── analysis/              # Audio analysis
+├── analysis/              # Audio analysis (v0.9)
+│   ├── perceptual.ts      # Chromagram, centroid, flux, RMS, ZCR
+│   ├── describe-audio.ts  # Natural language descriptions
+│   ├── wav-reader.ts      # WAV file parsing
 │   ├── benchmark-verifier.ts # Quality verification
 │   ├── spectrogram.ts     # Visual analysis
 │   └── fft.ts             # FFT implementation
@@ -376,7 +383,7 @@ EtherDAW uses a two-layer validation approach:
 | New instrument option | Add to instrument.properties | Validate values/ranges |
 | New note syntax | N/A | Update NOTE_REGEX |
 | New effect type | Add to effect.type.enum | Update VALID_EFFECTS |
-| New preset | N/A | Add to VALID_SYNTH_PRESETS |
+| New preset | N/A | Add to `src/presets/{category}.ts` (auto-registered) |
 
 ---
 
@@ -451,16 +458,22 @@ Drum Kit (808, 909, acoustic, lofi)
             - Modulation index
 ```
 
-### 62 Instrument Presets
+### 67 Instrument Presets (v0.9.1)
+
+Presets are organized in `src/presets/` with a unified registry.
 
 | Category | Presets |
 |----------|---------|
-| FM Synths | fm_epiano, fm_bass, fm_brass, fm_bell, fm_glass |
-| Pads | warm_pad, dark_pad, ambient_pad, string_pad |
-| Bass | sub_bass, synth_bass, pluck_bass, 808_bass |
-| Leads | soft_lead, saw_lead, square_lead, analog_mono |
-| Keys | lofi_keys, kalimba, music_box, electric_piano |
-| Basic | sawtooth, sine, square, triangle |
+| FM Synths | fm_epiano, fm_bass, fm_brass, fm_bell, fm_glass, fm_vibraphone |
+| Pads | warm_pad, ambient_pad, string_pad, shimmer_pad, breath_pad |
+| Bass | sub_bass, synth_bass, pluck_bass, fm_bass, bass_growl |
+| Leads | lead, soft_lead, synthwave_lead |
+| Keys | electric_piano, organ, fm_epiano, lofi_piano |
+| Texture | noise, pink_noise, brown_noise, vinyl_crackle, noise_sweep |
+| World | kalimba, steel_drum, sitar_drone |
+| Cinematic | cinematic_pad, tension_drone, impact_hit |
+
+Use `findPresets({ category: 'bass' })` to query presets programmatically.
 
 ---
 
@@ -547,24 +560,27 @@ interface PatternModification {
 
 ## Extension Points
 
-### Adding New Presets
+### Adding New Presets (v0.9.1)
 
-**File:** `src/synthesis/presets.ts`
+**File:** `src/presets/{category}.ts` (e.g., `bass.ts`, `pad.ts`)
 
 ```typescript
-export const PRESETS = {
-  'my_preset': {
-    name: 'My Synth',
-    category: 'synth',
-    create: () => new Tone.PolySynth(Tone.Synth, {
+export const BASS_PRESETS: Record<string, PresetDefinition> = {
+  my_bass: {
+    name: 'My Bass',
+    category: 'bass',
+    description: 'A punchy bass sound',
+    type: 'monosynth',
+    base: {
       oscillator: { type: 'sawtooth' },
-      envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.5 },
-    }),
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 },
+    },
+    tags: ['punchy', 'modern'],
   },
 };
 ```
 
-Then add to `VALID_SYNTH_PRESETS` in `validator.ts`.
+The registry auto-aggregates all category files. No validator update needed.
 
 ### Adding New Pattern Types
 
@@ -654,6 +670,8 @@ await player.exportWav('output.wav');
 | v0.81 | Drum aliases, noise presets |
 | v0.82 | EtherREPL, Node.js audio playback |
 | v0.83 | Pattern algebra, transforms, visualizations |
+| v0.9 | Perceptual analysis (chromagram, centroid, flux), 80+ chord types |
+| v0.9.1 | Unified preset registry (67 presets), DrumEngine, utilities consolidation |
 
 ---
 

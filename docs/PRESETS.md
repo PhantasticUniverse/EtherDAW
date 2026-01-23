@@ -1,6 +1,6 @@
 # Instrument Presets Reference
 
-EtherDAW includes a variety of synthesizer presets organized by category. This document describes each preset's character and recommended use cases.
+EtherDAW includes 67 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
 
 ## Preset Overview
 
@@ -13,7 +13,15 @@ EtherDAW includes a variety of synthesizer presets organized by category. This d
 | Keys | electric_piano, organ, fm_epiano, fm_organ |
 | Pluck | pluck, bell, marimba |
 | FM | fm_epiano, fm_bass, fm_brass, fm_church_bell, fm_tubular_bell, fm_glass, fm_vibraphone, fm_organ |
+| Texture | noise, pink_noise, brown_noise, vinyl_crackle, noise_sweep |
 | Drums | drums:808, drums:909, drums:acoustic, drums:lofi |
+| Lo-Fi | lofi_piano, lofi_keys, tape_wobble |
+| Cinematic | cinematic_pad, tension_drone, impact_hit |
+| World | kalimba, steel_drum, sitar_drone |
+| Ambient | shimmer_pad, granular_texture, breath_pad |
+| Modern | supersaw, bass_growl, pluck_stab |
+
+See `src/presets/` for full definitions. Use `findPresets({ category: 'bass' })` to query programmatically.
 
 ---
 
