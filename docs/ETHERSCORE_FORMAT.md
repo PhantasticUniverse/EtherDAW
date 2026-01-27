@@ -1306,6 +1306,9 @@ These may be addressed in future versions.
 
 | Version | Features |
 |---------|----------|
+| v0.9.4.1 | Redesigned orchestral percussion with FM synthesis (glockenspiel, xylophone, vibraphone, marimba, tubular_bells, celesta) |
+| v0.9.4 | 31 orchestral presets (strings, brass, woodwinds, choir, percussion), sustain pedal support (`:ped` suffix, pattern-level, pedalMarks) |
+| v0.9.3 | Pattern array timing fix, composition linter (16 rules), better error messages with fuzzy matching, debug mode |
 | v0.9.2 | Bracket chord notation `[C4,E4,G4]:q`, acoustic piano preset, MIDI-to-EtherScore converter, Karplus-Strong guitar |
 | v0.9.1 | Consolidated utilities, unified preset registry (67 presets, 14 categories), DrumEngine, WAV export, perceptual analysis CLI |
 | v0.9 | Perceptual analysis (chromagram, spectral centroid, flux, RMS), 80+ chord types, 25+ jazz progressions, semantic audio descriptions |

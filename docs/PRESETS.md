@@ -1,6 +1,6 @@
 # Instrument Presets Reference
 
-EtherDAW includes 74 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
+EtherDAW includes 107 synthesizer presets organized across 18 categories. This document describes each preset's character and recommended use cases.
 
 ## Preset Overview
 
@@ -20,6 +20,10 @@ EtherDAW includes 74 synthesizer presets organized across 14 categories. This do
 | World | kalimba, steel_drum, koto, sitar_lead, conga_high, conga_low, djembe, talking_drum, agogo, shekere |
 | Ambient | shimmer_pad, granular_texture, breath_pad |
 | Modern | supersaw, bass_growl, pluck_stab |
+| **Strings** *(v0.9.4)* | solo_violin, solo_viola, solo_cello, contrabass, string_ensemble, string_pizzicato, string_tremolo, string_spiccato |
+| **Brass** *(v0.9.4)* | trumpet, french_horn, trombone, tuba, brass_ensemble, muted_trumpet |
+| **Woodwinds** *(v0.9.4)* | flute, clarinet, oboe, bassoon, piccolo, english_horn |
+| **Orchestral** *(v0.9.4.1)* | choir_aah, choir_ooh, choir_mmm, mixed_choir, timpani, glockenspiel, xylophone, vibraphone, marimba, tubular_bells, celesta |
 
 See `src/presets/` for full definitions. Use `findPresets({ category: 'bass' })` to query programmatically.
 
@@ -428,6 +432,222 @@ These presets are designed for authentic Afrobeat and West African music.
 - Character: Beaded gourd texture
 - White noise with quick envelope
 - Best for: Afrobeat texture, polyrhythm layers
+
+---
+
+## Orchestral Strings (v0.9.4)
+
+### `solo_violin`
+**Solo Violin**
+- Character: Expressive, singing, intimate
+- FM synthesis with vibrato LFO
+- Best for: Solo melodies, expressive passages
+- Range: G3-E7
+
+### `solo_viola`
+**Solo Viola**
+- Character: Warm, mellow, intimate
+- FM synthesis with gentle vibrato
+- Best for: Inner voices, warm melodies
+- Range: C3-A6
+
+### `solo_cello`
+**Solo Cello**
+- Character: Rich, deep, expressive
+- FM synthesis with slow vibrato
+- Best for: Bass melodies, emotional passages
+- Range: C2-G5
+
+### `contrabass`
+**Double Bass**
+- Character: Deep, foundational, resonant
+- FM synthesis with slow attack
+- Best for: Bass lines, orchestral foundation
+- Range: E1-G4
+
+### `string_ensemble`
+**String Section**
+- Character: Full, lush, cinematic
+- Layered FM synthesis
+- Best for: Orchestral pads, film scores
+
+### `string_pizzicato`
+**Pizzicato Strings**
+- Character: Plucky, light, rhythmic
+- Short envelope, quick attack
+- Best for: Staccato passages, light textures
+
+### `string_tremolo`
+**Tremolo Strings**
+- Character: Intense, dramatic, suspenseful
+- LFO-modulated amplitude
+- Best for: Tension, drama, horror
+
+### `string_spiccato`
+**Spiccato Strings**
+- Character: Bouncing, articulate, energetic
+- Very short notes, quick decay
+- Best for: Fast passages, rhythmic figures
+
+---
+
+## Orchestral Brass (v0.9.4)
+
+### `trumpet`
+**Solo Trumpet**
+- Character: Bright, heroic, commanding
+- FM synthesis with sharp attack
+- Best for: Fanfares, melodic lines
+- Range: E3-Bb5
+
+### `french_horn`
+**French Horn**
+- Character: Warm, noble, majestic
+- FM synthesis with rounded attack
+- Best for: Sustained harmonies, hunting calls
+- Range: B1-F5
+
+### `trombone`
+**Trombone**
+- Character: Bold, powerful, versatile
+- FM synthesis with broad tone
+- Best for: Bass brass, powerful phrases
+- Range: E2-Bb4
+
+### `tuba`
+**Tuba**
+- Character: Deep, massive, foundational
+- FM synthesis with slow attack
+- Best for: Bass foundation, oom-pah
+- Range: D1-F4
+
+### `brass_ensemble`
+**Brass Section**
+- Character: Powerful, majestic, epic
+- Layered FM synthesis
+- Best for: Fanfares, film scores, climaxes
+
+### `muted_trumpet`
+**Muted Trumpet**
+- Character: Soft, jazzy, intimate
+- Filtered FM with reduced brightness
+- Best for: Jazz, subtle passages
+
+---
+
+## Orchestral Woodwinds (v0.9.4)
+
+### `flute`
+**Concert Flute**
+- Character: Airy, light, lyrical
+- Breathy FM synthesis
+- Best for: Melodies, pastoral passages
+- Range: C4-C7
+
+### `clarinet`
+**Clarinet**
+- Character: Warm, woody, versatile
+- FM synthesis with hollow character
+- Best for: Jazz, classical, folk
+- Range: D3-Bb6
+
+### `oboe`
+**Oboe**
+- Character: Reedy, plaintive, distinctive
+- FM synthesis with narrow tone
+- Best for: Lyrical solos, pastoral scenes
+- Range: Bb3-G6
+
+### `bassoon`
+**Bassoon**
+- Character: Dark, rich, characterful
+- FM synthesis with complex timbre
+- Best for: Bass woodwind, comic passages
+- Range: Bb1-Eb5
+
+### `piccolo`
+**Piccolo**
+- Character: Bright, piercing, brilliant
+- High-register breathy FM
+- Best for: High accents, marches
+- Range: D5-C8
+
+### `english_horn`
+**English Horn**
+- Character: Mellow, melancholic, warm
+- FM synthesis with dark timbre
+- Best for: Sad passages, pastoral themes
+- Range: E3-C6
+
+---
+
+## Choir & Orchestral Percussion (v0.9.4.1)
+
+### `choir_aah`
+**Choir "Aah"**
+- Character: Bright, open, full
+- FM synthesis with vowel formants
+- Best for: Epic moments, sustained swells
+
+### `choir_ooh`
+**Choir "Ooh"**
+- Character: Warm, round, intimate
+- Darker FM with closed formant
+- Best for: Soft passages, lullabies
+
+### `choir_mmm`
+**Choir "Mmm"**
+- Character: Soft, ethereal, humming
+- Very dark FM tone
+- Best for: Background texture, mysterious scenes
+
+### `mixed_choir`
+**Mixed Choir**
+- Character: Full, blended, versatile
+- Balanced FM for general choral use
+- Best for: Hymns, choral arrangements
+
+### `timpani`
+**Orchestral Timpani**
+- Character: Deep, booming, dramatic
+- Membrane synthesis for authentic kettledrum
+- Best for: Dramatic accents, rolls, thunder
+
+### `glockenspiel`
+**Glockenspiel** *(v0.9.4.1: FM redesign)*
+- Character: Bright, crystalline, bell-like
+- High harmonicity FM for inharmonic partials
+- Best for: Sparkling accents, magical moments
+
+### `xylophone`
+**Xylophone** *(v0.9.4.1: FM redesign)*
+- Character: Bright, woody, percussive
+- FM synthesis with quick attack, short decay
+- Best for: Rhythmic passages, bright accents
+
+### `vibraphone`
+**Vibraphone** *(v0.9.4.1: FM redesign)*
+- Character: Warm, sustained, jazzy
+- FM synthesis with longer sustain
+- Best for: Jazz, mellow passages, cool vibes
+
+### `marimba`
+**Marimba** *(v0.9.4.1: FM redesign)*
+- Character: Mellow, woody, warm
+- Low harmonicity FM for fundamental focus
+- Best for: World music, lyrical passages
+
+### `tubular_bells`
+**Tubular Bells** *(v0.9.4.1: FM redesign)*
+- Character: Deep, resonant, ceremonial
+- Classic DX7 bell ratio (5.07 harmonicity)
+- Best for: Church bells, dramatic moments
+
+### `celesta`
+**Celesta** *(v0.9.4.1: FM redesign)*
+- Character: Magical, ethereal, delicate
+- Bell-piano hybrid FM character
+- Best for: Nutcracker, magical scenes, sparkle
 
 ---
 
