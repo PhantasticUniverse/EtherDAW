@@ -1,6 +1,6 @@
 # Instrument Presets Reference
 
-EtherDAW includes 73 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
+EtherDAW includes 74 synthesizer presets organized across 14 categories. This document describes each preset's character and recommended use cases.
 
 ## Preset Overview
 
@@ -10,7 +10,7 @@ EtherDAW includes 73 synthesizer presets organized across 14 categories. This do
 | Bass | synth_bass, sub_bass, pluck_bass, fm_bass |
 | Pad | warm_pad, string_pad, ambient_pad, synthwave_pad |
 | Lead | lead, soft_lead, synthwave_lead |
-| Keys | electric_piano, organ, fm_epiano, fm_organ |
+| Keys | acoustic_piano, electric_piano, organ, fm_epiano, fm_organ |
 | Pluck | pluck, bell, marimba, clean_guitar, rhythm_guitar, muted_guitar |
 | FM | fm_epiano, fm_bass, fm_brass, fm_church_bell, fm_tubular_bell, fm_glass, fm_vibraphone, fm_organ |
 | Texture | noise, pink_noise, brown_noise, vinyl_crackle, noise_sweep |
@@ -158,6 +158,16 @@ See `src/presets/` for full definitions. Use `findPresets({ category: 'bass' })`
 ---
 
 ## Keys
+
+### `acoustic_piano`
+**Concert grand piano** *(v0.9.2)*
+- Character: Warm, resonant, classical, romantic
+- FM synthesis with modulation decay faster than amplitude
+- Attack: 2ms (hammer strike), Decay: 4.5s, Release: 3s
+- Spectral centroid: ~700 Hz (warm, not bright)
+- Best for: Classical, romantic, solo piano, expressive passages
+- Pairs with: reverb (long decay for concert hall)
+- Tip: Long release simulates sustain pedal
 
 ### `electric_piano`
 **Basic electric piano**

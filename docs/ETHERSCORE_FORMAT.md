@@ -313,6 +313,25 @@ Fine-grained per-note control:
 
 Examples: `C4:q@0.8` (80% velocity), `D4:8?0.5` (50% chance), `E4:q*@0.9?0.5-5ms` (combined)
 
+#### Bracket Chord Notation (v0.9.2)
+Play multiple notes simultaneously without using chord symbols:
+
+`[pitch1,pitch2,...]:duration[@velocity]`
+
+- Multiple pitches in brackets play at the same time
+- Useful for MIDI import or free voicings not matching named chords
+- Supports velocity and dotted durations
+
+Examples:
+- `[C4,E4,G4]:q` - C major triad, quarter note
+- `[A3,C4,E4]:h@0.6` - A minor triad, half note, 60% velocity
+- `[D4,F#4]:q.` - Dyad, dotted quarter
+- `[Bb3,D4,F#4,A4]:w@mf` - Diminished 7th with dynamics
+
+**When to use bracket notation vs chord symbols:**
+- **Chord symbols** (`Cmaj7:w`): Standard voicings, jazz harmony, automatic inversions
+- **Bracket notation** (`[C4,E4,G4,B4]:w`): Exact voicings, MIDI import, unusual clusters
+
 #### Tuplets (v0.7)
 Add `tN` after duration for tuplet ratios:
 - `t3` - Triplet (3 notes in space of 2)
@@ -1287,6 +1306,7 @@ These may be addressed in future versions.
 
 | Version | Features |
 |---------|----------|
+| v0.9.2 | Bracket chord notation `[C4,E4,G4]:q`, acoustic piano preset, MIDI-to-EtherScore converter, Karplus-Strong guitar |
 | v0.9.1 | Consolidated utilities, unified preset registry (67 presets, 14 categories), DrumEngine, WAV export, perceptual analysis CLI |
 | v0.9 | Perceptual analysis (chromagram, spectral centroid, flux, RMS), 80+ chord types, 25+ jazz progressions, semantic audio descriptions |
 | v0.83 | Pattern algebra (reverse, invert, shuffle, slice, rotate), LLM feedback tools (preview, describe, suggest), album "Threshold" |
