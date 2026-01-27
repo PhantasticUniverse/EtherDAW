@@ -16,7 +16,7 @@ const program = new Command();
 program
   .name('etherdaw')
   .description('A DAW designed for LLMs to compose music')
-  .version('0.9.3');
+  .version('0.9.6');
 
 /**
  * REPL command - start interactive environment (v0.82)
@@ -101,15 +101,60 @@ program
   });
 
 /**
- * Preview command - preview a specific pattern (v0.82)
+ * Preview command - preview patterns or sections (v0.9.6)
  */
 program
   .command('preview <file>')
-  .description('Preview a specific pattern from an EtherScore file')
+  .description('Preview patterns or sections from an EtherScore file')
   .option('-p, --pattern <name>', 'Pattern name to preview')
+  .option('-s, --section <name>', 'Section name to preview')
+  .option('-a, --analyze', 'Show perceptual analysis after preview')
   .option('-l, --loop', 'Loop playback')
-  .action(async (file: string, options: { pattern?: string; loop?: boolean }) => {
+  .option('-q, --quality <level>', 'Render quality: draft, normal, high', 'normal')
+  .action(async (file: string, options: {
+    pattern?: string;
+    section?: string;
+    analyze?: boolean;
+    loop?: boolean;
+    quality?: string;
+  }) => {
     try {
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const { compile, analyze } = await import('./engine/compiler.js');
+
+      const content = await readFile(resolve(file), 'utf-8');
+      const score = validateOrThrow(JSON.parse(content));
+
+      // List available patterns/sections if nothing specified
+      if (!options.pattern && !options.section) {
+        const info = analyze(score);
+        console.log('\nAvailable patterns:');
+        for (const p of info.patterns) {
+          console.log(`  - ${p}`);
+        }
+        console.log('\nAvailable sections:');
+        for (const s of info.sections) {
+          console.log(`  - ${s.name} (${s.bars} bars)`);
+        }
+        console.log('\nUse --pattern <name> or --section <name> to preview');
+        return;
+      }
+
+      // If section specified, create a temporary score with just that section
+      let previewScore = score;
+      if (options.section) {
+        if (!score.sections[options.section]) {
+          console.error(`Section '${options.section}' not found`);
+          process.exit(1);
+        }
+        previewScore = {
+          ...score,
+          arrangement: [options.section],
+        };
+        console.log(`Previewing section: ${options.section}`);
+      }
+
+      // Compile and play
       const { createNodePlayer } = await import('./node/player.js');
       const { isAudioAvailable } = await import('./node/audio-context.js');
 
@@ -130,32 +175,24 @@ program
         onError: (err) => console.error('Playback error:', err.message),
       });
 
-      console.log(`Loading: ${file}`);
-      await player.loadFile(file);
-
-      // If no pattern specified, list available patterns
-      if (!options.pattern) {
-        const patterns = player.getPatterns();
-        console.log('\nAvailable patterns:');
-        for (const p of patterns) {
-          console.log(`  - ${p}`);
-        }
-        console.log('\nUse --pattern <name> to preview a specific pattern');
-        player.dispose();
-        return;
+      if (options.pattern) {
+        console.log(`Loading: ${file}`);
+        await player.loadFile(file);
+        console.log(`Previewing pattern: ${options.pattern}`);
+        console.log('Press Ctrl+C to stop\n');
+        await player.playPattern(options.pattern, { loop: options.loop });
+      } else {
+        player.load(previewScore);
+        console.log('Press Ctrl+C to stop\n');
+        await player.play({ loop: options.loop });
       }
 
-      console.log(`Previewing pattern: ${options.pattern}`);
-      console.log('Press Ctrl+C to stop\n');
-
-      await player.playPattern(options.pattern, { loop: options.loop });
-
       // Wait for playback to complete
-      await new Promise<void>((resolve) => {
+      await new Promise<void>((resolvePromise) => {
         const check = setInterval(() => {
           if (player.getState() === 'stopped') {
             clearInterval(check);
-            resolve();
+            resolvePromise();
           }
         }, 100);
 
@@ -163,11 +200,34 @@ program
         process.on('SIGINT', () => {
           player.stop();
           clearInterval(check);
-          resolve();
+          resolvePromise();
         });
       });
 
       player.dispose();
+
+      // Show analysis if requested
+      if (options.analyze) {
+        console.log('\n--- Composition Analysis ---\n');
+        const result = compile(previewScore);
+
+        // Show compilation stats
+        console.log(`Notes: ${result.stats.totalNotes}`);
+        console.log(`Instruments: ${result.stats.instruments.join(', ')}`);
+        console.log(`Duration: ${formatDuration(result.stats.durationSeconds)}`);
+        console.log(`Sections: ${result.stats.totalSections}`);
+        console.log(`Bars: ${result.stats.totalBars}`);
+
+        if (result.warnings.length > 0) {
+          console.log('\nWarnings:');
+          for (const warning of result.warnings) {
+            console.log(`  ⚠ ${warning}`);
+          }
+        }
+
+        // Note: Full perceptual analysis requires rendered audio samples
+        // Use the REPL's `preview --analyze` command for audio analysis
+      }
     } catch (error) {
       console.error('Error:', (error as Error).message);
       process.exit(1);
@@ -502,6 +562,158 @@ program
         console.error(`Unknown type: ${type}`);
         console.log('Available types: presets, scales, chords, grooves');
         process.exit(1);
+    }
+  });
+
+/**
+ * Timeline command - visualize composition structure (v0.9.6)
+ */
+program
+  .command('timeline <file>')
+  .description('Show ASCII timeline visualization of a composition')
+  .option('-t, --tracks', 'Show track-level timeline instead of sections')
+  .option('-w, --width <chars>', 'Output width in characters', '80')
+  .action(async (file: string, options: { tracks?: boolean; width?: string }) => {
+    try {
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const {
+        generateSectionTimeline,
+        generateTrackTimeline,
+        generateSectionOverview,
+      } = await import('./utils/timeline-viz.js');
+
+      const content = await readFile(resolve(file), 'utf-8');
+      const score = validateOrThrow(JSON.parse(content));
+      const width = parseInt(options.width || '80');
+
+      if (options.tracks) {
+        console.log(generateTrackTimeline(score, { width }));
+      } else {
+        console.log(generateSectionTimeline(score, { width }));
+        console.log('');
+        console.log(generateSectionOverview(score));
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Watch command - auto-rebuild on file changes (v0.9.6)
+ */
+program
+  .command('watch <file>')
+  .description('Watch an EtherScore file and rebuild on changes')
+  .option('-b, --browser', 'Auto-refresh browser player')
+  .option('-e, --export <format>', 'Auto-export on change (midi, wav)')
+  .option('-v, --validate', 'Validate only, no compilation')
+  .action(async (file: string, options: {
+    browser?: boolean;
+    export?: string;
+    validate?: boolean;
+  }) => {
+    try {
+      const { watch: fsWatch } = await import('fs');
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const { compile } = await import('./engine/compiler.js');
+      const { lint, formatLintResults } = await import('./validation/linter.js');
+
+      const filePath = resolve(file);
+
+      console.log(`Watching: ${file}`);
+      console.log('Press Ctrl+C to stop.\n');
+
+      // WebSocket server for browser refresh
+      let wss: import('ws').WebSocketServer | null = null;
+      if (options.browser) {
+        const { WebSocketServer } = await import('ws');
+        wss = new WebSocketServer({ port: 3849 });
+        console.log('Browser refresh server on ws://localhost:3849');
+        console.log('Add this to player.html for live reload:\n');
+        console.log('  <script>');
+        console.log('  const ws = new WebSocket("ws://localhost:3849");');
+        console.log('  ws.onmessage = () => location.reload();');
+        console.log('  </script>\n');
+      }
+
+      const rebuild = async () => {
+        const timestamp = new Date().toLocaleTimeString();
+
+        try {
+          const content = await readFile(filePath, 'utf-8');
+          const score = validateOrThrow(JSON.parse(content));
+
+          // Lint
+          const lintResults = lint(score);
+          const errors = lintResults.filter(r => r.severity === 'error');
+          const warnings = lintResults.filter(r => r.severity === 'warning');
+
+          if (errors.length > 0) {
+            console.log(`[${timestamp}] ❌ ${errors.length} error(s)`);
+            console.log(formatLintResults(lintResults));
+            return;
+          }
+
+          if (options.validate) {
+            console.log(`[${timestamp}] ✓ Valid (${warnings.length} warnings)`);
+            return;
+          }
+
+          // Compile
+          const result = compile(score);
+          console.log(`[${timestamp}] ✓ Compiled (${result.stats.totalNotes} notes, ${formatDuration(result.stats.durationSeconds)})`);
+
+          if (warnings.length > 0) {
+            console.log(`  ${warnings.length} warning(s)`);
+          }
+
+          // Export if requested
+          if (options.export === 'midi') {
+            const { exportToMidiBytes } = await import('./output/midi-export.js');
+            const { writeFile: writeFileAsync } = await import('fs/promises');
+            const inputName = basename(file, extname(file));
+            const outputPath = `${inputName}.mid`;
+            const bytes = exportToMidiBytes(result.timeline, { name: score.meta?.title });
+            await writeFileAsync(resolve(outputPath), Buffer.from(bytes));
+            console.log(`  Exported: ${outputPath}`);
+          }
+
+          // Notify browser
+          if (wss) {
+            wss.clients.forEach(client => {
+              if (client.readyState === 1) { // WebSocket.OPEN
+                client.send('reload');
+              }
+            });
+            console.log('  Browser notified');
+          }
+
+        } catch (err) {
+          console.log(`[${timestamp}] ❌ Error: ${(err as Error).message}`);
+        }
+      };
+
+      // Initial build
+      await rebuild();
+
+      // Watch for changes
+      fsWatch(filePath, { persistent: true }, async (eventType) => {
+        if (eventType === 'change') {
+          await rebuild();
+        }
+      });
+
+      // Keep process alive
+      process.on('SIGINT', () => {
+        if (wss) wss.close();
+        console.log('\nStopped watching.');
+        process.exit(0);
+      });
+
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
     }
   });
 

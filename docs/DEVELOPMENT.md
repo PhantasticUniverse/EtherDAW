@@ -343,9 +343,73 @@ The validators only check structure, not semantics. The actual parsing/rendering
 | `src/synthesis/instruments.ts` | Instrument factory (createInstrument) |
 | `src/synthesis/presets.ts` | [DEPRECATED] Legacy preset definitions |
 | `src/generative/markov-presets.ts` | Markov chain presets |
+| `src/node/pattern-cache.ts` | Pattern-level caching with LRU eviction (v0.9.6) |
+| `src/node/browser-bridge.ts` | REPL to browser WebSocket bridge (v0.9.6) |
+| `src/utils/timeline-viz.ts` | ASCII timeline visualization (v0.9.6) |
 | `docs/ETHERSCORE_FORMAT.md` | User-facing format documentation |
 
 ## Changelog
+
+### v0.9.6 (2026-01-27) - Composer Experience
+
+**Vision:** Tighten the LLM feedback loop. For an LLM, perceptual analysis is MORE valuable than audio playback - they can't "hear" but they CAN process text descriptions.
+
+**New CLI Commands:**
+
+| Command | Description |
+|---------|-------------|
+| `preview <file> --section <name>` | Preview specific section |
+| `preview <file> --analyze` | Preview with composition analysis |
+| `timeline <file>` | ASCII section timeline visualization |
+| `timeline <file> --tracks` | Track activity visualization |
+| `watch <file>` | Auto-rebuild on file changes |
+| `watch <file> --browser` | With WebSocket browser auto-refresh |
+| `watch <file> --export midi` | Auto-export on change |
+
+**New REPL Commands:**
+
+| Command | Description |
+|---------|-------------|
+| `instant C4:q E4:q G4:h` | Play notes instantly via system audio |
+| `instant C4:q @ 80 \| piano` | With tempo and preset |
+| `preview melody --analyze` | Pattern preview + analysis |
+| `quick verse` | LLM-friendly section analysis |
+| `connect` | Connect to browser for real-time audio |
+| `cache` | Show pattern cache statistics |
+
+**New Files:**
+
+| File | Purpose |
+|------|---------|
+| `src/node/pattern-cache.ts` | LRU cache for rendered audio samples (SHA256 hashing) |
+| `src/node/browser-bridge.ts` | WebSocket bridge between REPL and browser player |
+| `src/utils/timeline-viz.ts` | ASCII timeline visualization utilities |
+
+**Files Modified:**
+- `src/cli.ts` - Added timeline, watch commands; enhanced preview
+- `src/cli/repl/commands.ts` - Added instant, connect, disconnect, cache, quick commands
+- `CLAUDE.md` - Documented new CLI and REPL commands
+
+**Architecture Decision:**
+
+The "wrong" question was: "How do we get real-time audio in Node.js?"
+
+The "right" question was: "What feedback loop best serves LLM composition?"
+
+LLMs don't "hear" audio - they read text descriptions. Our perceptual analysis system outputs:
+- "Warm, spectral centroid 680 Hz"
+- "Chromagram peaks on C, E, G - suggests C major"
+- "Energy curve: building arc, peaks at bar 12"
+
+This is MORE useful to an LLM than audio playback. The audio path is for human verification.
+
+**Key Features:**
+1. **Pattern-level caching** - Hash pattern content → cache rendered samples
+2. **Smart preview** - `preview melody --analyze` returns useful text feedback
+3. **Browser bridge** - Optional WebSocket for human real-time playback
+4. **Watch mode** - Auto-rebuild for rapid iteration
+
+---
 
 ### v0.9.5.3 (2026-01-27) - Player Controls
 

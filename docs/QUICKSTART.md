@@ -402,6 +402,45 @@ The browser player includes interactive controls:
 | Home | Go to start |
 | M | Toggle mute |
 
+## CLI Commands (v0.9.6)
+
+EtherDAW includes powerful CLI tools for development workflows:
+
+```bash
+# Preview a section
+npx tsx src/cli.ts preview file.etherscore.json --section verse
+
+# Preview with analysis
+npx tsx src/cli.ts preview file.etherscore.json --section chorus --analyze
+
+# See composition timeline
+npx tsx src/cli.ts timeline file.etherscore.json
+
+# Track activity visualization
+npx tsx src/cli.ts timeline file.etherscore.json --tracks
+
+# Auto-rebuild on file changes
+npx tsx src/cli.ts watch file.etherscore.json
+
+# With browser auto-refresh
+npx tsx src/cli.ts watch file.etherscore.json --browser
+```
+
+### Interactive REPL
+
+The REPL provides instant audio feedback:
+
+```bash
+npx tsx src/cli.ts repl -f file.etherscore.json
+
+# Commands in REPL:
+instant C4:q E4:q G4:h          # Play notes instantly
+instant C4:q @ 80 | piano       # With tempo and preset
+preview melody --analyze         # Pattern with analysis
+quick verse                     # LLM-friendly analysis
+connect                         # Connect to browser for audio
+```
+
 ## Next Steps
 
 - [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) - Sound shaping with semantic params (v0.5)

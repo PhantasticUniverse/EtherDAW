@@ -1,6 +1,6 @@
 {
   "name": "etherdaw",
-  "version": "0.9.3",
+  "version": "0.9.6",
   "description": "A DAW designed for LLMs to compose music using the EtherScore JSON format",
   "type": "module",
   "main": "dist/index.js",
@@ -35,11 +35,13 @@
   "dependencies": {
     "@mattiasbuelens/web-streams-polyfill": "^0.3.2",
     "@tonejs/midi": "^2.0.28",
+    "@types/ws": "^8.18.1",
     "ajv": "^8.17.1",
     "commander": "^12.1.0",
     "mpg123-decoder": "^1.0.3",
     "tonal": "^6.3.0",
-    "tone": "^15.0.4"
+    "tone": "^15.0.4",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

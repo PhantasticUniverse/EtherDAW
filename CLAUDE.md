@@ -26,6 +26,34 @@ open player.html                     # Listen in browser
 
 **Player shortcuts:** Space=play/pause, ←→=seek, 1-9=sections, M=mute
 
+## CLI Commands (v0.9.6)
+
+| Command | Description |
+|---------|-------------|
+| `preview <file>` | Preview patterns or sections |
+| `preview <file> --section verse` | Preview a specific section |
+| `preview <file> --analyze` | Preview with analysis output |
+| `timeline <file>` | ASCII section timeline visualization |
+| `timeline <file> --tracks` | Track activity visualization |
+| `watch <file>` | Auto-rebuild on file changes |
+| `watch <file> --browser` | With browser auto-refresh |
+| `watch <file> --export midi` | Auto-export on change |
+
+## REPL Commands (v0.9.5.1)
+
+| Command | Description |
+|---------|-------------|
+| `instant C4:q E4:q G4:h` | Play notes instantly |
+| `instant C4:q @ 80 \| piano` | With tempo and preset |
+| `preview melody --analyze` | Visual preview + audio analysis |
+| `quick verse` | LLM-friendly section analysis |
+| `connect` | Connect to browser for real-time audio |
+| `cache` | Show pattern cache statistics |
+| `analyze [section]` | Full perceptual analysis |
+| `chroma [section]` | Chromagram (pitch distribution) |
+| `energy [section]` | RMS energy curve |
+| `compare sec1 sec2` | Compare two sections |
+
 ## Key Files
 
 | Path | Purpose |

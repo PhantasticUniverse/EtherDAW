@@ -18,6 +18,11 @@ import {
   describeAudio,
 } from '../../analysis/describe-audio.js';
 
+// v0.9.5.1: Pattern cache and browser bridge
+import { getPatternCache } from '../../node/pattern-cache.js';
+import { getBrowserBridge, isBridgeAvailable } from '../../node/browser-bridge.js';
+import { renderPattern } from '../../node/player.js';
+
 /**
  * Command result
  */
@@ -844,47 +849,127 @@ export const COMMANDS: CommandDef[] = [
     },
   },
 
-  // Preview command - visual pattern preview
+  // Preview command - visual pattern preview with optional analysis
+  // v0.9.5.1: Added --analyze flag for perceptual analysis
   {
     name: 'preview',
     aliases: ['pre', 'viz'],
-    description: 'Visual preview of pattern with pitch contour',
-    usage: 'preview <pattern>',
+    description: 'Visual preview of pattern with pitch contour (--analyze for audio analysis)',
+    usage: 'preview <pattern|section> [--analyze]',
     execute: async (session, args) => {
       if (!session.isLoaded()) {
         return { success: false, message: 'No composition loaded' };
       }
 
       if (args.length < 1) {
-        return { success: false, message: 'Usage: preview <pattern>' };
+        return { success: false, message: 'Usage: preview <pattern|section> [--analyze]' };
       }
 
-      const patternName = args[0];
-
-      if (!session.getPatterns().includes(patternName)) {
-        return { success: false, message: `Pattern not found: ${patternName}` };
-      }
+      // Parse flags
+      const analyzeFlag = args.includes('--analyze') || args.includes('-a');
+      const targetName = args.find(a => !a.startsWith('-')) || '';
 
       const modifiedScore = session.getModifiedScore();
       if (!modifiedScore) {
         return { success: false, message: 'Failed to get modified score' };
       }
 
-      const pattern = modifiedScore.patterns[patternName];
+      const patterns = session.getPatterns();
+      const sections = session.getSections();
+
+      // Check if target is a section
+      if (sections.includes(targetName)) {
+        if (analyzeFlag) {
+          // Render and analyze section
+          const startTime = Date.now();
+          const samples = session.renderSection(targetName);
+          const renderTime = Date.now() - startTime;
+          const sampleRate = session.getRenderedSampleRate();
+          const analysis = analyzePerceptual(samples, sampleRate);
+          const description = describeAudio(analysis);
+
+          // Compact LLM-friendly output
+          const output = [
+            `Section: ${targetName} (rendered in ${renderTime}ms)`,
+            `─────────────────────────────────`,
+            `Summary: ${description.summary}`,
+            ``,
+            `Spectral: ${description.brightnessText}`,
+            `Texture: ${description.textureText}`,
+            `Energy: ${description.energyText}`,
+            `Envelope: ${description.envelopeText}`,
+            `Key: ${description.tonality.text}`,
+            ``,
+            `Character: ${description.character.join(', ')}`,
+          ];
+
+          if (description.observations.length > 0) {
+            output.push('');
+            for (const obs of description.observations) {
+              output.push(`  - ${obs}`);
+            }
+          }
+
+          return { success: true, message: output.join('\n') };
+        } else {
+          // Section info only
+          const section = modifiedScore.sections[targetName];
+          const tracks = section.tracks ? Object.keys(section.tracks) : [];
+          return {
+            success: true,
+            message: `Section: ${targetName}\n  Bars: ${section.bars}\n  Tracks: ${tracks.join(', ')}`,
+          };
+        }
+      }
+
+      // Target is a pattern
+      if (!patterns.includes(targetName)) {
+        return {
+          success: false,
+          message: `Not found: ${targetName}\nPatterns: ${patterns.slice(0, 5).join(', ')}${patterns.length > 5 ? '...' : ''}\nSections: ${sections.join(', ')}`,
+        };
+      }
+
+      const pattern = modifiedScore.patterns[targetName];
       if (!pattern) {
         return { success: false, message: 'Pattern not in modified score' };
       }
 
       const tempo = session.getTempo();
 
+      if (analyzeFlag) {
+        // Render and analyze pattern
+        try {
+          const startTime = Date.now();
+          const samples = renderPattern(modifiedScore, targetName);
+          const renderTime = Date.now() - startTime;
+          const sampleRate = 44100;
+          const analysis = analyzePerceptual(samples, sampleRate);
+          const description = describeAudio(analysis);
+
+          // Compact output with visual + analysis
+          let output = visualizeNotePattern(targetName, pattern.notes || [], tempo);
+          output += '\n\n';
+          output += `Analysis (rendered in ${renderTime}ms):\n`;
+          output += `  ${description.summary}\n`;
+          output += `  Brightness: ${description.brightness} | Texture: ${description.texture} | Energy: ${description.energy}\n`;
+          output += `  Character: ${description.character.join(', ')}`;
+
+          return { success: true, message: output };
+        } catch (error) {
+          return { success: false, message: `Analysis failed: ${(error as Error).message}` };
+        }
+      }
+
+      // Standard visual preview
       if (pattern.notes) {
-        return { success: true, message: visualizeNotePattern(patternName, pattern.notes, tempo) };
+        return { success: true, message: visualizeNotePattern(targetName, pattern.notes, tempo) };
       } else if (pattern.chords) {
-        return { success: true, message: visualizeChordPattern(patternName, pattern.chords, tempo) };
+        return { success: true, message: visualizeChordPattern(targetName, pattern.chords, tempo) };
       } else if (pattern.drums) {
-        return { success: true, message: `${patternName}: (drum pattern - use 'show' for hits)` };
+        return { success: true, message: `${targetName}: (drum pattern - use 'show' for hits)` };
       } else {
-        return { success: true, message: `${patternName}: (generative pattern)` };
+        return { success: true, message: `${targetName}: (generative pattern)` };
       }
     },
   },
@@ -1719,6 +1804,203 @@ export const COMMANDS: CommandDef[] = [
         return { success: true, message: output };
       } catch (error) {
         return { success: false, message: `Comparison failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9.5.1: Instant note playback
+  {
+    name: 'instant',
+    aliases: ['i', 'notes'],
+    description: 'Play notes instantly (e.g., instant C4:q E4:q G4:h)',
+    usage: 'instant <notes> [@ tempo] [| preset]',
+    execute: async (session, args) => {
+      if (args.length === 0) {
+        return { success: false, message: 'Usage: instant C4:q E4:q G4:h [@ tempo] [| preset]' };
+      }
+
+      // Parse arguments: notes @ tempo | preset
+      const fullArgs = args.join(' ');
+      let notes = fullArgs;
+      let tempo = session.isLoaded() ? session.getTempo() : 120;
+      let preset = 'fm_epiano';
+
+      // Parse tempo modifier (@ 80)
+      const tempoMatch = fullArgs.match(/@\s*(\d+)/);
+      if (tempoMatch) {
+        tempo = parseInt(tempoMatch[1]);
+        notes = notes.replace(/@\s*\d+/, '').trim();
+      }
+
+      // Parse preset modifier (| piano)
+      const presetMatch = fullArgs.match(/\|\s*(\S+)/);
+      if (presetMatch) {
+        preset = presetMatch[1];
+        notes = notes.replace(/\|\s*\S+/, '').trim();
+      }
+
+      // Check if browser bridge is connected
+      const bridge = getBrowserBridge();
+      if (bridge.isConnected()) {
+        const success = bridge.playNotes(notes, preset, tempo);
+        if (success) {
+          return { success: true, message: `Playing in browser: ${notes} @ ${tempo} BPM | ${preset}` };
+        }
+      }
+
+      // Fall back to offline rendering
+      try {
+        const player = session.getPlayer();
+        const minimalScore = {
+          meta: { title: 'Instant Preview' },
+          settings: { tempo },
+          instruments: { preview: { preset, volume: -6 } },
+          patterns: { instant: { notes: notes.split(/\s+/).filter((n: string) => n && n !== '|') } },
+          sections: { play: { bars: 4, tracks: { preview: { pattern: 'instant' } } } },
+          arrangement: ['play'],
+        };
+
+        // Use the player's load and play methods
+        player.load(minimalScore as any);
+        await player.play();
+
+        return { success: true, message: `Playing: ${notes} @ ${tempo} BPM | ${preset}` };
+      } catch (error) {
+        return { success: false, message: `Playback failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9.5.1: Browser bridge connection
+  {
+    name: 'connect',
+    aliases: ['bridge'],
+    description: 'Connect to browser for real-time playback',
+    usage: 'connect [--no-open]',
+    execute: async (_, args) => {
+      const autoOpen = !args.includes('--no-open');
+      const bridge = getBrowserBridge({ autoOpen });
+
+      if (bridge.isConnected()) {
+        return { success: true, message: 'Already connected to browser' };
+      }
+
+      try {
+        const message = await bridge.start();
+        return { success: true, message: message + '\n\nWaiting for browser to connect...' };
+      } catch (error) {
+        return { success: false, message: `Failed to start bridge: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9.5.1: Disconnect browser bridge
+  {
+    name: 'disconnect',
+    aliases: [],
+    description: 'Disconnect from browser',
+    usage: 'disconnect',
+    execute: async () => {
+      const bridge = getBrowserBridge();
+      if (!bridge.isConnected()) {
+        return { success: true, message: 'Not connected to browser' };
+      }
+
+      await bridge.stop();
+      return { success: true, message: 'Disconnected from browser' };
+    },
+  },
+
+  // v0.9.5.1: Pattern cache statistics
+  {
+    name: 'cache',
+    aliases: ['cacheinfo'],
+    description: 'Show pattern cache statistics',
+    usage: 'cache [clear]',
+    execute: async (_, args) => {
+      const cache = getPatternCache();
+
+      if (args[0] === 'clear') {
+        cache.clear();
+        return { success: true, message: 'Pattern cache cleared' };
+      }
+
+      return { success: true, message: cache.formatStats() };
+    },
+  },
+
+  // v0.9.5.1: Quick analyze - shortcut for analyze with specific section
+  {
+    name: 'quick',
+    aliases: ['qa'],
+    description: 'Quick analysis of pattern or section with LLM-friendly output',
+    usage: 'quick <pattern|section>',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      if (args.length === 0) {
+        return { success: false, message: 'Usage: quick <pattern|section>' };
+      }
+
+      const target = args[0];
+      const sections = session.getSections();
+      const patterns = session.getPatterns();
+
+      try {
+        let samples: Float32Array;
+        let targetType: string;
+
+        if (sections.includes(target)) {
+          samples = session.renderSection(target);
+          targetType = 'section';
+        } else if (patterns.includes(target)) {
+          // Render pattern
+          const score = session.getModifiedScore();
+          if (!score) {
+            return { success: false, message: 'No modified score available' };
+          }
+          samples = renderPattern(score, target);
+          targetType = 'pattern';
+        } else {
+          return {
+            success: false,
+            message: `Not found: ${target}\nSections: ${sections.join(', ')}\nPatterns: ${patterns.slice(0, 5).join(', ')}${patterns.length > 5 ? '...' : ''}`,
+          };
+        }
+
+        const sampleRate = session.getRenderedSampleRate();
+        const analysis = analyzePerceptual(samples, sampleRate);
+        const description = describeAudio(analysis);
+
+        // LLM-friendly compact output
+        const key = `${description.tonality.key}${description.tonality.mode === 'minor' ? 'm' : ''}`;
+        const output = [
+          `${targetType}: ${target}`,
+          `─────────────────────────────────`,
+          `Summary: ${description.summary}`,
+          ``,
+          `Brightness: ${description.brightness} (${Math.round(analysis.centroid)} Hz centroid)`,
+          `Texture: ${description.texture} (${(analysis.flux * 100).toFixed(0)}% flux)`,
+          `Energy: ${description.energy} (${Math.round(analysis.rmsDb)} dB)`,
+          `Envelope: ${description.envelope}`,
+          `Key: ${key} (${Math.round(description.tonality.confidence * 100)}% confidence)`,
+          ``,
+          `Character: ${description.character.join(', ')}`,
+        ];
+
+        if (description.observations.length > 0) {
+          output.push('');
+          output.push('Observations:');
+          for (const obs of description.observations.slice(0, 3)) {
+            output.push(`  - ${obs}`);
+          }
+        }
+
+        return { success: true, message: output.join('\n') };
+      } catch (error) {
+        return { success: false, message: `Quick analysis failed: ${(error as Error).message}` };
       }
     },
   },
