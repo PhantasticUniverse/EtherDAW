@@ -1,11 +1,12 @@
 /**
  * Pattern resolver tests
  * v0.9.3: Added tests for pattern array sequential scheduling
+ * v0.9.8: Added tests for expression presets, groove application, velocity automation
  */
 
 import { describe, it, expect } from 'vitest';
-import { resolveTrack, type PatternResolutionContext } from './pattern-resolver.js';
-import type { Pattern, Track } from '../schema/types.js';
+import { resolveTrack, resolveSection, type PatternResolutionContext } from './pattern-resolver.js';
+import type { Pattern, Track, Section } from '../schema/types.js';
 
 function createContext(patterns: Record<string, Pattern>): PatternResolutionContext {
   return {
@@ -203,6 +204,138 @@ describe('Pattern Resolver', () => {
         const notes = resolveTrack(track, ctx);
 
         expect(notes.length).toBe(0);
+      });
+    });
+
+    describe('v0.9.8: Expression Presets', () => {
+      it('should apply expression preset settings', () => {
+        const patterns: Record<string, Pattern> = {
+          melody: {
+            notes: ['C4:q', 'E4:q', 'G4:q', 'C5:q'],
+          },
+        };
+        // 'mechanical' preset: humanize=0, groove='straight', velocityVariance=0
+        const track: Track = { pattern: 'melody', expression: 'mechanical' };
+        const ctx = createContext(patterns);
+
+        const notes = resolveTrack(track, ctx);
+
+        expect(notes.length).toBe(4);
+        // With mechanical preset, timing should be exact
+        expect(notes[0].startBeat).toBe(0);
+        expect(notes[1].startBeat).toBe(1);
+        expect(notes[2].startBeat).toBe(2);
+        expect(notes[3].startBeat).toBe(3);
+      });
+
+      it('should allow track-level overrides of expression preset', () => {
+        const patterns: Record<string, Pattern> = {
+          melody: {
+            notes: ['C4:q', 'E4:q', 'G4:q', 'C5:q'],
+          },
+        };
+        // 'jazzy' preset has humanize=0.03, but track overrides to 0
+        const track: Track = { pattern: 'melody', expression: 'jazzy', humanize: 0 };
+        const ctx = createContext(patterns);
+
+        const notes = resolveTrack(track, ctx);
+
+        expect(notes.length).toBe(4);
+        // Humanize is overridden to 0, so timing should be more precise
+        // (groove is still applied but with exact timing)
+      });
+
+      it('should apply groove from expression preset', () => {
+        const patterns: Record<string, Pattern> = {
+          beat: {
+            notes: ['C4:16', 'C4:16', 'C4:16', 'C4:16'], // 4 16th notes = 1 beat
+          },
+        };
+        // 'funk' preset has groove='funk' which affects timing
+        const track: Track = { pattern: 'beat', expression: 'funk' };
+        const ctx = createContext(patterns);
+
+        const notes = resolveTrack(track, ctx);
+
+        expect(notes.length).toBe(4);
+        // Funk groove applies timing offsets, so notes won't be exactly on grid
+        // We can't easily test exact values due to groove offsets, but notes should exist
+      });
+    });
+
+    describe('v0.9.8: Groove Application', () => {
+      it('should apply groove template directly on track', () => {
+        const patterns: Record<string, Pattern> = {
+          beat: {
+            notes: ['C4:16', 'C4:16', 'C4:16', 'C4:16'],
+          },
+        };
+        const track: Track = { pattern: 'beat', groove: 'shuffle' };
+        const ctx = createContext(patterns);
+
+        const notes = resolveTrack(track, ctx);
+
+        expect(notes.length).toBe(4);
+        // Shuffle groove delays the 2nd and 4th 16th notes
+        // The exact timing will be shifted by the groove template
+      });
+    });
+  });
+
+  describe('resolveSection', () => {
+    describe('v0.9.8: Velocity Automation', () => {
+      it('should apply velocity automation across section', () => {
+        const patterns: Record<string, Pattern> = {
+          melody: {
+            notes: ['C4:w', 'D4:w', 'E4:w', 'F4:w'], // 4 whole notes = 16 beats = 4 bars
+          },
+        };
+        const tracks: Record<string, Track> = {
+          lead: {
+            pattern: 'melody',
+            velocityAutomation: {
+              start: 0.5,
+              end: 1.0,
+              curve: 'linear',
+            },
+          },
+        };
+        const ctx = createContext(patterns);
+
+        const result = resolveSection(tracks, 4, ctx);
+        const notes = result.get('lead')!;
+
+        expect(notes.length).toBe(4);
+        // With linear automation from 0.5 to 1.0:
+        // Note at beat 0 should have velocity close to original * 0.5
+        // Note at beat 12 should have velocity close to original * 1.0
+        expect(notes[0].velocity).toBeLessThan(notes[3].velocity);
+      });
+
+      it('should support exponential velocity automation', () => {
+        const patterns: Record<string, Pattern> = {
+          melody: {
+            notes: ['C4:q', 'D4:q', 'E4:q', 'F4:q'],
+          },
+        };
+        const tracks: Record<string, Track> = {
+          lead: {
+            pattern: 'melody',
+            velocityAutomation: {
+              start: 0.5,
+              end: 1.0,
+              curve: 'exponential',
+            },
+          },
+        };
+        const ctx = createContext(patterns);
+
+        const result = resolveSection(tracks, 1, ctx);
+        const notes = result.get('lead')!;
+
+        expect(notes.length).toBe(4);
+        // Exponential curve starts slower
+        expect(notes[0].velocity).toBeLessThan(notes[3].velocity);
       });
     });
   });

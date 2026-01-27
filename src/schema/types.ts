@@ -488,6 +488,10 @@ export interface Track {
   groove?: GrooveTemplateName;
   // NEW v0.9.4: Sustain pedal - applies pedal to all patterns in this track
   pedal?: boolean;
+  // NEW v0.9.8: Expression preset - bundles humanize + groove + velocity variance
+  expression?: ExpressionPresetName;
+  // NEW v0.9.8: Per-track velocity automation - applies velocity curve across section
+  velocityAutomation?: VelocityAutomationConfig;
 }
 
 // NEW v0.5: Automation curve types
@@ -583,6 +587,22 @@ export type DynamicsMarking = 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff';
  * NEW v0.8: Groove Template Names
  */
 export type GrooveTemplateName = 'straight' | 'shuffle' | 'dilla' | 'reggae' | 'dnb' | 'trap' | 'gospel' | 'laid_back' | 'pushed' | 'funk' | 'hip_hop';
+
+/**
+ * NEW v0.9.8: Expression Preset Names
+ * Named bundles that combine humanize + groove + velocity variance
+ */
+export type ExpressionPresetName = 'mechanical' | 'tight' | 'natural' | 'romantic' | 'jazzy' | 'funk' | 'gospel' | 'aggressive';
+
+/**
+ * NEW v0.9.8: Per-Track Velocity Automation
+ * Applies a velocity curve across all notes in a track for a section
+ */
+export interface VelocityAutomationConfig {
+  start: number;                              // Starting velocity multiplier (0-1)
+  end: number;                                // Ending velocity multiplier (0-1)
+  curve?: AutomationCurve;                    // Interpolation curve (default: linear)
+}
 
 export interface ArticulationModifiers {
   gate: number;       // 0.3 for staccato, 1.1 for legato, 1.0 default

@@ -501,6 +501,44 @@
         "instrument": {
           "type": "string",
           "description": "Override instrument for this track"
+        },
+        "groove": {
+          "type": "string",
+          "description": "v0.8: Named groove template (straight, shuffle, funk, dilla, etc.)",
+          "enum": ["straight", "shuffle", "funk", "laid_back", "pushed", "hip_hop", "dilla", "reggae", "dnb", "trap", "gospel", "new_orleans", "bossa", "afrobeat"]
+        },
+        "expression": {
+          "type": "string",
+          "description": "v0.9.8: Named expression preset (bundles humanize + groove + velocity variance)",
+          "enum": ["mechanical", "tight", "natural", "romantic", "jazzy", "funk", "gospel", "aggressive"]
+        },
+        "velocityAutomation": {
+          "type": "object",
+          "description": "v0.9.8: Per-track velocity automation",
+          "properties": {
+            "start": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Starting velocity multiplier"
+            },
+            "end": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Ending velocity multiplier"
+            },
+            "curve": {
+              "type": "string",
+              "description": "Interpolation curve type",
+              "enum": ["linear", "exponential", "sine", "step"]
+            }
+          }
+        },
+        "pedal": {
+          "type": "boolean",
+          "default": false,
+          "description": "v0.9.4: Enable sustain pedal for this track"
         }
       }
     }

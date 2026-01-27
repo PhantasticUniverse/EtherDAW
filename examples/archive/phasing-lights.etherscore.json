@@ -1,0 +1,311 @@
+{
+  "meta": {
+    "title": "Phasing Lights",
+    "composer": "Claude",
+    "mood": "Hypnotic, meditative, transcendent",
+    "genre": "Minimalist / Process Music",
+    "description": "A minimalist piece inspired by Steve Reich's phasing technique. Two melodic voices begin in unison and gradually drift apart through rotation, creating constantly shifting patterns that eventually realign.",
+    "tags": ["minimalist", "reich", "glass", "phasing", "polyrhythm", "ambient"]
+  },
+  "settings": {
+    "tempo": 126,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "pulse": {
+      "preset": "marimba",
+      "volume": -6,
+      "pan": 0,
+      "effects": [{ "type": "reverb", "wet": 0.2 }]
+    },
+    "melody_a": {
+      "preset": "fm_vibraphone",
+      "volume": -3,
+      "pan": -0.3,
+      "effects": [{ "type": "reverb", "wet": 0.25 }, { "type": "delay", "wet": 0.15, "options": { "time": "8n.", "feedback": 0.2 } }]
+    },
+    "melody_b": {
+      "preset": "fm_vibraphone",
+      "volume": -3,
+      "pan": 0.3,
+      "effects": [{ "type": "reverb", "wet": 0.25 }, { "type": "delay", "wet": 0.15, "options": { "time": "8n.", "feedback": 0.2 } }]
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.1 }]
+    },
+    "pad": {
+      "preset": "warm_pad",
+      "volume": -12,
+      "effects": [{ "type": "reverb", "wet": 0.5 }]
+    }
+  },
+  "patterns": {
+    "// PULSE PATTERNS": "---",
+    "// 3-against-4 polyrhythm - groups of 3 eighth notes against groups of 4": "",
+    "pulse_base": {
+      "notes": [
+        "C5:8", "E5:8", "G5:8",
+        "C5:8", "E5:8", "G5:8",
+        "C5:8", "E5:8", "G5:8",
+        "C5:8", "E5:8", "G5:8"
+      ]
+    },
+    "pulse_low": {
+      "notes": [
+        "G4:8", "C5:8", "E5:8",
+        "G4:8", "C5:8", "E5:8",
+        "G4:8", "C5:8", "E5:8",
+        "G4:8", "C5:8", "E5:8"
+      ]
+    },
+    "pulse_high": {
+      "notes": [
+        "G5:8", "C6:8", "E6:8",
+        "G5:8", "C6:8", "E6:8",
+        "G5:8", "C6:8", "E6:8",
+        "G5:8", "C6:8", "E6:8"
+      ]
+    },
+
+    "// MELODY PATTERNS": "---",
+    "// 12 eighth notes = 1.5 bars, creates shifting against 4/4 grid": "",
+    "// Base pattern: C E G C D E F E D C G E": "",
+
+    "melody_phase_0": {
+      "notes": ["C5:8", "E5:8", "G5:8", "C6:8", "D6:8", "E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8"]
+    },
+    "melody_phase_1": {
+      "notes": ["E5:8", "G5:8", "C6:8", "D6:8", "E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8"]
+    },
+    "melody_phase_2": {
+      "notes": ["G5:8", "C6:8", "D6:8", "E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8", "E5:8"]
+    },
+    "melody_phase_3": {
+      "notes": ["C6:8", "D6:8", "E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8", "E5:8", "G5:8"]
+    },
+    "melody_phase_4": {
+      "notes": ["D6:8", "E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8", "E5:8", "G5:8", "C6:8"]
+    },
+    "melody_phase_5": {
+      "notes": ["E6:8", "F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8", "E5:8", "G5:8", "C6:8", "D6:8"]
+    },
+    "melody_phase_6": {
+      "notes": ["F6:8", "E6:8", "D6:8", "C6:8", "G5:8", "E5:8", "C5:8", "E5:8", "G5:8", "C6:8", "D6:8", "E6:8"]
+    },
+
+    "// BASS PATTERNS": "---",
+    "bass_root": {
+      "notes": ["C3:h", "r:h"]
+    },
+    "bass_fifth": {
+      "notes": ["G2:h", "r:h"]
+    },
+    "bass_progression": {
+      "notes": ["C3:h", "G2:h", "A2:h", "E2:h"]
+    },
+    "bass_walking": {
+      "notes": ["C3:q", "E3:q", "G3:q", "E3:q"]
+    },
+    "bass_full": {
+      "notes": ["C3:q", "G2:q", "C3:q", "E3:q", "G3:q", "E3:q", "C3:q", "G2:q"]
+    },
+
+    "// PAD PATTERNS": "---",
+    "pad_c": {
+      "chords": ["C:w", "C:w"]
+    },
+    "pad_am": {
+      "chords": ["Am:w", "Am:w"]
+    },
+    "pad_f": {
+      "chords": ["F:w", "F:w"]
+    },
+    "pad_g": {
+      "chords": ["G:w", "G:w"]
+    },
+    "pad_progression": {
+      "chords": ["C:w", "Am:w", "F:w", "G:w"]
+    },
+    "pad_climax": {
+      "chords": ["C:h", "Am:h", "F:h", "C:h"]
+    },
+
+    "// REST PATTERNS": "---",
+    "rest_bar": {
+      "notes": ["r:w"]
+    },
+    "rest_2bars": {
+      "notes": ["r:w", "r:w"]
+    }
+  },
+  "sections": {
+    "emergence": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base"],
+          "expression": "mechanical",
+          "velocityAutomation": {
+            "start": 0.3,
+            "end": 0.7,
+            "curve": "exponential"
+          }
+        }
+      }
+    },
+    "first_voice": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base"],
+          "expression": "mechanical"
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "tight"
+        }
+      }
+    },
+    "phase_shift_1": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_base"],
+          "expression": "mechanical"
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "tight"
+        },
+        "melody_b": {
+          "patterns": ["melody_phase_1", "melody_phase_1", "melody_phase_1", "melody_phase_1", "melody_phase_1", "melody_phase_1", "melody_phase_1", "melody_phase_1"],
+          "expression": "tight"
+        }
+      }
+    },
+    "phase_shift_2": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_base", "pulse_base", "pulse_base", "pulse_base", "pulse_low", "pulse_low", "pulse_low", "pulse_low"],
+          "expression": "mechanical"
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "tight"
+        },
+        "melody_b": {
+          "patterns": ["melody_phase_2", "melody_phase_2", "melody_phase_2", "melody_phase_2", "melody_phase_3", "melody_phase_3", "melody_phase_3", "melody_phase_3"],
+          "expression": "tight"
+        },
+        "bass": {
+          "patterns": ["bass_root", "bass_root", "bass_fifth", "bass_fifth", "bass_root", "bass_root", "bass_fifth", "bass_fifth"],
+          "expression": "natural",
+          "velocityAutomation": {
+            "start": 0.4,
+            "end": 0.7,
+            "curve": "linear"
+          }
+        }
+      }
+    },
+    "interlocking": {
+      "bars": 16,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_base", "pulse_base", "pulse_low", "pulse_low", "pulse_high", "pulse_high", "pulse_base", "pulse_base", "pulse_low", "pulse_low", "pulse_high", "pulse_high", "pulse_base", "pulse_base", "pulse_high", "pulse_high"],
+          "expression": "mechanical"
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "tight"
+        },
+        "melody_b": {
+          "patterns": ["melody_phase_4", "melody_phase_4", "melody_phase_4", "melody_phase_4", "melody_phase_5", "melody_phase_5", "melody_phase_5", "melody_phase_5", "melody_phase_6", "melody_phase_6", "melody_phase_6", "melody_phase_6", "melody_phase_0", "melody_phase_0", "melody_phase_1", "melody_phase_1"],
+          "expression": "tight"
+        },
+        "bass": {
+          "patterns": ["bass_walking", "bass_walking", "bass_walking", "bass_walking", "bass_progression", "bass_progression", "bass_walking", "bass_walking", "bass_walking", "bass_walking", "bass_progression", "bass_progression", "bass_full", "bass_full", "bass_full", "bass_full"],
+          "expression": "natural"
+        }
+      }
+    },
+    "climax": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_high", "pulse_high", "pulse_high", "pulse_high", "pulse_high", "pulse_high", "pulse_high", "pulse_high"],
+          "expression": "tight",
+          "velocity": 0.9
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "natural",
+          "velocity": 0.95
+        },
+        "melody_b": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0"],
+          "expression": "natural",
+          "velocity": 0.95
+        },
+        "bass": {
+          "patterns": ["bass_full", "bass_full", "bass_full", "bass_full", "bass_full", "bass_full", "bass_full", "bass_full"],
+          "expression": "natural"
+        },
+        "pad": {
+          "patterns": ["pad_climax", "pad_climax", "pad_climax", "pad_climax"],
+          "expression": "romantic",
+          "velocityAutomation": {
+            "start": 0.5,
+            "end": 1.0,
+            "curve": "sine"
+          }
+        }
+      }
+    },
+    "dissolution": {
+      "bars": 8,
+      "tracks": {
+        "pulse": {
+          "patterns": ["pulse_high", "pulse_high", "pulse_base", "pulse_base", "pulse_low", "pulse_low", "pulse_base", "pulse_base"],
+          "expression": "mechanical",
+          "velocityAutomation": {
+            "start": 0.8,
+            "end": 0.4,
+            "curve": "exponential"
+          }
+        },
+        "melody_a": {
+          "patterns": ["melody_phase_0", "melody_phase_0", "melody_phase_0", "melody_phase_0", "rest_bar", "rest_bar", "rest_bar", "rest_bar"],
+          "expression": "natural",
+          "velocityAutomation": {
+            "start": 0.8,
+            "end": 0.3,
+            "curve": "linear"
+          }
+        },
+        "pad": {
+          "patterns": ["pad_c", "pad_c", "pad_c", "pad_c"],
+          "expression": "romantic",
+          "velocityAutomation": {
+            "start": 0.7,
+            "end": 0.2,
+            "curve": "exponential"
+          }
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "emergence",
+    "first_voice",
+    "phase_shift_1",
+    "phase_shift_2",
+    "interlocking",
+    "climax",
+    "dissolution"
+  ]
+}

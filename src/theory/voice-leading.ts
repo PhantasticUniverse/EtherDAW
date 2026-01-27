@@ -104,6 +104,144 @@ function getInterval(midi1: number, midi2: number): number {
 }
 
 /**
+ * v0.9.8: Check if a pitch class is the leading tone (7th degree) relative to a key
+ * Leading tone is 11 semitones above the tonic (or 1 semitone below)
+ * @param pc - Pitch class (0-11, where 0=C)
+ * @param keyRoot - Root of the key as pitch class (0-11)
+ */
+function isLeadingTone(pc: number, keyRoot: number): boolean {
+  // Leading tone is 11 semitones above root (1 below tonic)
+  return ((pc - keyRoot + 12) % 12) === 11;
+}
+
+/**
+ * v0.9.8: Check if a pitch class is a chord seventh
+ * In standard chord voicings, the 7th is 10 (minor 7th) or 11 (major 7th) semitones above root
+ * @param pc - Pitch class (0-11)
+ * @param chordRoot - Root of the chord as pitch class (0-11)
+ */
+function isChordSeventh(pc: number, chordRoot: number): boolean {
+  const interval = (pc - chordRoot + 12) % 12;
+  return interval === 10 || interval === 11; // m7 or M7
+}
+
+/**
+ * v0.9.8: Get the chord root pitch class from a chord symbol
+ */
+function getChordRootPitchClass(chordSymbol: string): number {
+  const match = chordSymbol.match(/^([A-G])([#b]?)/);
+  if (!match) return 0;
+
+  const [, note, accidental] = match;
+  const noteValues: Record<string, number> = {
+    'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
+  };
+
+  let value = noteValues[note] || 0;
+  if (accidental === '#') value = (value + 1) % 12;
+  if (accidental === 'b') value = (value + 11) % 12;
+
+  return value;
+}
+
+/**
+ * v0.9.8: Check for unresolved leading tones between two voicings
+ * Leading tones (7th scale degree) should resolve UP by step to the tonic
+ * Returns true if there's an unresolved leading tone (constraint violation)
+ *
+ * @param voicing1 - Previous voicing (MIDI notes)
+ * @param voicing2 - Next voicing (MIDI notes)
+ * @param chord1 - Chord symbol for voicing1
+ * @param chord2 - Chord symbol for voicing2
+ */
+function hasUnresolvedLeadingTone(
+  voicing1: number[],
+  voicing2: number[],
+  chord1: string,
+  chord2: string
+): boolean {
+  const root1 = getChordRootPitchClass(chord1);
+  const root2 = getChordRootPitchClass(chord2);
+
+  // Only check if moving to a chord where the leading tone should resolve to tonic
+  // (e.g., V → I, or any chord where the next chord root is a half step above previous leading tone)
+  const leadingTonePC = (root1 + 11) % 12; // 7th degree of current key
+  const tonicPC = root1; // Would resolve to this if I chord
+
+  for (let i = 0; i < voicing1.length; i++) {
+    const pc1 = voicing1[i] % 12;
+
+    // Check if this voice has a leading tone
+    if (isLeadingTone(pc1, root1)) {
+      // The leading tone should resolve UP by half step (to tonic)
+      const pc2 = voicing2[i] % 12;
+      const motion = voicing2[i] - voicing1[i];
+
+      // Valid resolution: up by 1 semitone to the tonic
+      // Or held (motion = 0) if same chord
+      if (motion > 0 && motion <= 2 && ((pc1 + 1) % 12) === pc2) {
+        // Proper resolution - leading tone went up to tonic
+        continue;
+      }
+
+      // If the leading tone doesn't resolve up by step, it's a violation
+      // (unless it's held over the same pitch class)
+      if (motion !== 0 && pc2 !== pc1) {
+        return true; // Unresolved leading tone
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * v0.9.8: Check for unresolved chord sevenths between two voicings
+ * Chord 7ths should resolve DOWN by step
+ * Returns true if there's an unresolved seventh (constraint violation)
+ *
+ * @param voicing1 - Previous voicing (MIDI notes)
+ * @param voicing2 - Next voicing (MIDI notes)
+ * @param chord1 - Chord symbol for voicing1
+ */
+function hasUnresolvedSeventh(
+  voicing1: number[],
+  voicing2: number[],
+  chord1: string
+): boolean {
+  // Only check if the previous chord has a 7th
+  if (!chord1.includes('7')) {
+    return false;
+  }
+
+  const root1 = getChordRootPitchClass(chord1);
+
+  for (let i = 0; i < voicing1.length; i++) {
+    const pc1 = voicing1[i] % 12;
+
+    // Check if this voice has a chord seventh
+    if (isChordSeventh(pc1, root1)) {
+      // The seventh should resolve DOWN by step (1 or 2 semitones)
+      const motion = voicing2[i] - voicing1[i];
+
+      // Valid resolution: down by 1 or 2 semitones
+      // Or held (motion = 0) if same chord continues
+      if (motion === 0 || (motion < 0 && motion >= -2)) {
+        // Proper resolution or held - seventh went down or stayed
+        continue;
+      }
+
+      // If the seventh moves up, it's a violation
+      if (motion > 0) {
+        return true; // Unresolved seventh (moved up instead of down)
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
  * Check for parallel fifths between two voicings
  */
 function hasParallelFifths(voicing1: number[], voicing2: number[]): boolean {
@@ -242,11 +380,14 @@ function generatePossibleVoicings(
 
 /**
  * Score a voicing transition based on smoothness
+ * v0.9.8: Added chord context for resolution constraints
  */
 function scoreTransition(
   prev: number[],
   next: number[],
-  constraints: string[]
+  constraints: string[],
+  prevChord?: string,
+  nextChord?: string
 ): { valid: boolean; score: number } {
   let score = 0;
   let valid = true;
@@ -276,6 +417,22 @@ function scoreTransition(
     }
   }
 
+  // v0.9.8: Check leading tone resolution (requires chord context)
+  if (constraints.includes('resolve_leading_tones') && prevChord && nextChord) {
+    if (hasUnresolvedLeadingTone(prev, next, prevChord, nextChord)) {
+      score -= 20; // Significant penalty for unresolved leading tone
+      // In strict Bach style, this would be invalid, but we allow it with penalty
+      // to avoid getting stuck with no valid voicings
+    }
+  }
+
+  // v0.9.8: Check seventh resolution (requires chord context)
+  if (constraints.includes('resolve_sevenths') && prevChord) {
+    if (hasUnresolvedSeventh(prev, next, prevChord)) {
+      score -= 15; // Penalty for unresolved seventh
+    }
+  }
+
   // Smooth motion scoring
   if (constraints.includes('smooth_motion')) {
     const motion = calculateMotion(prev, next);
@@ -287,6 +444,7 @@ function scoreTransition(
 
 /**
  * Find the best voicing sequence using backtracking
+ * v0.9.8: Now passes chord context to scoreTransition for resolution constraints
  */
 function findBestVoicingSequence(
   chords: string[],
@@ -327,9 +485,18 @@ function findBestVoicingSequence(
 
     for (const state of beam) {
       const lastVoicing = state.sequence[state.sequence.length - 1];
+      // v0.9.8: Get chord context for resolution constraints
+      const prevChord = chords[i - 1];
+      const nextChord = chords[i];
 
       for (const nextVoicing of allVoicings[i]) {
-        const { valid, score } = scoreTransition(lastVoicing, nextVoicing, constraints);
+        const { valid, score } = scoreTransition(
+          lastVoicing,
+          nextVoicing,
+          constraints,
+          prevChord,
+          nextChord
+        );
 
         if (valid) {
           nextBeam.push({
@@ -344,12 +511,24 @@ function findBestVoicingSequence(
       // No valid continuations - relax constraints
       console.warn(`No valid voicings satisfy all constraints at chord ${i}`);
 
-      // Fall back to any voicing
+      // Fall back to any voicing with heavy penalty
       for (const state of beam) {
+        const prevChord = chords[i - 1];
+        const nextChord = chords[i];
+
         for (const nextVoicing of allVoicings[i]) {
+          // v0.9.8: Still score for resolution penalties even when relaxing
+          const { score } = scoreTransition(
+            state.sequence[state.sequence.length - 1],
+            nextVoicing,
+            constraints,
+            prevChord,
+            nextChord
+          );
+
           nextBeam.push({
             sequence: [...state.sequence, nextVoicing],
-            score: state.score - 100, // Heavy penalty
+            score: state.score + score - 100, // Heavy penalty for relaxed constraint
           });
         }
       }

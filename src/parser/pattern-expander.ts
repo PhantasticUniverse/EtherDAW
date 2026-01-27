@@ -3,7 +3,7 @@ import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulati
 import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
 import { snapToScale, parseKey } from '../theory/scales.js';
-import { invertPattern, retrogradePattern, augmentPattern, transposePattern, shiftOctave } from '../theory/transformations.js';
+import { invertPattern, retrogradePattern, augmentPattern, transposePattern, shiftOctave, rotatePattern } from '../theory/transformations.js';
 import { generateMarkovPattern } from '../generative/markov.js';
 import { generateContinuation } from '../generative/continuation.js';
 import { generateVoiceLeading } from '../theory/voice-leading.js';
@@ -176,6 +176,9 @@ function applyTransform(sourceNotes: string[], transform: PatternTransform): str
 
     case 'octave':
       return shiftOctave(sourceNotes, params?.octaves ?? 1);
+
+    case 'rotate':
+      return rotatePattern(sourceNotes, params?.steps ?? 1);
 
     default:
       return sourceNotes;

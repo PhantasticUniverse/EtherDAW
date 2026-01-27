@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "title": "Expression & Dynamics Benchmark",
+    "composer": "EtherDAW Test Suite",
+    "description": "Tests v0.9.8 expression presets, groove application, and velocity automation"
+  },
+  "settings": {
+    "tempo": 100,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "mechanical_piano": {
+      "preset": "fm_epiano",
+      "volume": -6
+    },
+    "jazzy_piano": {
+      "preset": "fm_epiano",
+      "volume": -6
+    },
+    "funk_bass": {
+      "preset": "synth_bass",
+      "volume": -9
+    },
+    "romantic_strings": {
+      "preset": "warm_pad",
+      "volume": -9
+    },
+    "crescendo_lead": {
+      "preset": "warm_pad",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "melody": {
+      "notes": ["C4:q", "E4:q", "G4:q", "E4:q", "C4:q", "D4:q", "E4:q", "D4:q"]
+    },
+    "bass_line": {
+      "notes": ["C2:8", "C2:8", "G2:8", "C2:8", "C2:8", "G2:8", "C2:8", "E2:8"]
+    },
+    "pad_chords": {
+      "chords": ["C:w", "Am:w", "F:w", "G:w"]
+    },
+    "crescendo_melody": {
+      "notes": ["G4:h", "A4:h", "B4:h", "C5:h", "D5:h", "E5:h", "F5:h", "G5:h"]
+    }
+  },
+  "sections": {
+    "mechanical": {
+      "bars": 4,
+      "tracks": {
+        "mechanical_piano": {
+          "pattern": "melody",
+          "expression": "mechanical",
+          "repeat": 2
+        }
+      }
+    },
+    "jazzy": {
+      "bars": 4,
+      "tracks": {
+        "jazzy_piano": {
+          "pattern": "melody",
+          "expression": "jazzy",
+          "repeat": 2
+        }
+      }
+    },
+    "funk": {
+      "bars": 4,
+      "tracks": {
+        "funk_bass": {
+          "pattern": "bass_line",
+          "expression": "funk",
+          "repeat": 4
+        }
+      }
+    },
+    "romantic": {
+      "bars": 4,
+      "tracks": {
+        "romantic_strings": {
+          "pattern": "pad_chords",
+          "expression": "romantic"
+        }
+      }
+    },
+    "velocity_automation": {
+      "bars": 8,
+      "tracks": {
+        "crescendo_lead": {
+          "pattern": "crescendo_melody",
+          "velocityAutomation": {
+            "start": 0.3,
+            "end": 1.0,
+            "curve": "exponential"
+          }
+        }
+      }
+    },
+    "combined": {
+      "bars": 8,
+      "tracks": {
+        "jazzy_piano": {
+          "pattern": "melody",
+          "expression": "natural",
+          "repeat": 4,
+          "velocityAutomation": {
+            "start": 0.6,
+            "end": 0.9,
+            "curve": "linear"
+          }
+        },
+        "funk_bass": {
+          "pattern": "bass_line",
+          "groove": "dilla",
+          "repeat": 8
+        },
+        "romantic_strings": {
+          "pattern": "pad_chords",
+          "expression": "tight",
+          "repeat": 2
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "mechanical",
+    "jazzy",
+    "funk",
+    "romantic",
+    "velocity_automation",
+    "combined"
+  ]
+}

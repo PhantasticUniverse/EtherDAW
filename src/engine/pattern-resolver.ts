@@ -2,11 +2,12 @@
  * Pattern resolver - expands pattern definitions into note events
  */
 
-import type { Pattern, Track, EtherScoreSettings, DensityConfig } from '../schema/types.js';
+import type { Pattern, Track, EtherScoreSettings, DensityConfig, AutomationCurve, VelocityAutomationConfig } from '../schema/types.js';
 import { expandPattern, type ExpandedPattern, type PatternContext } from '../parser/pattern-expander.js';
-import { applySwing, humanizeTiming, humanizeVelocity, humanizeDuration } from '../theory/rhythm.js';
+import { applySwing, humanizeTiming, humanizeVelocity, humanizeDuration, applyGroove } from '../theory/rhythm.js';
 import { getDensityAtBeat, shouldPlayNote } from '../generative/density.js';
 import { debug } from '../debug/logger.js';
+import { EXPRESSION_PRESETS, type ExpressionPresetName, type GrooveTemplateName } from '../config/constants.js';
 
 export interface ResolvedNote {
   pitch: string;
@@ -31,9 +32,44 @@ export interface PatternResolutionContext {
 }
 
 /**
+ * Resolve expression preset and track settings into processing options
+ * v0.9.8: Expression presets bundle humanize + groove + velocity variance
+ */
+function resolveExpressionSettings(track: Track, swing: number): ProcessNotesOptions {
+  // Start with defaults
+  let humanize = track.humanize || 0;
+  let groove: GrooveTemplateName | undefined = track.groove;
+  let velocityVariance = 0;
+
+  // v0.9.8: If expression preset is set, use its values as base
+  if (track.expression && EXPRESSION_PRESETS[track.expression]) {
+    const preset = EXPRESSION_PRESETS[track.expression];
+    humanize = preset.humanize;
+    groove = preset.groove;
+    velocityVariance = preset.velocityVariance;
+
+    // Allow track-level overrides to take precedence over preset
+    if (track.humanize !== undefined) {
+      humanize = track.humanize;
+    }
+    if (track.groove !== undefined) {
+      groove = track.groove;
+    }
+  }
+
+  return {
+    humanize,
+    swing,
+    groove,
+    velocityVariance,
+  };
+}
+
+/**
  * Resolve a track to an array of notes
  * v0.5: Supports parallel patterns and probability
  * v0.8: Fixed bar-aligned pattern placement when patterns array is used
+ * v0.9.8: Added expression presets and groove application
  */
 export function resolveTrack(
   track: Track,
@@ -69,6 +105,9 @@ export function resolveTrack(
   const results: ResolvedNote[] = [];
   const repeatCount = track.repeat || 1;
 
+  // v0.9.8: Resolve expression preset and track settings
+  const processOptions = resolveExpressionSettings(track, ctx.settings.swing || 0);
+
   // v0.9.3: Track cumulative beat offset for sequential pattern placement
   // Patterns are ALWAYS scheduled sequentially based on their actual length
   let cumulativeBeat = 0;
@@ -100,12 +139,11 @@ export function resolveTrack(
       // v0.9.3: Debug pattern scheduling
       debug.patternSchedule(patternName, currentBeat, actualPatternLength);
 
-      // Apply humanization and swing
+      // Apply humanization, swing, and groove
       const processedNotes = processExpandedNotes(
         { notes: expanded.notes, totalBeats: actualPatternLength },
         currentBeat,
-        track.humanize || 0,
-        ctx.settings.swing || 0
+        processOptions
       );
 
       results.push(...processedNotes);
@@ -160,6 +198,7 @@ function loopPatternToFill(
 
 /**
  * v0.5: Resolve parallel patterns - all play simultaneously from beat 0
+ * v0.9.8: Added expression presets and groove application
  */
 function resolveParallelPatterns(
   track: Track,
@@ -167,6 +206,9 @@ function resolveParallelPatterns(
 ): ResolvedNote[] {
   const results: ResolvedNote[] = [];
   const repeatCount = track.repeat || 1;
+
+  // v0.9.8: Resolve expression preset and track settings
+  const processOptions = resolveExpressionSettings(track, ctx.settings.swing || 0);
 
   // First pass: expand all patterns and find the max length
   // This ensures we know the pattern length before calculating offsets
@@ -210,8 +252,7 @@ function resolveParallelPatterns(
       const processedNotes = processExpandedNotes(
         expanded,
         repeatOffset,
-        track.humanize || 0,
-        ctx.settings.swing || 0
+        processOptions
       );
 
       results.push(...processedNotes);
@@ -222,19 +263,39 @@ function resolveParallelPatterns(
 }
 
 /**
- * Process expanded notes with humanization and swing
+ * Options for processing expanded notes
+ * v0.9.8: Added groove and velocityVariance support
+ */
+interface ProcessNotesOptions {
+  humanize: number;
+  swing: number;
+  groove?: GrooveTemplateName;
+  velocityVariance?: number;
+}
+
+/**
+ * Process expanded notes with humanization, swing, and groove
  * v0.4: Passes through expression fields (timingOffset, probability, portamento)
+ * v0.9.8: Added groove template application and velocity variance
  */
 function processExpandedNotes(
   expanded: ExpandedPattern,
   beatOffset: number,
-  humanize: number,
-  swing: number
+  options: ProcessNotesOptions
 ): ResolvedNote[] {
+  const { humanize, swing, groove, velocityVariance = 0 } = options;
+
   return expanded.notes.map(note => {
     let startBeat = note.startBeat + beatOffset;
     let velocity = note.velocity;
     let durationBeats = note.durationBeats;
+
+    // v0.9.8: Apply groove template FIRST (timing and velocity feel)
+    if (groove) {
+      const grooved = applyGroove(startBeat, velocity, groove);
+      startBeat = grooved.beat;
+      velocity = grooved.velocity;
+    }
 
     // Apply swing
     if (swing > 0) {
@@ -248,6 +309,12 @@ function processExpandedNotes(
       startBeat = humanizeTiming(startBeat, humanize);
       velocity = humanizeVelocity(velocity, humanize);
       durationBeats = humanizeDuration(durationBeats, humanize);
+    }
+
+    // v0.9.8: Apply velocity variance (additional random variation)
+    if (velocityVariance > 0) {
+      const variance = (Math.random() * 2 - 1) * velocityVariance;
+      velocity = velocity * (1 + variance);
     }
 
     const result: ResolvedNote = {
@@ -268,8 +335,53 @@ function processExpandedNotes(
 }
 
 /**
+ * v0.9.8: Apply velocity automation to notes
+ * Interpolates velocity across the section based on start/end/curve config
+ */
+function applyVelocityAutomation(
+  notes: ResolvedNote[],
+  config: VelocityAutomationConfig,
+  sectionBeats: number
+): ResolvedNote[] {
+  const { start, end, curve = 'linear' } = config;
+
+  return notes.map(note => {
+    // Calculate normalized position in section (0-1)
+    const progress = sectionBeats > 0 ? note.startBeat / sectionBeats : 0;
+
+    // Interpolate based on curve type
+    let interpolatedValue: number;
+    switch (curve) {
+      case 'exponential':
+        // Exponential easing (faster at start)
+        interpolatedValue = start + (end - start) * (progress * progress);
+        break;
+      case 'sine':
+        // Sine easing (smooth S-curve)
+        interpolatedValue = start + (end - start) * (0.5 - Math.cos(progress * Math.PI) / 2);
+        break;
+      case 'step':
+        // Step function (jump at midpoint)
+        interpolatedValue = progress < 0.5 ? start : end;
+        break;
+      case 'linear':
+      default:
+        // Linear interpolation
+        interpolatedValue = start + (end - start) * progress;
+        break;
+    }
+
+    return {
+      ...note,
+      velocity: Math.min(1, Math.max(0, note.velocity * interpolatedValue)),
+    };
+  });
+}
+
+/**
  * Resolve all tracks in a section
  * v0.6: Supports density curves to control overall activity
+ * v0.9.8: Supports per-track velocity automation
  */
 export function resolveSection(
   tracks: Record<string, Track>,
@@ -295,6 +407,11 @@ export function resolveSection(
     // v0.6: Apply density curve if specified
     if (ctx.density) {
       notes = applyDensityCurve(notes, ctx.density, sectionBeats);
+    }
+
+    // v0.9.8: Apply per-track velocity automation if specified
+    if (track.velocityAutomation) {
+      notes = applyVelocityAutomation(notes, track.velocityAutomation, sectionBeats);
     }
 
     result.set(instrumentName, notes);

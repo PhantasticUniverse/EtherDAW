@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "title": "Expression Journey",
+    "composer": "Claude",
+    "mood": "Evolving, contemplative, then warm",
+    "genre": "Ambient Electronic / Neo-Classical",
+    "description": "A piece exploring the spectrum from mechanical precision to human warmth, showcasing v0.9.8 expression presets and velocity automation"
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "D minor",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "mechanical_keys": {
+      "preset": "fm_epiano",
+      "volume": -3,
+      "params": { "brightness": 0.6 },
+      "effects": [{ "type": "reverb", "wet": 0.15 }]
+    },
+    "warm_piano": {
+      "preset": "fm_epiano",
+      "volume": -3,
+      "params": { "warmth": 0.8, "brightness": 0.4 },
+      "effects": [{ "type": "reverb", "wet": 0.35 }, { "type": "chorus", "wet": 0.15 }]
+    },
+    "strings": {
+      "preset": "warm_pad",
+      "volume": -9,
+      "effects": [{ "type": "reverb", "wet": 0.5 }]
+    },
+    "deep_bass": {
+      "preset": "sub_bass",
+      "volume": -6
+    },
+    "bell": {
+      "preset": "fm_bell",
+      "volume": -12,
+      "effects": [{ "type": "delay", "wet": 0.3, "options": { "time": "8n", "feedback": 0.3 } }]
+    }
+  },
+  "patterns": {
+    "mechanical_motif": {
+      "notes": [
+        "D4:8", "F4:8", "A4:8", "D5:8",
+        "C5:8", "A4:8", "F4:8", "D4:8",
+        "E4:8", "G4:8", "Bb4:8", "D5:8",
+        "C5:8", "Bb4:8", "G4:8", "E4:8"
+      ]
+    },
+    "awakening_motif": {
+      "notes": [
+        "D4:8", "r:16", "F4:8.", "A4:8",
+        "D5:q", "C5:8", "A4:q.",
+        "E4:8", "G4:8~", "Bb4:q",
+        "A4:h"
+      ]
+    },
+    "flowing_melody": {
+      "notes": [
+        "D5:q", "E5:8", "F5:8", "E5:q", "D5:8", "C5:8",
+        "A4:q.", "G4:8", "F4:h",
+        "E4:q", "F4:8", "G4:8", "A4:q", "Bb4:8", "A4:8",
+        "G4:h."
+      ]
+    },
+    "expressive_phrase": {
+      "notes": [
+        "A4:q>", "D5:8~", "E5:8", "F5:q.", "E5:8",
+        "D5:q", "C5:8", "Bb4:8", "A4:q.",
+        "G4:8", "A4:q", "Bb4:8", "C5:8", "D5:q",
+        "A4:w"
+      ]
+    },
+    "bass_pulse": {
+      "notes": ["D2:h", "r:h", "A1:h", "r:h"]
+    },
+    "bass_walking": {
+      "notes": ["D2:q", "E2:q", "F2:q", "G2:q", "A2:q", "G2:q", "F2:q", "E2:q"]
+    },
+    "bass_warm": {
+      "notes": ["D2:h.", "A2:q", "Bb2:h", "A2:h"]
+    },
+    "string_pad_dm": {
+      "chords": ["Dm:w", "Dm:w"]
+    },
+    "string_pad_progression": {
+      "chords": ["Dm:h", "Am:h", "Bb:h", "Gm:h"]
+    },
+    "string_swell": {
+      "chords": ["Dm:w", "Bb:w", "Gm:w", "A:w"],
+      "envelope": { "velocity": "swell" }
+    },
+    "bell_accents": {
+      "notes": ["D6:q", "r:h.", "A5:q", "r:h.", "F5:q", "r:h."]
+    },
+    "bell_melody": {
+      "notes": ["D6:8", "r:8", "A5:q", "r:q", "F5:8", "D5:8", "r:h"]
+    },
+    "rest_bar": {
+      "rest": "w"
+    }
+  },
+  "sections": {
+    "mechanical": {
+      "bars": 8,
+      "tracks": {
+        "mechanical_keys": {
+          "pattern": "mechanical_motif",
+          "expression": "mechanical",
+          "repeat": 4
+        },
+        "deep_bass": {
+          "pattern": "bass_pulse",
+          "expression": "mechanical",
+          "repeat": 4,
+          "velocityAutomation": {
+            "start": 0.4,
+            "end": 0.7,
+            "curve": "linear"
+          }
+        }
+      }
+    },
+    "awakening": {
+      "bars": 8,
+      "tracks": {
+        "mechanical_keys": {
+          "pattern": "awakening_motif",
+          "expression": "tight",
+          "repeat": 4
+        },
+        "strings": {
+          "pattern": "string_pad_dm",
+          "expression": "natural",
+          "repeat": 4,
+          "velocityAutomation": {
+            "start": 0.3,
+            "end": 0.8,
+            "curve": "exponential"
+          }
+        },
+        "deep_bass": {
+          "pattern": "bass_pulse",
+          "expression": "tight",
+          "repeat": 4
+        }
+      }
+    },
+    "becoming_human": {
+      "bars": 8,
+      "tracks": {
+        "warm_piano": {
+          "pattern": "flowing_melody",
+          "expression": "natural",
+          "repeat": 2,
+          "humanize": 0.03
+        },
+        "strings": {
+          "pattern": "string_pad_progression",
+          "expression": "romantic",
+          "repeat": 2
+        },
+        "deep_bass": {
+          "pattern": "bass_walking",
+          "expression": "natural",
+          "repeat": 2
+        },
+        "bell": {
+          "pattern": "bell_accents",
+          "expression": "natural",
+          "repeat": 2,
+          "velocity": 0.5
+        }
+      }
+    },
+    "full_expression": {
+      "bars": 8,
+      "tracks": {
+        "warm_piano": {
+          "pattern": "expressive_phrase",
+          "expression": "romantic",
+          "repeat": 2,
+          "velocityAutomation": {
+            "start": 0.7,
+            "end": 1.0,
+            "curve": "sine"
+          }
+        },
+        "strings": {
+          "pattern": "string_swell",
+          "expression": "romantic"
+        },
+        "deep_bass": {
+          "pattern": "bass_warm",
+          "expression": "romantic",
+          "repeat": 2
+        },
+        "bell": {
+          "pattern": "bell_melody",
+          "expression": "romantic",
+          "repeat": 4,
+          "velocity": 0.6
+        }
+      }
+    },
+    "reflection": {
+      "bars": 8,
+      "tracks": {
+        "warm_piano": {
+          "pattern": "awakening_motif",
+          "expression": "jazzy",
+          "repeat": 4,
+          "velocityAutomation": {
+            "start": 0.9,
+            "end": 0.5,
+            "curve": "linear"
+          }
+        },
+        "strings": {
+          "pattern": "string_pad_dm",
+          "expression": "romantic",
+          "repeat": 4,
+          "velocityAutomation": {
+            "start": 0.8,
+            "end": 0.3,
+            "curve": "exponential"
+          }
+        },
+        "deep_bass": {
+          "pattern": "bass_pulse",
+          "expression": "romantic",
+          "repeat": 4,
+          "velocity": 0.6
+        }
+      }
+    }
+  },
+  "arrangement": [
+    "mechanical",
+    "awakening",
+    "becoming_human",
+    "full_expression",
+    "reflection"
+  ]
+}

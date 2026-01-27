@@ -345,3 +345,75 @@ export const GROOVE_TEMPLATES: Record<string, {
 };
 
 export type GrooveTemplateName = keyof typeof GROOVE_TEMPLATES;
+
+// ============ v0.9.8: Expression Presets ============
+/**
+ * Expression presets combine humanize, groove, and velocity variance
+ * into ready-made musical characters for different performance styles.
+ */
+export const EXPRESSION_PRESETS: Record<string, {
+  name: string;
+  description: string;
+  humanize: number;
+  groove: GrooveTemplateName;
+  velocityVariance: number;
+}> = {
+  mechanical: {
+    name: 'Mechanical',
+    description: 'Quantized, robotic - no humanization',
+    humanize: 0,
+    groove: 'straight',
+    velocityVariance: 0,
+  },
+  tight: {
+    name: 'Tight',
+    description: 'Clean, professional studio performance',
+    humanize: 0.01,
+    groove: 'straight',
+    velocityVariance: 0.02,
+  },
+  natural: {
+    name: 'Natural',
+    description: 'Human but controlled, slight variations',
+    humanize: 0.03,
+    groove: 'straight',
+    velocityVariance: 0.05,
+  },
+  romantic: {
+    name: 'Romantic',
+    description: 'Expressive, rubato-like, laid back feel',
+    humanize: 0.04,
+    groove: 'laid_back',
+    velocityVariance: 0.08,
+  },
+  jazzy: {
+    name: 'Jazzy',
+    description: 'Loose, swung, Dilla-inspired groove',
+    humanize: 0.03,
+    groove: 'dilla',
+    velocityVariance: 0.1,
+  },
+  funk: {
+    name: 'Funk',
+    description: 'Tight pocket with funky timing',
+    humanize: 0.02,
+    groove: 'funk',
+    velocityVariance: 0.06,
+  },
+  gospel: {
+    name: 'Gospel',
+    description: 'Church feel with strong backbeat',
+    humanize: 0.03,
+    groove: 'gospel',
+    velocityVariance: 0.08,
+  },
+  aggressive: {
+    name: 'Aggressive',
+    description: 'Forward, driving, slightly ahead of beat',
+    humanize: 0.01,
+    groove: 'pushed',
+    velocityVariance: 0.04,
+  },
+};
+
+export type ExpressionPresetName = keyof typeof EXPRESSION_PRESETS;

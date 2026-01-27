@@ -728,6 +728,7 @@ Generate new patterns by transforming existing ones:
 | `diminish` | Compress rhythms | `factor`: multiplier (default: 0.5) |
 | `transpose` | Shift pitches | `semitones`: +/- semitones |
 | `octave` | Shift by octaves | `octaves`: +/- octaves |
+| `rotate` | Cyclic rotation (v0.9.9) | `steps`: positions to rotate (Reich-style phasing) |
 
 ### Markov Chain Patterns (v0.6)
 
@@ -1025,6 +1026,9 @@ Sections combine patterns into musical passages:
 | `mute` | boolean | false | Mute this track |
 | `probability` | number | 1 | Probability pattern plays (0-1, v0.5) |
 | `groove` | string | - | Apply a groove template (v0.8) |
+| `expression` | string | - | Named expression preset (v0.9.8) |
+| `velocityAutomation` | object | - | Per-track velocity curve (v0.9.8) |
+| `pedal` | boolean | false | Enable sustain pedal (v0.9.4) |
 
 #### Groove Templates (v0.8)
 
@@ -1055,6 +1059,64 @@ Example:
   }
 }
 ```
+
+#### Expression Presets (v0.9.8)
+
+Named presets that bundle humanize + groove + velocity variance into ready-made musical characters:
+
+| Preset | Humanize | Groove | Vel. Var. | Description |
+|--------|----------|--------|-----------|-------------|
+| `mechanical` | 0 | straight | 0 | Quantized, robotic |
+| `tight` | 0.01 | straight | 0.02 | Clean, professional |
+| `natural` | 0.03 | straight | 0.05 | Human but controlled |
+| `romantic` | 0.04 | laid_back | 0.08 | Expressive, rubato-like |
+| `jazzy` | 0.03 | dilla | 0.1 | Loose, swung |
+| `funk` | 0.02 | funk | 0.06 | Tight pocket |
+| `gospel` | 0.03 | gospel | 0.08 | Church feel |
+| `aggressive` | 0.01 | pushed | 0.04 | Forward, driving |
+
+Example:
+```json
+{
+  "tracks": {
+    "piano": { "pattern": "melody", "expression": "jazzy" }
+  }
+}
+```
+
+Track-level `humanize` and `groove` override the preset values if specified.
+
+#### Velocity Automation (v0.9.8)
+
+Apply a velocity curve across all notes in a track within a section:
+
+```json
+{
+  "tracks": {
+    "strings": {
+      "pattern": "pad",
+      "velocityAutomation": {
+        "start": 0.3,
+        "end": 1.0,
+        "curve": "exponential"
+      }
+    }
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `start` | number | **required** | Starting velocity multiplier (0-1) |
+| `end` | number | **required** | Ending velocity multiplier (0-1) |
+| `curve` | string | "linear" | Interpolation: `linear`, `exponential`, `sine`, `step` |
+
+**Curve Types:**
+- `linear` - Constant rate of change
+- `exponential` - Faster at start (for crescendos)
+- `sine` - Smooth S-curve (ease in/out)
+- `step` - Jump at midpoint
+
 | `fallback` | string | - | Pattern to use if probability fails (v0.5) |
 
 #### Parallel Patterns (v0.5)
@@ -1306,6 +1368,11 @@ These may be addressed in future versions.
 
 | Version | Features |
 |---------|----------|
+| v0.9.8.1 | `rotate` pattern transform for Reich-style phasing, "Phasing Lights" composition |
+| v0.9.8 | Expression presets (8 presets), velocity automation curves, voice leading resolution, groove template fix |
+| v0.9.7 | Music theory engine: scales, chords, intervals, progressions, validation |
+| v0.9.6 | Composer experience: REPL audio, timeline viz, watch mode, pattern caching, browser bridge |
+| v0.9.5 | Player controls: section buttons, tempo slider, keyboard shortcuts |
 | v0.9.4.1 | Redesigned orchestral percussion with FM synthesis (glockenspiel, xylophone, vibraphone, marimba, tubular_bells, celesta) |
 | v0.9.4 | 31 orchestral presets (strings, brass, woodwinds, choir, percussion), sustain pedal support (`:ped` suffix, pattern-level, pedalMarks) |
 | v0.9.3 | Pattern array timing fix, composition linter (16 rules), better error messages with fuzzy matching, debug mode |

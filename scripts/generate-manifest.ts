@@ -73,10 +73,25 @@ async function main() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // Find all .etherscore.json files
-  const files = fs.readdirSync(examplesDir)
+  // Find all .etherscore.json files (including archive subdirectory)
+  const files: string[] = [];
+
+  // Get files from examples/
+  const topLevelFiles = fs.readdirSync(examplesDir)
     .filter(f => f.endsWith('.etherscore.json'))
-    .sort();
+    .map(f => f);
+  files.push(...topLevelFiles);
+
+  // Get files from examples/archive/ if it exists
+  const archiveDir = path.join(examplesDir, 'archive');
+  if (fs.existsSync(archiveDir)) {
+    const archiveFiles = fs.readdirSync(archiveDir)
+      .filter(f => f.endsWith('.etherscore.json'))
+      .map(f => `archive/${f}`);
+    files.push(...archiveFiles);
+  }
+
+  files.sort();
 
   console.log(`Found ${files.length} compositions in examples/`);
 

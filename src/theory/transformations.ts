@@ -407,3 +407,41 @@ export function interleavePatterns(pattern1: string[], pattern2: string[]): stri
 export function shiftOctave(pattern: string[], octaves: number): string[] {
   return transposePattern(pattern, octaves * 12);
 }
+
+/**
+ * Rotate a pattern cyclically (for Reich-style phasing)
+ *
+ * Rotation shifts notes in the array, wrapping around. This is the fundamental
+ * technique behind Steve Reich's phasing pieces like "Piano Phase" and "Clapping Music".
+ *
+ * @param pattern - Pattern to rotate
+ * @param steps - Number of positions to rotate (positive = forward, negative = backward)
+ *                steps=1 moves first note to end, steps=-1 moves last note to start
+ * @returns Rotated pattern
+ *
+ * @example
+ * // Original: C D E F G (5 notes)
+ * rotatePattern(["C4:8", "D4:8", "E4:8", "F4:8", "G4:8"], 1)
+ * // Returns: D4 E4 F4 G4 C4 (first note moves to end)
+ *
+ * rotatePattern(["C4:8", "D4:8", "E4:8", "F4:8", "G4:8"], 2)
+ * // Returns: E4 F4 G4 C4 D4
+ *
+ * rotatePattern(["C4:8", "D4:8", "E4:8", "F4:8", "G4:8"], -1)
+ * // Returns: G4 C4 D4 E4 F4 (last note moves to start)
+ */
+export function rotatePattern(pattern: string[], steps: number): string[] {
+  if (pattern.length === 0 || steps === 0) {
+    return [...pattern];
+  }
+
+  // Normalize steps to positive value within array bounds
+  const n = pattern.length;
+  const normalizedSteps = ((steps % n) + n) % n;
+
+  // Rotate: take from normalizedSteps to end, then from start to normalizedSteps
+  return [
+    ...pattern.slice(normalizedSteps),
+    ...pattern.slice(0, normalizedSteps),
+  ];
+}

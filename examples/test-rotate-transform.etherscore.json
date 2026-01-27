@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Rotate Transform Test",
+    "composer": "Claude",
+    "description": "Testing the rotate transform for Reich-style phasing"
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major"
+  },
+  "instruments": {
+    "voice_a": {
+      "preset": "fm_vibraphone",
+      "volume": -3,
+      "pan": -0.4,
+      "effects": [{ "type": "reverb", "wet": 0.3 }]
+    },
+    "voice_b": {
+      "preset": "fm_vibraphone",
+      "volume": -3,
+      "pan": 0.4,
+      "effects": [{ "type": "reverb", "wet": 0.3 }]
+    }
+  },
+  "patterns": {
+    "base_melody": {
+      "notes": ["C5:8", "E5:8", "G5:8", "C6:8", "D6:8", "E6:8"]
+    },
+    "melody_rot_1": {
+      "transform": {
+        "source": "base_melody",
+        "operation": "rotate",
+        "params": { "steps": 1 }
+      }
+    },
+    "melody_rot_2": {
+      "transform": {
+        "source": "base_melody",
+        "operation": "rotate",
+        "params": { "steps": 2 }
+      }
+    },
+    "melody_rot_3": {
+      "transform": {
+        "source": "base_melody",
+        "operation": "rotate",
+        "params": { "steps": 3 }
+      }
+    }
+  },
+  "sections": {
+    "unison": {
+      "bars": 4,
+      "tracks": {
+        "voice_a": { "pattern": "base_melody", "repeat": 4 },
+        "voice_b": { "pattern": "base_melody", "repeat": 4 }
+      }
+    },
+    "phase_1": {
+      "bars": 4,
+      "tracks": {
+        "voice_a": { "pattern": "base_melody", "repeat": 4 },
+        "voice_b": { "pattern": "melody_rot_1", "repeat": 4 }
+      }
+    },
+    "phase_2": {
+      "bars": 4,
+      "tracks": {
+        "voice_a": { "pattern": "base_melody", "repeat": 4 },
+        "voice_b": { "pattern": "melody_rot_2", "repeat": 4 }
+      }
+    },
+    "phase_3": {
+      "bars": 4,
+      "tracks": {
+        "voice_a": { "pattern": "base_melody", "repeat": 4 },
+        "voice_b": { "pattern": "melody_rot_3", "repeat": 4 }
+      }
+    },
+    "return": {
+      "bars": 4,
+      "tracks": {
+        "voice_a": { "pattern": "base_melody", "repeat": 4 },
+        "voice_b": { "pattern": "base_melody", "repeat": 4 }
+      }
+    }
+  },
+  "arrangement": ["unison", "phase_1", "phase_2", "phase_3", "return"]
+}

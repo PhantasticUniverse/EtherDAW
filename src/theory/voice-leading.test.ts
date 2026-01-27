@@ -172,4 +172,68 @@ describe('Voice Leading', () => {
       expect(warnings.some(w => w.includes('Unknown style'))).toBe(true);
     });
   });
+
+  describe('v0.9.8: Resolution Constraints', () => {
+    it('should handle resolve_leading_tones constraint', () => {
+      // V7 - I progression where leading tone (B) should resolve to tonic (C)
+      const config: VoiceLeadConfig = {
+        progression: ['G7', 'Cmaj7'],
+        voices: 4,
+        constraints: ['resolve_leading_tones', 'smooth_motion'],
+        style: 'custom',
+      };
+
+      const result = generateVoiceLeading(config);
+
+      expect(result.voicings.length).toBe(2);
+      // Algorithm should favor voicings where B resolves up to C
+      expect(result.voicings[1].chord).toBe('Cmaj7');
+    });
+
+    it('should handle resolve_sevenths constraint', () => {
+      // Dominant 7th chord followed by resolution
+      const config: VoiceLeadConfig = {
+        progression: ['G7', 'Cmaj7'],
+        voices: 4,
+        constraints: ['resolve_sevenths', 'smooth_motion'],
+        style: 'custom',
+      };
+
+      const result = generateVoiceLeading(config);
+
+      expect(result.voicings.length).toBe(2);
+      // Algorithm should favor voicings where F (7th of G7) resolves down to E
+    });
+
+    it('should apply bach style with full resolution constraints', () => {
+      // Bach style includes both resolve_leading_tones and resolve_sevenths
+      const config: VoiceLeadConfig = {
+        progression: ['Dm7', 'G7', 'Cmaj7'],
+        voices: 4,
+        constraints: [],
+        style: 'bach',
+      };
+
+      const result = generateVoiceLeading(config);
+
+      expect(result.voicings.length).toBe(3);
+      // Bach style should produce voice leading that respects resolution rules
+    });
+
+    it('should handle ii-V-I with resolution constraints', () => {
+      const config: VoiceLeadConfig = {
+        progression: ['Dm7', 'G7', 'Cmaj7'],
+        voices: 4,
+        constraints: ['resolve_leading_tones', 'resolve_sevenths', 'smooth_motion'],
+        style: 'custom',
+      };
+
+      const result = generateVoiceLeading(config);
+
+      expect(result.voicings.length).toBe(3);
+      expect(result.voicings[0].chord).toBe('Dm7');
+      expect(result.voicings[1].chord).toBe('G7');
+      expect(result.voicings[2].chord).toBe('Cmaj7');
+    });
+  });
 });
