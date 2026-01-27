@@ -381,6 +381,27 @@ python3 -m http.server 8000
 # Open http://localhost:8000/player.html
 ```
 
+### Player Controls (v0.9.5)
+
+The browser player includes interactive controls:
+
+| Control | Function |
+|---------|----------|
+| **Section buttons** | Click to jump to any section |
+| **Tempo slider** | Adjust playback speed (0.5x - 2.0x) |
+| **Volume slider** | Master volume control |
+| **Progress bar** | Click to seek |
+
+**Keyboard shortcuts:**
+
+| Key | Action |
+|-----|--------|
+| Space | Play/Pause |
+| ← → | Seek ±5 seconds |
+| 1-9 | Jump to section by number |
+| Home | Go to start |
+| M | Toggle mute |
+
 ## Next Steps
 
 - [SYNTH_PARAMETERS.md](SYNTH_PARAMETERS.md) - Sound shaping with semantic params (v0.5)

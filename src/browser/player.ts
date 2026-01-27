@@ -848,6 +848,39 @@ export class Player {
   }
 
   /**
+   * Set playback rate (0.5 = half speed, 2.0 = double speed)
+   * This adjusts the tempo proportionally while preserving pitch
+   * @param rate Playback rate multiplier (0.25 to 4.0)
+   */
+  setPlaybackRate(rate: number): void {
+    if (!this.timeline) return;
+
+    // Clamp to reasonable range
+    const clampedRate = Math.max(0.25, Math.min(4.0, rate));
+
+    // Adjust BPM based on rate
+    const baseTempo = this.timeline.settings.tempo;
+    Tone.getTransport().bpm.value = baseTempo * clampedRate;
+  }
+
+  /**
+   * Get current playback rate
+   */
+  getPlaybackRate(): number {
+    if (!this.timeline) return 1.0;
+    const currentBpm = Tone.getTransport().bpm.value;
+    const baseTempo = this.timeline.settings.tempo;
+    return currentBpm / baseTempo;
+  }
+
+  /**
+   * Get the base tempo from the loaded composition
+   */
+  getBaseTempo(): number {
+    return this.timeline?.settings.tempo ?? 120;
+  }
+
+  /**
    * Dispose all resources
    */
   dispose(): void {

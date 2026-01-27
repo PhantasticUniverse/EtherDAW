@@ -347,6 +347,65 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.9.5.3 (2026-01-27) - Player Controls
+
+**Vision:** Tighten the feedback loop. As a composer, the biggest pain was replaying 4-minute compositions from the start to hear changes at 3:00.
+
+**New Features:**
+
+| Control | Description |
+|---------|-------------|
+| **Section buttons** | Clickable buttons for each composition section |
+| **Tempo slider** | Real-time playback rate adjustment (0.5x - 2.0x) |
+| **Keyboard shortcuts** | Space, arrows, 1-9, Home, End, M |
+
+**Keyboard Shortcuts:**
+
+| Key | Action |
+|-----|--------|
+| Space | Play/Pause |
+| ← → | Seek ±5 seconds |
+| Home | Go to start |
+| End | Go to end |
+| 1-9 | Jump to section by index |
+| M | Toggle mute |
+
+**Files Modified:**
+- `player.html`:
+  - Added section buttons UI (`.section-buttons`, `.section-btn`)
+  - Added tempo slider with orange gradient styling
+  - Added keyboard shortcut hint display
+  - JavaScript: section button builder, tempo handler, keyboard event listener
+
+- `src/browser/player.ts`:
+  - Added `setPlaybackRate(rate: number)` - adjusts BPM proportionally
+  - Added `getPlaybackRate(): number` - returns current rate multiplier
+  - Added `getBaseTempo(): number` - returns composition's base tempo
+
+**Implementation Details:**
+- Section buttons highlight the currently playing section
+- Clicking a section button auto-plays from that position
+- Tempo slider works by adjusting Tone.js Transport BPM relative to base tempo
+- Keyboard shortcuts are ignored when focus is in input/select fields
+
+**Testing:**
+1. Open `player.html`, select a composition
+2. Click section buttons to jump around
+3. Adjust tempo slider while playing
+4. Use keyboard shortcuts for rapid navigation
+
+---
+
+### v0.9.4.1 (2026-01-27) - Orchestral Percussion Fix
+
+**Problem:** Orchestral percussion presets (glockenspiel, xylophone, vibraphone, marimba, tubular_bells, celesta) weren't producing audio.
+
+**Root Cause:** These presets were configured as `fmsynth` type but missing required FM parameters (harmonicity, modulationIndex).
+
+**Fix:** Added proper FM synthesis parameters to all orchestral percussion presets with instrument-appropriate values.
+
+---
+
 ### v0.9.2 (2026-01-23) - Node Player Rendering & Sound Design Improvements
 
 **Problem:** Node player WAV exports had poor audio quality and unrealistic instrument sounds.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EtherDAW Player v0.6</title>
+  <title>EtherDAW Player v0.9.5</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -223,6 +223,113 @@
     .error { color: #ff6b6b; margin-top: 16px; font-size: 14px; }
     #player-ui { display: none; }
     .version { font-size: 11px; color: #4a5568; margin-top: 16px; text-align: center; }
+
+    /* Section buttons */
+    .section-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .section-btn {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      color: #a8b2d1;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .section-btn:hover {
+      background: rgba(100, 255, 218, 0.1);
+      border-color: rgba(100, 255, 218, 0.4);
+      color: #64ffda;
+    }
+    .section-btn.active {
+      background: rgba(100, 255, 218, 0.2);
+      border-color: #64ffda;
+      color: #64ffda;
+      box-shadow: 0 0 12px rgba(100, 255, 218, 0.3);
+    }
+    .section-btn .section-index {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-right: 4px;
+    }
+
+    /* Tempo control */
+    .tempo-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+    }
+    .tempo-control label {
+      font-size: 12px;
+      color: #8892b0;
+      min-width: 50px;
+    }
+    .tempo-slider {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .tempo-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd93d, #fb923c);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .tempo-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .tempo-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd93d, #fb923c);
+      cursor: pointer;
+      border: none;
+    }
+    .tempo-display {
+      font-size: 14px;
+      color: #ffd93d;
+      min-width: 50px;
+      text-align: right;
+      font-weight: 600;
+    }
+
+    /* Keyboard shortcuts hint */
+    .shortcuts-hint {
+      font-size: 11px;
+      color: #4a5568;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .shortcuts-hint kbd {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 10px;
+      margin: 0 2px;
+    }
     .volume-control {
       display: flex;
       align-items: center;
@@ -298,7 +405,7 @@
       </div>
       <button class="click-prompt" id="start-btn">Start Audio Engine</button>
       <div id="load-error" class="error" style="display: none;"></div>
-      <div class="version">v0.60.0 - Generative Primitives</div>
+      <div class="version">v0.9.5 - Player Controls</div>
     </div>
 
     <!-- Player UI (shown after start) -->
@@ -328,6 +435,8 @@
 
       <div class="section-display" id="section-display"></div>
 
+      <div class="section-buttons" id="section-buttons"></div>
+
       <div class="controls">
         <button class="btn btn-secondary" id="stop-btn" title="Stop">
           <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
@@ -356,6 +465,19 @@
         <span id="volume-display" class="volume-display">80%</span>
       </div>
 
+      <div class="tempo-control">
+        <label>Tempo</label>
+        <input type="range" id="tempo-slider" min="50" max="200" value="100" class="tempo-slider">
+        <span id="tempo-display" class="tempo-display">100%</span>
+      </div>
+
+      <div class="shortcuts-hint">
+        <kbd>Space</kbd> play/pause
+        <kbd>&larr;</kbd><kbd>&rarr;</kbd> seek
+        <kbd>1</kbd>-<kbd>9</kbd> sections
+        <kbd>Home</kbd> start
+      </div>
+
       <div class="instruments" id="instruments"></div>
 
       <p class="description" id="song-description"></p>
@@ -369,7 +491,7 @@
   </div>
 
   <script type="module">
-    // EtherDAW Player v0.5 - Uses bundled code
+    // EtherDAW Player v0.9.5 - Player Controls: section buttons, tempo slider, keyboard shortcuts
     import * as EtherDAW from './dist/etherdaw-browser.js';
 
     // Make available globally for debugging
@@ -401,6 +523,9 @@
     const volumeDisplay = document.getElementById('volume-display');
     const muteBtn = document.getElementById('mute-btn');
     const volumeIcon = document.getElementById('volume-icon');
+    const sectionButtonsEl = document.getElementById('section-buttons');
+    const tempoSlider = document.getElementById('tempo-slider');
+    const tempoDisplayEl = document.getElementById('tempo-display');
 
     // Player instance
     let player = null;
@@ -706,6 +831,14 @@
         currentTimeEl.textContent = '0:00';
         sectionDisplay.textContent = '';
 
+        // Build section buttons
+        const sections = player.getSections();
+        buildSectionButtons(sections);
+
+        // Reset tempo to 100%
+        tempoSlider.value = 100;
+        updateTempoDisplay(1.0);
+
         // Sync both selectors
         songSelect.value = path;
         songSelectPlaying.value = path;
@@ -740,6 +873,7 @@
         },
         onSectionChange: function(section) {
           sectionDisplay.textContent = section.replace(/_/g, ' ');
+          updateActiveSectionButton(section);
         },
         onInstrumentPlay: function(instrument) {
           // Trigger meter activity
@@ -841,6 +975,79 @@
       }
     }
 
+    // Build section buttons from composition sections
+    function buildSectionButtons(sections) {
+      // Clear existing buttons
+      while (sectionButtonsEl.firstChild) {
+        sectionButtonsEl.removeChild(sectionButtonsEl.firstChild);
+      }
+
+      sections.forEach(function(section, index) {
+        const btn = document.createElement('button');
+        btn.className = 'section-btn';
+        btn.dataset.index = index;
+        btn.dataset.startTime = section.startTime;
+
+        // Add keyboard shortcut hint for first 9 sections
+        const indexSpan = document.createElement('span');
+        indexSpan.className = 'section-index';
+        if (index < 9) {
+          indexSpan.textContent = (index + 1) + ':';
+        }
+        btn.appendChild(indexSpan);
+
+        const nameText = document.createTextNode(section.name.replace(/_/g, ' '));
+        btn.appendChild(nameText);
+
+        btn.addEventListener('click', function() {
+          if (!player) return;
+          const startTime = parseFloat(this.dataset.startTime);
+          player.seek(startTime);
+          // Auto-play when clicking section
+          if (player.getState() !== 'playing') {
+            player.play();
+          }
+        });
+
+        sectionButtonsEl.appendChild(btn);
+      });
+    }
+
+    // Update active section button
+    function updateActiveSectionButton(sectionName) {
+      const buttons = sectionButtonsEl.querySelectorAll('.section-btn');
+      buttons.forEach(function(btn) {
+        const btnName = btn.textContent.replace(/^\d:/, '').trim();
+        const sectionNameClean = sectionName.replace(/_/g, ' ');
+        if (btnName === sectionNameClean) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Update tempo display
+    function updateTempoDisplay(rate) {
+      const percent = Math.round(rate * 100);
+      tempoDisplayEl.textContent = percent + '%';
+    }
+
+    // Handle tempo slider change
+    function handleTempoChange(value) {
+      if (!player) return;
+      // Slider goes 50-200, representing 0.5x to 2.0x
+      const rate = value / 100;
+      player.setPlaybackRate(rate);
+      updateTempoDisplay(rate);
+    }
+
+    // Get sections array from player
+    function getSections() {
+      if (!player) return [];
+      return player.getSections();
+    }
+
     // Toggle mute
     function toggleMute() {
       if (!player) return;
@@ -881,6 +1088,10 @@
     });
 
     muteBtn.addEventListener('click', toggleMute);
+
+    tempoSlider.addEventListener('input', function(e) {
+      handleTempoChange(parseInt(e.target.value));
+    });
 
     progressBar.addEventListener('click', function(e) {
       if (!player) return;
@@ -948,6 +1159,68 @@
     window.addEventListener('resize', function() {
       resizeNoteCanvas();
       if (player) drawNotes();
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ignore if typing in an input field
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      if (!player) return;
+
+      switch (e.key) {
+        case ' ': // Space - play/pause
+          e.preventDefault();
+          if (player.getState() === 'playing') {
+            player.pause();
+          } else {
+            player.play();
+          }
+          break;
+
+        case 'ArrowLeft': // Seek back 5s
+          e.preventDefault();
+          const newPosBack = Math.max(0, player.getPosition() - 5);
+          player.seek(newPosBack);
+          break;
+
+        case 'ArrowRight': // Seek forward 5s
+          e.preventDefault();
+          const newPosFwd = Math.min(player.getDuration(), player.getPosition() + 5);
+          player.seek(newPosFwd);
+          break;
+
+        case 'Home': // Go to start
+          e.preventDefault();
+          player.seek(0);
+          break;
+
+        case 'End': // Go to end (near end)
+          e.preventDefault();
+          player.seek(Math.max(0, player.getDuration() - 1));
+          break;
+
+        case '1': case '2': case '3': case '4': case '5':
+        case '6': case '7': case '8': case '9':
+          // Jump to section by number
+          e.preventDefault();
+          const sectionIndex = parseInt(e.key) - 1;
+          const sections = getSections();
+          if (sectionIndex < sections.length) {
+            player.seek(sections[sectionIndex].startTime);
+            if (player.getState() !== 'playing') {
+              player.play();
+            }
+          }
+          break;
+
+        case 'm': case 'M': // Mute toggle
+          e.preventDefault();
+          toggleMute();
+          break;
+      }
     });
 
     // Initialize song selector

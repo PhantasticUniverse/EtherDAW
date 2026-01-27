@@ -24,6 +24,8 @@ npx tsx src/cli.ts repl              # Interactive REPL
 open player.html                     # Listen in browser
 ```
 
+**Player shortcuts:** Space=play/pause, ←→=seek, 1-9=sections, M=mute
+
 ## Key Files
 
 | Path | Purpose |

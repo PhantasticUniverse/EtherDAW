@@ -344,6 +344,11 @@ open player.html  # Mac
 # Or serve it via HTTP
 ```
 
+**Player controls (v0.9.5):**
+- **Section buttons**: Jump directly to any section - no more replaying from the start
+- **Tempo slider**: Slow down to 0.5x to hear complex passages, speed up to 2x for quick reviews
+- **Keyboard shortcuts**: Space (play/pause), ←→ (seek ±5s), 1-9 (jump to section), M (mute)
+
 ### Validate Structure
 
 ```bash

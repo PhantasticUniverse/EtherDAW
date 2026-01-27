@@ -27910,6 +27910,32 @@ var Player2 = class {
     return this.sections;
   }
   /**
+   * Set playback rate (0.5 = half speed, 2.0 = double speed)
+   * This adjusts the tempo proportionally while preserving pitch
+   * @param rate Playback rate multiplier (0.25 to 4.0)
+   */
+  setPlaybackRate(rate) {
+    if (!this.timeline) return;
+    const clampedRate = Math.max(0.25, Math.min(4, rate));
+    const baseTempo = this.timeline.settings.tempo;
+    getTransport().bpm.value = baseTempo * clampedRate;
+  }
+  /**
+   * Get current playback rate
+   */
+  getPlaybackRate() {
+    if (!this.timeline) return 1;
+    const currentBpm = getTransport().bpm.value;
+    const baseTempo = this.timeline.settings.tempo;
+    return currentBpm / baseTempo;
+  }
+  /**
+   * Get the base tempo from the loaded composition
+   */
+  getBaseTempo() {
+    return this.timeline?.settings.tempo ?? 120;
+  }
+  /**
    * Dispose all resources
    */
   dispose() {
