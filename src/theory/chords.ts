@@ -744,3 +744,381 @@ export function getAvailableProgressions(): string[] {
 export function getAvailableQualities(): string[] {
   return Object.keys(CHORD_INTERVALS);
 }
+
+// ============================================
+// CHORD IDENTIFICATION (v0.9.7)
+// ============================================
+
+/**
+ * Note name lookup for chord identification
+ */
+const NOTE_NAMES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const NOTE_NAMES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+/**
+ * Identify a chord from a set of notes
+ * @param notes - Array of pitch strings (e.g., ['C4', 'E4', 'G4'])
+ * @returns Chord symbol (e.g., 'C', 'Am7', 'Dm7b5/F')
+ *
+ * @example
+ * identify(['C4', 'E4', 'G4']);         // 'C'
+ * identify(['C4', 'E4', 'G4', 'B4']);   // 'Cmaj7'
+ * identify(['A4', 'C5', 'E5']);         // 'Am'
+ * identify(['E4', 'G4', 'C5']);         // 'C/E'
+ */
+export function identifyChord(notes: string[]): string {
+  if (notes.length === 0) return '';
+  if (notes.length === 1) return notes[0].replace(/\d+$/, '');
+
+  // Get pitch classes (0-11) and MIDI values
+  const midiValues = notes.map(n => pitchToMidi(n));
+  const pitchClasses = midiValues.map(m => m % 12);
+
+  // Sort pitch classes and remove duplicates
+  const uniquePCs = [...new Set(pitchClasses)].sort((a, b) => a - b);
+
+  // Find the bass note (lowest)
+  const bassIndex = midiValues.indexOf(Math.min(...midiValues));
+  const bassPitchClass = pitchClasses[bassIndex];
+
+  // Try each pitch class as potential root
+  let bestMatch: { root: number; quality: string; score: number; isInversion: boolean } | null = null;
+
+  for (const potentialRoot of uniquePCs) {
+    // Calculate intervals from this root
+    const intervals = uniquePCs.map(pc => (pc - potentialRoot + 12) % 12).sort((a, b) => a - b);
+    const intervalSet = new Set(intervals);
+
+    // Try to match against known chord qualities
+    for (const [quality, chordIntervals] of Object.entries(CHORD_INTERVALS)) {
+      // Normalize chord intervals to be within one octave
+      const normalizedChordIntervals = chordIntervals.map(i => i % 12);
+      const chordIntervalSet = new Set(normalizedChordIntervals);
+
+      // Check if all our intervals are in the chord
+      const allMatch = [...intervalSet].every(i => chordIntervalSet.has(i));
+      // Check if all required chord tones are present
+      const hasRequired = normalizedChordIntervals.slice(0, 3).every(i => intervalSet.has(i));
+
+      if (allMatch && hasRequired) {
+        // Score based on:
+        // - Exact match bonus
+        // - Prefer simpler qualities (shorter names)
+        // - Prefer root position
+        let score = 100;
+
+        // Exact match gets bonus
+        if (intervalSet.size === chordIntervalSet.size) score += 50;
+
+        // Prefer simpler chord names
+        score -= quality.length * 2;
+
+        // Prefer certain qualities over aliases
+        if (quality === 'maj') score += 10;
+        if (quality === 'm') score += 8;      // Prefer 'm' over 'min'
+        if (quality === 'min') score += 5;
+        if (quality === 'maj7') score += 8;   // Prefer 'maj7' over 'M7'
+        if (quality === 'm7') score += 6;     // Prefer 'm7' over 'min7'
+        if (quality === 'min7') score += 4;
+
+        // Check if it's an inversion
+        const isInversion = potentialRoot !== bassPitchClass;
+        if (!isInversion) score += 20;
+
+        if (!bestMatch || score > bestMatch.score) {
+          bestMatch = { root: potentialRoot, quality, score, isInversion };
+        }
+      }
+    }
+  }
+
+  if (!bestMatch) {
+    // Can't identify - return pitches
+    return notes.map(n => n.replace(/\d+$/, '')).join(' ');
+  }
+
+  // Determine note name for root
+  const rootName = NOTE_NAMES_SHARP[bestMatch.root];
+
+  // Build chord symbol
+  let symbol = rootName;
+  if (bestMatch.quality !== 'maj') {
+    symbol += bestMatch.quality;
+  }
+
+  // Add bass note if it's an inversion
+  if (bestMatch.isInversion) {
+    const bassName = NOTE_NAMES_SHARP[bassPitchClass];
+    symbol += `/${bassName}`;
+  }
+
+  return symbol;
+}
+
+/**
+ * Alias for identifyChord
+ */
+export const identify = identifyChord;
+
+/**
+ * Identify chord quality from notes
+ * @param notes - Array of pitch strings
+ * @returns Quality description ('major', 'minor', 'diminished', etc.)
+ *
+ * @example
+ * identifyQuality(['C4', 'E4', 'G4']);     // 'major'
+ * identifyQuality(['A4', 'C5', 'E5']);     // 'minor'
+ * identifyQuality(['B4', 'D5', 'F5']);     // 'diminished'
+ */
+export function identifyQuality(notes: string[]): string {
+  if (notes.length < 2) return 'unknown';
+
+  // Get pitch classes
+  const midiValues = notes.map(n => pitchToMidi(n));
+  const pitchClasses = midiValues.map(m => m % 12);
+  const uniquePCs = [...new Set(pitchClasses)];
+
+  // Try each pitch class as potential root and find best match
+  let bestQuality = 'unknown';
+  let bestScore = -1;
+
+  for (const root of uniquePCs) {
+    // Calculate intervals from this potential root
+    const intervals = uniquePCs.map(pc => (pc - root + 12) % 12);
+
+    // Check for key intervals
+    const has3 = intervals.includes(4);      // Major 3rd
+    const hasb3 = intervals.includes(3);     // Minor 3rd
+    const has5 = intervals.includes(7);      // Perfect 5th
+    const hasb5 = intervals.includes(6);     // Diminished 5th
+    const hasMaj7 = intervals.includes(11);  // Major 7th
+    const hasb7 = intervals.includes(10);    // Minor 7th
+    const has6 = intervals.includes(9);      // Major 6th (dim7 chord)
+    const hasAug5 = intervals.includes(8);   // Augmented 5th
+    const has4 = intervals.includes(5);      // Perfect 4th (sus4)
+    const has2 = intervals.includes(2);      // Major 2nd (sus2)
+
+    // Score based on how well this root explains the chord
+    let score = 0;
+    let quality = 'unknown';
+
+    // Major triads and sevenths
+    if (has3 && has5) {
+      score = 10;
+      if (hasMaj7) {
+        quality = 'major seventh';
+        score = 15;
+      } else if (hasb7) {
+        quality = 'dominant seventh';
+        score = 15;
+      } else {
+        quality = 'major';
+      }
+    }
+    // Minor triads and sevenths
+    else if (hasb3 && has5) {
+      score = 10;
+      if (hasMaj7) {
+        quality = 'minor-major seventh';
+        score = 15;
+      } else if (hasb7) {
+        quality = 'minor seventh';
+        score = 15;
+      } else {
+        quality = 'minor';
+      }
+    }
+    // Diminished
+    else if (hasb3 && hasb5) {
+      score = 10;
+      if (has6) {
+        quality = 'diminished seventh';
+        score = 15;
+      } else if (hasb7) {
+        quality = 'half-diminished';
+        score = 15;
+      } else {
+        quality = 'diminished';
+      }
+    }
+    // Augmented
+    else if (has3 && hasAug5) {
+      quality = 'augmented';
+      score = 10;
+    }
+    // Suspended fourth
+    else if (has4 && has5 && !has3 && !hasb3) {
+      quality = 'suspended fourth';
+      score = 8;
+    }
+    // Suspended second
+    else if (has2 && has5 && !has3 && !hasb3) {
+      quality = 'suspended second';
+      score = 8;
+    }
+    // Power chord
+    else if (uniquePCs.length === 2 && has5) {
+      quality = 'power chord';
+      score = 5;
+    }
+
+    // Prefer root that's the lowest sounding note
+    const lowestMidi = Math.min(...midiValues);
+    const lowestPC = lowestMidi % 12;
+    if (root === lowestPC) {
+      score += 3;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestQuality = quality;
+    }
+  }
+
+  return bestQuality;
+}
+
+/**
+ * Get the root of a chord from its notes
+ * @param notes - Array of pitch strings
+ * @returns Root note name (e.g., 'C', 'F#')
+ */
+export function getChordRoot(notes: string[]): string {
+  const symbol = identifyChord(notes);
+  const match = symbol.match(/^([A-G][#b]?)/);
+  return match ? match[1] : '';
+}
+
+/**
+ * Check if notes form a specific chord type
+ * @param notes - Array of pitch strings
+ * @param type - Type to check ('major', 'minor', 'dominant', etc.)
+ */
+export function isChordType(notes: string[], type: string): boolean {
+  const quality = identifyQuality(notes);
+  return quality.includes(type.toLowerCase());
+}
+
+/**
+ * Get all chord tones present in a set of notes
+ * @param notes - Array of pitch strings
+ * @returns Object with chord tone analysis
+ */
+export function analyzeChordTones(notes: string[]): {
+  root: string;
+  quality: string;
+  third: 'major' | 'minor' | 'none';
+  fifth: 'perfect' | 'diminished' | 'augmented' | 'none';
+  seventh: 'major' | 'minor' | 'diminished' | 'none';
+  extensions: string[];
+} {
+  const midiValues = notes.map(n => pitchToMidi(n));
+  const pitchClasses = midiValues.map(m => m % 12);
+  const uniquePCs = [...new Set(pitchClasses)];
+
+  // First identify the chord to find the root
+  const chordSymbol = identifyChord(notes);
+  const rootMatch = chordSymbol.match(/^([A-G][#b]?)/);
+  const rootName = rootMatch ? rootMatch[1] : NOTE_NAMES_SHARP[uniquePCs[0]];
+
+  // Convert root name to pitch class
+  const rootMidi = pitchToMidi(`${rootName}4`);
+  const rootPC = rootMidi % 12;
+
+  // Calculate intervals from the identified root
+  const intervals = uniquePCs.map(pc => (pc - rootPC + 12) % 12);
+
+  const result: ReturnType<typeof analyzeChordTones> = {
+    root: rootName,
+    quality: identifyQuality(notes),
+    third: 'none',
+    fifth: 'none',
+    seventh: 'none',
+    extensions: [],
+  };
+
+  // Analyze third
+  if (intervals.includes(4)) result.third = 'major';
+  else if (intervals.includes(3)) result.third = 'minor';
+
+  // Analyze fifth
+  if (intervals.includes(7)) result.fifth = 'perfect';
+  else if (intervals.includes(6)) result.fifth = 'diminished';
+  else if (intervals.includes(8)) result.fifth = 'augmented';
+
+  // Analyze seventh
+  if (intervals.includes(11)) result.seventh = 'major';
+  else if (intervals.includes(10)) result.seventh = 'minor';
+  else if (intervals.includes(9)) result.seventh = 'diminished';
+
+  // Check for extensions
+  if (intervals.includes(2) || intervals.includes(14 % 12)) result.extensions.push('9');
+  if (intervals.includes(5) || intervals.includes(17 % 12)) result.extensions.push('11');
+  if (intervals.includes(9) || intervals.includes(21 % 12)) result.extensions.push('13');
+
+  return result;
+}
+
+/**
+ * Suggest possible chord interpretations for a set of notes
+ * @param notes - Array of pitch strings
+ * @returns Array of possible chord symbols, ranked by likelihood
+ */
+export function suggestChords(notes: string[]): string[] {
+  if (notes.length < 2) return [];
+
+  const midiValues = notes.map(n => pitchToMidi(n));
+  const pitchClasses = midiValues.map(m => m % 12);
+  const uniquePCs = [...new Set(pitchClasses)].sort((a, b) => a - b);
+
+  const suggestions: Array<{ symbol: string; score: number }> = [];
+
+  // Try each pitch class as potential root
+  for (const potentialRoot of uniquePCs) {
+    const intervals = uniquePCs.map(pc => (pc - potentialRoot + 12) % 12).sort((a, b) => a - b);
+    const intervalSet = new Set(intervals);
+
+    // Try to match against known chord qualities
+    for (const [quality, chordIntervals] of Object.entries(CHORD_INTERVALS)) {
+      const normalizedChordIntervals = chordIntervals.map(i => i % 12);
+      const chordIntervalSet = new Set(normalizedChordIntervals);
+
+      // Count matching intervals
+      const matchingIntervals = [...intervalSet].filter(i => chordIntervalSet.has(i)).length;
+      const totalRequired = Math.min(chordIntervalSet.size, 4);
+
+      if (matchingIntervals >= totalRequired - 1) {
+        const rootName = NOTE_NAMES_SHARP[potentialRoot];
+        let symbol = rootName;
+        if (quality !== 'maj') {
+          symbol += quality;
+        }
+
+        // Score based on match quality
+        let score = (matchingIntervals / chordIntervalSet.size) * 100;
+
+        // Prefer root position
+        if (potentialRoot === pitchClasses[midiValues.indexOf(Math.min(...midiValues))]) {
+          score += 10;
+        }
+
+        // Prefer simpler chord names
+        score -= quality.length;
+
+        suggestions.push({ symbol, score });
+      }
+    }
+  }
+
+  // Sort by score and remove duplicates
+  const uniqueSymbols = new Set<string>();
+  return suggestions
+    .sort((a, b) => b.score - a.score)
+    .filter(s => {
+      if (uniqueSymbols.has(s.symbol)) return false;
+      uniqueSymbols.add(s.symbol);
+      return true;
+    })
+    .slice(0, 5)
+    .map(s => s.symbol);
+}

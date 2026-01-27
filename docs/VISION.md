@@ -237,14 +237,35 @@ timeline                       Time-domain energy visualization
 - **Never compromise composition for DAW limitations** - improve the DAW instead
 - LLM feedback tools (spectrum, timeline, describe) are essential for blind composition
 
-### v0.9: Perceptual Foundation
+### v0.9: Perceptual Foundation + Composer Experience
 
 See [PRD.md](./PRD.md) for comprehensive details.
 
+**v0.9.4** (Complete):
+- Orchestral instruments: strings, brass, woodwinds, choir
+- Sustain pedal support (`:ped` suffix)
+- FM synthesis percussion (glockenspiel, xylophone, etc.)
+
+**v0.9.5** (Complete):
+- Player controls: section buttons, tempo slider, keyboard shortcuts
 - Audio-to-visual pipeline (spectrograms, chromagrams)
 - Semantic audio analysis
-- Reference track import and analysis
-- Autonomous iteration mode (compose → render → analyze → adjust)
+
+**v0.9.6** (Complete):
+- REPL instant playback (`instant C4:q E4:q G4:h`)
+- Pattern caching for fast iteration
+- Browser bridge (WebSocket)
+- Timeline visualization
+- Watch mode with auto-rebuild
+
+**v0.9.7** (Complete):
+- Music Theory Engine:
+  - `scales.notes()`, `scales.degree()`, `scales.inKey()`
+  - `chords.identify()`, `chords.quality()`, `chords.analyze()`
+  - `intervals.between()`, `intervals.transpose()`, `intervals.invert()`
+  - `progressions.get()` with 20+ built-in progressions
+  - `validate.voiceLeading()` for parallel fifths, voice crossing detection
+  - `validate.inKey()` for key conformance checking
 
 ### v1.0: EtherLang DSL + Generative Algorithms
 

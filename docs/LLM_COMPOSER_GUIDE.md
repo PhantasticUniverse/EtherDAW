@@ -335,6 +335,69 @@ Techniques: `ascending_sequence`, `descending_sequence`, `extension`, `fragmenta
 }
 ```
 
+## Music Theory Helpers (v0.9.7)
+
+The theory engine provides programmatic access to scales, chords, and intervals.
+
+### Scales
+
+```typescript
+import { scales } from 'etherdaw/theory';
+
+scales.notes('C', 'major');           // ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4']
+scales.degree('C', 'major', 5);       // 'G4' (fifth degree)
+scales.inKey('F#', 'C', 'major');     // false
+```
+
+### Chord Identification
+
+```typescript
+import { chords } from 'etherdaw/theory';
+
+chords.identify(['C4', 'E4', 'G4']);         // 'C'
+chords.identify(['A4', 'C5', 'E5']);         // 'Am'
+chords.quality(['C4', 'E4', 'G4', 'B4']);    // 'major seventh'
+```
+
+### Intervals
+
+```typescript
+import { intervals } from 'etherdaw/theory';
+
+intervals.between('C4', 'G4');        // 'P5' (perfect fifth)
+intervals.transpose('C4', 'P5');      // 'G4'
+intervals.invert('P5');               // 'P4'
+```
+
+### Progressions
+
+```typescript
+import { progressions } from 'etherdaw/theory';
+
+progressions.get('ii-V-I', 'C major');       // ['Dmin', 'Gmaj', 'Cmaj']
+progressions.get('I-V-vi-IV', 'G major');    // ['Gmaj', 'Dmaj', 'Emin', 'Cmaj']
+```
+
+### Voice Leading Validation
+
+```typescript
+import { validate } from 'etherdaw/theory';
+
+// Check for parallel fifths, octaves, voice crossing
+validate.voiceLeading([
+  { beat: 0, voices: ['C4', 'E4', 'G4', 'C5'] },
+  { beat: 4, voices: ['D4', 'F4', 'A4', 'D5'] }
+]);
+
+// Check notes are in key
+validate.inKey(['C4', 'E4', 'F#4'], 'C major');
+// Returns: [{ type: 'out-of-key', note: 'F#4', ... }]
+```
+
+See [docs/THEORY.md](THEORY.md) for complete API reference.
+
+---
+
 ## Verification
 
 ### Listen to Your Work
@@ -400,6 +463,54 @@ Track names must match instrument names:
 "instruments": { "piano": { ... } },
 "tracks": { "piano": { ... } }  // Must match
 ```
+
+### 6. Inline Notes in Pattern Arrays
+
+The patterns array expects **pattern names**, not inline notes:
+
+```json
+// WRONG - inline notes don't work
+"tracks": {
+  "vibes": { "patterns": ["r:w", "C5:w"] }  // Error!
+}
+
+// RIGHT - create patterns for single notes
+"patterns": {
+  "rest_bar": { "notes": ["r:w"] },
+  "vibes_c5": { "notes": ["C5:w"] }
+},
+"tracks": {
+  "vibes": { "patterns": ["rest_bar", "vibes_c5"] }
+}
+```
+
+### 7. Pattern Bar Alignment (Critical!)
+
+**Every track's patterns must sum to the section's bar count.** This is the most common timing bug.
+
+```json
+// Section has 8 bars - EVERY track must total 8 bars
+
+"theme_A": {
+  "bars": 8,
+  "tracks": {
+    // WRONG: 2+2+2+1 = 7 bars (1 bar short!)
+    "piano": { "patterns": ["chord_2bar", "chord_2bar", "chord_2bar", "rest_1bar"] },
+
+    // WRONG: 2+2 = 4 bars (4 bars short!)
+    "vibes": { "patterns": ["melody_2bar", "melody_2bar"] },
+
+    // RIGHT: 2+2+4 = 8 bars
+    "bass": { "patterns": ["bass_2bar", "bass_2bar", "walking_4bar"] },
+
+    // RIGHT: 1×8 = 8 bars
+    "drums": { "patterns": ["beat", "beat", "beat", "beat", "beat", "beat", "beat", "beat"] }
+  }
+}
+```
+
+**How to verify:** For each track, sum the bar lengths of all patterns:
+- 2-bar pattern + 2-bar pattern + 1-bar rest = 5 bars (needs 3 more for 8-bar section)
 
 ## Tips for Better Compositions
 

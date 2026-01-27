@@ -801,14 +801,14 @@
         await player.load(score);
         console.log('Player loaded successfully');
 
-        // Update UI with metadata
+        // Update UI with metadata (check both top-level and meta object for backwards compatibility)
         const meta = score.meta || {};
-        document.getElementById('song-title').textContent = meta.title || 'Untitled';
-        document.getElementById('song-composer').textContent = meta.composer ? 'by ' + meta.composer : '';
+        document.getElementById('song-title').textContent = score.title || meta.title || 'Untitled';
+        document.getElementById('song-composer').textContent = (score.composer || meta.composer) ? 'by ' + (score.composer || meta.composer) : '';
         document.getElementById('song-tempo').textContent = score.settings.tempo + ' BPM';
         document.getElementById('song-key').textContent = score.settings.key || '';
         document.getElementById('song-duration').textContent = formatTime(player.getDuration());
-        document.getElementById('song-description').textContent = meta.description || '';
+        document.getElementById('song-description').textContent = score.description || meta.description || '';
         totalTimeEl.textContent = formatTime(player.getDuration());
 
         // Build track labels and instrument chips

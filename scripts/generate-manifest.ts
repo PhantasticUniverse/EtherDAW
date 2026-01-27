@@ -92,13 +92,14 @@ async function main() {
 
       const meta: CompositionMeta = {
         path: relativePath,
-        title: score.meta?.title ?? file.replace('.etherscore.json', ''),
-        composer: score.meta?.composer,
+        // Check both score.title (standard) and score.meta.title (legacy)
+        title: score.title ?? score.meta?.title ?? file.replace('.etherscore.json', ''),
+        composer: score.composer ?? score.meta?.composer,
         genre: score.meta?.genre,
         tempo: score.settings?.tempo,
         key: score.settings?.key,
         duration: calculateDuration(score),
-        description: score.meta?.description,
+        description: score.description ?? score.meta?.description,
         tags: score.meta?.tags,
       };
 

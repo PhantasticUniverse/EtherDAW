@@ -316,6 +316,109 @@ Change keys between sections:
 
 ---
 
+## Theory Engine API (v0.9.7)
+
+EtherDAW provides a programmatic theory engine for LLMs and tools. Import from `etherdaw/theory`.
+
+### Quick Start
+
+```typescript
+import { scales, chords, intervals, progressions, validate } from 'etherdaw/theory';
+
+// Scales
+scales.notes('C', 'major');           // ['C4', 'D4', 'E4', ...]
+scales.degree('C', 'major', 5);       // 'G4'
+scales.inKey('F#', 'C', 'major');     // false
+
+// Chords
+chords.identify(['C4', 'E4', 'G4']);  // 'C'
+chords.quality(['C4', 'E4', 'G4']);   // 'major'
+chords.build('A', 'min7', 3);         // ['A3', 'C4', 'E4', 'G4']
+
+// Intervals
+intervals.between('C4', 'G4');        // 'P5'
+intervals.transpose('C4', 'P5');      // 'G4'
+intervals.invert('P5');               // 'P4'
+intervals.semitones('M3');            // 4
+
+// Progressions
+progressions.get('ii-V-I', 'C major'); // ['Dmin', 'Gmaj', 'Cmaj']
+
+// Validation
+validate.voiceLeading([...]);         // Check for parallel fifths
+validate.inKey(['C4', 'F#4'], 'C major'); // [{note: 'F#4', ...}]
+```
+
+### Scales API
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `scales.notes(root, scale, octave?)` | Get all notes in scale | `scales.notes('C', 'major')` |
+| `scales.degree(root, scale, deg, oct?)` | Get scale degree | `scales.degree('C', 'major', 5)` → `'G4'` |
+| `scales.inKey(note, root, scale)` | Check if note in scale | `scales.inKey('F#', 'C', 'major')` → `false` |
+| `scales.snap(note, root, scale)` | Snap to nearest scale note | `scales.snap('F#4', 'C', 'major')` |
+| `scales.relative(root, mode)` | Get relative key | `scales.relative('A', 'minor')` → `{root: 'C', mode: 'major'}` |
+| `scales.parallel(root, mode)` | Get parallel key | `scales.parallel('C', 'major')` → `{root: 'C', mode: 'minor'}` |
+
+### Chord Identification API
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `chords.identify(notes)` | Identify chord from notes | `chords.identify(['C4','E4','G4'])` → `'C'` |
+| `chords.quality(notes)` | Get quality description | `chords.quality(['A4','C5','E5'])` → `'minor'` |
+| `chords.analyze(notes)` | Detailed analysis | Returns `{root, third, fifth, seventh, extensions}` |
+| `chords.build(root, quality, oct?)` | Build chord | `chords.build('G', '7', 3)` → `['G3','B3','D4','F4']` |
+| `chords.suggest(notes)` | Suggest interpretations | Returns array of possible chord symbols |
+
+### Intervals API
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `intervals.between(p1, p2)` | Interval between pitches | `intervals.between('C4', 'G4')` → `'P5'` |
+| `intervals.transpose(pitch, int)` | Transpose by interval | `intervals.transpose('C4', 'M3')` → `'E4'` |
+| `intervals.semitones(interval)` | Get semitone count | `intervals.semitones('P5')` → `7` |
+| `intervals.invert(interval)` | Invert interval | `intervals.invert('M3')` → `'m6'` |
+| `intervals.name(interval)` | Full name | `intervals.name('P5')` → `'perfect fifth'` |
+| `intervals.isConsonant(interval)` | Check consonance | `intervals.isConsonant('TT')` → `false` |
+
+**Interval Names:** P1, m2, M2, m3, M3, P4, A4/TT/d5, P5, m6, M6, m7, M7, P8, m9, M9, etc.
+
+### Validation API
+
+```typescript
+// Voice leading validation
+const issues = validate.voiceLeading([
+  { beat: 0, voices: ['C4', 'E4', 'G4', 'C5'] },
+  { beat: 4, voices: ['D4', 'F4', 'A4', 'D5'] }
+]);
+// Returns issues: parallel-fifths, parallel-octaves, voice-crossing, etc.
+
+// Key validation
+validate.inKey(['C4', 'E4', 'F#4'], 'C major');
+// Returns: [{type: 'out-of-key', message: 'F# is not in C major', ...}]
+
+// Quick parallel check
+validate.hasParallels(voices1, voices2);  // true/false
+
+// Summary
+validate.summarize(issues);  // {errors: 0, warnings: 2, info: 1, byType: {...}}
+```
+
+**Issue Types:** `parallel-fifths`, `parallel-octaves`, `voice-crossing`, `excessive-spacing`, `range-low`, `range-high`, `out-of-key`, `doubled-leading-tone`
+
+### Progressions API
+
+```typescript
+progressions.get('ii-V-I', 'C major');     // ['Dmin', 'Gmaj', 'Cmaj']
+progressions.get('I-V-vi-IV', 'G major');  // ['Gmaj', 'Dmaj', 'Emin', 'Cmaj']
+progressions.get('ii-V-I-7', 'C major');   // ['Dm7', 'G7', 'Cmaj7']
+progressions.available();                   // List all progression names
+```
+
+**Built-in:** I-IV-V, I-V-vi-IV, ii-V-I, 12-bar-blues, rhythm-a, autumn-leaves, ii-V-I-7, neo-soul, gospel-extended, backdoor, tritone-sub, lady-bird, coltrane-cycle
+
+---
+
 ## See Also
 
 - [PATTERNS.md](PATTERNS.md) - Pattern syntax

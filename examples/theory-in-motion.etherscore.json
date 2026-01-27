@@ -1,0 +1,273 @@
+{
+  "title": "Theory in Motion",
+  "composer": "Claude (v0.9.7 Theory Engine Demo)",
+  "description": "A jazz-influenced piece demonstrating ii-V-I progressions, voice leading, and scale-based melodies",
+  "settings": {
+    "tempo": 108,
+    "key": "C major",
+    "timeSignature": "4/4",
+    "swing": 0.15
+  },
+  "instruments": {
+    "piano": {
+      "preset": "fm_epiano",
+      "volume": -6,
+      "effects": [
+        { "type": "reverb", "wet": 0.25 }
+      ]
+    },
+    "vibes": {
+      "preset": "fm_vibraphone",
+      "volume": -9,
+      "effects": [
+        { "type": "reverb", "wet": 0.35 },
+        { "type": "delay", "wet": 0.15, "options": { "time": "8n.", "feedback": 0.2 } }
+      ]
+    },
+    "bass": {
+      "preset": "pluck_bass",
+      "volume": -8,
+      "effects": [
+        { "type": "reverb", "wet": 0.1 }
+      ]
+    },
+    "drums": {
+      "preset": "drums:lofi",
+      "volume": -9
+    }
+  },
+  "patterns": {
+    "ii_V_I_chords": {
+      "notes": [
+        "[D3,F3,A3,C4]:h",
+        "[G3,B3,D4,F4]:h",
+        "[C3,E3,G3,B3]:w"
+      ],
+      "comment": "ii-V-I in C: Dm7 - G7 - Cmaj7"
+    },
+    "ii_V_I_voice_led": {
+      "notes": [
+        "[D3,F3,A3,C4]:h",
+        "[D3,F3,G3,B3]:h",
+        "[C3,E3,G3,B3]:w"
+      ],
+      "comment": "Same progression with smooth voice leading - minimal movement"
+    },
+    "rhythm_changes_A": {
+      "notes": [
+        "[C3,E3,G3,B3]:h",
+        "[A2,C3,E3,G3]:h",
+        "[D3,F3,A3,C4]:h",
+        "[G3,B3,D4,F4]:h"
+      ],
+      "comment": "Rhythm changes: Cmaj7 - Am7 - Dm7 - G7"
+    },
+    "melody_dorian": {
+      "notes": [
+        "D4:8", "E4:8", "F4:8", "G4:8",
+        "A4:q", "G4:8", "F4:8",
+        "E4:8", "D4:8", "C4:q",
+        "D4:h"
+      ],
+      "comment": "D dorian scale run - the characteristic natural 6th (B) in minor context"
+    },
+    "melody_bebop": {
+      "notes": [
+        "G4:8", "F4:8", "E4:8", "D4:8",
+        "C4:8", "B3:8", "A3:8", "G3:8",
+        "F3:q", "E3:q",
+        "D3:h"
+      ],
+      "comment": "Descending bebop line - passing tones create chromatic motion"
+    },
+    "melody_question": {
+      "notes": [
+        "E4:8", "G4:8", "B4:q",
+        "A4:8", "G4:8", "E4:q",
+        "D4:8", "E4:8", "G4:8", "A4:8",
+        "B4:h"
+      ],
+      "comment": "Melodic question phrase - ends on tension (5th of V)"
+    },
+    "melody_answer": {
+      "notes": [
+        "A4:8", "G4:8", "E4:q",
+        "D4:8", "C4:8", "E4:q",
+        "G4:8", "E4:8", "D4:8", "C4:8",
+        "C4:h"
+      ],
+      "comment": "Melodic answer - resolves to tonic (8 beats = 2 bars)"
+    },
+    "bass_walking": {
+      "notes": [
+        "D2:q", "E2:q", "F2:q", "F#2:q",
+        "G2:q", "F2:q", "E2:q", "D2:q",
+        "C2:q", "E2:q", "G2:q", "A2:q",
+        "B2:q", "A2:q", "G2:q", "E2:q"
+      ],
+      "comment": "Walking bass through ii-V-I with chromatic approach tones"
+    },
+    "bass_root_motion": {
+      "notes": [
+        "C2:h", "A2:h",
+        "D2:h", "G2:h"
+      ],
+      "comment": "Root motion for rhythm changes"
+    },
+    "vibes_fills": {
+      "notes": [
+        "r:q", "G4:8", "B4:8", "D5:8", "r:8",
+        "r:q", "E5:8", "D5:8",
+        "C5:q", "r:q", "r:q"
+      ],
+      "comment": "Sparse vibraphone fills - jazz comping style (8 beats = 2 bars)"
+    },
+    "vibes_arpeggios": {
+      "notes": [
+        "D4:16", "F4:16", "A4:16", "C5:16", "A4:8", "r:8",
+        "G4:16", "B4:16", "D5:16", "F5:16", "D5:8", "r:8",
+        "C4:16", "E4:16", "G4:16", "B4:16", "G4:8", "r:8",
+        "B4:q", "C5:q"
+      ],
+      "comment": "Arpeggio outlines of ii-V-I chords (8 beats = 2 bars)"
+    },
+    "drums_jazz_ride": {
+      "drums": [
+        { "drum": "ride", "pattern": "x..x..x..x..x..x" },
+        { "drum": "kick", "pattern": "x.....x.x......." },
+        { "drum": "snare", "pattern": "....x.......x..." },
+        { "drum": "hihat_pedal", "pattern": "..x...x...x...x." }
+      ]
+    },
+    "drums_brushes": {
+      "drums": [
+        { "drum": "snare", "pattern": "x.x.x.x.x.x.x.x.", "velocity": 0.3 },
+        { "drum": "kick", "pattern": "x.......x......." },
+        { "drum": "hihat_closed", "pattern": "..x...x...x...x." }
+      ],
+      "comment": "Quiet brush pattern for intro"
+    },
+    "rest_bar": {
+      "notes": ["r:w"]
+    },
+    "outro_vibes_note": {
+      "notes": ["C5:w"],
+      "comment": "Final resolve note for vibes"
+    },
+    "outro_bass_note": {
+      "notes": ["C2:w"],
+      "comment": "Final root note for bass"
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "piano": {
+          "patterns": ["ii_V_I_voice_led", "rest_bar", "rest_bar"],
+          "velocity": 0.6,
+          "humanize": 0.02
+        },
+        "drums": {
+          "patterns": ["drums_brushes", "drums_brushes", "drums_brushes", "drums_brushes"],
+          "velocity": 0.5
+        }
+      }
+    },
+    "theme_A": {
+      "bars": 8,
+      "tracks": {
+        "piano": {
+          "patterns": ["rhythm_changes_A", "rhythm_changes_A", "ii_V_I_voice_led", "rest_bar", "rest_bar"],
+          "velocity": 0.75,
+          "humanize": 0.02
+        },
+        "vibes": {
+          "patterns": ["melody_question", "melody_answer", "melody_question", "melody_answer"],
+          "velocity": 0.8,
+          "humanize": 0.015
+        },
+        "bass": {
+          "patterns": ["bass_root_motion", "bass_root_motion", "bass_walking"],
+          "velocity": 0.7,
+          "humanize": 0.02
+        },
+        "drums": {
+          "patterns": ["drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride"],
+          "velocity": 0.65
+        }
+      }
+    },
+    "theme_B": {
+      "bars": 8,
+      "tracks": {
+        "piano": {
+          "patterns": ["ii_V_I_voice_led", "rhythm_changes_A", "ii_V_I_chords", "rest_bar", "rest_bar"],
+          "velocity": 0.7,
+          "humanize": 0.025
+        },
+        "vibes": {
+          "patterns": ["melody_dorian", "melody_bebop", "melody_dorian", "melody_bebop"],
+          "velocity": 0.85,
+          "humanize": 0.02
+        },
+        "bass": {
+          "patterns": ["bass_walking", "bass_walking"],
+          "velocity": 0.75,
+          "humanize": 0.02
+        },
+        "drums": {
+          "patterns": ["drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride"],
+          "velocity": 0.7
+        }
+      }
+    },
+    "solo_section": {
+      "bars": 8,
+      "tracks": {
+        "piano": {
+          "patterns": ["rhythm_changes_A", "ii_V_I_voice_led", "rhythm_changes_A", "ii_V_I_chords"],
+          "velocity": 0.65,
+          "humanize": 0.03
+        },
+        "vibes": {
+          "patterns": ["vibes_arpeggios", "vibes_fills", "vibes_arpeggios", "vibes_fills"],
+          "velocity": 0.9,
+          "humanize": 0.02
+        },
+        "bass": {
+          "patterns": ["bass_walking", "bass_walking"],
+          "velocity": 0.7,
+          "humanize": 0.025
+        },
+        "drums": {
+          "patterns": ["drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride", "drums_jazz_ride"],
+          "velocity": 0.75
+        }
+      }
+    },
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "piano": {
+          "patterns": ["ii_V_I_voice_led", "rest_bar", "rest_bar"],
+          "velocity": 0.55,
+          "humanize": 0.02
+        },
+        "vibes": {
+          "patterns": ["rest_bar", "rest_bar", "outro_vibes_note", "rest_bar"],
+          "velocity": 0.5
+        },
+        "bass": {
+          "patterns": ["outro_bass_note", "rest_bar", "outro_bass_note", "rest_bar"],
+          "velocity": 0.5
+        },
+        "drums": {
+          "patterns": ["drums_brushes", "drums_brushes", "drums_brushes", "drums_brushes"],
+          "velocity": 0.4
+        }
+      }
+    }
+  },
+  "arrangement": ["intro", "theme_A", "theme_B", "solo_section", "theme_A", "outro"]
+}

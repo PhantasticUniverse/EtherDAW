@@ -350,6 +350,38 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.9.7 (2026-01-27) - Music Theory Engine
+
+**Vision:** Give LLMs music theory understanding to write better compositions from the start.
+
+**New Theory APIs:**
+
+| Namespace | Key Functions |
+|-----------|---------------|
+| `scales` | `notes()`, `degree()`, `inKey()`, `relative()`, `parallel()` |
+| `chords` | `identify()`, `quality()`, `analyze()`, `suggestChords()` |
+| `intervals` | `between()`, `transpose()`, `invert()`, `semitones()` |
+| `progressions` | `get()` with 20+ built-in progressions (ii-V-I, I-V-vi-IV, etc.) |
+| `validate` | `voiceLeading()`, `inKey()` - detects parallel fifths, voice crossing |
+
+**Files Added:**
+- `src/theory/intervals.ts` - Interval calculator
+- `src/theory/validate.ts` - Theory validation rules
+- `src/theory/intervals.test.ts`, `chords.test.ts`, `validate.test.ts` - 87 new tests
+
+**Documentation:**
+- `docs/THEORY.md` - Complete API reference
+- `docs/LLM_COMPOSER_GUIDE.md` - Music Theory Helpers section, Common Mistakes #6-7
+
+**Creative Test:** `examples/theory-in-motion.etherscore.json` - Jazz piece demonstrating ii-V-I progressions, voice leading, and scale-based melodies.
+
+**Pain Points Fixed:**
+- Manifest generator now reads `score.title` (not just `score.meta.title`)
+- Player now displays title correctly from top-level fields
+- Documented critical "Pattern Bar Alignment" rule (Common Mistake #7)
+
+---
+
 ### v0.9.6 (2026-01-27) - Composer Experience
 
 **Vision:** Tighten the LLM feedback loop. For an LLM, perceptual analysis is MORE valuable than audio playback - they can't "hear" but they CAN process text descriptions.
