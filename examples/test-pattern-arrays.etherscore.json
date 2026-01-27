@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "title": "Pattern Array Test",
+    "composer": "Test",
+    "description": "Tests pattern array sequential scheduling (v0.9.3 fix)"
+  },
+  "settings": {
+    "tempo": 120,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "lead": {
+      "preset": "soft_lead",
+      "volume": -6
+    }
+  },
+  "patterns": {
+    "phrase_a": {
+      "notes": ["C4:q", "E4:q", "G4:q", "C5:q", "B4:q", "G4:q", "E4:q", "C4:q"]
+    },
+    "phrase_b": {
+      "notes": ["D4:q", "F4:q", "A4:q", "D5:q", "C5:q", "A4:q", "F4:q", "D4:q"]
+    },
+    "phrase_c": {
+      "notes": ["E4:q", "G4:q", "B4:q", "E5:q", "D5:q", "B4:q", "G4:q", "E4:q"]
+    }
+  },
+  "sections": {
+    "test": {
+      "bars": 8,
+      "tracks": {
+        "lead": {
+          "patterns": ["phrase_a", "phrase_b", "phrase_c"],
+          "velocity": 0.6
+        }
+      }
+    }
+  },
+  "arrangement": ["test"]
+}

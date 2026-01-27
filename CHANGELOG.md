@@ -11,6 +11,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.3] - 2026-01-27 - "Fix the Footguns"
+
+### Overview
+
+v0.61 focuses on reliability, debugging, and developer experience. These changes address the most frustrating issues encountered while composing with EtherDAW.
+
+### Added
+
+#### Pattern Array Fix
+- **Sequential pattern scheduling** - Patterns in `patterns: ["a", "b", "c"]` arrays now schedule sequentially based on actual pattern length
+- Previously, patterns were incorrectly aligned to 4-beat boundaries regardless of their actual duration
+- This was the most critical bug affecting multi-pattern compositions
+
+#### Composition Linter
+- **16 lint rules** to catch potential issues before they become mysteries
+- Rules include: missing patterns (L001), unused patterns (L002), missing sections (L003), timing mismatches (L004), extreme velocities (L005/L006), high humanize values (L007), empty sections/tracks (L008/L009), and more
+- Fuzzy matching suggests corrections for typos (e.g., "Did you mean 'melody'?")
+- CLI: `npx tsx src/cli.ts lint <file> [--strict]`
+
+#### Debug Mode
+- **Three debug levels** for tracing compilation:
+  - Level 1: Pattern expansion and scheduling
+  - Level 2: Individual note placement
+  - Level 3: Effects processing and detailed timing
+- CLI: `npx tsx src/cli.ts compile <file> --debug 1|2|3`
+- Environment variable: `DEBUG_LEVEL=1`
+
+#### Better Error Messages
+- **Centralized error messages** with helpful suggestions
+- Error codes (E001-E020) for easier troubleshooting
+- Documentation links in error output
+- Fuzzy matching for preset, pattern, and section name suggestions
+
+### Files Added
+- `src/validation/linter.ts` - Composition linter with 16 rules
+- `src/validation/linter.test.ts` - Linter tests
+- `src/debug/logger.ts` - Debug logging system
+- `src/errors/messages.ts` - Centralized error messages
+- `src/errors/messages.test.ts` - Error message tests
+- `src/engine/pattern-resolver.test.ts` - Pattern resolver tests
+
+---
+
 ## [0.60.0] - 2026-01-22 - "Generative Primitives"
 
 ### Overview

@@ -6,6 +6,7 @@ import type { EtherScore, Timeline } from '../schema/types.js';
 import { TimelineBuilder } from './timeline.js';
 import { resolveSection, type PatternResolutionContext } from './pattern-resolver.js';
 import { parseTimeSignature } from '../theory/rhythm.js';
+import { debug } from '../debug/logger.js';
 
 export interface CompilationOptions {
   /** Start at a specific section (for partial playback) */
@@ -40,10 +41,18 @@ export interface CompilationStats {
 export function compile(score: EtherScore, options: CompilationOptions = {}): CompilationResult {
   const warnings: string[] = [];
 
+  // v0.9.3: Debug logging
+  debug.compileStart(
+    score.meta?.title || 'Untitled',
+    score.settings.tempo,
+    score.settings.key
+  );
+
   // Validate arrangement references
   for (const sectionName of score.arrangement) {
     if (!score.sections[sectionName]) {
       warnings.push(`Section "${sectionName}" in arrangement not found`);
+      debug.warn(`Section '${sectionName}' in arrangement not found`);
     }
   }
 
@@ -76,6 +85,9 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
       continue;
     }
 
+    // v0.9.3: Debug logging
+    debug.sectionStart(sectionName, section.bars, beatsPerBar);
+
     // Handle section-level overrides
     const sectionTempo = section.tempo || settings.tempo;
     const sectionKey = section.key || settings.key;
@@ -103,8 +115,14 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
     const resolvedTracks = resolveSection(section.tracks, section.bars, ctx);
 
     // Add notes to timeline
+    let sectionNotes = 0;
     for (const [instrumentName, notes] of resolvedTracks) {
+      // v0.9.3: Debug logging
+      debug.trackStart(instrumentName, notes.length);
+
       for (const note of notes) {
+        // v0.9.3: Debug individual notes at level 2
+        debug.notePlace(note.pitch, currentBeat + note.startBeat, note.durationBeats, note.velocity, instrumentName);
         // v0.4: Build expression options if present
         const options = (note.timingOffset !== undefined ||
                          note.probability !== undefined ||
@@ -127,8 +145,12 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
           options
         );
         totalNotes++;
+        sectionNotes++;
       }
     }
+
+    // v0.9.3: Debug section complete
+    debug.sectionComplete(sectionName, sectionNotes);
 
     // Advance position
     currentBeat += section.bars * beatsPerBar;
@@ -144,6 +166,9 @@ export function compile(score: EtherScore, options: CompilationOptions = {}): Co
     instruments: timeline.instruments,
     durationSeconds: timeline.totalSeconds,
   };
+
+  // v0.9.3: Debug compilation summary
+  debug.compileSummary(totalNotes, sectionsToCompile.length, timeline.totalSeconds);
 
   return { timeline, warnings, stats };
 }

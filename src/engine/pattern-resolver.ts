@@ -6,6 +6,7 @@ import type { Pattern, Track, EtherScoreSettings, DensityConfig } from '../schem
 import { expandPattern, type ExpandedPattern, type PatternContext } from '../parser/pattern-expander.js';
 import { applySwing, humanizeTiming, humanizeVelocity, humanizeDuration } from '../theory/rhythm.js';
 import { getDensityAtBeat, shouldPlayNote } from '../generative/density.js';
+import { debug } from '../debug/logger.js';
 
 export interface ResolvedNote {
   pitch: string;
@@ -67,13 +68,9 @@ export function resolveTrack(
 
   const results: ResolvedNote[] = [];
   const repeatCount = track.repeat || 1;
-  const beatsPerBar = getBeatsPerBar(ctx.settings.timeSignature || '4/4');
 
-  // v0.8: When using patterns array, each pattern should fill one bar
-  // This ensures proper alignment when patterns are shorter than a bar
-  const useBarAlignment = track.patterns && track.patterns.length > 1;
-
-  // Track cumulative beat offset for sequential pattern placement
+  // v0.9.3: Track cumulative beat offset for sequential pattern placement
+  // Patterns are ALWAYS scheduled sequentially based on their actual length
   let cumulativeBeat = 0;
 
   for (let r = 0; r < repeatCount; r++) {
@@ -96,30 +93,16 @@ export function resolveTrack(
 
       const expanded = expandPattern(pattern, patternCtx);
 
-      // Calculate the beat offset for this pattern
-      // v0.8: When bar-aligned, each pattern gets one bar regardless of its natural length
-      const patternIndex = r * patternNames.length + i;
-      const currentBeat = useBarAlignment
-        ? patternIndex * beatsPerBar  // Each pattern starts at a bar boundary
-        : cumulativeBeat;  // Use cumulative beat count (pattern's totalBeats, not note positions)
+      // v0.9.3: Always schedule patterns sequentially based on actual pattern length
+      const currentBeat = cumulativeBeat;
+      const actualPatternLength = expanded.totalBeats;
 
-      // For bar-aligned patterns, loop the pattern to fill the bar
-      let notesToAdd: ExpandedPattern['notes'];
-      let actualPatternLength: number;
-
-      if (useBarAlignment && expanded.totalBeats < beatsPerBar) {
-        // Loop the pattern to fill the bar
-        notesToAdd = loopPatternToFill(expanded.notes, expanded.totalBeats, beatsPerBar);
-        actualPatternLength = beatsPerBar;
-      } else {
-        notesToAdd = expanded.notes;
-        // Use the pattern's declared totalBeats, not where notes end
-        actualPatternLength = expanded.totalBeats;
-      }
+      // v0.9.3: Debug pattern scheduling
+      debug.patternSchedule(patternName, currentBeat, actualPatternLength);
 
       // Apply humanization and swing
       const processedNotes = processExpandedNotes(
-        { notes: notesToAdd, totalBeats: actualPatternLength },
+        { notes: expanded.notes, totalBeats: actualPatternLength },
         currentBeat,
         track.humanize || 0,
         ctx.settings.swing || 0
@@ -127,10 +110,11 @@ export function resolveTrack(
 
       results.push(...processedNotes);
 
-      // Update cumulative beat for next pattern (only used when not bar-aligned)
-      if (!useBarAlignment) {
-        cumulativeBeat += actualPatternLength;
-      }
+      // v0.9.3: Debug pattern completion
+      debug.patternComplete(patternName, processedNotes.length, actualPatternLength);
+
+      // Update cumulative beat for next pattern
+      cumulativeBeat += actualPatternLength;
     }
   }
 
@@ -254,11 +238,13 @@ function processExpandedNotes(
 
     // Apply swing
     if (swing > 0) {
+      debug.swing(swing);
       startBeat = applySwing(startBeat, swing);
     }
 
     // Apply humanization
     if (humanize > 0) {
+      debug.humanize(humanize);
       startBeat = humanizeTiming(startBeat, humanize);
       velocity = humanizeVelocity(velocity, humanize);
       durationBeats = humanizeDuration(durationBeats, humanize);
@@ -366,6 +352,9 @@ function fillToLength(notes: ResolvedNote[], targetBeats: number): ResolvedNote[
   if (patternLength >= targetBeats) {
     return notes.filter(n => n.startBeat < targetBeats);
   }
+
+  // v0.9.3: Debug fill operation
+  debug.fillToLength(patternLength, targetBeats);
 
   // Otherwise, repeat to fill
   const result: ResolvedNote[] = [];

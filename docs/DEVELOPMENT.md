@@ -70,6 +70,92 @@ In `etherscore.schema.json`:
 "additionalProperties": true  // Allows comment keys to pass
 ```
 
+## Linter (v0.9.3)
+
+Beyond validation, EtherDAW includes a linter that catches potential issues:
+
+```bash
+npx tsx src/cli.ts lint <file> [--strict]
+```
+
+### Lint Rules
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| L001 | error | Pattern referenced but not defined |
+| L002 | warning | Pattern defined but never used |
+| L003 | error | Section in arrangement not defined |
+| L004 | warning | Pattern length doesn't fit section evenly |
+| L005 | warning | Velocity unusually high (>0.9) |
+| L006 | warning | Velocity unusually low (<0.1) |
+| L007 | warning | Humanize value too high (>0.05) |
+| L008 | warning | Section has no tracks |
+| L009 | warning | Track has no patterns |
+| L010 | info | Section defined but not in arrangement |
+| L011 | info | No title in meta |
+| L012 | info | No instruments defined |
+| L013 | warning | Arrangement is empty |
+| L014 | info | Tempo outside typical range |
+| L015 | info | Section appears many times |
+| L016 | info | Track has no instrument definition |
+
+### Adding Lint Rules
+
+Add new rules in `src/validation/linter.ts`:
+
+```typescript
+// L0XX: New rule description
+for (const [sectionName, section] of Object.entries(score.sections || {})) {
+  // Check condition
+  if (someCondition) {
+    results.push({
+      rule: 'L0XX',
+      severity: 'warning',
+      message: 'Descriptive message',
+      location: { section: sectionName },
+      suggestion: 'How to fix it',
+    });
+  }
+}
+```
+
+## Debug Mode (v0.9.3)
+
+Debug mode traces compilation for troubleshooting:
+
+```bash
+# Via CLI flag
+npx tsx src/cli.ts compile <file> --debug 1|2|3
+
+# Via environment variable
+DEBUG_LEVEL=1 npx tsx src/cli.ts compile <file>
+```
+
+### Debug Levels
+
+| Level | Output |
+|-------|--------|
+| 1 | Pattern expansion and scheduling |
+| 2 | Individual note placement |
+| 3 | Effects processing and detailed timing |
+
+### Adding Debug Output
+
+Use the global `debug` logger in `src/debug/logger.ts`:
+
+```typescript
+import { debug } from '../debug/logger.js';
+
+// Level 1: High-level operations
+debug.log(1, `Processing section '${name}'`);
+
+// Level 2: Detailed operations
+debug.log(2, `Note ${pitch} at beat ${beat}`);
+
+// Level 3: Low-level details
+debug.log(3, `Applying reverb wet=${wet}`);
+```
+
 ## Note Syntax Validation
 
 The custom validator uses `NOTE_REGEX` to validate note strings. When adding new note syntax features:
@@ -300,6 +386,39 @@ The validators only check structure, not semantics. The actual parsing/rendering
 - Spectral centroid: 7234 Hz (harsh) → 1948 Hz (balanced)
 - RMS level: -33 dB → -26 dB (audible)
 - Character: "noisy" → "sustained, pad-like"
+
+**Brahms Case Study Additions (2026-01-23):**
+
+Added features while recreating Brahms Intermezzo Op. 116 No. 2:
+
+1. **MIDI-to-EtherScore Converter** (`scripts/midi-to-etherscore.ts`):
+   - Imports MIDI files using existing `importMidi()` function
+   - Groups simultaneous notes into bracket chord notation
+   - Preserves velocity as `@velocity` notation
+   - Handles polyphonic tracks (RH/LH separation)
+   - Quantizes timing to 16th note grid
+   - Usage: `npx tsx scripts/midi-to-etherscore.ts input.mid [output.etherscore.json]`
+
+2. **Bracket Chord Notation**:
+   - New syntax: `[C4,E4,G4]:q@0.5` for simultaneous notes
+   - All notes in brackets play at the same beat position
+   - Supports velocity: `[A3,C4]:h@0.6`
+   - Supports dotted durations: `[D4,F#4]:q.`
+   - Supports dynamics: `[C4,E4]:q@mf`
+   - Files: `src/parser/note-parser.ts` (`isBracketChord`, `parseBracketChord`)
+   - Integration: `src/parser/pattern-expander.ts`
+
+3. **Acoustic Piano Preset** (`src/presets/keys.ts`):
+   - Concert grand piano using FM synthesis
+   - Fast attack (2ms), long decay (4.5s), release (3s)
+   - Low harmonicity (1.0) for warm fundamental
+   - Modulation envelope decays faster than amplitude (natural piano characteristic)
+   - Spectral centroid: ~630 Hz (warm, romantic character)
+
+**Case Study Results:**
+- Input: MIDI file (1023 notes, 73 BPM, 2:40)
+- Output: EtherScore (3115 compiled notes with polyphony)
+- Audio: Warm character (629 Hz centroid), close match to reference
 
 ---
 

@@ -6,13 +6,17 @@
 import { Command } from 'commander';
 import { readFile, writeFile } from 'fs/promises';
 import { resolve, basename, extname } from 'path';
+import { initDebugFromEnv } from './debug/logger.js';
+
+// v0.9.3: Initialize debug level from environment
+initDebugFromEnv();
 
 const program = new Command();
 
 program
   .name('etherdaw')
   .description('A DAW designed for LLMs to compose music')
-  .version('0.1.0');
+  .version('0.9.3');
 
 /**
  * REPL command - start interactive environment (v0.82)
@@ -212,6 +216,36 @@ program
   });
 
 /**
+ * Lint command - check for potential issues (v0.9.3)
+ */
+program
+  .command('lint <file>')
+  .description('Lint an EtherScore file for potential issues')
+  .option('-s, --strict', 'Treat warnings as errors')
+  .action(async (file: string, options: { strict?: boolean }) => {
+    try {
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const { lint, formatLintResults } = await import('./validation/linter.js');
+
+      const content = await readFile(resolve(file), 'utf-8');
+      const score = validateOrThrow(JSON.parse(content));
+
+      const results = lint(score, { strict: options.strict });
+      console.log(formatLintResults(results));
+
+      // Exit with error code if there are errors (or warnings in strict mode)
+      const hasErrors = results.some(r => r.severity === 'error');
+      const hasWarnings = results.some(r => r.severity === 'warning');
+      if (hasErrors || (options.strict && hasWarnings)) {
+        process.exit(1);
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
  * Info command - show details about an EtherScore
  */
 program
@@ -258,10 +292,18 @@ program
   .command('compile <file>')
   .description('Compile an EtherScore and show compilation stats')
   .option('-v, --verbose', 'Show detailed output')
-  .action(async (file: string, options: { verbose?: boolean }) => {
+  .option('-d, --debug <level>', 'Debug level (1-3): 1=patterns, 2=notes, 3=effects', '0')
+  .action(async (file: string, options: { verbose?: boolean; debug?: string }) => {
     try {
       const { validateOrThrow } = await import('./schema/validator.js');
       const { compile } = await import('./engine/compiler.js');
+      const { debug } = await import('./debug/logger.js');
+
+      // Set debug level if specified
+      const debugLevel = parseInt(options.debug || '0', 10) as 0 | 1 | 2 | 3;
+      if (debugLevel >= 1 && debugLevel <= 3) {
+        debug.setLevel(debugLevel);
+      }
 
       const content = await readFile(resolve(file), 'utf-8');
       const score = validateOrThrow(JSON.parse(content));

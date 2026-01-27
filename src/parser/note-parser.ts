@@ -1,6 +1,7 @@
 import type { ParsedNote, NoteName, Accidental, Articulation, ArticulationModifiers, JazzArticulation, Ornament, DynamicsMarking } from '../schema/types.js';
 import { DURATION_MAP } from '../schema/types.js';
 import { ARTICULATION, DOTTED_MULTIPLIER, NOTE_VALUES, NOTE_NAMES, MIDI, DYNAMICS } from '../config/constants.js';
+import { errors, createError, VALID_DURATIONS } from '../errors/messages.js';
 
 /**
  * Regular expression for parsing note notation
@@ -56,7 +57,7 @@ export function parseNote(noteStr: string): ParsedNote {
   const match = noteStr.trim().match(NOTE_REGEX);
 
   if (!match) {
-    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[tN][articulation][.jazzArt][.ornament][@velocity][+/-timing][?probability] (e.g., "C4:q", "C4:q*", "C4:q@0.8", "C4:8t3", "C4:q.fall", "C4:q.tr")`);
+    throw createError(errors.invalidNoteSyntax(noteStr));
   }
 
   const [
@@ -122,7 +123,7 @@ export function parseNote(noteStr: string): ParsedNote {
 
   // Validate ranges
   if (velocity !== undefined && (velocity < 0 || velocity > 1)) {
-    throw new Error(`Invalid velocity ${velocity} in "${noteStr}". Must be 0.0-1.0`);
+    throw createError(errors.invalidVelocity(velocity));
   }
   if (probability !== undefined && (probability < 0 || probability > 1)) {
     throw new Error(`Invalid probability ${probability} in "${noteStr}". Must be 0.0-1.0`);
@@ -136,7 +137,7 @@ export function parseNote(noteStr: string): ParsedNote {
 
   const baseDuration = DURATION_MAP[durationCode];
   if (baseDuration === undefined) {
-    throw new Error(`Invalid duration code: "${durationCode}"`);
+    throw createError(errors.invalidDuration(noteStr, durationCode));
   }
 
   // Calculate duration with dotted and tuplet adjustments
@@ -369,4 +370,89 @@ export function expandNoteStrings(noteStrings: string[]): string[] {
  */
 export function getDynamicsVelocity(marking: DynamicsMarking): number {
   return DYNAMICS[marking] ?? 0.8;
+}
+
+// ============================================================================
+// NEW v0.9.2: Bracket Chord Notation
+// ============================================================================
+
+/**
+ * Bracket chord notation regex
+ * Format: [pitch1,pitch2,...]:duration[@velocity]
+ * Examples: [C4,E4,G4]:q, [A3,C4,E4]:h@0.6, [D2,A2,D3,F#3]:w@0.4
+ */
+const BRACKET_CHORD_REGEX = /^\[([A-Ga-g][#b]?\d+(?:,[A-Ga-g][#b]?\d+)+)\]:(\d+|[whq])(\.?)(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?$/;
+
+/**
+ * Check if a string is bracket chord notation
+ */
+export function isBracketChord(str: string): boolean {
+  return BRACKET_CHORD_REGEX.test(str.trim());
+}
+
+/**
+ * Parsed bracket chord result
+ */
+export interface ParsedBracketChord {
+  pitches: string[];
+  duration: string;
+  durationBeats: number;
+  dotted: boolean;
+  velocity?: number;
+}
+
+/**
+ * Parse bracket chord notation
+ * @param chordStr - Bracket chord string (e.g., "[C4,E4,G4]:q@0.5")
+ * @returns Parsed bracket chord object
+ */
+export function parseBracketChord(chordStr: string): ParsedBracketChord {
+  const match = chordStr.trim().match(BRACKET_CHORD_REGEX);
+
+  if (!match) {
+    throw new Error(`Invalid bracket chord format: "${chordStr}". Expected format: [pitch1,pitch2,...]:duration[@velocity] (e.g., "[C4,E4,G4]:q", "[A3,C4]:h@0.6")`);
+  }
+
+  const [, pitchesRaw, durationCode, dotted, velocityRaw] = match;
+
+  // Parse pitches
+  const pitches = pitchesRaw.split(',').map(p => {
+    // Normalize pitch: uppercase note name
+    const normalized = p.trim().replace(/^([a-g])/, (_, note) => note.toUpperCase());
+    // Validate pitch
+    if (!/^[A-G][#b]?\d+$/.test(normalized)) {
+      throw new Error(`Invalid pitch "${p}" in bracket chord "${chordStr}"`);
+    }
+    return normalized;
+  });
+
+  // Parse duration
+  const baseDuration = DURATION_MAP[durationCode];
+  if (baseDuration === undefined) {
+    throw new Error(`Invalid duration code: "${durationCode}" in bracket chord "${chordStr}"`);
+  }
+
+  const isDotted = dotted === '.';
+  const durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
+
+  // Parse velocity
+  let velocity: number | undefined;
+  if (velocityRaw) {
+    if (velocityRaw in DYNAMICS) {
+      velocity = DYNAMICS[velocityRaw as DynamicsMarking];
+    } else {
+      velocity = parseFloat(velocityRaw);
+      if (velocity < 0 || velocity > 1) {
+        throw new Error(`Invalid velocity ${velocity} in "${chordStr}". Must be 0.0-1.0`);
+      }
+    }
+  }
+
+  return {
+    pitches,
+    duration: durationCode,
+    durationBeats,
+    dotted: isDotted,
+    velocity,
+  };
 }
