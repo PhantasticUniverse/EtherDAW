@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "title": "Sustain Pedal Benchmark",
+    "composer": "EtherDAW v0.9.4 Benchmark",
+    "description": "Tests sustain pedal syntax: per-note :ped suffix, pattern-level pedal, and pedalMarks",
+    "version": "0.9.4"
+  },
+  "settings": {
+    "tempo": 72,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "piano": { "preset": "acoustic_piano", "volume": -6 },
+    "epiano": { "preset": "fm_epiano", "volume": -6 },
+    "pad": { "preset": "warm_pad", "volume": -9 }
+  },
+  "patterns": {
+    "per_note_pedal": {
+      "notes": [
+        "C4:q:ped", "E4:q:ped", "G4:q:ped", "C5:q:ped",
+        "D4:q:ped", "F4:q:ped", "A4:q:ped", "D5:q:ped"
+      ]
+    },
+    "pattern_level_pedal": {
+      "notes": ["C4:h", "E4:h", "G4:h", "C5:h"],
+      "pedal": true
+    },
+    "pedal_marks_regions": {
+      "notes": [
+        "C4:q", "E4:q", "G4:q", "C5:q",
+        "D4:q", "F4:q", "A4:q", "D5:q",
+        "E4:q", "G4:q", "B4:q", "E5:q",
+        "C4:q", "E4:q", "G4:q", "C5:q"
+      ],
+      "pedalMarks": [
+        { "start": 0, "end": 4 },
+        { "start": 4, "end": 8 },
+        { "start": 8, "end": 12 },
+        { "start": 12, "end": 16 }
+      ]
+    },
+    "mixed_pedal_and_dry": {
+      "notes": [
+        "C4:q:ped", "E4:q", "G4:q:ped", "C5:q",
+        "D4:q", "F4:q:ped", "A4:q", "D5:q:ped"
+      ]
+    },
+    "pedal_with_velocity": {
+      "notes": [
+        "C4:q@0.6:ped", "E4:q@0.7:ped", "G4:q@0.8:ped", "C5:q@0.9:ped"
+      ]
+    },
+    "no_pedal_reference": {
+      "notes": ["C4:h", "E4:h", "G4:h", "C5:h"]
+    }
+  },
+  "sections": {
+    "intro": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "no_pedal_reference" }
+      }
+    },
+    "per_note": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "per_note_pedal" }
+      }
+    },
+    "pattern_wide": {
+      "bars": 4,
+      "tracks": {
+        "epiano": { "pattern": "pattern_level_pedal" }
+      }
+    },
+    "with_marks": {
+      "bars": 8,
+      "tracks": {
+        "piano": { "pattern": "pedal_marks_regions" }
+      }
+    },
+    "mixed": {
+      "bars": 4,
+      "tracks": {
+        "piano": { "pattern": "mixed_pedal_and_dry" }
+      }
+    },
+    "velocity_test": {
+      "bars": 2,
+      "tracks": {
+        "epiano": { "pattern": "pedal_with_velocity" }
+      }
+    }
+  },
+  "arrangement": [
+    "intro",
+    "per_note",
+    "pattern_wide",
+    "with_marks",
+    "mixed",
+    "velocity_test"
+  ]
+}

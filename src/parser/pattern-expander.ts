@@ -1,5 +1,5 @@
-import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset, MarkovConfig, ContinuationConfig, VoiceLeadConfig, ConditionalConfig, TupletConfig } from '../schema/types.js';
-import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers, expandNoteStrings, isCompactNotation } from './note-parser.js';
+import type { Pattern, ParsedNote, ParsedChord, NoteEvent, DrumPattern, EuclideanConfig, ArpeggioConfig, DrumName, Articulation, PatternTransform, VelocityEnvelope, VelocityEnvelopePreset, MarkovConfig, ContinuationConfig, VoiceLeadConfig, ConditionalConfig, TupletConfig, PedalMark } from '../schema/types.js';
+import { parseNote, parseNotes, parseRest, isRest, beatsToSeconds, getArticulationModifiers, expandNoteStrings, isCompactNotation, isBracketChord, parseBracketChord } from './note-parser.js';
 import { parseChord, parseChords, getChordNotes } from './chord-parser.js';
 import { generateEuclidean, patternToSteps } from '../theory/euclidean.js';
 import { snapToScale, parseKey } from '../theory/scales.js';
@@ -23,6 +23,8 @@ export interface ExpandedPattern {
     jazzArticulation?: 'fall' | 'doit' | 'scoop' | 'bend';
     bendAmount?: number;      // Semitones for bend
     ornament?: 'tr' | 'mord' | 'turn';
+    // v0.9.4 sustain pedal
+    pedal?: boolean;          // Note sustains until pedal lifts
   }>;
   totalBeats: number;
 }
@@ -464,6 +466,29 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
     for (const noteStr of expandedNotes) {
       if (isRest(noteStr)) {
         currentBeat += parseRest(noteStr);
+      } else if (isBracketChord(noteStr)) {
+        // v0.9.2: Handle bracket chord notation [C4,E4,G4]:q@0.5
+        const bracketChord = parseBracketChord(noteStr);
+        const chordVelocity = bracketChord.velocity !== undefined ? bracketChord.velocity : velocity;
+
+        // Add all pitches as simultaneous notes at the current beat
+        for (const pitch of bracketChord.pitches) {
+          // Parse pitch to get octave for adjustment
+          const pitchMatch = pitch.match(/^([A-G][#b]?)(\d+)$/);
+          if (pitchMatch) {
+            const [, notePart, octaveStr] = pitchMatch;
+            const adjustedOctave = parseInt(octaveStr, 10) + octaveOffset;
+            const adjustedPitch = applyTranspose(`${notePart}${adjustedOctave}`, transpose);
+
+            notes.push({
+              pitch: adjustedPitch,
+              startBeat: currentBeat,
+              durationBeats: bracketChord.durationBeats,
+              velocity: chordVelocity,
+            });
+          }
+        }
+        currentBeat += bracketChord.durationBeats;
       } else {
         const parsed = parseNote(noteStr);
         const adjustedOctave = parsed.octave + octaveOffset;
@@ -493,6 +518,9 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
         if (parsed.jazzArticulation) noteData.jazzArticulation = parsed.jazzArticulation;
         if (parsed.bendAmount !== undefined) noteData.bendAmount = parsed.bendAmount;
         if (parsed.ornament) noteData.ornament = parsed.ornament;
+
+        // v0.9.4: Sustain pedal
+        if (parsed.pedal) noteData.pedal = true;
 
         notes.push(noteData);
         currentBeat += parsed.durationBeats; // Advance by original duration, not gated
@@ -668,10 +696,55 @@ export function expandPattern(pattern: Pattern, context: PatternContext): Expand
     });
   }
 
+  // v0.9.4: Apply pattern-level sustain pedal
+  if (resolvedPattern.pedal === true) {
+    // Mark all notes as pedaled
+    notes = notes.map(note => ({ ...note, pedal: true }));
+  }
+
+  // v0.9.4: Apply pedal marks (regions where pedal is held)
+  if (resolvedPattern.pedalMarks && resolvedPattern.pedalMarks.length > 0) {
+    notes = applyPedalMarks(notes, resolvedPattern.pedalMarks);
+  }
+
   return {
     notes,
     totalBeats: currentBeat,
   };
+}
+
+// ============================================================================
+// Sustain Pedal Handling (v0.9.4)
+// ============================================================================
+
+/**
+ * Apply pedal marks to notes
+ * Notes that start within a pedal mark region are marked as pedaled
+ * and their duration is extended to the pedal mark end
+ */
+function applyPedalMarks(
+  notes: ExpandedPattern['notes'],
+  pedalMarks: PedalMark[]
+): ExpandedPattern['notes'] {
+  return notes.map(note => {
+    // Check if note starts within any pedal mark region
+    for (const mark of pedalMarks) {
+      if (note.startBeat >= mark.start && note.startBeat < mark.end) {
+        // Note is within pedal region - mark as pedaled
+        // Extend duration to the end of the pedal mark if it would end earlier
+        const extendedDuration = Math.max(
+          note.durationBeats,
+          mark.end - note.startBeat
+        );
+        return {
+          ...note,
+          pedal: true,
+          durationBeats: extendedDuration,
+        };
+      }
+    }
+    return note;
+  });
 }
 
 /**

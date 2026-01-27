@@ -289,6 +289,11 @@ describe('Preset Registry', () => {
         'world',
         'ambient',
         'modern',
+        // v0.9.4: Orchestral categories
+        'strings',
+        'brass',
+        'woodwinds',
+        'orchestral',
       ];
 
       for (const preset of Object.values(PRESET_REGISTRY)) {

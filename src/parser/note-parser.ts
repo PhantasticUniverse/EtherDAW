@@ -11,6 +11,7 @@ import { errors, createError, VALID_DURATIONS } from '../errors/messages.js';
  * v0.4 Examples: C4:q@0.8, D4:8?0.7, E4:h+10ms, F4:q~>, G4:q*@0.9?0.5-5ms
  * v0.7 Examples: C4:8t3 (triplet), D4:qt3, E4:16t5 (quintuplet)
  * v0.8 Examples: C4:q.fall, D4:h.doit, E4:q.tr, F4:q@mf, G4:q.bend+2
+ * v0.9.4 Examples: C4:q:ped (sustain pedal)
  *
  * Articulations: * (staccato), ~ (legato), > (accent), ^ (marcato)
  * Portamento: ~> (glide to next note)
@@ -20,6 +21,7 @@ import { errors, createError, VALID_DURATIONS } from '../errors/messages.js';
  * Velocity: @0.0-1.0 or @ppp/@pp/@p/@mp/@mf/@f/@ff/@fff (per-note velocity)
  * Timing: +/-Nms (timing offset in milliseconds)
  * Probability: ?0.0-1.0 (chance of note playing)
+ * Sustain Pedal (v0.9.4): :ped (note sustains until pedal lifts)
  *
  * Capture groups:
  * 1: Note name (A-G)
@@ -37,9 +39,11 @@ import { errors, createError, VALID_DURATIONS } from '../errors/messages.js';
  * 13: Velocity (number or dynamics marking after @)
  * 14: Timing offset (signed number before ms)
  * 15: Probability (number after ?)
+ * 16: Portamento trailing (~>) - alternate position after modifiers
+ * 17: Sustain pedal (:ped)
  */
 // Note: Portamento (~>) can appear either before or after velocity/timing modifiers
-const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?$/;
+const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?(:ped)?$/;
 
 /**
  * Regular expression for parsing rest notation
@@ -78,6 +82,7 @@ export function parseNote(noteStr: string): ParsedNote {
     timingRaw,        // 14: Timing offset
     probabilityRaw,   // 15: Probability
     portamentoTrailing, // 16: Portamento (~>) - after modifiers (alternate position)
+    pedalRaw,         // 17: Sustain pedal (:ped)
   ] = match;
 
   const noteName = noteNameRaw.toUpperCase() as NoteName;
@@ -176,6 +181,8 @@ export function parseNote(noteStr: string): ParsedNote {
   if (bendAmount !== undefined) result.bendAmount = bendAmount;
   if (ornament) result.ornament = ornament;
   if (dynamics) result.dynamics = dynamics;
+  // v0.9.4: Sustain pedal
+  if (pedalRaw === ':ped') result.pedal = true;
 
   return result;
 }

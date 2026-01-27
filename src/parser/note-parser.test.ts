@@ -387,6 +387,34 @@ describe('v0.4 expression syntax', () => {
     });
   });
 
+  describe('sustain pedal (v0.9.4)', () => {
+    it('parses :ped suffix for sustain pedal', () => {
+      const note = parseNote('C4:q:ped');
+      expect(note.pitch).toBe('C4');
+      expect(note.durationBeats).toBe(1);
+      expect(note.pedal).toBe(true);
+    });
+
+    it('parses pedal with velocity', () => {
+      const note = parseNote('E4:h@0.8:ped');
+      expect(note.velocity).toBe(0.8);
+      expect(note.pedal).toBe(true);
+    });
+
+    it('parses pedal with all other modifiers', () => {
+      const note = parseNote('G4:q*@0.9?0.5:ped');
+      expect(note.articulation).toBe('*');
+      expect(note.velocity).toBe(0.9);
+      expect(note.probability).toBe(0.5);
+      expect(note.pedal).toBe(true);
+    });
+
+    it('returns undefined when no pedal specified', () => {
+      const note = parseNote('C4:q');
+      expect(note.pedal).toBeUndefined();
+    });
+  });
+
   describe('combined modifiers', () => {
     it('parses velocity with articulation', () => {
       const note = parseNote('C4:q*@0.9');
@@ -430,6 +458,88 @@ describe('v0.4 expression syntax', () => {
       expect(note.velocity).toBe(0.85);
       expect(note.timingOffset).toBe(5);
       expect(note.probability).toBe(0.9);
+    });
+  });
+});
+
+// ============================================================================
+// v0.9.2: Bracket Chord Notation Tests
+// ============================================================================
+
+import { isBracketChord, parseBracketChord } from './note-parser.js';
+
+describe('Bracket Chord Notation (v0.9.2)', () => {
+  describe('isBracketChord', () => {
+    it('identifies bracket chord notation', () => {
+      expect(isBracketChord('[C4,E4,G4]:q')).toBe(true);
+      expect(isBracketChord('[A3,C4]:h')).toBe(true);
+      expect(isBracketChord('[D2,A2,D3,F#3]:w@0.5')).toBe(true);
+    });
+
+    it('rejects non-bracket notation', () => {
+      expect(isBracketChord('C4:q')).toBe(false);
+      expect(isBracketChord('Cmaj7:w')).toBe(false);
+      expect(isBracketChord('r:q')).toBe(false);
+    });
+
+    it('rejects malformed bracket notation', () => {
+      expect(isBracketChord('[C4]:q')).toBe(false); // Single note
+      expect(isBracketChord('[C4,E4,G4]')).toBe(false); // No duration
+      expect(isBracketChord('C4,E4,G4:q')).toBe(false); // No brackets
+    });
+  });
+
+  describe('parseBracketChord', () => {
+    it('parses basic bracket chord', () => {
+      const chord = parseBracketChord('[C4,E4,G4]:q');
+      expect(chord.pitches).toEqual(['C4', 'E4', 'G4']);
+      expect(chord.duration).toBe('q');
+      expect(chord.durationBeats).toBe(1);
+      expect(chord.dotted).toBe(false);
+      expect(chord.velocity).toBeUndefined();
+    });
+
+    it('parses bracket chord with velocity', () => {
+      const chord = parseBracketChord('[A3,C4,E4]:h@0.6');
+      expect(chord.pitches).toEqual(['A3', 'C4', 'E4']);
+      expect(chord.duration).toBe('h');
+      expect(chord.durationBeats).toBe(2);
+      expect(chord.velocity).toBe(0.6);
+    });
+
+    it('parses bracket chord with dotted duration', () => {
+      const chord = parseBracketChord('[D4,F#4]:q.');
+      expect(chord.pitches).toEqual(['D4', 'F#4']);
+      expect(chord.duration).toBe('q');
+      expect(chord.durationBeats).toBe(1.5);
+      expect(chord.dotted).toBe(true);
+    });
+
+    it('parses bracket chord with sharps and flats', () => {
+      const chord = parseBracketChord('[Bb3,D4,F#4]:w');
+      expect(chord.pitches).toEqual(['Bb3', 'D4', 'F#4']);
+      expect(chord.durationBeats).toBe(4);
+    });
+
+    it('parses bracket chord with dynamics marking', () => {
+      const chord = parseBracketChord('[C4,E4]:q@mf');
+      expect(chord.pitches).toEqual(['C4', 'E4']);
+      expect(chord.velocity).toBeCloseTo(0.7, 1);
+    });
+
+    it('normalizes lowercase pitch names', () => {
+      const chord = parseBracketChord('[c4,e4,g4]:q');
+      expect(chord.pitches).toEqual(['C4', 'E4', 'G4']);
+    });
+
+    it('throws on invalid bracket chord format', () => {
+      expect(() => parseBracketChord('[C4]:q')).toThrow();
+      expect(() => parseBracketChord('[C4,E4,G4]')).toThrow();
+      expect(() => parseBracketChord('C4,E4:q')).toThrow();
+    });
+
+    it('throws on invalid velocity', () => {
+      expect(() => parseBracketChord('[C4,E4]:q@1.5')).toThrow();
     });
   });
 });

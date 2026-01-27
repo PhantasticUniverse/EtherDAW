@@ -13,20 +13,24 @@
  * Preset categories for organization and filtering
  */
 export type PresetCategory =
-  | 'synth'     // Basic waveforms (sine, square, saw, triangle)
-  | 'bass'      // Bass sounds (sub, synth, FM)
-  | 'pad'       // Sustained pads
-  | 'lead'      // Melodic leads
-  | 'keys'      // Piano, organ, etc.
-  | 'pluck'     // Short, plucked sounds
-  | 'fm'        // FM synthesis (DX7-inspired)
-  | 'texture'   // Noise and texture
-  | 'drums'     // Individual drum sounds
-  | 'lofi'      // Lo-fi and vintage
-  | 'cinematic' // Film score sounds
-  | 'world'     // World instruments
-  | 'ambient'   // Ambient/drone
-  | 'modern';   // Modern electronic (trap, future bass)
+  | 'synth'       // Basic waveforms (sine, square, saw, triangle)
+  | 'bass'        // Bass sounds (sub, synth, FM)
+  | 'pad'         // Sustained pads
+  | 'lead'        // Melodic leads
+  | 'keys'        // Piano, organ, etc.
+  | 'pluck'       // Short, plucked sounds
+  | 'fm'          // FM synthesis (DX7-inspired)
+  | 'texture'     // Noise and texture
+  | 'drums'       // Individual drum sounds
+  | 'lofi'        // Lo-fi and vintage
+  | 'cinematic'   // Film score sounds
+  | 'world'       // World instruments
+  | 'ambient'     // Ambient/drone
+  | 'modern'      // Modern electronic (trap, future bass)
+  | 'strings'     // Orchestral strings (v0.9.4)
+  | 'brass'       // Orchestral brass (v0.9.4)
+  | 'woodwinds'   // Orchestral woodwinds (v0.9.4)
+  | 'orchestral'; // Choir and orchestral percussion (v0.9.4)
 
 /**
  * Synth engine type - determines how the preset is synthesized
@@ -215,6 +219,11 @@ export const PRESET_CATEGORIES: PresetCategory[] = [
   'world',
   'ambient',
   'modern',
+  // v0.9.4: Orchestral categories
+  'strings',
+  'brass',
+  'woodwinds',
+  'orchestral',
 ];
 
 /**
@@ -235,4 +244,9 @@ export const CATEGORY_INFO: Record<PresetCategory, { label: string; description:
   world: { label: 'World', description: 'World instruments and ethnic sounds' },
   ambient: { label: 'Ambient', description: 'Drones and atmospheric pads' },
   modern: { label: 'Modern', description: 'Contemporary electronic sounds' },
+  // v0.9.4: Orchestral categories
+  strings: { label: 'Strings', description: 'Orchestral string family instruments' },
+  brass: { label: 'Brass', description: 'Orchestral brass instruments' },
+  woodwinds: { label: 'Woodwinds', description: 'Orchestral woodwind instruments' },
+  orchestral: { label: 'Orchestral', description: 'Choir and orchestral percussion' },
 };

@@ -37,6 +37,11 @@ import { CINEMATIC_PRESETS } from './cinematic.js';
 import { WORLD_PRESETS } from './world.js';
 import { AMBIENT_PRESETS } from './ambient.js';
 import { MODERN_PRESETS } from './modern.js';
+// v0.9.4: Orchestral presets
+import { STRINGS_PRESETS } from './strings.js';
+import { BRASS_PRESETS } from './brass.js';
+import { WOODWINDS_PRESETS } from './woodwinds.js';
+import { ORCHESTRAL_PRESETS } from './orchestral.js';
 
 import type {
   PresetDefinition,
@@ -68,6 +73,11 @@ export const PRESET_REGISTRY: Record<string, PresetDefinition> = {
   ...WORLD_PRESETS,
   ...AMBIENT_PRESETS,
   ...MODERN_PRESETS,
+  // v0.9.4: Orchestral presets
+  ...STRINGS_PRESETS,
+  ...BRASS_PRESETS,
+  ...WOODWINDS_PRESETS,
+  ...ORCHESTRAL_PRESETS,
 };
 
 /**
@@ -95,7 +105,37 @@ const PRESET_ALIASES: Record<string, string> = {
   // Shorthand aliases
   epiano: 'fm_epiano',
   rhodes: 'fm_epiano',
-  strings: 'string_pad',
+  strings: 'string_ensemble',  // Updated to point to the new orchestral preset
+
+  // v0.9.4: Orchestral aliases
+  violin: 'solo_violin',
+  viola: 'solo_viola',
+  cello: 'solo_cello',
+  double_bass: 'contrabass',
+  pizz: 'string_pizzicato',
+  pizzicato: 'string_pizzicato',
+  tremolo_strings: 'string_tremolo',
+  spiccato: 'string_spiccato',
+
+  // Brass aliases
+  horn: 'french_horn',
+  brass: 'brass_ensemble',
+  muted: 'muted_trumpet',
+
+  // Woodwind aliases
+  cor_anglais: 'english_horn',
+
+  // Choir aliases
+  choir: 'mixed_choir',
+  voices: 'mixed_choir',
+  aah: 'choir_aah',
+  ooh: 'choir_ooh',
+
+  // Orchestral percussion aliases
+  bells: 'tubular_bells',
+  chimes: 'tubular_bells',
+  glock: 'glockenspiel',
+  vibes: 'vibraphone',
 };
 
 // =============================================================================
@@ -484,3 +524,8 @@ export { CINEMATIC_PRESETS } from './cinematic.js';
 export { WORLD_PRESETS } from './world.js';
 export { AMBIENT_PRESETS } from './ambient.js';
 export { MODERN_PRESETS } from './modern.js';
+// v0.9.4: Orchestral presets
+export { STRINGS_PRESETS } from './strings.js';
+export { BRASS_PRESETS } from './brass.js';
+export { WOODWINDS_PRESETS } from './woodwinds.js';
+export { ORCHESTRAL_PRESETS } from './orchestral.js';

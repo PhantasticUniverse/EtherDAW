@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "title": "Orchestral Presets Benchmark",
+    "composer": "EtherDAW v0.9.4 Benchmark",
+    "description": "Tests all 31 orchestral presets: strings (8), brass (6), woodwinds (6), choir & percussion (11)",
+    "version": "0.9.4"
+  },
+  "settings": {
+    "tempo": 80,
+    "key": "C major",
+    "timeSignature": "4/4"
+  },
+  "instruments": {
+    "violin": { "preset": "solo_violin", "volume": -6 },
+    "viola": { "preset": "solo_viola", "volume": -6 },
+    "cello": { "preset": "solo_cello", "volume": -6 },
+    "contrabass": { "preset": "contrabass", "volume": -9 },
+    "strings_ens": { "preset": "string_ensemble", "volume": -9 },
+    "pizz": { "preset": "string_pizzicato", "volume": -6 },
+    "trem": { "preset": "string_tremolo", "volume": -6 },
+    "spicc": { "preset": "string_spiccato", "volume": -6 },
+    "trumpet": { "preset": "trumpet", "volume": -6 },
+    "horn": { "preset": "french_horn", "volume": -9 },
+    "trombone": { "preset": "trombone", "volume": -6 },
+    "tuba": { "preset": "tuba", "volume": -9 },
+    "brass_ens": { "preset": "brass_ensemble", "volume": -9 },
+    "muted_trp": { "preset": "muted_trumpet", "volume": -6 },
+    "flute": { "preset": "flute", "volume": -6 },
+    "clarinet": { "preset": "clarinet", "volume": -6 },
+    "oboe": { "preset": "oboe", "volume": -6 },
+    "bassoon": { "preset": "bassoon", "volume": -9 },
+    "piccolo": { "preset": "piccolo", "volume": -9 },
+    "english_horn": { "preset": "english_horn", "volume": -6 },
+    "choir_aah": { "preset": "choir_aah", "volume": -9 },
+    "choir_ooh": { "preset": "choir_ooh", "volume": -9 },
+    "choir_mmm": { "preset": "choir_mmm", "volume": -9 },
+    "mixed_choir": { "preset": "mixed_choir", "volume": -9 },
+    "timpani": { "preset": "timpani", "volume": -6 },
+    "glockenspiel": { "preset": "glockenspiel", "volume": -9 },
+    "xylophone": { "preset": "xylophone", "volume": -6 },
+    "vibraphone": { "preset": "vibraphone", "volume": -6 },
+    "marimba": { "preset": "marimba", "volume": -6 },
+    "tubular_bells": { "preset": "tubular_bells", "volume": -6 },
+    "celesta": { "preset": "celesta", "volume": -6 }
+  },
+  "patterns": {
+    "string_melody": { "notes": ["G4:h", "A4:q", "B4:q", "C5:w"] },
+    "string_harmony": { "notes": ["E4:h", "F4:q", "G4:q", "A4:w"] },
+    "bass_line": { "notes": ["C2:h", "G2:h", "A2:h", "E2:h"] },
+    "pizz_rhythm": { "notes": ["C3:q", "r:q", "E3:q", "r:q", "G3:q", "r:q", "C4:q", "r:q"] },
+    "trem_sustain": { "notes": ["C4:w", "E4:w"] },
+    "spicc_fast": { "notes": ["G4:8", "A4:8", "B4:8", "C5:8", "D5:8", "E5:8", "F5:8", "G5:8"] },
+    "brass_fanfare": { "notes": ["C5:q", "r:8", "C5:8", "G5:h", "r:q", "G5:q", "C6:w"] },
+    "horn_sustained": { "notes": ["E4:w", "G4:w"] },
+    "trombone_phrase": { "notes": ["C3:h", "E3:q", "G3:q", "C4:h", "r:h"] },
+    "tuba_bass": { "notes": ["C2:h", "G1:h", "F1:h", "C2:h"] },
+    "brass_chord": { "chords": ["C:w", "G:w"] },
+    "muted_jazz": { "notes": ["E4:q", "G4:8", "A4:8", "G4:q", "E4:q"] },
+    "flute_melody": { "notes": ["G5:q", "A5:8", "B5:8", "C6:h", "D6:q", "C6:q"] },
+    "clarinet_phrase": { "notes": ["E4:q", "G4:q", "A4:h", "G4:q", "E4:q", "D4:h"] },
+    "oboe_lyrical": { "notes": ["C5:h", "D5:q", "E5:q", "F5:h", "E5:h"] },
+    "bassoon_bass": { "notes": ["C3:h", "D3:q", "E3:q", "F3:h", "G3:h"] },
+    "piccolo_high": { "notes": ["C6:8", "D6:8", "E6:8", "F6:8", "G6:q", "F6:q"] },
+    "eh_mellow": { "notes": ["A4:h", "G4:q", "F4:q", "E4:w"] },
+    "choir_aah_pad": { "notes": ["C4:w", "E4:w", "G4:w", "C5:w"] },
+    "choir_ooh_pad": { "notes": ["E4:w", "G4:w", "B4:w", "E5:w"] },
+    "choir_mmm_soft": { "notes": ["G3:w", "C4:w", "E4:w", "G4:w"] },
+    "mixed_choir_full": { "chords": ["C:w", "Am:w", "F:w", "G:w"] },
+    "timpani_roll": { "notes": ["C2:w", "G2:w"] },
+    "glock_melody": { "notes": ["C6:8", "D6:8", "E6:8", "G6:8", "E6:q", "D6:q"] },
+    "xylo_rhythm": { "notes": ["C5:8", "r:8", "E5:8", "r:8", "G5:8", "r:8", "C6:q"] },
+    "vibes_jazz": { "notes": ["E4:q", "G4:q", "A4:h", "C5:q", "B4:q", "A4:h"] },
+    "marimba_warm": { "notes": ["C4:q", "E4:q", "G4:q", "C5:q", "G4:q", "E4:q", "C4:h"] },
+    "bells_dramatic": { "notes": ["C4:w", "r:w", "G4:w", "r:w"] },
+    "celesta_magic": { "notes": ["G5:8", "A5:8", "C6:q", "E6:q", "D6:q", "C6:h"] }
+  },
+  "sections": {
+    "strings_solo": {
+      "bars": 8,
+      "tracks": {
+        "violin": { "pattern": "string_melody" },
+        "viola": { "pattern": "string_harmony" },
+        "cello": { "pattern": "bass_line" },
+        "contrabass": { "pattern": "bass_line" }
+      }
+    },
+    "strings_articulations": {
+      "bars": 4,
+      "tracks": {
+        "pizz": { "pattern": "pizz_rhythm" },
+        "trem": { "pattern": "trem_sustain" },
+        "spicc": { "pattern": "spicc_fast" }
+      }
+    },
+    "strings_ensemble": {
+      "bars": 8,
+      "tracks": {
+        "strings_ens": { "pattern": "string_melody" }
+      }
+    },
+    "brass_solo": {
+      "bars": 8,
+      "tracks": {
+        "trumpet": { "pattern": "brass_fanfare" },
+        "horn": { "pattern": "horn_sustained" },
+        "trombone": { "pattern": "trombone_phrase" },
+        "tuba": { "pattern": "tuba_bass" }
+      }
+    },
+    "brass_ensemble": {
+      "bars": 8,
+      "tracks": {
+        "brass_ens": { "pattern": "brass_chord" },
+        "muted_trp": { "pattern": "muted_jazz" }
+      }
+    },
+    "woodwinds": {
+      "bars": 8,
+      "tracks": {
+        "flute": { "pattern": "flute_melody" },
+        "clarinet": { "pattern": "clarinet_phrase" },
+        "oboe": { "pattern": "oboe_lyrical" },
+        "bassoon": { "pattern": "bassoon_bass" }
+      }
+    },
+    "woodwinds_high_low": {
+      "bars": 4,
+      "tracks": {
+        "piccolo": { "pattern": "piccolo_high" },
+        "english_horn": { "pattern": "eh_mellow" }
+      }
+    },
+    "choir": {
+      "bars": 16,
+      "tracks": {
+        "choir_aah": { "pattern": "choir_aah_pad" },
+        "choir_ooh": { "pattern": "choir_ooh_pad" },
+        "choir_mmm": { "pattern": "choir_mmm_soft" },
+        "mixed_choir": { "pattern": "mixed_choir_full" }
+      }
+    },
+    "percussion": {
+      "bars": 8,
+      "tracks": {
+        "timpani": { "pattern": "timpani_roll" },
+        "glockenspiel": { "pattern": "glock_melody" },
+        "xylophone": { "pattern": "xylo_rhythm" },
+        "vibraphone": { "pattern": "vibes_jazz" }
+      }
+    },
+    "mallet_percussion": {
+      "bars": 8,
+      "tracks": {
+        "marimba": { "pattern": "marimba_warm" },
+        "tubular_bells": { "pattern": "bells_dramatic" },
+        "celesta": { "pattern": "celesta_magic" }
+      }
+    }
+  },
+  "arrangement": [
+    "strings_solo",
+    "strings_articulations",
+    "strings_ensemble",
+    "brass_solo",
+    "brass_ensemble",
+    "woodwinds",
+    "woodwinds_high_low",
+    "choir",
+    "percussion",
+    "mallet_percussion"
+  ]
+}

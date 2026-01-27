@@ -414,6 +414,21 @@ export interface VelocityEnvelope {
   velocity: VelocityEnvelopePreset | number[];
 }
 
+// ============================================================================
+// NEW v0.9.4: Sustain Pedal
+// ============================================================================
+
+/**
+ * Pedal mark for sustain pedal regions (v0.9.4)
+ *
+ * Defines a region where all notes sustain until the pedal lifts.
+ * Notes within the same pedal region overlap (sustain behavior).
+ */
+export interface PedalMark {
+  start: number;  // Beat position where pedal goes down
+  end: number;    // Beat position where pedal lifts
+}
+
 export interface Pattern {
   // NEW v0.9.1: Pattern type discriminator for shorthand formats
   // Allows "type": "drums" instead of nested "drums": {...}
@@ -445,6 +460,9 @@ export interface Pattern {
   // NEW v0.8: Expression
   dynamics?: DynamicsMarking;  // Pattern-level dynamics (pp, p, mp, mf, f, ff)
   groove?: GrooveTemplateName; // Apply groove feel to pattern
+  // NEW v0.9.4: Sustain Pedal
+  pedal?: boolean;             // Pattern-level pedal (all notes sustain)
+  pedalMarks?: PedalMark[];    // Explicit pedal regions for fine control
 }
 
 // ============================================================================
@@ -468,6 +486,8 @@ export interface Track {
   fallback?: string;
   // NEW v0.8: Groove template - applies timing/velocity feel
   groove?: GrooveTemplateName;
+  // NEW v0.9.4: Sustain pedal - applies pedal to all patterns in this track
+  pedal?: boolean;
 }
 
 // NEW v0.5: Automation curve types
@@ -593,6 +613,8 @@ export interface ParsedNote {
   ornament?: Ornament;    // tr, mord, turn
   // NEW v0.8: Dynamics
   dynamics?: DynamicsMarking;  // pp, p, mp, mf, f, ff
+  // NEW v0.9.4: Sustain pedal
+  pedal?: boolean;             // Note should sustain (part of pedal region)
 }
 
 export interface ParsedChord {

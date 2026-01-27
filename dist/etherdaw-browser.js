@@ -759,13 +759,288 @@ var GROOVE_TEMPLATES = {
 // src/schema/types.ts
 var DURATION_MAP = DURATIONS;
 
+// src/errors/messages.ts
+function levenshtein(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+function findSimilar(input, candidates, maxDistance = 3, maxResults = 3) {
+  return candidates.map((c) => ({ c, d: levenshtein(input.toLowerCase(), c.toLowerCase()) })).filter(({ d }) => d <= maxDistance).sort((a, b) => a.d - b.d).slice(0, maxResults).map(({ c }) => c);
+}
+function formatSuggestion(similar) {
+  if (similar.length === 0) return void 0;
+  if (similar.length === 1) return `Did you mean '${similar[0]}'?`;
+  return `Did you mean: ${similar.map((s) => `'${s}'`).join(", ")}?`;
+}
+var DRUM_NAMES = [
+  "kick",
+  "bd",
+  "bass",
+  "snare",
+  "sd",
+  "hihat",
+  "hh",
+  "ch",
+  "oh",
+  "tom1",
+  "tom2",
+  "tom3",
+  "crash",
+  "ride",
+  "bell",
+  "rim",
+  "clap",
+  "perc",
+  "shaker",
+  "tambourine",
+  "cowbell",
+  "conga_hi",
+  "conga_lo",
+  "bongo_hi",
+  "bongo_lo",
+  "timbale_hi",
+  "timbale_lo",
+  "agogo_hi",
+  "agogo_lo"
+];
+var errors = {
+  /**
+   * Invalid note duration
+   */
+  invalidDuration: (note, duration) => ({
+    code: "E001",
+    message: `Invalid note '${note}' - unknown duration '${duration}'`,
+    help: `Valid durations: w (whole), h (half), q (quarter), 8 (eighth), 16 (sixteenth), 32 (thirty-second), t (triplet modifier)`,
+    docs: "docs/ETHERSCORE_FORMAT.md#durations"
+  }),
+  /**
+   * Invalid note pitch
+   */
+  invalidPitch: (note, pitch) => ({
+    code: "E002",
+    message: `Invalid note '${note}' - invalid pitch '${pitch}'`,
+    help: `Pitch must be a letter A-G, optional # or b, and octave number (0-9). Examples: C4, F#5, Bb3`,
+    docs: "docs/ETHERSCORE_FORMAT.md#notes"
+  }),
+  /**
+   * Invalid note syntax
+   */
+  invalidNoteSyntax: (note) => ({
+    code: "E003",
+    message: `Invalid note syntax: '${note}'`,
+    help: `Note format: <pitch>:<duration> or just <pitch>. Examples: C4:q (quarter note C4), E5:h (half note E5), r:q (quarter rest)`,
+    docs: "docs/ETHERSCORE_FORMAT.md#notes"
+  }),
+  /**
+   * Unknown preset
+   */
+  unknownPreset: (preset, instrument, availablePresets) => {
+    const similar = findSimilar(preset, availablePresets);
+    return {
+      code: "E004",
+      message: `Unknown preset '${preset}' for instrument '${instrument}'`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Run 'npx tsx src/cli.ts list presets' to see available presets`,
+      docs: "docs/PRESETS.md"
+    };
+  },
+  /**
+   * Invalid chord name
+   */
+  invalidChord: (chord) => ({
+    code: "E005",
+    message: `Invalid chord: '${chord}'`,
+    help: `Chord format: <root>[quality][:<duration>]. Examples: C (C major), Am7 (A minor 7th), Dm:h (D minor half note). Qualities: m, maj7, m7, 7, dim, aug, sus2, sus4`,
+    docs: "docs/ETHERSCORE_FORMAT.md#chords"
+  }),
+  /**
+   * Unknown drum name
+   */
+  unknownDrum: (drum, kit) => {
+    const similar = findSimilar(drum, DRUM_NAMES);
+    return {
+      code: "E006",
+      message: `Unknown drum '${drum}' in kit '${kit}'`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Available drums: kick, snare, hihat, tom1, tom2, crash, ride, rim, clap`,
+      docs: "docs/ETHERSCORE_FORMAT.md#drums"
+    };
+  },
+  /**
+   * Pattern not found
+   */
+  patternNotFound: (pattern, availablePatterns) => {
+    const similar = findSimilar(pattern, availablePatterns);
+    return {
+      code: "E007",
+      message: `Pattern '${pattern}' not found`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Define pattern '${pattern}' in the patterns object`,
+      docs: "docs/ETHERSCORE_FORMAT.md#patterns"
+    };
+  },
+  /**
+   * Section not found
+   */
+  sectionNotFound: (section, availableSections) => {
+    const similar = findSimilar(section, availableSections);
+    return {
+      code: "E008",
+      message: `Section '${section}' in arrangement not found`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Define section '${section}' in the sections object`,
+      docs: "docs/ETHERSCORE_FORMAT.md#sections"
+    };
+  },
+  /**
+   * Missing required field
+   */
+  missingRequired: (field, context2) => ({
+    code: "E009",
+    message: `Missing required field '${field}' in ${context2}`,
+    help: `Every ${context2.split(" ")[0]} must have a '${field}' property`,
+    docs: "docs/ETHERSCORE_FORMAT.md"
+  }),
+  /**
+   * Invalid time signature
+   */
+  invalidTimeSignature: (timeSignature) => ({
+    code: "E010",
+    message: `Invalid time signature: '${timeSignature}'`,
+    help: `Time signature format: <numerator>/<denominator>. Examples: 4/4, 3/4, 6/8. Denominator must be 2, 4, 8, or 16.`,
+    docs: "docs/ETHERSCORE_FORMAT.md#settings"
+  }),
+  /**
+   * Invalid velocity
+   */
+  invalidVelocity: (velocity) => ({
+    code: "E011",
+    message: `Invalid velocity: ${velocity}`,
+    help: `Velocity must be between 0 and 1. Example: 0.7 for moderate velocity, 0.9 for loud`
+  }),
+  /**
+   * Invalid tempo
+   */
+  invalidTempo: (tempo) => ({
+    code: "E012",
+    message: `Invalid tempo: ${tempo} BPM`,
+    help: `Tempo should typically be between 20 and 300 BPM`
+  }),
+  /**
+   * Instrument not defined
+   */
+  instrumentNotDefined: (instrument, section) => ({
+    code: "E013",
+    message: `Track '${instrument}' in section '${section}' has no matching instrument definition`,
+    help: `Add an instrument definition: { "instruments": { "${instrument}": { "preset": "..." } } }`,
+    docs: "docs/ETHERSCORE_FORMAT.md#instruments"
+  }),
+  /**
+   * Empty arrangement
+   */
+  emptyArrangement: () => ({
+    code: "E014",
+    message: `Arrangement is empty`,
+    help: `Add section names to the arrangement array: { "arrangement": ["intro", "verse", "chorus"] }`,
+    docs: "docs/ETHERSCORE_FORMAT.md#arrangement"
+  }),
+  /**
+   * Invalid octave
+   */
+  invalidOctave: (octave) => ({
+    code: "E015",
+    message: `Invalid octave: ${octave}`,
+    help: `Octave should be between -2 and 10. Typical range is 2-6 for most instruments.`
+  }),
+  /**
+   * Invalid humanize value
+   */
+  invalidHumanize: (humanize) => ({
+    code: "E016",
+    message: `Invalid humanize value: ${humanize}`,
+    help: `Humanize should be between 0 and 0.1. Typical values: 0.01-0.03 for subtle variation, 0.05+ for loose feel.`
+  }),
+  /**
+   * Invalid swing value
+   */
+  invalidSwing: (swing) => ({
+    code: "E017",
+    message: `Invalid swing value: ${swing}`,
+    help: `Swing should be between 0 and 1. Typical values: 0.1-0.3 for light swing, 0.5-0.7 for heavy swing.`
+  }),
+  /**
+   * Bracket chord syntax error
+   */
+  invalidBracketChord: (input) => ({
+    code: "E018",
+    message: `Invalid bracket chord syntax: '${input}'`,
+    help: `Bracket chord format: [pitch1,pitch2,...]:<duration>. Example: [C4,E4,G4]:h for a half-note C major triad`,
+    docs: "docs/ETHERSCORE_FORMAT.md#bracket-chords"
+  }),
+  /**
+   * Invalid effect type
+   */
+  invalidEffect: (effect, availableEffects) => {
+    const similar = findSimilar(effect, availableEffects);
+    return {
+      code: "E019",
+      message: `Unknown effect type: '${effect}'`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Available effects: reverb, delay, chorus, distortion, filter, compressor, eq`,
+      docs: "docs/ETHERSCORE_FORMAT.md#effects"
+    };
+  },
+  /**
+   * Invalid drum kit
+   */
+  invalidDrumKit: (kit, availableKits) => {
+    const similar = findSimilar(kit, availableKits);
+    return {
+      code: "E020",
+      message: `Unknown drum kit: '${kit}'`,
+      help: similar.length > 0 ? formatSuggestion(similar) : `Available kits: 808, 909, acoustic, world`
+    };
+  }
+};
+function formatError(error) {
+  const lines = [`${error.code}: ${error.message}`];
+  if (error.help) {
+    lines.push(`  ${error.help}`);
+  }
+  if (error.docs) {
+    lines.push(`  See: ${error.docs}`);
+  }
+  return lines.join("\n");
+}
+function createError(info) {
+  const error = new Error(formatError(info));
+  error.code = info.code;
+  error.help = info.help;
+  error.docs = info.docs;
+  return error;
+}
+
 // src/parser/note-parser.ts
-var NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?$/;
+var NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?(:ped)?$/;
 var REST_REGEX = /^r:(\d+|[whq])(\.?)$/i;
 function parseNote(noteStr) {
   const match = noteStr.trim().match(NOTE_REGEX);
   if (!match) {
-    throw new Error(`Invalid note format: "${noteStr}". Expected format: {pitch}{octave}:{duration}[tN][articulation][.jazzArt][.ornament][@velocity][+/-timing][?probability] (e.g., "C4:q", "C4:q*", "C4:q@0.8", "C4:8t3", "C4:q.fall", "C4:q.tr")`);
+    throw createError(errors.invalidNoteSyntax(noteStr));
   }
   const [
     ,
@@ -799,8 +1074,10 @@ function parseNote(noteStr) {
     // 14: Timing offset
     probabilityRaw,
     // 15: Probability
-    portamentoTrailing
+    portamentoTrailing,
     // 16: Portamento (~>) - after modifiers (alternate position)
+    pedalRaw
+    // 17: Sustain pedal (:ped)
   ] = match;
   const noteName = noteNameRaw.toUpperCase();
   const accidental = accidentalRaw || "";
@@ -830,7 +1107,7 @@ function parseNote(noteStr) {
   const timingOffset = timingRaw ? parseInt(timingRaw, 10) : void 0;
   const probability = probabilityRaw ? parseFloat(probabilityRaw) : void 0;
   if (velocity !== void 0 && (velocity < 0 || velocity > 1)) {
-    throw new Error(`Invalid velocity ${velocity} in "${noteStr}". Must be 0.0-1.0`);
+    throw createError(errors.invalidVelocity(velocity));
   }
   if (probability !== void 0 && (probability < 0 || probability > 1)) {
     throw new Error(`Invalid probability ${probability} in "${noteStr}". Must be 0.0-1.0`);
@@ -843,7 +1120,7 @@ function parseNote(noteStr) {
   }
   const baseDuration = DURATION_MAP[durationCode];
   if (baseDuration === void 0) {
-    throw new Error(`Invalid duration code: "${durationCode}"`);
+    throw createError(errors.invalidDuration(noteStr, durationCode));
   }
   let durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
   if (tupletRatio) {
@@ -870,6 +1147,7 @@ function parseNote(noteStr) {
   if (bendAmount !== void 0) result.bendAmount = bendAmount;
   if (ornament) result.ornament = ornament;
   if (dynamics) result.dynamics = dynamics;
+  if (pedalRaw === ":ped") result.pedal = true;
   return result;
 }
 function getArticulationModifiers(articulation) {
@@ -950,6 +1228,48 @@ function expandNoteStrings(noteStrings) {
     }
     return [str];
   });
+}
+var BRACKET_CHORD_REGEX = /^\[([A-Ga-g][#b]?\d+(?:,[A-Ga-g][#b]?\d+)+)\]:(\d+|[whq])(\.?)(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?$/;
+function isBracketChord(str) {
+  return BRACKET_CHORD_REGEX.test(str.trim());
+}
+function parseBracketChord(chordStr) {
+  const match = chordStr.trim().match(BRACKET_CHORD_REGEX);
+  if (!match) {
+    throw new Error(`Invalid bracket chord format: "${chordStr}". Expected format: [pitch1,pitch2,...]:duration[@velocity] (e.g., "[C4,E4,G4]:q", "[A3,C4]:h@0.6")`);
+  }
+  const [, pitchesRaw, durationCode, dotted, velocityRaw] = match;
+  const pitches = pitchesRaw.split(",").map((p) => {
+    const normalized = p.trim().replace(/^([a-g])/, (_, note) => note.toUpperCase());
+    if (!/^[A-G][#b]?\d+$/.test(normalized)) {
+      throw new Error(`Invalid pitch "${p}" in bracket chord "${chordStr}"`);
+    }
+    return normalized;
+  });
+  const baseDuration = DURATION_MAP[durationCode];
+  if (baseDuration === void 0) {
+    throw new Error(`Invalid duration code: "${durationCode}" in bracket chord "${chordStr}"`);
+  }
+  const isDotted = dotted === ".";
+  const durationBeats = isDotted ? baseDuration * DOTTED_MULTIPLIER : baseDuration;
+  let velocity;
+  if (velocityRaw) {
+    if (velocityRaw in DYNAMICS) {
+      velocity = DYNAMICS[velocityRaw];
+    } else {
+      velocity = parseFloat(velocityRaw);
+      if (velocity < 0 || velocity > 1) {
+        throw new Error(`Invalid velocity ${velocity} in "${chordStr}". Must be 0.0-1.0`);
+      }
+    }
+  }
+  return {
+    pitches,
+    duration: durationCode,
+    durationBeats,
+    dotted: isDotted,
+    velocity
+  };
 }
 
 // src/parser/chord-parser.ts
@@ -2883,6 +3203,24 @@ function expandPattern(pattern, context2) {
     for (const noteStr of expandedNotes) {
       if (isRest(noteStr)) {
         currentBeat += parseRest(noteStr);
+      } else if (isBracketChord(noteStr)) {
+        const bracketChord = parseBracketChord(noteStr);
+        const chordVelocity = bracketChord.velocity !== void 0 ? bracketChord.velocity : velocity;
+        for (const pitch of bracketChord.pitches) {
+          const pitchMatch = pitch.match(/^([A-G][#b]?)(\d+)$/);
+          if (pitchMatch) {
+            const [, notePart, octaveStr] = pitchMatch;
+            const adjustedOctave = parseInt(octaveStr, 10) + octaveOffset;
+            const adjustedPitch = applyTranspose(`${notePart}${adjustedOctave}`, transpose);
+            notes.push({
+              pitch: adjustedPitch,
+              startBeat: currentBeat,
+              durationBeats: bracketChord.durationBeats,
+              velocity: chordVelocity
+            });
+          }
+        }
+        currentBeat += bracketChord.durationBeats;
       } else {
         const parsed = parseNote(noteStr);
         const adjustedOctave = parsed.octave + octaveOffset;
@@ -2903,6 +3241,7 @@ function expandPattern(pattern, context2) {
         if (parsed.jazzArticulation) noteData.jazzArticulation = parsed.jazzArticulation;
         if (parsed.bendAmount !== void 0) noteData.bendAmount = parsed.bendAmount;
         if (parsed.ornament) noteData.ornament = parsed.ornament;
+        if (parsed.pedal) noteData.pedal = true;
         notes.push(noteData);
         currentBeat += parsed.durationBeats;
       }
@@ -2959,8 +3298,9 @@ function expandPattern(pattern, context2) {
     }
     currentBeat += expanded.totalBeats;
   }
-  if (resolvedPattern.drums) {
-    const expanded = expandDrumPattern(resolvedPattern.drums, velocity);
+  if (resolvedPattern.type === "drums" || resolvedPattern.drums) {
+    const drumPattern = resolvedPattern.drums || resolvedPattern;
+    const expanded = expandDrumPattern(drumPattern, velocity);
     for (const note of expanded.notes) {
       notes.push({
         ...note,
@@ -3037,10 +3377,34 @@ function expandPattern(pattern, context2) {
       };
     });
   }
+  if (resolvedPattern.pedal === true) {
+    notes = notes.map((note) => ({ ...note, pedal: true }));
+  }
+  if (resolvedPattern.pedalMarks && resolvedPattern.pedalMarks.length > 0) {
+    notes = applyPedalMarks(notes, resolvedPattern.pedalMarks);
+  }
   return {
     notes,
     totalBeats: currentBeat
   };
+}
+function applyPedalMarks(notes, pedalMarks) {
+  return notes.map((note) => {
+    for (const mark of pedalMarks) {
+      if (note.startBeat >= mark.start && note.startBeat < mark.end) {
+        const extendedDuration = Math.max(
+          note.durationBeats,
+          mark.end - note.startBeat
+        );
+        return {
+          ...note,
+          pedal: true,
+          durationBeats: extendedDuration
+        };
+      }
+    }
+    return note;
+  });
 }
 function parseDurationString(str) {
   const isDotted = str.endsWith(".");
@@ -3237,8 +3601,8 @@ function expandDrumPattern(drums, velocity) {
   const notes = [];
   const kit = drums.kit || "909";
   const stepDuration = parseDurationString(drums.stepDuration || DRUM_SEQUENCER.DEFAULT_STEP_DURATION);
-  const DRUM_NAMES = ["kick", "snare", "hihat", "openhat", "closedhat", "clap", "rim", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "cowbell", "shaker", "perc"];
-  const directDrumKeys = Object.keys(drums).filter((k) => DRUM_NAMES.includes(k) && typeof drums[k] === "string");
+  const DRUM_NAMES2 = ["kick", "snare", "hihat", "openhat", "closedhat", "clap", "rim", "tom_hi", "tom_mid", "tom_lo", "crash", "ride", "cowbell", "shaker", "perc"];
+  const directDrumKeys = Object.keys(drums).filter((k) => DRUM_NAMES2.includes(k) && typeof drums[k] === "string");
   if (directDrumKeys.length > 0 && !drums.lines) {
     const lines = {};
     for (const key of directDrumKeys) {
@@ -4419,6 +4783,129 @@ function shouldPlayNote(baseProbability, density, random) {
   return roll < effectiveProbability;
 }
 
+// src/debug/logger.ts
+var DebugLogger = class {
+  level = 0;
+  enabled = false;
+  /**
+   * Set debug level
+   */
+  setLevel(level) {
+    this.level = level;
+    this.enabled = level > 0;
+  }
+  /**
+   * Get current debug level
+   */
+  getLevel() {
+    return this.level;
+  }
+  /**
+   * Check if debug is enabled
+   */
+  isEnabled() {
+    return this.enabled;
+  }
+  /**
+   * Log a message at a specific level
+   */
+  log(minLevel, message) {
+    if (this.level >= minLevel) {
+      console.log(`[DEBUG:${minLevel}] ${message}`);
+    }
+  }
+  /**
+   * Log compilation start
+   */
+  compileStart(title, tempo, key) {
+    this.log(1, `Compiling '${title}'`);
+    this.log(1, `Settings: tempo=${tempo}${key ? `, key=${key}` : ""}`);
+  }
+  /**
+   * Log section start
+   */
+  sectionStart(name, bars, beatsPerBar) {
+    this.log(1, ``);
+    this.log(1, `Section '${name}' (${bars} bars = ${bars * beatsPerBar} beats)`);
+  }
+  /**
+   * Log track processing
+   */
+  trackStart(name, noteCount) {
+    this.log(1, `  Track '${name}': ${noteCount} note(s)`);
+  }
+  /**
+   * Log pattern scheduling
+   */
+  patternSchedule(pattern, beat, totalBeats) {
+    this.log(1, `    Pattern '${pattern}' at beat ${beat} (${totalBeats} beats)`);
+  }
+  /**
+   * Log note placement
+   */
+  notePlace(pitch, beat, duration, velocity, instrument) {
+    this.log(2, `      ${pitch} at beat ${beat.toFixed(2)}, duration ${duration.toFixed(2)}, velocity ${velocity.toFixed(2)} [${instrument}]`);
+  }
+  /**
+   * Log pattern completion
+   */
+  patternComplete(pattern, noteCount, totalBeats) {
+    this.log(2, `    Pattern '${pattern}' complete: ${noteCount} notes, ${totalBeats} beats`);
+  }
+  /**
+   * Log section completion
+   */
+  sectionComplete(name, noteCount) {
+    this.log(1, `  Section '${name}' complete: ${noteCount} notes`);
+  }
+  /**
+   * Log compilation summary
+   */
+  compileSummary(totalNotes, totalSections, durationSeconds) {
+    this.log(1, ``);
+    this.log(1, `Compilation complete:`);
+    this.log(1, `  Total notes: ${totalNotes}`);
+    this.log(1, `  Sections: ${totalSections}`);
+    this.log(1, `  Duration: ${formatTime(durationSeconds)}`);
+  }
+  /**
+   * Log a warning
+   */
+  warn(message) {
+    this.log(1, `\u26A0 ${message}`);
+  }
+  /**
+   * Log timing mismatch
+   */
+  timingMismatch(section, track, trackBeats, sectionBeats) {
+    this.log(1, `  \u26A0 Track '${track}' in section '${section}': ${trackBeats} beats vs section ${sectionBeats} beats`);
+  }
+  /**
+   * Log fill operation
+   */
+  fillToLength(originalBeats, targetBeats) {
+    this.log(2, `    Filling pattern: ${originalBeats} beats \u2192 ${targetBeats} beats`);
+  }
+  /**
+   * Log humanization
+   */
+  humanize(amount) {
+    this.log(3, `      Applying humanization: ${amount}`);
+  }
+  /**
+   * Log swing
+   */
+  swing(amount) {
+    this.log(3, `      Applying swing: ${amount}`);
+  }
+};
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+var debug = new DebugLogger();
+
 // src/engine/pattern-resolver.ts
 function resolveTrack(track, ctx) {
   if (track.mute) {
@@ -4441,8 +4928,6 @@ function resolveTrack(track, ctx) {
   }
   const results = [];
   const repeatCount = track.repeat || 1;
-  const beatsPerBar = getBeatsPerBar(ctx.settings.timeSignature || "4/4");
-  const useBarAlignment = track.patterns && track.patterns.length > 1;
   let cumulativeBeat = 0;
   for (let r = 0; r < repeatCount; r++) {
     for (let i = 0; i < patternNames.length; i++) {
@@ -4460,47 +4945,21 @@ function resolveTrack(track, ctx) {
         transpose: track.transpose
       };
       const expanded = expandPattern(pattern, patternCtx);
-      const patternIndex = r * patternNames.length + i;
-      const currentBeat = useBarAlignment ? patternIndex * beatsPerBar : cumulativeBeat;
-      let notesToAdd;
-      let actualPatternLength;
-      if (useBarAlignment && expanded.totalBeats < beatsPerBar) {
-        notesToAdd = loopPatternToFill(expanded.notes, expanded.totalBeats, beatsPerBar);
-        actualPatternLength = beatsPerBar;
-      } else {
-        notesToAdd = expanded.notes;
-        actualPatternLength = expanded.totalBeats;
-      }
+      const currentBeat = cumulativeBeat;
+      const actualPatternLength = expanded.totalBeats;
+      debug.patternSchedule(patternName, currentBeat, actualPatternLength);
       const processedNotes = processExpandedNotes(
-        { notes: notesToAdd, totalBeats: actualPatternLength },
+        { notes: expanded.notes, totalBeats: actualPatternLength },
         currentBeat,
         track.humanize || 0,
         ctx.settings.swing || 0
       );
       results.push(...processedNotes);
-      if (!useBarAlignment) {
-        cumulativeBeat += actualPatternLength;
-      }
+      debug.patternComplete(patternName, processedNotes.length, actualPatternLength);
+      cumulativeBeat += actualPatternLength;
     }
   }
   return results;
-}
-function loopPatternToFill(notes, patternLength, targetLength) {
-  if (notes.length === 0 || patternLength <= 0) return notes;
-  const result = [];
-  let offset = 0;
-  while (offset < targetLength) {
-    for (const note of notes) {
-      const newStart = note.startBeat + offset;
-      if (newStart >= targetLength) break;
-      result.push({
-        ...note,
-        startBeat: newStart
-      });
-    }
-    offset += patternLength;
-  }
-  return result;
 }
 function resolveParallelPatterns(track, ctx) {
   const results = [];
@@ -4547,9 +5006,11 @@ function processExpandedNotes(expanded, beatOffset, humanize, swing) {
     let velocity = note.velocity;
     let durationBeats = note.durationBeats;
     if (swing > 0) {
+      debug.swing(swing);
       startBeat = applySwing(startBeat, swing);
     }
     if (humanize > 0) {
+      debug.humanize(humanize);
       startBeat = humanizeTiming(startBeat, humanize);
       velocity = humanizeVelocity(velocity, humanize);
       durationBeats = humanizeDuration(durationBeats, humanize);
@@ -4605,6 +5066,7 @@ function fillToLength(notes, targetBeats) {
   if (patternLength >= targetBeats) {
     return notes.filter((n) => n.startBeat < targetBeats);
   }
+  debug.fillToLength(patternLength, targetBeats);
   const result = [];
   let offset = 0;
   while (offset < targetBeats) {
@@ -4664,9 +5126,15 @@ function transposeNotes(notes, semitones) {
 // src/engine/compiler.ts
 function compile(score, options = {}) {
   const warnings = [];
+  debug.compileStart(
+    score.meta?.title || "Untitled",
+    score.settings.tempo,
+    score.settings.key
+  );
   for (const sectionName of score.arrangement) {
     if (!score.sections[sectionName]) {
       warnings.push(`Section "${sectionName}" in arrangement not found`);
+      debug.warn(`Section '${sectionName}' in arrangement not found`);
     }
   }
   const sectionsToCompile = getSectionsToCompile(score, options);
@@ -4687,6 +5155,7 @@ function compile(score, options = {}) {
     if (!section) {
       continue;
     }
+    debug.sectionStart(sectionName, section.bars, beatsPerBar);
     const sectionTempo = section.tempo || settings.tempo;
     const sectionKey = section.key || settings.key;
     if (section.tempo && section.tempo !== settings.tempo) {
@@ -4704,8 +5173,11 @@ function compile(score, options = {}) {
       density: section.density
     };
     const resolvedTracks = resolveSection(section.tracks, section.bars, ctx);
+    let sectionNotes = 0;
     for (const [instrumentName, notes] of resolvedTracks) {
+      debug.trackStart(instrumentName, notes.length);
       for (const note of notes) {
+        debug.notePlace(note.pitch, currentBeat + note.startBeat, note.durationBeats, note.velocity, instrumentName);
         const options2 = note.timingOffset !== void 0 || note.probability !== void 0 || note.portamento !== void 0 || note.humanize !== void 0 ? {
           timingOffset: note.timingOffset,
           probability: note.probability,
@@ -4721,8 +5193,10 @@ function compile(score, options = {}) {
           options2
         );
         totalNotes++;
+        sectionNotes++;
       }
     }
+    debug.sectionComplete(sectionName, sectionNotes);
     currentBeat += section.bars * beatsPerBar;
     totalBars += section.bars;
   }
@@ -4734,6 +5208,7 @@ function compile(score, options = {}) {
     instruments: timeline.instruments,
     durationSeconds: timeline.totalSeconds
   };
+  debug.compileSummary(totalNotes, sectionsToCompile.length, timeline.totalSeconds);
   return { timeline, warnings, stats };
 }
 function getSectionsToCompile(score, options) {
@@ -4787,11 +5262,11 @@ function analyze(score) {
   };
 }
 function validateScore(score) {
-  const errors = [];
+  const errors2 = [];
   const isComment = (key) => key.startsWith("//");
   for (const sectionName of score.arrangement) {
     if (!score.sections[sectionName]) {
-      errors.push(`Arrangement references unknown section: "${sectionName}"`);
+      errors2.push(`Arrangement references unknown section: "${sectionName}"`);
     }
   }
   for (const [sectionName, section] of Object.entries(score.sections)) {
@@ -4801,12 +5276,12 @@ function validateScore(score) {
       if (isComment(trackName)) continue;
       if (!track || typeof track !== "object") continue;
       if (track.pattern && !score.patterns[track.pattern]) {
-        errors.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${track.pattern}"`);
+        errors2.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${track.pattern}"`);
       }
       if (track.patterns) {
         for (const patternName of track.patterns) {
           if (!score.patterns[patternName]) {
-            errors.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${patternName}"`);
+            errors2.push(`Section "${sectionName}" track "${trackName}" references unknown pattern: "${patternName}"`);
           }
         }
       }
@@ -4820,12 +5295,12 @@ function validateScore(score) {
       for (const trackName of Object.keys(section.tracks)) {
         if (isComment(trackName)) continue;
         if (!instrumentNames.has(trackName)) {
-          errors.push(`Section "${sectionName}" has track "${trackName}" with no matching instrument`);
+          errors2.push(`Section "${sectionName}" has track "${trackName}" with no matching instrument`);
         }
       }
     }
   }
-  return errors;
+  return errors2;
 }
 function createSimpleScore(patterns, bars = 4, tempo = 120, key = "C major") {
   const etherPatterns = {};
@@ -5158,11 +5633,15 @@ var KIT_909 = {
   drums: {
     kick: {
       type: "membrane",
-      pitch: "D2",
-      pitchDecay: 8e-3,
-      octaves: 12,
-      decay: 0.25,
-      attack: 5e-4,
+      pitch: "D1",
+      // Lower base pitch for thump
+      pitchDecay: 0.015,
+      // Faster pitch decay = tighter
+      octaves: 3,
+      // Reduced from 12 - no more laser!
+      decay: 0.2,
+      // Slightly shorter body
+      attack: 1e-3,
       sustain: 0,
       release: 0.08,
       volume: 6
