@@ -5,9 +5,14 @@
  * - Modification via semantic params
  * - Multiple instances with different settings
  * - Introspection for LLM composers
+ *
+ * Note: This file contains legacy presets. The full preset registry
+ * is in src/presets/index.ts. The getPresetDefinition function
+ * checks both sources for backward compatibility.
  */
 
 import type { SynthType, SemanticSynthParams, ToneJsOverrides } from './semantic-params.js';
+import { PRESET_REGISTRY, type PresetDefinition as RegistryPresetDefinition } from '../presets/index.js';
 
 /**
  * Preset category for organization (v0.8: added lofi, cinematic, world, ambient, modern)
@@ -1038,9 +1043,26 @@ export const PRESET_DEFINITIONS: Record<string, PresetDefinition> = {
 
 /**
  * Get a preset definition by name
+ *
+ * Checks both local PRESET_DEFINITIONS (legacy) and the full PRESET_REGISTRY
+ * from src/presets/index.ts for maximum compatibility.
  */
 export function getPresetDefinition(name: string): PresetDefinition | undefined {
-  return PRESET_DEFINITIONS[name.toLowerCase()];
+  const normalizedName = name.toLowerCase();
+
+  // First check local definitions (legacy)
+  if (PRESET_DEFINITIONS[normalizedName]) {
+    return PRESET_DEFINITIONS[normalizedName];
+  }
+
+  // Fallback to full registry (world, brass, strings, orchestral, etc.)
+  const registryPreset = PRESET_REGISTRY[normalizedName];
+  if (registryPreset) {
+    // The registry PresetDefinition is compatible with local PresetDefinition
+    return registryPreset as unknown as PresetDefinition;
+  }
+
+  return undefined;
 }
 
 /**

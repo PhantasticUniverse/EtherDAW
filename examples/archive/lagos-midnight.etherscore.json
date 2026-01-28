@@ -1,326 +1,675 @@
 {
-  "$schema": "../../../dist/schema/etherscore.schema.json",
-  "metadata": {
+  "meta": {
     "title": "Lagos Midnight",
     "composer": "Claude",
-    "description": "Afrobeat composition inspired by Fela Kuti. Features layered polyrhythms, kalimba melodies, and authentic African percussion.",
-    "tags": ["afrobeat", "african", "fela-inspired", "polyrhythm"],
-    "bpm": 110,
-    "key": "F",
-    "scale": "mixolydian",
-    "timeSignature": "4/4"
+    "mood": "Hypnotic, groovy, transcendent",
+    "genre": "Afrobeat",
+    "description": "An Afrobeat-inspired composition featuring interlocking polyrhythms, call-and-response horn lines, and hypnotic bass. Inspired by Fela Kuti's revolutionary sound, with layered percussion driving toward ecstatic release.",
+    "tags": ["afrobeat", "fela", "polyrhythm", "african", "groove", "horns", "funk"]
   },
   "settings": {
-    "tempo": 110,
-    "swing": 0,
-    "masterVolume": 0
+    "tempo": 108,
+    "key": "F minor",
+    "timeSignature": "4/4"
   },
   "instruments": {
-    "drums": {
-      "preset": "drums:909",
-      "volume": -6
-    },
-    "conga_hi": {
-      "preset": "conga_high",
-      "volume": -12,
-      "pan": 0.3
-    },
-    "conga_lo": {
-      "preset": "conga_low",
-      "volume": -12,
-      "pan": -0.3
-    },
-    "agogo_bell": {
+    "// RHYTHM SECTION": "---",
+    "bell": {
       "preset": "agogo",
       "volume": -9,
-      "pan": 0.4
+      "pan": 0.3,
+      "effects": [{ "type": "reverb", "wet": 0.1 }]
     },
-    "shekere_perc": {
+    "shekere": {
       "preset": "shekere",
-      "volume": -15,
-      "pan": -0.4
+      "volume": -12,
+      "pan": -0.2
     },
+    "conga_high": {
+      "preset": "conga_high",
+      "volume": -9,
+      "pan": 0.15,
+      "effects": [{ "type": "reverb", "wet": 0.15 }]
+    },
+    "conga_low": {
+      "preset": "conga_low",
+      "volume": -9,
+      "pan": -0.15,
+      "effects": [{ "type": "reverb", "wet": 0.15 }]
+    },
+    "drums": {
+      "preset": "drums:acoustic",
+      "volume": -6
+    },
+
+    "// HARMONIC FOUNDATION": "---",
     "bass": {
-      "preset": "pluck_bass",
-      "volume": 0,
-      "effects": [
-        { "type": "compressor", "threshold": -12, "ratio": 4 }
-      ]
-    },
-    "kalimba_lead": {
-      "preset": "kalimba",
+      "preset": "synth_bass",
       "volume": -6,
-      "pan": 0.2,
-      "effects": [
-        { "type": "delay", "wet": 0.1, "options": { "delayTime": "8n", "feedback": 0.2 } }
-      ]
+      "effects": [{ "type": "filter", "options": { "frequency": 800, "type": "lowpass" } }]
     },
-    "rhythm_gtr": {
+    "guitar": {
       "preset": "rhythm_guitar",
       "volume": -9,
-      "pan": -0.25,
+      "pan": -0.3,
       "effects": [
-        { "type": "chorus", "wet": 0.1 }
+        { "type": "filter", "options": { "frequency": 2500, "type": "lowpass" } },
+        { "type": "reverb", "wet": 0.1 }
       ]
+    },
+    "organ": {
+      "preset": "fm_organ",
+      "volume": -12,
+      "pan": 0.2,
+      "effects": [{ "type": "chorus", "wet": 0.3 }, { "type": "reverb", "wet": 0.2 }]
+    },
+
+    "// HORNS": "---",
+    "trumpet": {
+      "preset": "trumpet",
+      "volume": -6,
+      "pan": -0.2,
+      "effects": [{ "type": "reverb", "wet": 0.25 }]
+    },
+    "trombone": {
+      "preset": "trombone",
+      "volume": -6,
+      "pan": 0.2,
+      "effects": [{ "type": "reverb", "wet": 0.25 }]
     }
   },
   "patterns": {
-    "kick_tony_allen": {
-      "drums": {
-        "kick": ">..x..x.>..x.xx."
-      },
-      "humanize": 0.012
+    "// ========== BELL PATTERNS ==========": "---",
+    "// The agogo bell is the timeline - the heartbeat of Afrobeat": "",
+
+    "bell_main": {
+      "notes": [
+        "G5:8", "r:8", "G5:8", "r:8",
+        "G5:8", "r:8", "G5:8", "G5:8"
+      ]
     },
-    "snare_displaced": {
-      "drums": {
-        "snare": "...x..x....x..x.",
-        "rim": ".x....x..x....x."
-      },
-      "velocity": [0, 0.5, 0, 0.9, 0, 0, 0.7, 0, 0, 0.4, 0, 0.9, 0, 0, 0.7, 0],
-      "humanize": 0.02
+    "bell_accent": {
+      "notes": [
+        "G5:8>", "r:8", "G5:8", "r:8",
+        "G5:8>", "r:8", "G5:8", "G5:8"
+      ]
     },
-    "hihat_basic": {
-      "drums": {
-        "hihat": "x.x.x.x.x.x.x.x."
-      },
-      "velocity": [0.6, 0, 0.4, 0, 0.5, 0, 0.4, 0, 0.6, 0, 0.4, 0, 0.5, 0, 0.4, 0],
-      "humanize": 0.01
+
+    "// ========== SHEKERE PATTERNS ==========": "---",
+    "shekere_steady": {
+      "notes": [
+        "C4:8", "C4:8", "C4:8", "C4:8",
+        "C4:8", "C4:8", "C4:8", "C4:8"
+      ]
     },
-    "hihat_allen_style": {
-      "drums": {
-        "hihat": "x.xxx.xxx.xxx.xx",
-        "hihat_open": ".....x.......x.."
-      },
-      "velocity": [0.6, 0, 0.4, 0.45, 0.4, 0.7, 0, 0.4, 0.45, 0, 0.4, 0.45, 0.4, 0.7, 0, 0.45],
-      "humanize": 0.008
+    "shekere_accent": {
+      "notes": [
+        "C4:8>", "C4:8", "C4:8>", "C4:8",
+        "C4:8>", "C4:8", "C4:8>", "C4:8"
+      ]
     },
-    "ride_pattern": {
-      "drums": {
-        "ride": "x..x..x.x..x..x."
-      },
-      "velocity": [0.5, 0, 0, 0.4, 0, 0, 0.45, 0, 0.5, 0, 0, 0.4, 0, 0, 0.45, 0],
-      "humanize": 0.01
+
+    "// ========== CONGA PATTERNS ==========": "---",
+    "// High and low congas interlock": "",
+
+    "conga_high_main": {
+      "notes": [
+        "r:8", "D4:8", "r:8", "D4:8>",
+        "r:8", "D4:8", "D4:8", "r:8"
+      ]
     },
-    "conga_pattern_hi": {
-      "notes": ["D3:8", "r:8", "D3:8", "r:8", "D3:8", "D3:8", "r:8", "D3:8",
-                "r:8", "D3:8", "r:8", "D3:8", "D3:8", "r:8", "D3:8", "r:8"],
-      "velocity": [0.7, 0, 0.5, 0, 0.7, 0.4, 0, 0.6, 0, 0.5, 0, 0.7, 0.5, 0, 0.6, 0],
-      "humanize": 0.02
+    "conga_high_fill": {
+      "notes": [
+        "D4:8", "D4:8", "r:8", "D4:8>",
+        "D4:16", "D4:16", "D4:8", "D4:8"
+      ]
     },
-    "conga_pattern_lo": {
-      "notes": ["G2:8", "r:8", "r:8", "G2:8", "r:8", "G2:8", "G2:8", "r:8",
-                "G2:8", "r:8", "r:8", "G2:8", "r:8", "r:8", "G2:8", "G2:8"],
-      "velocity": [0.7, 0, 0, 0.5, 0, 0.6, 0.4, 0, 0.7, 0, 0, 0.5, 0, 0, 0.6, 0.5],
-      "humanize": 0.02
+    "conga_low_main": {
+      "notes": [
+        "G3:8>", "r:8", "G3:8", "r:8",
+        "G3:8>", "r:8", "r:8", "G3:8"
+      ]
     },
-    "agogo_clave": {
-      "notes": ["F5:8", "r:8", "r:8", "F5:8", "r:8", "F5:8", "r:8", "F5:8",
-                "r:8", "r:8", "F5:8", "r:8", "F5:8", "r:8", "r:8", "r:8"],
-      "velocity": [0.8, 0, 0, 0.6, 0, 0.7, 0, 0.6, 0, 0, 0.7, 0, 0.6, 0, 0, 0],
-      "humanize": 0.01
+    "conga_low_fill": {
+      "notes": [
+        "G3:8>", "G3:8", "G3:8", "r:8",
+        "G3:8>", "G3:16", "G3:16", "G3:8"
+      ]
     },
-    "shekere_groove": {
-      "notes": ["C4:8", "r:8", "C4:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8",
-                "C4:8", "r:8", "C4:8", "C4:8", "r:8", "C4:8", "r:8", "C4:8"],
-      "velocity": [0.5, 0, 0.3, 0.4, 0, 0.5, 0, 0.3, 0.4, 0, 0.3, 0.45, 0, 0.5, 0, 0.35],
-      "humanize": 0.015
+
+    "// ========== DRUM PATTERNS ==========": "---",
+    "drums_intro": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick":   "x...x...x...x...",
+      "hihat":  "x.x.x.x.x.x.x.x."
     },
-    "bass_groove": {
-      "notes": ["F2:8", "r:8", "F2:8", "r:8", "C3:8", "r:8", "Bb2:8", "r:8",
-                "F2:8", "F2:8", "r:8", "C3:8", "r:8", "Bb2:8", "r:8", "C3:8"],
-      "velocity": [0.85, 0, 0.65, 0, 0.75, 0, 0.65, 0, 0.85, 0.55, 0, 0.75, 0, 0.65, 0, 0.75],
-      "humanize": 0.02,
-      "groove": "afrobeat"
+    "drums_main": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick":   "x...x...x...x...",
+      "snare":  "....x.......x...",
+      "hihat":  "x.x.x.x.x.x.x.x.",
+      "rim":    "..x...x...x...x."
     },
-    "bass_variation": {
-      "notes": ["F2:8", "r:8", "G2:8", "r:8", "Bb2:8", "C3:8", "r:8", "F2:8",
-                "r:8", "F2:8", "r:8", "C3:8", "Bb2:8", "r:8", "C3:8", "r:8"],
-      "velocity": [0.85, 0, 0.65, 0, 0.75, 0.65, 0, 0.85, 0, 0.65, 0, 0.75, 0.65, 0, 0.75, 0],
-      "humanize": 0.02,
-      "groove": "afrobeat"
+    "drums_intense": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick":   "x...x.x.x...x.x.",
+      "snare":  "....x.......x...",
+      "hihat":  "xxxxxxxxxxxxxxxx",
+      "rim":    "..x...x...x...x."
     },
-    "kalimba_pattern": {
-      "notes": ["F5:8", "C5:8", "r:8", "A4:8", "F5:8", "r:8", "C5:8", "A4:8",
-                "r:8", "F4:8", "A4:8", "C5:8", "r:8", "F5:8", "r:8", "C5:8"],
-      "velocity": [0.65, 0.55, 0, 0.6, 0.65, 0, 0.55, 0.6, 0, 0.55, 0.6, 0.65, 0, 0.7, 0, 0.55],
-      "humanize": 0.02
+    "drums_fill": {
+      "type": "drums",
+      "kit": "acoustic",
+      "kick":   "x...x...x.......",
+      "snare":  "....x.....x.xxx.",
+      "tom_hi": "............x.x.",
+      "tom_lo": "..............x."
     },
-    "kalimba_melody": {
-      "notes": ["F5:q", "Eb5:8", "C5:8", "F5:q", "r:q",
-                "Eb5:q", "C5:8", "Bb4:8", "C5:h"],
-      "velocity": [0.7, 0.6, 0.55, 0.7, 0, 0.65, 0.55, 0.5, 0.65],
-      "humanize": 0.02
+
+    "// ========== BASS PATTERNS ==========": "---",
+    "// Hypnotic, syncopated Afrobeat bass": "",
+
+    "bass_main": {
+      "notes": [
+        "F2:8", "r:8", "F2:8", "Ab2:8",
+        "r:8", "F2:8", "C3:8", "r:8"
+      ]
     },
-    "guitar_chop_1": {
-      "chords": ["r:8", "F:8", "r:8", "F:8", "r:8", "F:8", "Bb:8", "r:8",
-                 "r:8", "Bb:8", "r:8", "F:8", "r:8", "F:8", "r:8", "r:8"],
-      "voicing": "close",
-      "velocity": [0, 0.6, 0, 0.5, 0, 0.55, 0.6, 0, 0, 0.55, 0, 0.6, 0, 0.5, 0, 0],
-      "humanize": 0.012
+    "bass_var1": {
+      "notes": [
+        "F2:8", "r:8", "F2:16", "F2:16", "Ab2:8",
+        "r:8", "Bb2:8", "C3:8"
+      ]
     },
-    "guitar_chop_2": {
-      "chords": ["r:8", "Cm:8", "r:8", "Dm:8", "r:8", "Cm:8", "F:8", "r:8",
-                 "r:8", "F:8", "r:8", "Bb:8", "r:8", "F:8", "r:8", "r:8"],
-      "voicing": "close",
-      "velocity": [0, 0.55, 0, 0.6, 0, 0.55, 0.65, 0, 0, 0.6, 0, 0.55, 0, 0.6, 0, 0],
-      "humanize": 0.012
+    "bass_var2": {
+      "notes": [
+        "F2:8>", "r:8", "Ab2:8", "Bb2:8",
+        "r:8", "F2:8", "Eb2:8", "F2:8"
+      ]
     },
-    "silence": {
-      "notes": ["r:w", "r:w"]
+    "bass_climb": {
+      "notes": [
+        "F2:8", "Ab2:8", "Bb2:8", "C3:8",
+        "Db3:8", "C3:8", "Bb2:8", "Ab2:8"
+      ]
+    },
+
+    "// ========== GUITAR PATTERNS ==========": "---",
+    "// Tight, percussive offbeat chords": "",
+
+    "guitar_main": {
+      "chords": [
+        "r:8", "Fm:8*", "r:8", "Fm:8*",
+        "r:8", "Fm:8*", "r:8", "Fm:8*"
+      ]
+    },
+    "guitar_var": {
+      "chords": [
+        "r:8", "Fm:8*", "r:8", "Ab:8*",
+        "r:8", "Bb:8*", "r:8", "Fm:8*"
+      ]
+    },
+    "guitar_accent": {
+      "chords": [
+        "r:8", "Fm:8>", "r:8", "Fm:8*",
+        "r:8", "Ab:8>", "r:8", "Fm:8*"
+      ]
+    },
+
+    "// ========== ORGAN PATTERNS ==========": "---",
+    "organ_pad": {
+      "chords": ["Fm:w"]
+    },
+    "organ_stab": {
+      "chords": [
+        "r:8", "Fm:8*", "r:q",
+        "r:8", "Fm:8*", "r:q"
+      ]
+    },
+    "organ_progression": {
+      "chords": ["Fm:h", "Ab:h"]
+    },
+    "organ_full": {
+      "chords": ["Fm:h", "Bb:q", "Ab:q"]
+    },
+
+    "// ========== HORN PATTERNS ==========": "---",
+    "// Call-and-response: trumpet calls, trombone responds": "",
+
+    "trumpet_call_1": {
+      "notes": [
+        "r:q", "F5:8", "Ab5:8", "Bb5:q",
+        "r:h"
+      ]
+    },
+    "trumpet_call_2": {
+      "notes": [
+        "r:q", "C6:8", "Bb5:8", "Ab5:q",
+        "r:h"
+      ]
+    },
+    "trumpet_riff": {
+      "notes": [
+        "F5:8>", "r:8", "Ab5:8", "Bb5:8>",
+        "r:8", "Ab5:8", "F5:8", "r:8"
+      ]
+    },
+    "trumpet_climax": {
+      "notes": [
+        "C6:8>", "Bb5:8", "Ab5:8>", "F5:8",
+        "Ab5:8>", "Bb5:8", "C6:8>", "r:8"
+      ]
+    },
+
+    "trombone_response_1": {
+      "notes": [
+        "r:h",
+        "F4:8", "Ab4:8", "C5:q"
+      ]
+    },
+    "trombone_response_2": {
+      "notes": [
+        "r:h",
+        "Bb4:8", "Ab4:8", "F4:q"
+      ]
+    },
+    "trombone_riff": {
+      "notes": [
+        "F4:8>", "r:8", "Ab4:8", "r:8",
+        "Bb4:8>", "Ab4:8", "F4:8", "r:8"
+      ]
+    },
+    "trombone_climax": {
+      "notes": [
+        "F4:8>", "Ab4:8", "Bb4:8>", "C5:8",
+        "Bb4:8>", "Ab4:8", "F4:8>", "r:8"
+      ]
+    },
+
+    "// ========== REST PATTERNS ==========": "---",
+    "rest_bar": {
+      "notes": ["r:w"]
     }
   },
+
   "sections": {
+    "// ========== SECTION DEFINITIONS ==========": "---",
+
     "intro": {
       "bars": 8,
       "tracks": {
-        "drums": {
-          "patterns": ["kick_tony_allen", "hihat_basic"]
+        "bell": {
+          "patterns": ["bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main"],
+          "expression": "mechanical",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.4, "end": 0.8, "curve": "exponential" }
         },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
+        "shekere": {
+          "patterns": ["shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady"],
+          "expression": "tight",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.3, "end": 0.7, "curve": "linear" }
+        },
+        "drums": {
+          "patterns": ["drums_intro", "drums_intro", "drums_intro", "drums_intro", "drums_intro", "drums_intro", "drums_intro", "drums_intro"],
+          "expression": "tight",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.8, "curve": "exponential" }
         }
       }
     },
-    "buildup": {
+
+    "groove_build": {
       "bars": 8,
       "tracks": {
+        "bell": {
+          "patterns": ["bell_main", "bell_main", "bell_main", "bell_main", "bell_accent", "bell_accent", "bell_accent", "bell_accent"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "shekere": {
+          "patterns": ["shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "conga_high": {
+          "patterns": ["conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main"],
+          "expression": "funk",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.85, "curve": "exponential" }
+        },
+        "conga_low": {
+          "patterns": ["conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main"],
+          "expression": "funk",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.85, "curve": "exponential" }
+        },
         "drums": {
-          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
-        },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
-        },
-        "shekere_perc": {
-          "patterns": ["shekere_groove"]
+          "patterns": ["drums_main", "drums_main", "drums_main", "drums_main", "drums_main", "drums_main", "drums_main", "drums_main"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
         "bass": {
-          "patterns": ["bass_groove"]
+          "patterns": ["bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main"],
+          "expression": "funk",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.6, "end": 0.9, "curve": "linear" }
         }
       }
     },
-    "verse_a": {
+
+    "full_groove": {
       "bars": 16,
       "tracks": {
+        "bell": {
+          "patterns": ["bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "shekere": {
+          "patterns": ["shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "conga_high": {
+          "patterns": ["conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "conga_low": {
+          "patterns": ["conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
         "drums": {
-          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
-        },
-        "conga_hi": {
-          "patterns": ["conga_pattern_hi"]
-        },
-        "conga_lo": {
-          "patterns": ["conga_pattern_lo"]
-        },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
-        },
-        "shekere_perc": {
-          "patterns": ["shekere_groove"]
+          "patterns": ["drums_main", "drums_main", "drums_main", "drums_fill", "drums_main", "drums_main", "drums_main", "drums_fill", "drums_main", "drums_main", "drums_main", "drums_fill", "drums_main", "drums_main", "drums_main", "drums_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
         "bass": {
-          "patterns": ["bass_groove", "bass_groove", "bass_groove", "bass_variation"]
+          "patterns": ["bass_main", "bass_main", "bass_var1", "bass_main", "bass_main", "bass_main", "bass_var1", "bass_main", "bass_var2", "bass_main", "bass_var1", "bass_main", "bass_var2", "bass_main", "bass_var1", "bass_climb"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
-        "rhythm_gtr": {
-          "patterns": ["guitar_chop_1", "guitar_chop_1", "guitar_chop_2", "guitar_chop_1"]
+        "guitar": {
+          "patterns": ["guitar_main", "guitar_main", "guitar_main", "guitar_main", "guitar_var", "guitar_main", "guitar_main", "guitar_main", "guitar_main", "guitar_main", "guitar_var", "guitar_main", "guitar_accent", "guitar_main", "guitar_var", "guitar_accent"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "organ": {
+          "patterns": ["organ_pad", "organ_pad", "organ_pad", "organ_pad", "organ_progression", "organ_progression", "organ_progression", "organ_progression", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full"],
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.5, "end": 0.8, "curve": "sine" }
         }
       }
     },
-    "kalimba_verse": {
-      "bars": 16,
-      "tracks": {
-        "drums": {
-          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_basic"]
-        },
-        "conga_hi": {
-          "patterns": ["conga_pattern_hi"]
-        },
-        "conga_lo": {
-          "patterns": ["conga_pattern_lo"]
-        },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
-        },
-        "shekere_perc": {
-          "patterns": ["shekere_groove"]
-        },
-        "bass": {
-          "patterns": ["bass_variation", "bass_groove", "bass_groove", "bass_variation"]
-        },
-        "kalimba_lead": {
-          "patterns": ["kalimba_pattern"]
-        }
-      }
-    },
-    "kalimba_melody_section": {
+
+    "horn_entry": {
       "bars": 8,
       "tracks": {
+        "bell": {
+          "patterns": ["bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "shekere": {
+          "patterns": ["shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "conga_high": {
+          "patterns": ["conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_main", "conga_high_main", "conga_high_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "conga_low": {
+          "patterns": ["conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_main", "conga_low_main", "conga_low_fill", "conga_low_main"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
         "drums": {
-          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style"]
-        },
-        "conga_hi": {
-          "patterns": ["conga_pattern_hi"]
-        },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
+          "patterns": ["drums_main", "drums_main", "drums_main", "drums_fill", "drums_main", "drums_main", "drums_main", "drums_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
         "bass": {
-          "patterns": ["bass_groove"]
+          "patterns": ["bass_main", "bass_main", "bass_var1", "bass_main", "bass_var2", "bass_main", "bass_var1", "bass_climb"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
-        "kalimba_lead": {
-          "patterns": ["kalimba_melody"]
+        "guitar": {
+          "patterns": ["guitar_main", "guitar_main", "guitar_var", "guitar_main", "guitar_accent", "guitar_main", "guitar_var", "guitar_accent"],
+          "expression": "funk",
+          "groove": "afrobeat"
         },
-        "rhythm_gtr": {
-          "patterns": ["guitar_chop_1"]
+        "organ": {
+          "patterns": ["organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full"],
+          "expression": "natural"
+        },
+        "trumpet": {
+          "patterns": ["trumpet_call_1", "rest_bar", "trumpet_call_2", "rest_bar", "trumpet_call_1", "rest_bar", "trumpet_call_2", "rest_bar"],
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.6, "end": 0.85, "curve": "linear" }
+        },
+        "trombone": {
+          "patterns": ["rest_bar", "trombone_response_1", "rest_bar", "trombone_response_2", "rest_bar", "trombone_response_1", "rest_bar", "trombone_response_2"],
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.6, "end": 0.85, "curve": "linear" }
         }
       }
     },
+
+    "horn_dialogue": {
+      "bars": 16,
+      "tracks": {
+        "bell": {
+          "patterns": ["bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main", "bell_accent", "bell_main"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "shekere": {
+          "patterns": ["shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady", "shekere_accent", "shekere_steady"],
+          "expression": "tight",
+          "groove": "afrobeat"
+        },
+        "conga_high": {
+          "patterns": ["conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill", "conga_high_main", "conga_high_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "conga_low": {
+          "patterns": ["conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main", "conga_low_fill", "conga_low_main"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "drums": {
+          "patterns": ["drums_main", "drums_main", "drums_main", "drums_fill", "drums_intense", "drums_intense", "drums_main", "drums_fill", "drums_main", "drums_main", "drums_intense", "drums_fill", "drums_intense", "drums_intense", "drums_main", "drums_fill"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "bass": {
+          "patterns": ["bass_main", "bass_var2", "bass_main", "bass_climb", "bass_var1", "bass_var2", "bass_main", "bass_climb", "bass_main", "bass_var2", "bass_var1", "bass_climb", "bass_var2", "bass_var1", "bass_var2", "bass_climb"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "guitar": {
+          "patterns": ["guitar_accent", "guitar_main", "guitar_var", "guitar_accent", "guitar_accent", "guitar_main", "guitar_var", "guitar_accent", "guitar_accent", "guitar_main", "guitar_var", "guitar_accent", "guitar_accent", "guitar_var", "guitar_var", "guitar_accent"],
+          "expression": "funk",
+          "groove": "afrobeat"
+        },
+        "organ": {
+          "patterns": ["organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full"],
+          "expression": "natural"
+        },
+        "trumpet": {
+          "patterns": ["trumpet_riff", "trumpet_riff", "trumpet_call_1", "trumpet_call_2", "trumpet_riff", "trumpet_riff", "trumpet_call_2", "trumpet_call_1", "trumpet_riff", "trumpet_riff", "trumpet_call_1", "trumpet_call_2", "trumpet_riff", "trumpet_riff", "trumpet_riff", "trumpet_riff"],
+          "expression": "natural"
+        },
+        "trombone": {
+          "patterns": ["trombone_riff", "trombone_response_1", "trombone_riff", "trombone_response_2", "trombone_riff", "trombone_response_1", "trombone_riff", "trombone_response_2", "trombone_riff", "trombone_response_1", "trombone_riff", "trombone_response_2", "trombone_riff", "trombone_riff", "trombone_riff", "trombone_riff"],
+          "expression": "natural"
+        }
+      }
+    },
+
     "climax": {
       "bars": 8,
       "tracks": {
+        "bell": {
+          "patterns": ["bell_accent", "bell_accent", "bell_accent", "bell_accent", "bell_accent", "bell_accent", "bell_accent", "bell_accent"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.95
+        },
+        "shekere": {
+          "patterns": ["shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent", "shekere_accent"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.9
+        },
+        "conga_high": {
+          "patterns": ["conga_high_fill", "conga_high_fill", "conga_high_fill", "conga_high_fill", "conga_high_fill", "conga_high_fill", "conga_high_fill", "conga_high_fill"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.95
+        },
+        "conga_low": {
+          "patterns": ["conga_low_fill", "conga_low_fill", "conga_low_fill", "conga_low_fill", "conga_low_fill", "conga_low_fill", "conga_low_fill", "conga_low_fill"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.95
+        },
         "drums": {
-          "patterns": ["kick_tony_allen", "snare_displaced", "hihat_allen_style", "ride_pattern"]
-        },
-        "conga_hi": {
-          "patterns": ["conga_pattern_hi"]
-        },
-        "conga_lo": {
-          "patterns": ["conga_pattern_lo"]
-        },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
+          "patterns": ["drums_intense", "drums_intense", "drums_intense", "drums_fill", "drums_intense", "drums_intense", "drums_intense", "drums_fill"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.95
         },
         "bass": {
-          "patterns": ["bass_groove"]
+          "patterns": ["bass_var2", "bass_climb", "bass_var2", "bass_climb", "bass_var2", "bass_climb", "bass_var2", "bass_climb"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.95
         },
-        "kalimba_lead": {
-          "patterns": ["kalimba_pattern"]
+        "guitar": {
+          "patterns": ["guitar_accent", "guitar_accent", "guitar_accent", "guitar_accent", "guitar_accent", "guitar_accent", "guitar_accent", "guitar_accent"],
+          "expression": "aggressive",
+          "groove": "afrobeat",
+          "velocity": 0.9
         },
-        "rhythm_gtr": {
-          "patterns": ["guitar_chop_1", "guitar_chop_2"]
+        "organ": {
+          "patterns": ["organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full", "organ_full"],
+          "expression": "aggressive",
+          "velocity": 0.85
+        },
+        "trumpet": {
+          "patterns": ["trumpet_climax", "trumpet_climax", "trumpet_climax", "trumpet_climax", "trumpet_climax", "trumpet_climax", "trumpet_climax", "trumpet_climax"],
+          "expression": "aggressive",
+          "velocity": 1.0
+        },
+        "trombone": {
+          "patterns": ["trombone_climax", "trombone_climax", "trombone_climax", "trombone_climax", "trombone_climax", "trombone_climax", "trombone_climax", "trombone_climax"],
+          "expression": "aggressive",
+          "velocity": 1.0
         }
       }
     },
-    "outro": {
+
+    "cooldown": {
       "bars": 8,
       "tracks": {
-        "drums": {
-          "patterns": ["kick_tony_allen", "hihat_basic"]
+        "bell": {
+          "patterns": ["bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main", "bell_main"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.8, "end": 0.5, "curve": "exponential" }
         },
-        "agogo_bell": {
-          "patterns": ["agogo_clave"]
+        "shekere": {
+          "patterns": ["shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.7, "end": 0.4, "curve": "exponential" }
+        },
+        "conga_high": {
+          "patterns": ["conga_high_main", "conga_high_main", "conga_high_main", "conga_high_main", "rest_bar", "rest_bar", "rest_bar", "rest_bar"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.8, "end": 0.3, "curve": "linear" }
+        },
+        "conga_low": {
+          "patterns": ["conga_low_main", "conga_low_main", "conga_low_main", "conga_low_main", "rest_bar", "rest_bar", "rest_bar", "rest_bar"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.8, "end": 0.3, "curve": "linear" }
+        },
+        "drums": {
+          "patterns": ["drums_main", "drums_main", "drums_main", "drums_main", "drums_intro", "drums_intro", "drums_intro", "drums_intro"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.85, "end": 0.5, "curve": "exponential" }
         },
         "bass": {
-          "patterns": ["bass_groove"]
+          "patterns": ["bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main", "bass_main"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.8, "end": 0.5, "curve": "linear" }
+        },
+        "guitar": {
+          "patterns": ["guitar_main", "guitar_main", "guitar_main", "guitar_main", "rest_bar", "rest_bar", "rest_bar", "rest_bar"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.7, "end": 0.3, "curve": "exponential" }
+        },
+        "organ": {
+          "patterns": ["organ_pad", "organ_pad", "organ_pad", "organ_pad", "organ_pad", "organ_pad", "organ_pad", "organ_pad"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.6, "end": 0.3, "curve": "exponential" }
+        }
+      }
+    },
+
+    "outro": {
+      "bars": 4,
+      "tracks": {
+        "bell": {
+          "patterns": ["bell_main", "bell_main", "bell_main", "bell_main"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.2, "curve": "exponential" }
+        },
+        "shekere": {
+          "patterns": ["shekere_steady", "shekere_steady", "shekere_steady", "shekere_steady"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.4, "end": 0.15, "curve": "exponential" }
+        },
+        "drums": {
+          "patterns": ["drums_intro", "drums_intro", "drums_intro", "drums_intro"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.2, "curve": "exponential" }
+        },
+        "bass": {
+          "patterns": ["bass_main", "bass_main", "bass_main", "bass_main"],
+          "expression": "natural",
+          "groove": "afrobeat",
+          "velocityAutomation": { "start": 0.5, "end": 0.2, "curve": "exponential" }
         }
       }
     }
   },
+
   "arrangement": [
     "intro",
-    "buildup",
-    "verse_a",
-    "kalimba_verse",
-    "kalimba_melody_section",
+    "groove_build",
+    "full_groove",
+    "horn_entry",
+    "horn_dialogue",
     "climax",
+    "cooldown",
     "outro"
   ]
 }

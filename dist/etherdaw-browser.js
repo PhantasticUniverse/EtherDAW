@@ -755,6 +755,64 @@ var GROOVE_TEMPLATES = {
     velocityMultipliers: [1, 0.85, 0.9, 0.8]
   }
 };
+var EXPRESSION_PRESETS = {
+  mechanical: {
+    name: "Mechanical",
+    description: "Quantized, robotic - no humanization",
+    humanize: 0,
+    groove: "straight",
+    velocityVariance: 0
+  },
+  tight: {
+    name: "Tight",
+    description: "Clean, professional studio performance",
+    humanize: 0.01,
+    groove: "straight",
+    velocityVariance: 0.02
+  },
+  natural: {
+    name: "Natural",
+    description: "Human but controlled, slight variations",
+    humanize: 0.03,
+    groove: "straight",
+    velocityVariance: 0.05
+  },
+  romantic: {
+    name: "Romantic",
+    description: "Expressive, rubato-like, laid back feel",
+    humanize: 0.04,
+    groove: "laid_back",
+    velocityVariance: 0.08
+  },
+  jazzy: {
+    name: "Jazzy",
+    description: "Loose, swung, Dilla-inspired groove",
+    humanize: 0.03,
+    groove: "dilla",
+    velocityVariance: 0.1
+  },
+  funk: {
+    name: "Funk",
+    description: "Tight pocket with funky timing",
+    humanize: 0.02,
+    groove: "funk",
+    velocityVariance: 0.06
+  },
+  gospel: {
+    name: "Gospel",
+    description: "Church feel with strong backbeat",
+    humanize: 0.03,
+    groove: "gospel",
+    velocityVariance: 0.08
+  },
+  aggressive: {
+    name: "Aggressive",
+    description: "Forward, driving, slightly ahead of beat",
+    humanize: 0.01,
+    groove: "pushed",
+    velocityVariance: 0.04
+  }
+};
 
 // src/schema/types.ts
 var DURATION_MAP = DURATIONS;
@@ -2099,6 +2157,17 @@ function extractTail(pattern, count) {
 function shiftOctave(pattern, octaves) {
   return transposePattern(pattern, octaves * 12);
 }
+function rotatePattern2(pattern, steps) {
+  if (pattern.length === 0 || steps === 0) {
+    return [...pattern];
+  }
+  const n = pattern.length;
+  const normalizedSteps = (steps % n + n) % n;
+  return [
+    ...pattern.slice(normalizedSteps),
+    ...pattern.slice(0, normalizedSteps)
+  ];
+}
 
 // src/generative/markov-presets.ts
 function generateUniform(states) {
@@ -2733,6 +2802,70 @@ function getPitchClass(pitch) {
 function getInterval(midi1, midi2) {
   return Math.abs(midi2 - midi1);
 }
+function isLeadingTone(pc, keyRoot) {
+  return (pc - keyRoot + 12) % 12 === 11;
+}
+function isChordSeventh(pc, chordRoot) {
+  const interval = (pc - chordRoot + 12) % 12;
+  return interval === 10 || interval === 11;
+}
+function getChordRootPitchClass(chordSymbol) {
+  const match = chordSymbol.match(/^([A-G])([#b]?)/);
+  if (!match) return 0;
+  const [, note, accidental] = match;
+  const noteValues = {
+    "C": 0,
+    "D": 2,
+    "E": 4,
+    "F": 5,
+    "G": 7,
+    "A": 9,
+    "B": 11
+  };
+  let value = noteValues[note] || 0;
+  if (accidental === "#") value = (value + 1) % 12;
+  if (accidental === "b") value = (value + 11) % 12;
+  return value;
+}
+function hasUnresolvedLeadingTone(voicing1, voicing2, chord1, chord2) {
+  const root1 = getChordRootPitchClass(chord1);
+  const root2 = getChordRootPitchClass(chord2);
+  const leadingTonePC = (root1 + 11) % 12;
+  const tonicPC = root1;
+  for (let i = 0; i < voicing1.length; i++) {
+    const pc1 = voicing1[i] % 12;
+    if (isLeadingTone(pc1, root1)) {
+      const pc2 = voicing2[i] % 12;
+      const motion = voicing2[i] - voicing1[i];
+      if (motion > 0 && motion <= 2 && (pc1 + 1) % 12 === pc2) {
+        continue;
+      }
+      if (motion !== 0 && pc2 !== pc1) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function hasUnresolvedSeventh(voicing1, voicing2, chord1) {
+  if (!chord1.includes("7")) {
+    return false;
+  }
+  const root1 = getChordRootPitchClass(chord1);
+  for (let i = 0; i < voicing1.length; i++) {
+    const pc1 = voicing1[i] % 12;
+    if (isChordSeventh(pc1, root1)) {
+      const motion = voicing2[i] - voicing1[i];
+      if (motion === 0 || motion < 0 && motion >= -2) {
+        continue;
+      }
+      if (motion > 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 function hasParallelFifths(voicing1, voicing2) {
   for (let i = 0; i < voicing1.length; i++) {
     for (let j = i + 1; j < voicing1.length; j++) {
@@ -2821,7 +2954,7 @@ function generatePossibleVoicings(chordNotes, voices, ranges) {
   generate(0, []);
   return voicings;
 }
-function scoreTransition(prev, next, constraints) {
+function scoreTransition(prev, next, constraints, prevChord, nextChord) {
   let score = 0;
   let valid = true;
   if (constraints.includes("no_parallel_fifths")) {
@@ -2842,6 +2975,16 @@ function scoreTransition(prev, next, constraints) {
   if (constraints.includes("contrary_outer_motion")) {
     if (!hasContraryOuterMotion(prev, next)) {
       score -= 10;
+    }
+  }
+  if (constraints.includes("resolve_leading_tones") && prevChord && nextChord) {
+    if (hasUnresolvedLeadingTone(prev, next, prevChord, nextChord)) {
+      score -= 20;
+    }
+  }
+  if (constraints.includes("resolve_sevenths") && prevChord) {
+    if (hasUnresolvedSeventh(prev, next, prevChord)) {
+      score -= 15;
     }
   }
   if (constraints.includes("smooth_motion")) {
@@ -2871,8 +3014,16 @@ function findBestVoicingSequence(chords, voices, constraints, ranges) {
     const nextBeam = [];
     for (const state of beam) {
       const lastVoicing = state.sequence[state.sequence.length - 1];
+      const prevChord = chords[i - 1];
+      const nextChord = chords[i];
       for (const nextVoicing of allVoicings[i]) {
-        const { valid, score } = scoreTransition(lastVoicing, nextVoicing, constraints);
+        const { valid, score } = scoreTransition(
+          lastVoicing,
+          nextVoicing,
+          constraints,
+          prevChord,
+          nextChord
+        );
         if (valid) {
           nextBeam.push({
             sequence: [...state.sequence, nextVoicing],
@@ -2884,11 +3035,20 @@ function findBestVoicingSequence(chords, voices, constraints, ranges) {
     if (nextBeam.length === 0) {
       console.warn(`No valid voicings satisfy all constraints at chord ${i}`);
       for (const state of beam) {
+        const prevChord = chords[i - 1];
+        const nextChord = chords[i];
         for (const nextVoicing of allVoicings[i]) {
+          const { score } = scoreTransition(
+            state.sequence[state.sequence.length - 1],
+            nextVoicing,
+            constraints,
+            prevChord,
+            nextChord
+          );
           nextBeam.push({
             sequence: [...state.sequence, nextVoicing],
-            score: state.score - 100
-            // Heavy penalty
+            score: state.score + score - 100
+            // Heavy penalty for relaxed constraint
           });
         }
       }
@@ -3019,6 +3179,8 @@ function applyTransform(sourceNotes, transform) {
       return transposePattern(sourceNotes, params?.semitones ?? 0);
     case "octave":
       return shiftOctave(sourceNotes, params?.octaves ?? 1);
+    case "rotate":
+      return rotatePattern2(sourceNotes, params?.steps ?? 1);
     default:
       return sourceNotes;
   }
@@ -4907,6 +5069,29 @@ function formatTime(seconds) {
 var debug = new DebugLogger();
 
 // src/engine/pattern-resolver.ts
+function resolveExpressionSettings(track, swing) {
+  let humanize = track.humanize || 0;
+  let groove = track.groove;
+  let velocityVariance = 0;
+  if (track.expression && EXPRESSION_PRESETS[track.expression]) {
+    const preset = EXPRESSION_PRESETS[track.expression];
+    humanize = preset.humanize;
+    groove = preset.groove;
+    velocityVariance = preset.velocityVariance;
+    if (track.humanize !== void 0) {
+      humanize = track.humanize;
+    }
+    if (track.groove !== void 0) {
+      groove = track.groove;
+    }
+  }
+  return {
+    humanize,
+    swing,
+    groove,
+    velocityVariance
+  };
+}
 function resolveTrack(track, ctx) {
   if (track.mute) {
     return [];
@@ -4928,6 +5113,7 @@ function resolveTrack(track, ctx) {
   }
   const results = [];
   const repeatCount = track.repeat || 1;
+  const processOptions = resolveExpressionSettings(track, ctx.settings.swing || 0);
   let cumulativeBeat = 0;
   for (let r = 0; r < repeatCount; r++) {
     for (let i = 0; i < patternNames.length; i++) {
@@ -4951,8 +5137,7 @@ function resolveTrack(track, ctx) {
       const processedNotes = processExpandedNotes(
         { notes: expanded.notes, totalBeats: actualPatternLength },
         currentBeat,
-        track.humanize || 0,
-        ctx.settings.swing || 0
+        processOptions
       );
       results.push(...processedNotes);
       debug.patternComplete(patternName, processedNotes.length, actualPatternLength);
@@ -4964,6 +5149,7 @@ function resolveTrack(track, ctx) {
 function resolveParallelPatterns(track, ctx) {
   const results = [];
   const repeatCount = track.repeat || 1;
+  const processOptions = resolveExpressionSettings(track, ctx.settings.swing || 0);
   const expandedPatterns = [];
   let maxPatternLength = 0;
   for (const patternName of track.parallel) {
@@ -4992,19 +5178,24 @@ function resolveParallelPatterns(track, ctx) {
       const processedNotes = processExpandedNotes(
         expanded,
         repeatOffset,
-        track.humanize || 0,
-        ctx.settings.swing || 0
+        processOptions
       );
       results.push(...processedNotes);
     }
   }
   return results;
 }
-function processExpandedNotes(expanded, beatOffset, humanize, swing) {
+function processExpandedNotes(expanded, beatOffset, options) {
+  const { humanize, swing, groove, velocityVariance = 0 } = options;
   return expanded.notes.map((note) => {
     let startBeat = note.startBeat + beatOffset;
     let velocity = note.velocity;
     let durationBeats = note.durationBeats;
+    if (groove) {
+      const grooved = applyGroove(startBeat, velocity, groove);
+      startBeat = grooved.beat;
+      velocity = grooved.velocity;
+    }
     if (swing > 0) {
       debug.swing(swing);
       startBeat = applySwing(startBeat, swing);
@@ -5014,6 +5205,10 @@ function processExpandedNotes(expanded, beatOffset, humanize, swing) {
       startBeat = humanizeTiming(startBeat, humanize);
       velocity = humanizeVelocity(velocity, humanize);
       durationBeats = humanizeDuration(durationBeats, humanize);
+    }
+    if (velocityVariance > 0) {
+      const variance = (Math.random() * 2 - 1) * velocityVariance;
+      velocity = velocity * (1 + variance);
     }
     const result = {
       pitch: note.pitch,
@@ -5026,6 +5221,32 @@ function processExpandedNotes(expanded, beatOffset, humanize, swing) {
     if (note.portamento !== void 0) result.portamento = note.portamento;
     if (humanize > 0) result.humanize = humanize;
     return result;
+  });
+}
+function applyVelocityAutomation(notes, config, sectionBeats) {
+  const { start: start2, end, curve = "linear" } = config;
+  return notes.map((note) => {
+    const progress = sectionBeats > 0 ? note.startBeat / sectionBeats : 0;
+    let interpolatedValue;
+    switch (curve) {
+      case "exponential":
+        interpolatedValue = start2 + (end - start2) * (progress * progress);
+        break;
+      case "sine":
+        interpolatedValue = start2 + (end - start2) * (0.5 - Math.cos(progress * Math.PI) / 2);
+        break;
+      case "step":
+        interpolatedValue = progress < 0.5 ? start2 : end;
+        break;
+      case "linear":
+      default:
+        interpolatedValue = start2 + (end - start2) * progress;
+        break;
+    }
+    return {
+      ...note,
+      velocity: Math.min(1, Math.max(0, note.velocity * interpolatedValue))
+    };
   });
 }
 function resolveSection(tracks, bars, ctx) {
@@ -5041,6 +5262,9 @@ function resolveSection(tracks, bars, ctx) {
     notes = fillToLength(notes, sectionBeats);
     if (ctx.density) {
       notes = applyDensityCurve(notes, ctx.density, sectionBeats);
+    }
+    if (track.velocityAutomation) {
+      notes = applyVelocityAutomation(notes, track.velocityAutomation, sectionBeats);
     }
     result.set(instrumentName, notes);
   }
@@ -26168,6 +26392,2538 @@ var Listener = getContext().listener;
 var Draw = getContext().draw;
 var context = getContext();
 
+// src/presets/synth.ts
+var SYNTH_PRESETS = {
+  synth: {
+    name: "Basic Synth",
+    category: "synth",
+    description: "Versatile triangle wave synth - good all-around sound",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.8 }
+    },
+    semanticDefaults: { brightness: 0.4, attack: 0.1, decay: 0.3, sustain: 0.3, release: 0.4 },
+    tags: ["versatile", "neutral", "default"]
+  },
+  sine: {
+    name: "Sine Wave",
+    category: "synth",
+    description: "Pure, clean sine wave - dark and simple",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 0.1, warmth: 0.8 },
+    tags: ["pure", "dark", "simple", "clean"]
+  },
+  square: {
+    name: "Square Wave",
+    category: "synth",
+    description: "Retro hollow square wave - 8-bit character",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "square" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.4, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.6 },
+    tags: ["retro", "8-bit", "hollow", "chiptune"]
+  },
+  sawtooth: {
+    name: "Sawtooth",
+    category: "synth",
+    description: "Bright, buzzy sawtooth - classic synth sound",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.8 },
+    tags: ["bright", "buzzy", "classic", "rich"]
+  },
+  arp_synth: {
+    name: "Arpeggio Synth",
+    category: "synth",
+    description: "Bright, punchy sawtooth for arpeggios - short and clear",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 5e-3, decay: 0.2, sustain: 0.2, release: 0.15 }
+    },
+    semanticDefaults: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.1, brightness: 0.7 },
+    tags: ["arpeggio", "punchy", "short", "clear"]
+  }
+};
+
+// src/presets/bass.ts
+var BASS_PRESETS = {
+  synth_bass: {
+    name: "Synth Bass",
+    category: "bass",
+    description: "Classic filtered sawtooth bass with punch",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 },
+      filterEnvelope: {
+        attack: 0.01,
+        decay: 0.2,
+        sustain: 0.3,
+        release: 0.2,
+        baseFrequency: 200,
+        octaves: 2.5
+      }
+    },
+    semanticDefaults: { brightness: 0.5, punch: 0.7, attack: 0.05 },
+    tags: ["classic", "punchy", "filtered"]
+  },
+  sub_bass: {
+    name: "Sub Bass",
+    category: "bass",
+    description: "Deep, clean sine sub-bass for foundation",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.02, decay: 0.1, sustain: 0.8, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 0.1, warmth: 0.9, sustain: 0.8 },
+    tags: ["deep", "clean", "sub", "foundation"]
+  },
+  pluck_bass: {
+    name: "Pluck Bass",
+    category: "bass",
+    description: "Short, plucky bass for staccato lines",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 },
+      filterEnvelope: {
+        attack: 0.01,
+        decay: 0.15,
+        sustain: 0.1,
+        release: 0.1,
+        baseFrequency: 300,
+        octaves: 2
+      }
+    },
+    semanticDefaults: { punch: 0.8, decay: 0.3, sustain: 0.1 },
+    tags: ["plucky", "staccato", "short"]
+  },
+  fm_bass: {
+    name: "FM Bass",
+    category: "bass",
+    description: "Punchy FM bass with fast modulation decay",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.3, sustain: 0.5, release: 0.2 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.1, sustain: 0.2, release: 0.1 }
+    },
+    semanticDefaults: { punch: 0.9, brightness: 0.6 },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 12 }
+    },
+    tags: ["punchy", "fm", "modern"]
+  },
+  synthwave_bass: {
+    name: "Synthwave Bass",
+    category: "bass",
+    description: "Punchy 80s FM bass for driving synthwave tracks",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.3, sustain: 0.5, release: 0.2 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.1, sustain: 0.2, release: 0.1 }
+    },
+    semanticDefaults: { punch: 0.8, brightness: 0.6 },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 12 }
+    },
+    tags: ["80s", "synthwave", "punchy", "driving"]
+  }
+};
+
+// src/presets/pad.ts
+var PAD_PRESETS = {
+  warm_pad: {
+    name: "Warm Pad",
+    category: "pad",
+    description: "Slow-attack triangle pad - soft and warm",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.5, decay: 0.3, sustain: 0.8, release: 1.5 }
+    },
+    semanticDefaults: { attack: 0.5, sustain: 0.8, release: 0.6, warmth: 0.8 },
+    tags: ["warm", "soft", "gentle", "mellow"]
+  },
+  string_pad: {
+    name: "String Pad",
+    category: "pad",
+    description: "Orchestral string-like pad with shimmer",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.4, decay: 0.2, sustain: 0.7, release: 1.2 }
+    },
+    semanticDefaults: { attack: 0.4, brightness: 0.6, richness: 0.7 },
+    tags: ["strings", "orchestral", "shimmer", "lush"]
+  },
+  ambient_pad: {
+    name: "Ambient Pad",
+    category: "pad",
+    description: "Ethereal, evolving ambient texture",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 1, decay: 0.5, sustain: 0.9, release: 2 }
+    },
+    semanticDefaults: { attack: 0.8, sustain: 0.9, release: 0.8, warmth: 0.7 },
+    tags: ["ambient", "ethereal", "evolving", "atmospheric"]
+  },
+  synthwave_pad: {
+    name: "Synthwave Pad",
+    category: "pad",
+    description: "Lush Juno-style sawtooth pad with slow attack",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 1.5, decay: 0.5, sustain: 0.8, release: 2 }
+    },
+    semanticDefaults: { attack: 0.7, sustain: 0.8, release: 0.7, warmth: 0.7 },
+    tags: ["80s", "synthwave", "lush", "juno"]
+  }
+};
+
+// src/presets/lead.ts
+var LEAD_PRESETS = {
+  lead: {
+    name: "Lead Synth",
+    category: "lead",
+    description: "Bright sawtooth lead with filter sweep",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.6, release: 0.3 },
+      filterEnvelope: {
+        attack: 0.01,
+        decay: 0.1,
+        sustain: 0.5,
+        release: 0.3,
+        baseFrequency: 800,
+        octaves: 2
+      }
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.6 },
+    tags: ["bright", "classic", "sawtooth"]
+  },
+  soft_lead: {
+    name: "Soft Lead",
+    category: "lead",
+    description: "Mellow triangle lead for gentle melodies",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.05, decay: 0.2, sustain: 0.5, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.7, attack: 0.15 },
+    tags: ["soft", "mellow", "gentle", "warm"]
+  },
+  synthwave_lead: {
+    name: "Synthwave Lead",
+    category: "lead",
+    description: "Bright FM lead for soaring 80s melodies",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 8,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.02, decay: 0.3, sustain: 0.6, release: 0.4 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.02, decay: 0.2, sustain: 0.3, release: 0.3 }
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 4, max: 16 }
+    },
+    tags: ["80s", "synthwave", "soaring", "fm"]
+  }
+};
+
+// src/presets/keys.ts
+var KEYS_PRESETS = {
+  /**
+   * Acoustic Piano (v0.9.2)
+   *
+   * Concert grand piano using FM synthesis. Targets warm romantic character
+   * with spectral centroid ~700 Hz (similar to reference recordings).
+   *
+   * Key design choices:
+   * - Fast attack (2ms) for hammer strike
+   * - Long decay (4.5s) for sustained resonance
+   * - Low harmonicity (1.0) for fundamental focus
+   * - Moderate modulation index (3.5) for brightness without harshness
+   * - Modulation envelope decays faster than amplitude (natural piano characteristic)
+   * - Extended release (3s) for sustain pedal simulation
+   */
+  acoustic_piano: {
+    name: "Acoustic Piano",
+    category: "keys",
+    description: "Concert grand piano with warm, resonant tone. Long decay and natural timbre.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 3.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 2e-3, decay: 4.5, sustain: 0.05, release: 3 },
+      modulation: { type: "sine" },
+      // Modulation decays faster than amplitude for natural piano brightness
+      modulationEnvelope: { attack: 2e-3, decay: 1.2, sustain: 0.02, release: 0.5 }
+    },
+    semanticDefaults: { warmth: 0.7, brightness: 0.4, decay: 0.8, release: 0.7 },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1, max: 8 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      decay: { param: "envelope.decay", min: 1, max: 8 },
+      release: { param: "envelope.release", min: 0.5, max: 5 }
+    },
+    tags: ["piano", "acoustic", "concert", "grand", "classical", "romantic", "warm"]
+  },
+  electric_piano: {
+    name: "Electric Piano",
+    category: "keys",
+    description: "Classic Rhodes-like tone with bell attack",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 0.8, sustain: 0.2, release: 0.8 }
+    },
+    semanticDefaults: { punch: 0.5, decay: 0.6 },
+    tags: ["rhodes", "classic", "bell", "vintage"]
+  },
+  organ: {
+    name: "Organ",
+    category: "keys",
+    description: "Sustained organ tone with no decay",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.1 }
+    },
+    semanticDefaults: { sustain: 1, release: 0.05 },
+    tags: ["organ", "sustained", "church"]
+  }
+};
+
+// src/presets/pluck.ts
+var PLUCK_PRESETS = {
+  pluck: {
+    name: "Pluck",
+    category: "pluck",
+    description: "Basic plucked string sound",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 1e-3, decay: 0.4, sustain: 0, release: 0.2 }
+    },
+    semanticDefaults: { attack: 0.01, decay: 0.4, sustain: 0 },
+    tags: ["pluck", "short", "percussive"]
+  },
+  bell: {
+    name: "Bell",
+    category: "pluck",
+    description: "Bright bell tone with long decay",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1, sustain: 0, release: 1 }
+    },
+    semanticDefaults: { attack: 0.01, decay: 0.7, sustain: 0, release: 0.6 },
+    tags: ["bell", "bright", "resonant"]
+  },
+  marimba: {
+    name: "Marimba",
+    category: "pluck",
+    description: "Mallet percussion tone",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.5, sustain: 0, release: 0.3 }
+    },
+    semanticDefaults: { decay: 0.4, warmth: 0.6 },
+    tags: ["marimba", "mallet", "wooden", "warm"]
+  },
+  // Guitar presets (v0.9.2)
+  clean_guitar: {
+    name: "Clean Guitar",
+    category: "pluck",
+    description: "Clean electric guitar tone - versatile and warm",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 2e-3, decay: 0.6, sustain: 0.15, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.5, warmth: 0.6, decay: 0.5 },
+    tags: ["guitar", "clean", "electric", "warm"]
+  },
+  rhythm_guitar: {
+    name: "Rhythm Guitar",
+    category: "pluck",
+    description: "Staccato rhythm guitar for funk/Afrobeat - choppy and tight",
+    type: "polysynth",
+    base: {
+      // Triangle with slight harmonic content for guitar-like timbre
+      oscillator: { type: "triangle" },
+      // Very short decay for choppy rhythm playing
+      envelope: { attack: 1e-3, decay: 0.15, sustain: 0, release: 0.08 }
+    },
+    semanticDefaults: { brightness: 0.55, attack: 0.01, decay: 0.15 },
+    tags: ["guitar", "rhythm", "funk", "afrobeat", "staccato", "choppy"]
+  },
+  muted_guitar: {
+    name: "Muted Guitar",
+    category: "pluck",
+    description: "Palm-muted guitar - tight and percussive",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      // Very tight, almost percussive
+      envelope: { attack: 1e-3, decay: 0.08, sustain: 0, release: 0.05 }
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.7, decay: 0.1 },
+    tags: ["guitar", "muted", "palm-mute", "tight", "percussive"]
+  }
+};
+
+// src/presets/fm.ts
+var FM_PRESETS = {
+  fm_epiano: {
+    name: "FM Electric Piano",
+    category: "fm",
+    description: "DX7-style Rhodes with warm bell-like attack",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.0007,
+      modulationIndex: 4,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 2.5, sustain: 0.1, release: 1.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.4, sustain: 0.1, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.5, warmth: 0.6 },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1, max: 12 },
+      warmth: { param: "harmonicity", min: 0.5, max: 2 }
+    },
+    tags: ["dx7", "rhodes", "warm", "bell", "classic"]
+  },
+  fm_brass: {
+    name: "FM Brass",
+    category: "fm",
+    description: "Brass stab where brightness tracks loudness",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 12,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.08, decay: 0.3, sustain: 0.6, release: 0.2 }
+    },
+    semanticDefaults: { punch: 0.7, brightness: 0.7 },
+    tags: ["brass", "stab", "punchy", "bright"]
+  },
+  fm_church_bell: {
+    name: "FM Church Bell",
+    category: "fm",
+    description: "Large church bell with inharmonic partials",
+    type: "fmsynth",
+    base: {
+      harmonicity: 14,
+      modulationIndex: 8,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 4, sustain: 0, release: 3 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 2, sustain: 0, release: 1.5 }
+    },
+    semanticDefaults: { decay: 0.9, release: 0.8 },
+    tags: ["bell", "church", "inharmonic", "long"]
+  },
+  fm_tubular_bell: {
+    name: "FM Tubular Bell",
+    category: "fm",
+    description: "Classic DX7 chime bell",
+    type: "fmsynth",
+    base: {
+      harmonicity: 5.07,
+      modulationIndex: 10,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0, release: 1.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 1, sustain: 0, release: 1 }
+    },
+    tags: ["bell", "tubular", "dx7", "chime"]
+  },
+  fm_glass: {
+    name: "FM Glass",
+    category: "fm",
+    description: "Crystal/glass sound with delicate timbre",
+    type: "fmsynth",
+    base: {
+      harmonicity: 7,
+      modulationIndex: 3,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0, release: 1 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.3, sustain: 0, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.8, decay: 0.5 },
+    tags: ["glass", "crystal", "delicate", "bright"]
+  },
+  fm_vibraphone: {
+    name: "FM Vibraphone",
+    category: "fm",
+    description: "Mallet percussion with FM warmth",
+    type: "fmsynth",
+    base: {
+      harmonicity: 4,
+      modulationIndex: 3.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.8, sustain: 0.1, release: 1.2 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.5, sustain: 0, release: 0.3 }
+    },
+    semanticDefaults: { warmth: 0.7, decay: 0.6 },
+    tags: ["vibraphone", "mallet", "warm", "jazz"]
+  },
+  fm_organ: {
+    name: "FM Organ",
+    category: "fm",
+    description: "FM organ with sustained brightness",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 2,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.1 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.1 }
+    },
+    semanticDefaults: { sustain: 1, brightness: 0.4 },
+    tags: ["organ", "sustained", "fm"]
+  },
+  fm_bell: {
+    name: "FM Bell",
+    category: "fm",
+    description: "Classic DX7 chime bell",
+    type: "fmsynth",
+    base: {
+      harmonicity: 5.07,
+      modulationIndex: 10,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0, release: 1.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 1, sustain: 0, release: 1 }
+    },
+    tags: ["bell", "dx7", "chime", "bright"]
+  },
+  synthwave_stab: {
+    name: "Synthwave Stab",
+    category: "fm",
+    description: "Short punchy FM stab for accents and hits",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 15,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.2, sustain: 0.1, release: 0.15 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.15, sustain: 0, release: 0.1 }
+    },
+    tags: ["80s", "synthwave", "stab", "punchy", "accent"]
+  }
+};
+
+// src/presets/texture.ts
+var TEXTURE_PRESETS = {
+  noise: {
+    name: "White Noise",
+    category: "texture",
+    description: "White noise for texture, risers, and ambient effects",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 1 },
+    tags: ["noise", "white", "bright", "texture"]
+  },
+  pink_noise: {
+    name: "Pink Noise",
+    category: "texture",
+    description: "Pink noise (1/f) - warmer, more natural sounding",
+    type: "noise",
+    base: {
+      noise: { type: "pink" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.7, warmth: 0.6 },
+    tags: ["noise", "pink", "warm", "natural"]
+  },
+  brown_noise: {
+    name: "Brown Noise",
+    category: "texture",
+    description: "Brown noise (1/f^2) - deepest, smoothest noise",
+    type: "noise",
+    base: {
+      noise: { type: "brown" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.3 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.9 },
+    tags: ["noise", "brown", "deep", "smooth"]
+  },
+  noise_sweep: {
+    name: "Noise Sweep",
+    category: "texture",
+    description: "White noise with longer attack for sweeps and risers",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 0.5, decay: 0.3, sustain: 0.3, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 1 },
+    tags: ["noise", "sweep", "riser", "build"]
+  }
+};
+
+// src/presets/drums.ts
+var DRUM_PRESETS = {
+  kick_deep: {
+    name: "Deep Kick",
+    category: "drums",
+    description: "Deep booming kick drum with slow pitch decay",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.08,
+      octaves: 4,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.5, sustain: 0, release: 0.1 },
+      pitch: "C2"
+    },
+    tags: ["kick", "deep", "booming"]
+  },
+  kick_909: {
+    name: "909 Kick",
+    category: "drums",
+    description: "Classic TR-909 style kick drum",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.05,
+      octaves: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.4, sustain: 0, release: 0.1 },
+      pitch: "C2"
+    },
+    tags: ["kick", "909", "classic", "electronic"]
+  },
+  hihat_closed: {
+    name: "Closed Hi-Hat",
+    category: "drums",
+    description: "Short, tight closed hi-hat",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.06, sustain: 0, release: 0.01 }
+    },
+    tags: ["hihat", "closed", "tight", "short"]
+  },
+  hihat_open: {
+    name: "Open Hi-Hat",
+    category: "drums",
+    description: "Longer, ringing open hi-hat",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.2, sustain: 0.05, release: 0.1 }
+    },
+    tags: ["hihat", "open", "ringing"]
+  },
+  clap_909: {
+    name: "909 Clap",
+    category: "drums",
+    description: "Classic TR-909 style clap",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.15, sustain: 0, release: 0.05 }
+    },
+    tags: ["clap", "909", "classic"]
+  },
+  snare_house: {
+    name: "House Snare",
+    category: "drums",
+    description: "Pink noise snare for house and electronic music",
+    type: "noise",
+    base: {
+      noise: { type: "pink" },
+      envelope: { attack: 1e-3, decay: 0.2, sustain: 0, release: 0.05 }
+    },
+    tags: ["snare", "house", "electronic", "pink"]
+  }
+};
+
+// src/presets/lofi.ts
+var LOFI_PRESETS = {
+  lofi_keys: {
+    name: "Lo-fi Keys",
+    category: "lofi",
+    description: "Dusty, warm keys with tape-like character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.005,
+      // Slight detune for warmth
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.01, decay: 1.2, sustain: 0.1, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.05, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.9, punch: 0.4 },
+    tags: ["lofi", "dusty", "warm", "tape", "vintage"]
+  },
+  lofi_pad: {
+    name: "Lo-fi Pad",
+    category: "lofi",
+    description: "Tape-saturated pad with gentle warmth",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 0.8, decay: 0.5, sustain: 0.6, release: 1.5 }
+    },
+    semanticDefaults: { brightness: 0.25, warmth: 0.95, attack: 0.6 },
+    tags: ["lofi", "pad", "tape", "warm", "saturated"]
+  },
+  vinyl_texture: {
+    name: "Vinyl Texture",
+    category: "lofi",
+    description: "Subtle crackle and warmth for atmosphere",
+    type: "noise",
+    base: {
+      noise: { type: "brown" },
+      envelope: { attack: 0.5, decay: 0.5, sustain: 0.3, release: 1 }
+    },
+    semanticDefaults: { brightness: 0.1, warmth: 0.8 },
+    tags: ["vinyl", "crackle", "texture", "atmosphere"]
+  },
+  dusty_piano: {
+    name: "Dusty Piano",
+    category: "lofi",
+    description: "Worn piano with vintage character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.01,
+      // Slightly detuned
+      modulationIndex: 3,
+      oscillator: { type: "sine" },
+      envelope: { attack: 5e-3, decay: 1.8, sustain: 0.05, release: 1 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 5e-3, decay: 0.25, sustain: 0.02, release: 0.15 }
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.85, decay: 0.7 },
+    tags: ["piano", "dusty", "vintage", "worn"]
+  },
+  vinyl_crackle: {
+    name: "Vinyl Crackle",
+    category: "lofi",
+    description: "Lo-fi vinyl crackle texture with short decay",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.02, sustain: 0, release: 0.01 }
+    },
+    semanticDefaults: { brightness: 0.9 },
+    tags: ["vinyl", "crackle", "lofi", "texture"]
+  }
+};
+
+// src/presets/cinematic.ts
+var CINEMATIC_PRESETS = {
+  cinematic_brass: {
+    name: "Cinematic Brass",
+    category: "cinematic",
+    description: "Massive orchestral brass for epic moments",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 18,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.15, decay: 0.3, sustain: 0.8, release: 0.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.2, decay: 0.4, sustain: 0.7, release: 0.4 }
+    },
+    semanticDefaults: { punch: 0.8, brightness: 0.75, attack: 0.3 },
+    tags: ["brass", "epic", "orchestral", "massive"]
+  },
+  tension_strings: {
+    name: "Tension Strings",
+    category: "cinematic",
+    description: "Dark, suspenseful string texture",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.6, decay: 0.4, sustain: 0.7, release: 1.8 }
+    },
+    semanticDefaults: { brightness: 0.3, warmth: 0.4, attack: 0.5 },
+    tags: ["strings", "tension", "dark", "suspense"]
+  },
+  impact_hit: {
+    name: "Impact Hit",
+    category: "cinematic",
+    description: "Deep cinematic impact for transitions",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.15,
+      octaves: 8,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0, release: 2 },
+      pitch: "C1"
+    },
+    semanticDefaults: { punch: 1, decay: 0.8 },
+    tags: ["impact", "hit", "deep", "transition"]
+  },
+  epic_pad: {
+    name: "Epic Pad",
+    category: "cinematic",
+    description: "Huge evolving pad for emotional moments",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.9, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.7, attack: 0.8, release: 0.9 },
+    tags: ["pad", "epic", "evolving", "emotional"]
+  },
+  riser: {
+    name: "Riser",
+    category: "cinematic",
+    description: "Building tension riser sound",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 4, decay: 0.5, sustain: 0.8, release: 0.5 }
+    },
+    semanticDefaults: { brightness: 0.7, attack: 0.95 },
+    tags: ["riser", "build", "tension", "transition"]
+  }
+};
+
+// src/presets/world.ts
+var WORLD_PRESETS = {
+  kalimba: {
+    name: "Kalimba",
+    category: "world",
+    description: "African thumb piano with metallic tines",
+    type: "fmsynth",
+    base: {
+      harmonicity: 5.5,
+      modulationIndex: 4,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.2, sustain: 0.05, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.4, sustain: 0, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.6, warmth: 0.5, decay: 0.5 },
+    tags: ["kalimba", "african", "metallic", "thumb piano"]
+  },
+  sitar_lead: {
+    name: "Sitar Lead",
+    category: "world",
+    description: "Sitar-inspired lead with characteristic buzz",
+    type: "fmsynth",
+    base: {
+      harmonicity: 3,
+      modulationIndex: 7,
+      oscillator: { type: "sine" },
+      envelope: { attack: 0.02, decay: 0.5, sustain: 0.4, release: 0.6 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.5, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.7, warmth: 0.6 },
+    tags: ["sitar", "indian", "buzz", "lead"]
+  },
+  steel_drum: {
+    name: "Steel Drum",
+    category: "world",
+    description: "Caribbean steel pan with bright overtones",
+    type: "fmsynth",
+    base: {
+      harmonicity: 4.5,
+      modulationIndex: 5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1, sustain: 0.1, release: 0.6 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.3, sustain: 0.05, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.75, warmth: 0.5, decay: 0.5 },
+    tags: ["steel drum", "caribbean", "pan", "bright"]
+  },
+  koto: {
+    name: "Koto",
+    category: "world",
+    description: "Japanese stringed instrument with delicate attack",
+    type: "fmsynth",
+    base: {
+      harmonicity: 6,
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 1.5, sustain: 0.02, release: 0.8 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1e-3, decay: 0.2, sustain: 0, release: 0.1 }
+    },
+    semanticDefaults: { brightness: 0.55, warmth: 0.4, decay: 0.6 },
+    tags: ["koto", "japanese", "delicate", "pluck"]
+  },
+  // African Percussion (v0.9.2)
+  conga_high: {
+    name: "Conga High",
+    category: "world",
+    description: "High-pitched conga (quinto) - slap and open tones",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.015,
+      octaves: 3,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.35, sustain: 0, release: 0.15 },
+      pitch: "D3"
+    },
+    semanticDefaults: { brightness: 0.6, punch: 0.7 },
+    tags: ["conga", "african", "percussion", "hand drum"]
+  },
+  conga_low: {
+    name: "Conga Low",
+    category: "world",
+    description: "Low-pitched conga (tumba) - deep resonant tone",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.02,
+      octaves: 4,
+      oscillator: { type: "sine" },
+      envelope: { attack: 2e-3, decay: 0.5, sustain: 0, release: 0.2 },
+      pitch: "G2"
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.7, punch: 0.6 },
+    tags: ["conga", "african", "percussion", "hand drum", "deep"]
+  },
+  djembe: {
+    name: "Djembe",
+    category: "world",
+    description: "West African goblet drum - bass, tone, and slap",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.012,
+      octaves: 5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.4, sustain: 0, release: 0.18 },
+      pitch: "C3"
+    },
+    semanticDefaults: { brightness: 0.55, warmth: 0.6, punch: 0.8 },
+    tags: ["djembe", "african", "percussion", "goblet drum"]
+  },
+  talking_drum: {
+    name: "Talking Drum",
+    category: "world",
+    description: "Nigerian hourglass tension drum - pitch bends with pressure",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.08,
+      octaves: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.6, sustain: 0.1, release: 0.3 },
+      pitch: "A2"
+    },
+    semanticDefaults: { brightness: 0.5, warmth: 0.7 },
+    tags: ["talking drum", "african", "nigerian", "yoruba", "pitch bend"]
+  },
+  agogo: {
+    name: "Agogo",
+    category: "world",
+    description: "Double bell - essential for Afrobeat clave patterns",
+    type: "metal",
+    base: {
+      // Bell frequencies: higher base with complex inharmonic ratios
+      frequency: 1800,
+      harmonicity: 3.17,
+      // Non-integer for inharmonic "clangy" partials
+      modulationIndex: 20,
+      // High modulation for metallic complexity
+      resonance: 3500,
+      // Medium decay - agogo has a quick "ping" character
+      envelope: { attack: 1e-3, decay: 0.35, sustain: 0, release: 0.15 }
+    },
+    semanticDefaults: { brightness: 0.75 },
+    tags: ["agogo", "bell", "african", "clave", "afrobeat"]
+  },
+  shekere: {
+    name: "Shekere",
+    category: "world",
+    description: "Gourd shaker with beads - rhythmic texture",
+    type: "noise",
+    base: {
+      // Pink noise is more natural sounding than white for shakers
+      noise: { type: "pink" },
+      // Shaker: quick attack, short decay with slight sustain
+      envelope: { attack: 2e-3, decay: 0.06, sustain: 0.02, release: 0.05 }
+    },
+    semanticDefaults: { brightness: 0.5 },
+    tags: ["shekere", "shaker", "african", "gourd", "beads"]
+  }
+};
+
+// src/presets/ambient.ts
+var AMBIENT_PRESETS = {
+  granular_pad: {
+    name: "Granular Pad",
+    category: "ambient",
+    description: "Textured evolving pad with cloud-like quality",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 2, decay: 1, sustain: 0.95, release: 4 }
+    },
+    semanticDefaults: { brightness: 0.35, warmth: 0.8, attack: 0.9, release: 0.95 },
+    tags: ["granular", "cloud", "evolving", "texture"]
+  },
+  drone: {
+    name: "Drone",
+    category: "ambient",
+    description: "Deep sustained drone for atmospheric beds",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sine" },
+      envelope: { attack: 3, decay: 1, sustain: 1, release: 5 }
+    },
+    semanticDefaults: { brightness: 0.15, warmth: 0.9, attack: 0.95, sustain: 1, release: 1 },
+    tags: ["drone", "deep", "sustained", "bed"]
+  },
+  shimmer: {
+    name: "Shimmer",
+    category: "ambient",
+    description: "Ethereal shimmering texture with high harmonics",
+    type: "fmsynth",
+    base: {
+      harmonicity: 7.5,
+      modulationIndex: 2,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1.5, decay: 0.8, sustain: 0.7, release: 3 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 1, decay: 0.5, sustain: 0.4, release: 2 }
+    },
+    semanticDefaults: { brightness: 0.8, warmth: 0.5, attack: 0.7 },
+    tags: ["shimmer", "ethereal", "high", "bright"]
+  },
+  atmosphere: {
+    name: "Atmosphere",
+    category: "ambient",
+    description: "Breathy, wind-like atmospheric texture",
+    type: "noise",
+    base: {
+      noise: { type: "pink" },
+      envelope: { attack: 2, decay: 1, sustain: 0.6, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.6, attack: 0.8 },
+    tags: ["atmosphere", "wind", "breathy", "texture"]
+  },
+  space_pad: {
+    name: "Space Pad",
+    category: "ambient",
+    description: "Vast, cosmic pad with deep reverb character",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 1.5,
+      oscillator: { type: "sine" },
+      envelope: { attack: 2.5, decay: 1.5, sustain: 0.85, release: 4.5 },
+      modulation: { type: "sine" },
+      modulationEnvelope: { attack: 2, decay: 1, sustain: 0.6, release: 3 }
+    },
+    semanticDefaults: { brightness: 0.4, warmth: 0.7, attack: 0.85, release: 0.9 },
+    tags: ["space", "cosmic", "vast", "pad"]
+  }
+};
+
+// src/presets/modern.ts
+var MODERN_PRESETS = {
+  "808_bass": {
+    name: "808 Bass",
+    category: "modern",
+    description: "Classic 808 bass with long sustain",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.08,
+      octaves: 6,
+      oscillator: { type: "sine" },
+      envelope: { attack: 1e-3, decay: 0.8, sustain: 0.3, release: 0.4 },
+      pitch: "C2"
+    },
+    semanticDefaults: { punch: 0.9, decay: 0.6, sustain: 0.3 },
+    tags: ["808", "bass", "trap", "hip-hop"]
+  },
+  trap_hihat: {
+    name: "Trap Hi-Hat",
+    category: "modern",
+    description: "Crisp trap hi-hat with tight envelope",
+    type: "noise",
+    base: {
+      noise: { type: "white" },
+      envelope: { attack: 1e-3, decay: 0.04, sustain: 0, release: 0.02 }
+    },
+    semanticDefaults: { brightness: 0.9, decay: 0.1 },
+    tags: ["trap", "hihat", "crisp", "tight"]
+  },
+  future_bass_lead: {
+    name: "Future Bass Lead",
+    category: "modern",
+    description: "Supersawed lead for future bass drops",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.15, sustain: 0.5, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.85, richness: 0.9, punch: 0.7 },
+    tags: ["future bass", "supersaw", "lead", "drop"]
+  },
+  wobble_bass: {
+    name: "Wobble Bass",
+    category: "modern",
+    description: "Dubstep/EDM wobble bass foundation",
+    type: "monosynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.8, release: 0.2 },
+      filterEnvelope: {
+        attack: 0.01,
+        decay: 0.2,
+        sustain: 0.5,
+        release: 0.2,
+        baseFrequency: 100,
+        octaves: 4
+      }
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.8, warmth: 0.5 },
+    tags: ["wobble", "dubstep", "bass", "edm"]
+  },
+  pluck_lead: {
+    name: "Pluck Lead",
+    category: "modern",
+    description: "Bright pluck for modern pop melodies",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: { attack: 1e-3, decay: 0.3, sustain: 0.1, release: 0.2 }
+    },
+    semanticDefaults: { brightness: 0.7, punch: 0.6, decay: 0.3 },
+    tags: ["pluck", "pop", "bright", "modern"]
+  },
+  supersaw: {
+    name: "Supersaw",
+    category: "modern",
+    description: "Classic supersaw for trance and EDM leads",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: { attack: 0.02, decay: 0.2, sustain: 0.6, release: 0.4 }
+    },
+    semanticDefaults: { brightness: 0.9, richness: 1, warmth: 0.4 },
+    tags: ["supersaw", "trance", "edm", "lead"]
+  },
+  chiptune: {
+    name: "Chiptune",
+    category: "modern",
+    description: "Retro 8-bit square wave for chiptune style",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "square" },
+      envelope: { attack: 1e-3, decay: 0.1, sustain: 0.4, release: 0.1 }
+    },
+    semanticDefaults: { brightness: 0.8, punch: 0.5 },
+    tags: ["chiptune", "8-bit", "retro", "square"]
+  }
+};
+
+// src/presets/strings.ts
+var STRINGS_PRESETS = {
+  /**
+   * Solo Violin
+   *
+   * Expressive, singing tone in the high register.
+   * Sawtooth-based with vibrato for warmth.
+   */
+  solo_violin: {
+    name: "Solo Violin",
+    category: "strings",
+    description: "Expressive solo violin with vibrato. High register, singing quality.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.15,
+        // Bow contact time
+        decay: 0.3,
+        sustain: 0.8,
+        release: 0.8
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.5,
+      attack: 0.3,
+      sustain: 0.8,
+      release: 0.6
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1500, max: 6e3 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 4 },
+      attack: { param: "envelope.attack", min: 0.05, max: 0.4 },
+      release: { param: "envelope.release", min: 0.3, max: 2 }
+    },
+    tags: ["violin", "solo", "strings", "orchestral", "expressive", "classical", "high"]
+  },
+  /**
+   * Solo Viola
+   *
+   * Warm, rich tone in the mid register.
+   * Darker than violin, fuller sound.
+   */
+  solo_viola: {
+    name: "Solo Viola",
+    category: "strings",
+    description: "Warm, rich viola tone. Mid register with full-bodied sound.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.18,
+        decay: 0.35,
+        sustain: 0.75,
+        release: 0.9
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.45,
+      warmth: 0.65,
+      attack: 0.35,
+      sustain: 0.75,
+      release: 0.65
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1200, max: 4500 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 3.5 },
+      attack: { param: "envelope.attack", min: 0.08, max: 0.45 },
+      release: { param: "envelope.release", min: 0.4, max: 2.2 }
+    },
+    tags: ["viola", "solo", "strings", "orchestral", "warm", "classical", "mid"]
+  },
+  /**
+   * Solo Cello
+   *
+   * Deep, lyrical tone in the low-mid register.
+   * Excellent for bass melodies and emotional passages.
+   */
+  solo_cello: {
+    name: "Solo Cello",
+    category: "strings",
+    description: "Deep, lyrical cello with expressive vibrato. Low-mid register.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.2,
+        decay: 0.4,
+        sustain: 0.7,
+        release: 1
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.4,
+      warmth: 0.7,
+      attack: 0.4,
+      sustain: 0.7,
+      release: 0.7
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 800, max: 3500 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 3 },
+      attack: { param: "envelope.attack", min: 0.1, max: 0.5 },
+      release: { param: "envelope.release", min: 0.5, max: 2.5 }
+    },
+    tags: ["cello", "solo", "strings", "orchestral", "lyrical", "classical", "low", "emotional"]
+  },
+  /**
+   * Contrabass (Double Bass)
+   *
+   * Very low register, foundation of the string section.
+   * Provides warmth and depth.
+   */
+  contrabass: {
+    name: "Contrabass",
+    category: "strings",
+    description: "Deep contrabass providing orchestral foundation. Very low register.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.25,
+        decay: 0.5,
+        sustain: 0.65,
+        release: 1.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.3,
+      warmth: 0.8,
+      attack: 0.5,
+      sustain: 0.65,
+      release: 0.75
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 500, max: 2500 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 2.5 },
+      attack: { param: "envelope.attack", min: 0.15, max: 0.6 },
+      release: { param: "envelope.release", min: 0.6, max: 3 }
+    },
+    tags: ["contrabass", "double bass", "bass", "strings", "orchestral", "foundation", "low"]
+  },
+  /**
+   * String Ensemble
+   *
+   * Full section blend with chorus effect.
+   * Rich, blended sound for pads and accompaniment.
+   */
+  string_ensemble: {
+    name: "String Ensemble",
+    category: "strings",
+    description: "Full string section blend. Rich, lush orchestral pad sound.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.35,
+        // Slower attack for blend
+        decay: 0.4,
+        sustain: 0.85,
+        release: 1.5
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.5,
+      warmth: 0.6,
+      richness: 0.8,
+      attack: 0.6,
+      sustain: 0.85,
+      release: 0.8
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1e3, max: 4e3 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 3 },
+      attack: { param: "envelope.attack", min: 0.2, max: 0.8 },
+      release: { param: "envelope.release", min: 0.8, max: 3 }
+    },
+    tags: ["ensemble", "section", "strings", "orchestral", "lush", "pad", "cinematic"]
+  },
+  /**
+   * String Pizzicato
+   *
+   * Plucked strings with short decay.
+   * Triangle wave for softer character.
+   */
+  string_pizzicato: {
+    name: "String Pizzicato",
+    category: "strings",
+    description: "Plucked strings with short, defined attack. Pizzicato articulation.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "triangle" },
+      envelope: {
+        attack: 5e-3,
+        // Very fast - pluck
+        decay: 0.4,
+        sustain: 0.1,
+        release: 0.3
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.5,
+      warmth: 0.6,
+      punch: 0.7,
+      decay: 0.4,
+      release: 0.3
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1500, max: 5e3 },
+      punch: { param: "envelope.attack", min: 1e-3, max: 0.02 },
+      decay: { param: "envelope.decay", min: 0.2, max: 0.8 },
+      release: { param: "envelope.release", min: 0.1, max: 0.6 }
+    },
+    tags: ["pizzicato", "pluck", "strings", "orchestral", "short", "rhythmic"]
+  },
+  /**
+   * String Tremolo
+   *
+   * Trembling bow effect with amplitude LFO.
+   * Creates tension and drama.
+   */
+  string_tremolo: {
+    name: "String Tremolo",
+    category: "strings",
+    description: "Trembling bow technique. Creates tension and dramatic intensity.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.1,
+        decay: 0.2,
+        sustain: 0.9,
+        release: 0.6
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.55,
+      warmth: 0.5,
+      movement: 0.8,
+      // Tremolo amount
+      attack: 0.2,
+      sustain: 0.9
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1200, max: 4500 },
+      warmth: { param: "filterEnvelope.octaves", min: 1, max: 3 },
+      attack: { param: "envelope.attack", min: 0.05, max: 0.3 }
+    },
+    tags: ["tremolo", "strings", "orchestral", "tension", "dramatic", "cinematic"]
+  },
+  /**
+   * String Spiccato
+   *
+   * Bouncing bow articulation.
+   * Short, separated notes with defined attack.
+   */
+  string_spiccato: {
+    name: "String Spiccato",
+    category: "strings",
+    description: "Bouncing bow articulation. Short, separated notes for fast passages.",
+    type: "polysynth",
+    base: {
+      oscillator: { type: "sawtooth" },
+      envelope: {
+        attack: 0.02,
+        // Quick bow bounce
+        decay: 0.15,
+        sustain: 0.2,
+        release: 0.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.45,
+      punch: 0.6,
+      decay: 0.3,
+      release: 0.25
+    },
+    semanticMappings: {
+      brightness: { param: "filterEnvelope.baseFrequency", min: 1500, max: 5500 },
+      punch: { param: "envelope.attack", min: 0.01, max: 0.05 },
+      decay: { param: "envelope.decay", min: 0.08, max: 0.3 },
+      release: { param: "envelope.release", min: 0.1, max: 0.4 }
+    },
+    tags: ["spiccato", "strings", "orchestral", "bouncing", "fast", "articulated"]
+  }
+};
+
+// src/presets/brass.ts
+var BRASS_PRESETS = {
+  /**
+   * Trumpet
+   *
+   * Bright, heroic brass with cutting tone.
+   * High modulation index for rich harmonics.
+   */
+  trumpet: {
+    name: "Trumpet",
+    category: "brass",
+    description: "Bright, heroic trumpet tone. Cutting and brilliant for fanfares.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 8,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.05,
+        decay: 0.2,
+        sustain: 0.85,
+        release: 0.3
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.05,
+        decay: 0.3,
+        sustain: 0.6,
+        release: 0.3
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.75,
+      warmth: 0.4,
+      punch: 0.7,
+      attack: 0.15,
+      sustain: 0.85
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 4, max: 14 },
+      warmth: { param: "harmonicity", min: 0.5, max: 2 },
+      punch: { param: "envelope.attack", min: 0.01, max: 0.1 }
+    },
+    tags: ["trumpet", "brass", "orchestral", "bright", "heroic", "fanfare"]
+  },
+  /**
+   * French Horn
+   *
+   * Warm, noble brass with rounded tone.
+   * Lower modulation index for mellower sound.
+   */
+  french_horn: {
+    name: "French Horn",
+    category: "brass",
+    description: "Warm, noble French horn. Rich and mellow for sustained harmonies.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 0.5,
+      // Sub-harmonic relationship for warmth
+      modulationIndex: 5,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.08,
+        decay: 0.3,
+        sustain: 0.8,
+        release: 0.5
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.1,
+        decay: 0.4,
+        sustain: 0.5,
+        release: 0.4
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.45,
+      warmth: 0.7,
+      attack: 0.25,
+      sustain: 0.8,
+      release: 0.5
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 8 },
+      warmth: { param: "harmonicity", min: 0.25, max: 1 },
+      attack: { param: "envelope.attack", min: 0.05, max: 0.2 },
+      release: { param: "envelope.release", min: 0.3, max: 1 }
+    },
+    tags: ["french horn", "horn", "brass", "orchestral", "warm", "noble", "mellow"]
+  },
+  /**
+   * Trombone
+   *
+   * Rich, powerful brass in the mid-low register.
+   * Good for bass lines and harmonies.
+   */
+  trombone: {
+    name: "Trombone",
+    category: "brass",
+    description: "Rich, powerful trombone. Mid-low register for bass and harmonies.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 7,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.06,
+        decay: 0.25,
+        sustain: 0.8,
+        release: 0.4
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.08,
+        decay: 0.35,
+        sustain: 0.55,
+        release: 0.35
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.55,
+      punch: 0.6,
+      attack: 0.2,
+      sustain: 0.8
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 3, max: 12 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      punch: { param: "envelope.attack", min: 0.02, max: 0.12 }
+    },
+    tags: ["trombone", "brass", "orchestral", "powerful", "mid", "bass"]
+  },
+  /**
+   * Tuba
+   *
+   * Deep, solid brass foundation.
+   * Very low register, steady tone.
+   */
+  tuba: {
+    name: "Tuba",
+    category: "brass",
+    description: "Deep, solid tuba foundation. Very low register for bass support.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 0.5,
+      modulationIndex: 4,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.1,
+        decay: 0.35,
+        sustain: 0.75,
+        release: 0.6
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.12,
+        decay: 0.4,
+        sustain: 0.4,
+        release: 0.5
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.35,
+      warmth: 0.75,
+      attack: 0.35,
+      sustain: 0.75,
+      release: 0.55
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 7 },
+      warmth: { param: "harmonicity", min: 0.25, max: 0.75 },
+      attack: { param: "envelope.attack", min: 0.06, max: 0.2 },
+      release: { param: "envelope.release", min: 0.4, max: 1.2 }
+    },
+    tags: ["tuba", "brass", "orchestral", "deep", "bass", "foundation", "low"]
+  },
+  /**
+   * Brass Ensemble
+   *
+   * Full brass section blend.
+   * Rich, powerful for orchestral climaxes.
+   */
+  brass_ensemble: {
+    name: "Brass Ensemble",
+    category: "brass",
+    description: "Full brass section blend. Powerful and majestic for climaxes.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 6,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.1,
+        decay: 0.3,
+        sustain: 0.85,
+        release: 0.6
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.12,
+        decay: 0.4,
+        sustain: 0.5,
+        release: 0.5
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.55,
+      richness: 0.8,
+      attack: 0.3,
+      sustain: 0.85,
+      release: 0.55
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 3, max: 10 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      attack: { param: "envelope.attack", min: 0.05, max: 0.25 },
+      release: { param: "envelope.release", min: 0.4, max: 1.2 }
+    },
+    tags: ["ensemble", "brass", "orchestral", "powerful", "majestic", "section", "cinematic"]
+  },
+  /**
+   * Muted Trumpet
+   *
+   * Soft, jazzy tone with harmon mute character.
+   * Filtered and intimate.
+   */
+  muted_trumpet: {
+    name: "Muted Trumpet",
+    category: "brass",
+    description: "Soft, jazzy muted trumpet. Filtered, intimate harmon mute sound.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.5,
+      // Slightly higher for nasal quality
+      modulationIndex: 5,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.04,
+        decay: 0.2,
+        sustain: 0.7,
+        release: 0.25
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.05,
+        decay: 0.25,
+        sustain: 0.4,
+        release: 0.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.5,
+      warmth: 0.5,
+      punch: 0.5,
+      attack: 0.12,
+      sustain: 0.7
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 8 },
+      warmth: { param: "harmonicity", min: 1, max: 2.5 },
+      punch: { param: "envelope.attack", min: 0.02, max: 0.08 }
+    },
+    tags: ["muted", "trumpet", "brass", "jazz", "intimate", "soft", "harmon"]
+  }
+};
+
+// src/presets/woodwinds.ts
+var WOODWINDS_PRESETS = {
+  /**
+   * Flute
+   *
+   * Airy, pure tone with breath component.
+   * Low modulation index for clean, almost sine-like quality.
+   */
+  flute: {
+    name: "Flute",
+    category: "woodwinds",
+    description: "Airy, pure flute tone. Breathy attack with clear sustain.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 1.5,
+      // Very low for pure tone
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.08,
+        decay: 0.15,
+        sustain: 0.9,
+        release: 0.2
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.1,
+        decay: 0.2,
+        sustain: 0.3,
+        release: 0.15
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.7,
+      warmth: 0.4,
+      attack: 0.25,
+      sustain: 0.9,
+      release: 0.25
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 0.5, max: 3 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      attack: { param: "envelope.attack", min: 0.03, max: 0.15 },
+      release: { param: "envelope.release", min: 0.1, max: 0.4 }
+    },
+    tags: ["flute", "woodwind", "orchestral", "airy", "pure", "high", "breathy"]
+  },
+  /**
+   * Clarinet
+   *
+   * Warm, woody tone with characteristic odd harmonics.
+   * Covers a wide range from chalumeau to altissimo.
+   */
+  clarinet: {
+    name: "Clarinet",
+    category: "woodwinds",
+    description: "Warm, woody clarinet. Rich chalumeau register, clear upper tones.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 3,
+      // Third harmonic emphasis (odd harmonics characteristic)
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.06,
+        decay: 0.2,
+        sustain: 0.85,
+        release: 0.25
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.08,
+        decay: 0.25,
+        sustain: 0.4,
+        release: 0.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.5,
+      warmth: 0.65,
+      attack: 0.2,
+      sustain: 0.85,
+      release: 0.3
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1, max: 5 },
+      warmth: { param: "harmonicity", min: 2, max: 4 },
+      attack: { param: "envelope.attack", min: 0.03, max: 0.12 },
+      release: { param: "envelope.release", min: 0.15, max: 0.5 }
+    },
+    tags: ["clarinet", "woodwind", "orchestral", "warm", "woody", "jazz"]
+  },
+  /**
+   * Oboe
+   *
+   * Reedy, expressive double-reed character.
+   * Nasal quality with penetrating tone.
+   */
+  oboe: {
+    name: "Oboe",
+    category: "woodwinds",
+    description: "Reedy, expressive oboe. Nasal, penetrating double-reed character.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      modulationIndex: 4,
+      // Higher for reedy buzz
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.05,
+        decay: 0.15,
+        sustain: 0.88,
+        release: 0.2
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.06,
+        decay: 0.2,
+        sustain: 0.5,
+        release: 0.18
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.45,
+      attack: 0.15,
+      sustain: 0.88,
+      release: 0.25
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 7 },
+      warmth: { param: "harmonicity", min: 1.5, max: 3 },
+      attack: { param: "envelope.attack", min: 0.02, max: 0.1 },
+      release: { param: "envelope.release", min: 0.1, max: 0.35 }
+    },
+    tags: ["oboe", "woodwind", "orchestral", "reedy", "expressive", "nasal", "double-reed"]
+  },
+  /**
+   * Bassoon
+   *
+   * Dark, rich bass woodwind.
+   * Deep register with comedic to noble character.
+   */
+  bassoon: {
+    name: "Bassoon",
+    category: "woodwinds",
+    description: "Dark, rich bassoon. Deep bass woodwind with character.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.5,
+      modulationIndex: 3,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.08,
+        decay: 0.25,
+        sustain: 0.8,
+        release: 0.35
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.1,
+        decay: 0.3,
+        sustain: 0.35,
+        release: 0.3
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.4,
+      warmth: 0.7,
+      attack: 0.25,
+      sustain: 0.8,
+      release: 0.4
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 5 },
+      warmth: { param: "harmonicity", min: 1, max: 2.5 },
+      attack: { param: "envelope.attack", min: 0.05, max: 0.15 },
+      release: { param: "envelope.release", min: 0.2, max: 0.6 }
+    },
+    tags: ["bassoon", "woodwind", "orchestral", "dark", "bass", "rich", "double-reed"]
+  },
+  /**
+   * Piccolo
+   *
+   * Bright, piercing high register.
+   * Very pure tone at extreme high frequencies.
+   */
+  piccolo: {
+    name: "Piccolo",
+    category: "woodwinds",
+    description: "Bright, piercing piccolo. Very high register, brilliant tone.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 1,
+      // Very pure, like flute but brighter
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.05,
+        decay: 0.1,
+        sustain: 0.92,
+        release: 0.15
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.06,
+        decay: 0.15,
+        sustain: 0.25,
+        release: 0.12
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.85,
+      warmth: 0.3,
+      attack: 0.15,
+      sustain: 0.92,
+      release: 0.2
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 0.5, max: 2.5 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      attack: { param: "envelope.attack", min: 0.02, max: 0.1 },
+      release: { param: "envelope.release", min: 0.08, max: 0.3 }
+    },
+    tags: ["piccolo", "woodwind", "orchestral", "bright", "high", "piercing", "brilliant"]
+  },
+  /**
+   * English Horn
+   *
+   * Melancholic, mellow alto oboe.
+   * Darker and more rounded than oboe.
+   */
+  english_horn: {
+    name: "English Horn",
+    category: "woodwinds",
+    description: "Melancholic, mellow English horn. Darker alto oboe character.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 1.5,
+      modulationIndex: 3,
+      // Less harsh than oboe
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.07,
+        decay: 0.2,
+        sustain: 0.85,
+        release: 0.3
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.08,
+        decay: 0.25,
+        sustain: 0.4,
+        release: 0.25
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.45,
+      warmth: 0.6,
+      attack: 0.2,
+      sustain: 0.85,
+      release: 0.35
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 5 },
+      warmth: { param: "harmonicity", min: 1, max: 2.5 },
+      attack: { param: "envelope.attack", min: 0.04, max: 0.12 },
+      release: { param: "envelope.release", min: 0.2, max: 0.5 }
+    },
+    tags: ["english horn", "cor anglais", "woodwind", "orchestral", "melancholic", "mellow", "alto"]
+  }
+};
+
+// src/presets/orchestral.ts
+var ORCHESTRAL_PRESETS = {
+  // =========================================================================
+  // CHOIR (4 presets)
+  // =========================================================================
+  /**
+   * Choir Aah
+   *
+   * Open vowel sustained choir sound.
+   * Bright and full.
+   */
+  choir_aah: {
+    name: "Choir Aah",
+    category: "orchestral",
+    description: 'Open "aah" vowel choir. Bright, full sustained voices.',
+    type: "fmsynth",
+    base: {
+      harmonicity: 1,
+      modulationIndex: 3,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.4,
+        decay: 0.3,
+        sustain: 0.85,
+        release: 0.8
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.5,
+        decay: 0.4,
+        sustain: 0.5,
+        release: 0.6
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.55,
+      warmth: 0.6,
+      attack: 0.6,
+      sustain: 0.85,
+      release: 0.6
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 5 },
+      warmth: { param: "harmonicity", min: 0.5, max: 1.5 },
+      attack: { param: "envelope.attack", min: 0.2, max: 0.8 },
+      release: { param: "envelope.release", min: 0.5, max: 1.5 }
+    },
+    tags: ["choir", "aah", "vocal", "orchestral", "voices", "bright", "sustained"]
+  },
+  /**
+   * Choir Ooh
+   *
+   * Rounded vowel for warmer passages.
+   * More intimate than aah.
+   */
+  choir_ooh: {
+    name: "Choir Ooh",
+    category: "orchestral",
+    description: 'Rounded "ooh" vowel choir. Warm, intimate sustained voices.',
+    type: "fmsynth",
+    base: {
+      harmonicity: 0.5,
+      // Lower for darker vowel
+      modulationIndex: 2,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.45,
+        decay: 0.35,
+        sustain: 0.8,
+        release: 0.9
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.55,
+        decay: 0.5,
+        sustain: 0.4,
+        release: 0.7
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.35,
+      warmth: 0.75,
+      attack: 0.65,
+      sustain: 0.8,
+      release: 0.65
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1, max: 4 },
+      warmth: { param: "harmonicity", min: 0.25, max: 1 },
+      attack: { param: "envelope.attack", min: 0.25, max: 0.9 },
+      release: { param: "envelope.release", min: 0.6, max: 1.8 }
+    },
+    tags: ["choir", "ooh", "vocal", "orchestral", "voices", "warm", "intimate"]
+  },
+  /**
+   * Choir Mmm
+   *
+   * Closed humming sound.
+   * Very soft and ethereal.
+   */
+  choir_mmm: {
+    name: "Choir Mmm",
+    category: "orchestral",
+    description: 'Closed "mmm" humming choir. Very soft, ethereal texture.',
+    type: "fmsynth",
+    base: {
+      harmonicity: 0.25,
+      // Very low for closed vowel
+      modulationIndex: 1.5,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.5,
+        decay: 0.4,
+        sustain: 0.75,
+        release: 1
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.6,
+        decay: 0.6,
+        sustain: 0.3,
+        release: 0.8
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.25,
+      warmth: 0.85,
+      attack: 0.7,
+      sustain: 0.75,
+      release: 0.7
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 0.5, max: 3 },
+      warmth: { param: "harmonicity", min: 0.1, max: 0.5 },
+      attack: { param: "envelope.attack", min: 0.3, max: 1 },
+      release: { param: "envelope.release", min: 0.7, max: 2 }
+    },
+    tags: ["choir", "mmm", "hum", "vocal", "orchestral", "voices", "soft", "ethereal"]
+  },
+  /**
+   * Mixed Choir
+   *
+   * Blended vowels for general choral sound.
+   * Versatile, full-bodied.
+   */
+  mixed_choir: {
+    name: "Mixed Choir",
+    category: "orchestral",
+    description: "Blended mixed choir. Full-bodied choral sound for all contexts.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 0.75,
+      modulationIndex: 2.5,
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 0.4,
+        decay: 0.35,
+        sustain: 0.82,
+        release: 0.85
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 0.5,
+        decay: 0.45,
+        sustain: 0.45,
+        release: 0.65
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.45,
+      warmth: 0.65,
+      richness: 0.7,
+      attack: 0.6,
+      sustain: 0.82,
+      release: 0.65
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 4.5 },
+      warmth: { param: "harmonicity", min: 0.4, max: 1.2 },
+      attack: { param: "envelope.attack", min: 0.2, max: 0.8 },
+      release: { param: "envelope.release", min: 0.5, max: 1.5 }
+    },
+    tags: ["choir", "mixed", "vocal", "orchestral", "voices", "full", "versatile", "choral"]
+  },
+  // =========================================================================
+  // ORCHESTRAL PERCUSSION (7 presets) - v0.9.4.1 FM Redesign
+  // =========================================================================
+  /**
+   * Timpani (v0.9.4.1)
+   *
+   * Tuned orchestral kettledrum using membrane synthesis.
+   * Lower octaves for deeper fundamental, longer decay for resonance.
+   */
+  timpani: {
+    name: "Timpani",
+    category: "orchestral",
+    description: "Orchestral kettledrum. Deep, booming, tuned percussion.",
+    type: "membrane",
+    base: {
+      pitchDecay: 0.05,
+      // Slower pitch drop for more defined pitch
+      octaves: 2.5,
+      // Lower for deeper, more resonant fundamental
+      envelope: {
+        attack: 1e-3,
+        decay: 2.5,
+        // Longer decay for room resonance
+        sustain: 0.1,
+        release: 1.5
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.35,
+      warmth: 0.75,
+      punch: 0.7,
+      decay: 0.8,
+      release: 0.7
+    },
+    semanticMappings: {
+      brightness: { param: "octaves", min: 1.5, max: 4 },
+      punch: { param: "pitchDecay", min: 0.02, max: 0.1 },
+      decay: { param: "envelope.decay", min: 1.5, max: 4 },
+      release: { param: "envelope.release", min: 0.8, max: 2.5 }
+    },
+    tags: ["timpani", "kettle", "drum", "orchestral", "percussion", "tuned", "booming", "dramatic"]
+  },
+  /**
+   * Glockenspiel (v0.9.4.1)
+   *
+   * Bright, bell-like metallic bars using FM synthesis.
+   * High harmonicity creates inharmonic bell partials.
+   * Very high register, crystalline, sparkling character.
+   */
+  glockenspiel: {
+    name: "Glockenspiel",
+    category: "orchestral",
+    description: "Bright, bell-like glockenspiel. Crystalline high register.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 12,
+      // High for inharmonic bell partials
+      modulationIndex: 6,
+      // Moderate-high for brightness
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 1.8,
+        sustain: 0.05,
+        release: 1
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 0.3,
+        // Fast mod decay for crisp attack
+        sustain: 0.02,
+        release: 0.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.8,
+      warmth: 0.25,
+      decay: 0.65,
+      release: 0.5
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 3, max: 10 },
+      warmth: { param: "harmonicity", min: 8, max: 16 },
+      decay: { param: "envelope.decay", min: 1, max: 3 },
+      release: { param: "envelope.release", min: 0.5, max: 2 }
+    },
+    tags: ["glockenspiel", "bells", "orchestral", "percussion", "tuned", "bright", "crystalline", "sparkling"]
+  },
+  /**
+   * Xylophone (v0.9.4.1)
+   *
+   * Wooden bars with bright, percussive attack using FM synthesis.
+   * Lower harmonicity than glockenspiel for "woodier" character.
+   * Short decay for rhythmic definition.
+   */
+  xylophone: {
+    name: "Xylophone",
+    category: "orchestral",
+    description: "Bright xylophone with percussive attack. Wooden, rhythmic.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 4,
+      // Lower for woody character (less inharmonic)
+      modulationIndex: 4,
+      // Moderate for presence without harshness
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 0.5,
+        // Short decay for rhythmic character
+        sustain: 0.02,
+        release: 0.3
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 0.15,
+        // Very fast mod decay for sharp attack
+        sustain: 0,
+        release: 0.1
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.65,
+      warmth: 0.4,
+      punch: 0.75,
+      decay: 0.35
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 7 },
+      warmth: { param: "harmonicity", min: 2, max: 6 },
+      punch: { param: "modulationEnvelope.decay", min: 0.05, max: 0.3 },
+      decay: { param: "envelope.decay", min: 0.3, max: 1 }
+    },
+    tags: ["xylophone", "wooden", "orchestral", "percussion", "tuned", "bright", "rhythmic", "percussive"]
+  },
+  /**
+   * Vibraphone (v0.9.4.1)
+   *
+   * Warm, sustained metal bars using FM synthesis.
+   * Jazz standard with warm sustain and gentle character.
+   * Based on fm_vibraphone but tuned for orchestral context.
+   */
+  vibraphone: {
+    name: "Vibraphone",
+    category: "orchestral",
+    description: "Warm vibraphone with sustained ring. Jazz staple.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 4,
+      // Moderate for warm metal character
+      modulationIndex: 3,
+      // Lower for mellower tone
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 2.5,
+        // Long decay for sustained ring
+        sustain: 0.15,
+        release: 1.5
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 0.6,
+        // Moderate mod decay for warm attack
+        sustain: 0.05,
+        release: 0.4
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.5,
+      warmth: 0.7,
+      decay: 0.75,
+      release: 0.65
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1.5, max: 6 },
+      warmth: { param: "harmonicity", min: 2, max: 6 },
+      decay: { param: "envelope.decay", min: 1.5, max: 4 },
+      release: { param: "envelope.release", min: 0.8, max: 2.5 }
+    },
+    tags: ["vibraphone", "vibes", "jazz", "orchestral", "percussion", "tuned", "warm", "sustained", "mellow"]
+  },
+  /**
+   * Marimba (v0.9.4.1)
+   *
+   * Mellow, wooden bar resonance using FM synthesis.
+   * Lower harmonicity for fundamental-focused, woody character.
+   * Warm and gentle, wider range than xylophone.
+   */
+  marimba: {
+    name: "Marimba",
+    category: "orchestral",
+    description: "Mellow marimba with warm wooden resonance. Gentle and lyrical.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 2,
+      // Low for fundamental-focused woody tone
+      modulationIndex: 2.5,
+      // Low for mellow character
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 1.2,
+        // Medium decay for resonance without ring
+        sustain: 0.08,
+        release: 0.7
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 0.4,
+        // Moderate decay for rounded attack
+        sustain: 0.02,
+        release: 0.25
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.4,
+      warmth: 0.75,
+      decay: 0.55,
+      release: 0.5
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 1, max: 5 },
+      warmth: { param: "harmonicity", min: 1, max: 4 },
+      decay: { param: "envelope.decay", min: 0.7, max: 2 },
+      release: { param: "envelope.release", min: 0.4, max: 1.2 }
+    },
+    tags: ["marimba", "wooden", "mellow", "orchestral", "percussion", "tuned", "warm", "lyrical", "gentle"]
+  },
+  /**
+   * Tubular Bells (v0.9.4.1)
+   *
+   * Deep church bell sound using FM synthesis.
+   * High harmonicity for inharmonic bell partials.
+   * Long decay for dramatic, ceremonial character.
+   */
+  tubular_bells: {
+    name: "Tubular Bells",
+    category: "orchestral",
+    description: "Deep tubular bells. Dramatic church bell sound.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 5.07,
+      // Classic DX7 bell ratio (inharmonic)
+      modulationIndex: 8,
+      // High for rich overtones
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 5,
+        // Very long decay for bell ring
+        sustain: 0.1,
+        release: 3
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 1.5,
+        // Slower mod decay preserves brightness longer
+        sustain: 0.05,
+        release: 1
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.6,
+      warmth: 0.45,
+      decay: 0.85,
+      release: 0.75
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 4, max: 12 },
+      warmth: { param: "harmonicity", min: 3, max: 8 },
+      decay: { param: "envelope.decay", min: 3, max: 8 },
+      release: { param: "envelope.release", min: 2, max: 5 }
+    },
+    tags: ["tubular bells", "church bells", "orchestral", "percussion", "tuned", "dramatic", "ceremonial", "chime"]
+  },
+  /**
+   * Celesta (v0.9.4.1)
+   *
+   * Magical, ethereal bell-piano hybrid using FM synthesis.
+   * Delicate and sparkling with piano-like envelope behavior.
+   * Higher register character than vibraphone.
+   */
+  celesta: {
+    name: "Celesta",
+    category: "orchestral",
+    description: "Magical celesta. Ethereal, delicate bell-piano character.",
+    type: "fmsynth",
+    base: {
+      harmonicity: 6,
+      // Moderately inharmonic for bell character
+      modulationIndex: 4,
+      // Moderate for delicate brightness
+      oscillator: { type: "sine" },
+      envelope: {
+        attack: 1e-3,
+        decay: 1.5,
+        // Medium-long decay
+        sustain: 0.05,
+        release: 0.8
+      },
+      modulation: { type: "sine" },
+      modulationEnvelope: {
+        attack: 1e-3,
+        decay: 0.35,
+        // Fast mod decay like piano hammer
+        sustain: 0.01,
+        release: 0.2
+      }
+    },
+    semanticDefaults: {
+      brightness: 0.65,
+      warmth: 0.5,
+      decay: 0.55,
+      release: 0.5
+    },
+    semanticMappings: {
+      brightness: { param: "modulationIndex", min: 2, max: 8 },
+      warmth: { param: "harmonicity", min: 4, max: 10 },
+      decay: { param: "envelope.decay", min: 0.8, max: 2.5 },
+      release: { param: "envelope.release", min: 0.4, max: 1.5 }
+    },
+    tags: ["celesta", "magical", "ethereal", "orchestral", "percussion", "tuned", "delicate", "sparkling", "bell-piano"]
+  }
+};
+
+// src/presets/index.ts
+var PRESET_REGISTRY = {
+  ...SYNTH_PRESETS,
+  ...BASS_PRESETS,
+  ...PAD_PRESETS,
+  ...LEAD_PRESETS,
+  ...KEYS_PRESETS,
+  ...PLUCK_PRESETS,
+  ...FM_PRESETS,
+  ...TEXTURE_PRESETS,
+  ...DRUM_PRESETS,
+  ...LOFI_PRESETS,
+  ...CINEMATIC_PRESETS,
+  ...WORLD_PRESETS,
+  ...AMBIENT_PRESETS,
+  ...MODERN_PRESETS,
+  // v0.9.4: Orchestral presets
+  ...STRINGS_PRESETS,
+  ...BRASS_PRESETS,
+  ...WOODWINDS_PRESETS,
+  ...ORCHESTRAL_PRESETS
+};
+
 // src/synthesis/presets.ts
 var PRESET_DEFINITIONS = {
   // ============================================================================
@@ -27091,7 +29847,15 @@ var PRESET_DEFINITIONS = {
   }
 };
 function getPresetDefinition(name) {
-  return PRESET_DEFINITIONS[name.toLowerCase()];
+  const normalizedName = name.toLowerCase();
+  if (PRESET_DEFINITIONS[normalizedName]) {
+    return PRESET_DEFINITIONS[normalizedName];
+  }
+  const registryPreset = PRESET_REGISTRY[normalizedName];
+  if (registryPreset) {
+    return registryPreset;
+  }
+  return void 0;
 }
 
 // src/synthesis/semantic-params.ts

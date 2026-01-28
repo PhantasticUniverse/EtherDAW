@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-*No unreleased changes*
+### Fixed
+- **Browser preset registry** - Browser player now has access to all 100+ presets
+  - Previously, world (agogo, shekere, congas), brass (trumpet, trombone), and orchestral presets were not available in browser
+  - `getPresetDefinition()` now falls back to full `PRESET_REGISTRY` from `src/presets/index.ts`
+  - Discovered during "Lagos Midnight" Afrobeat composition
+
+### Added
+- **Lagos Midnight** - New Afrobeat composition (`examples/archive/lagos-midnight.etherscore.json`)
+  - 2:48 duration, 76 bars, 4675 notes, 10 instruments
+  - Showcases interlocking polyrhythms, call-and-response horns, afrobeat groove template
 
 ---
 
