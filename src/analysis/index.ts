@@ -128,3 +128,15 @@ export {
   detectArtifacts,
   verifyBenchmark,
 } from './benchmark-verifier.js';
+
+// v0.9.10: Mix Analysis
+export {
+  MixReport,
+  SectionEnergy,
+  MixAnalysisOptions,
+  analyzeMix,
+  analyzeMixSimple,
+  analyzeSegmentEnergy,
+  formatMixReportASCII,
+  getMixSummary,
+} from './mix-analyzer.js';

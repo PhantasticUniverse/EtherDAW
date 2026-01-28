@@ -27,20 +27,23 @@ open player.html                     # Listen in browser
 
 **Player shortcuts:** Space=play/pause, ←→=seek, 1-9=sections, M=mute
 
-## CLI Commands (v0.9.8)
+## CLI Commands (v0.9.10)
 
 | Command | Description |
 |---------|-------------|
 | `preview <file>` | Preview patterns or sections |
 | `preview <file> --section verse` | Preview a specific section |
 | `preview <file> --analyze` | Preview with analysis output |
+| `mix-analysis <file>` | Analyze mix balance and frequency distribution |
+| `mix-analysis <file> --section chorus` | Analyze specific section |
+| `mix-analysis <file> --quick` | Quick summary only |
 | `timeline <file>` | ASCII section timeline visualization |
 | `timeline <file> --tracks` | Track activity visualization |
 | `watch <file>` | Auto-rebuild on file changes |
 | `watch <file> --browser` | With browser auto-refresh |
 | `watch <file> --export midi` | Auto-export on change |
 
-## REPL Commands (v0.9.7)
+## REPL Commands (v0.9.10)
 
 | Command | Description |
 |---------|-------------|
@@ -51,6 +54,7 @@ open player.html                     # Listen in browser
 | `connect` | Connect to browser for real-time audio |
 | `cache` | Show pattern cache statistics |
 | `analyze [section]` | Full perceptual analysis |
+| `mix [section]` | Mix analysis (frequency balance, section energy) |
 | `chroma [section]` | Chromagram (pitch distribution) |
 | `energy [section]` | RMS energy curve |
 | `compare sec1 sec2` | Compare two sections |

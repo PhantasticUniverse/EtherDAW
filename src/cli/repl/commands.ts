@@ -18,6 +18,13 @@ import {
   describeAudio,
 } from '../../analysis/describe-audio.js';
 
+// v0.9.10: Mix analysis imports
+import {
+  analyzeMix,
+  formatMixReportASCII,
+  getMixSummary,
+} from '../../analysis/mix-analyzer.js';
+
 // v0.9.5.1: Pattern cache and browser bridge
 import { getPatternCache } from '../../node/pattern-cache.js';
 import { getBrowserBridge, isBridgeAvailable } from '../../node/browser-bridge.js';
@@ -1804,6 +1811,61 @@ export const COMMANDS: CommandDef[] = [
         return { success: true, message: output };
       } catch (error) {
         return { success: false, message: `Comparison failed: ${(error as Error).message}` };
+      }
+    },
+  },
+
+  // v0.9.10: Mix analysis command
+  {
+    name: 'mix',
+    aliases: ['mix-analysis', 'balance'],
+    description: 'Analyze mix balance, frequency distribution, and section energy',
+    usage: 'mix [section] [--quick]',
+    execute: async (session, args) => {
+      if (!session.isLoaded()) {
+        return { success: false, message: 'No composition loaded' };
+      }
+
+      try {
+        const isQuick = args.includes('--quick') || args.includes('-q');
+        const filteredArgs = args.filter((a: string) => a !== '--quick' && a !== '-q');
+        const sectionName = filteredArgs[0];
+
+        const sampleRate = session.getRenderedSampleRate();
+        const sectionSamples = new Map<string, Float32Array>();
+
+        if (sectionName) {
+          // Analyze specific section
+          const sections = session.getSections();
+          if (!sections.includes(sectionName)) {
+            return {
+              success: false,
+              message: `Section not found: ${sectionName}\nAvailable: ${sections.join(', ')}`,
+            };
+          }
+          const samples = session.renderSection(sectionName);
+          sectionSamples.set(sectionName, samples);
+        } else {
+          // Analyze all sections in arrangement
+          const sections = session.getSections();
+          for (const section of sections) {
+            const samples = session.renderSection(section);
+            sectionSamples.set(section, samples);
+          }
+        }
+
+        // Run mix analysis
+        const report = analyzeMix(sectionSamples, sampleRate);
+
+        // Output
+        if (isQuick) {
+          return { success: true, message: getMixSummary(report) };
+        } else {
+          const title = session.getMetadata().title || 'Composition';
+          return { success: true, message: formatMixReportASCII(report, title) };
+        }
+      } catch (error) {
+        return { success: false, message: `Mix analysis failed: ${(error as Error).message}` };
       }
     },
   },

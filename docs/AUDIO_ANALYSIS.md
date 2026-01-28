@@ -455,6 +455,120 @@ Built-in PNG encoder (no external dependencies):
 - Spectrogram frequency resolution trades off with time resolution
 - Large files may be slow to process
 
+## Mix Analysis (v0.9.10)
+
+The mix analysis system provides text-based feedback on mix balance, helping LLMs understand what they created.
+
+### Mix Report Output
+
+| Metric | Description | LLM Utility |
+|--------|-------------|-------------|
+| **Frequency Balance** | Low/mid/high energy percentages | Know if bass-heavy or thin |
+| **Section Energy** | RMS/peak per section | Verify dynamic arc |
+| **Dynamic Range** | Loudest-to-quietest section diff | Check contrast |
+| **Headroom** | dB below clipping | Avoid distortion |
+| **Suggestions** | Actionable improvement hints | Guide refinement |
+
+### CLI Usage
+
+```bash
+# Full mix analysis
+npx tsx src/cli.ts mix-analysis composition.etherscore.json
+
+# Analyze specific section
+npx tsx src/cli.ts mix-analysis composition.etherscore.json --section chorus
+
+# Quick summary only
+npx tsx src/cli.ts mix-analysis composition.etherscore.json --quick
+```
+
+### REPL Usage
+
+```bash
+ether> mix                    # Analyze full composition
+ether> mix intro              # Analyze specific section
+ether> mix --quick            # Quick summary
+```
+
+### Example Output
+
+```
+============================================================
+Mix Analysis: Lagos Midnight
+============================================================
+
+FREQUENCY BALANCE:
+  Low    |██████████░░░░░░░░░░|  51%  (<250 Hz)
+  Mid    |█████████░░░░░░░░░░░|  47%  (250-4k Hz)
+  High   |░░░░░░░░░░░░░░░░░░░░|   2%  (>4k Hz)
+
+  Character: bass-heavy, dark (lacking highs)
+
+SECTION ENERGY:
+  intro          ███████████░░░░   -24.8 dB  soft
+  groove_build   ████████████░░░   -24.6 dB  soft
+  full_groove    ███████████████   -20.1 dB  moderate
+  climax         ██████████████░   -21.7 dB  moderate
+  outro          ████████░░░░░░░   -29.1 dB  soft
+
+  Energy arc: dynamic
+  Dynamic range: 9.0 dB
+
+LEVELS:
+  Peak level: -2.8 dB
+  Average RMS: -23.4 dB
+  Headroom: 2.8 dB
+
+SUGGESTIONS:
+  • Mix is bass-heavy - consider reducing bass instrument volumes
+  • Mix lacks brightness - consider boosting lead instrument presence
+  • Opening "intro" is louder than ending "outro" - may feel anticlimactic
+```
+
+### Programmatic API
+
+```typescript
+import { analyzeMix, formatMixReportASCII, getMixSummary } from 'etherdaw/analysis';
+
+// Analyze multiple sections
+const sectionSamples = new Map<string, Float32Array>();
+sectionSamples.set('verse', verseSamples);
+sectionSamples.set('chorus', chorusSamples);
+
+const report = analyzeMix(sectionSamples, 44100);
+// Returns: {
+//   frequencyBalance: { low, mid, high },
+//   sectionEnergy: { verse: {...}, chorus: {...} },
+//   dynamicRange: number,
+//   headroom: number,
+//   peakLevel: number,
+//   averageRms: number,
+//   suggestions: string[],
+//   frequencyDescription: string,
+//   energyArc: string,
+// }
+
+// Format for display
+const output = formatMixReportASCII(report, 'My Song');
+
+// Quick summary
+const summary = getMixSummary(report);
+// "bass-heavy, dark · 9dB range · peak: -3dB · 3 suggestions"
+```
+
+### Suggestion Categories
+
+The mix analyzer generates suggestions in these categories:
+
+| Category | Example Suggestion |
+|----------|-------------------|
+| Frequency imbalance | "Mix is bass-heavy - consider reducing bass volumes" |
+| Missing brightness | "Mix lacks brightness - melodies may sound dull" |
+| Narrow dynamics | "Dynamic range is narrow - consider more contrast" |
+| Low headroom | "Mix is near clipping - reduce overall volume" |
+| Energy progression | "Opening is louder than ending - may feel anticlimactic" |
+| Uniform sections | "All sections have similar energy - add variation" |
+
 ## Future Enhancements
 
 Planned for future versions:

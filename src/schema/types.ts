@@ -258,8 +258,8 @@ export interface EuclideanConfig {
   drum?: DrumName;    // For drum patterns
 }
 
-// NEW v0.3: Pattern transform types
-export type TransformOperation = 'invert' | 'retrograde' | 'augment' | 'diminish' | 'transpose' | 'octave';
+// NEW v0.3: Pattern transform types (updated v0.9.8 with rotate)
+export type TransformOperation = 'invert' | 'retrograde' | 'augment' | 'diminish' | 'transpose' | 'octave' | 'rotate';
 
 export interface PatternTransform {
   source: string;                // Name of source pattern to transform
@@ -269,6 +269,7 @@ export interface PatternTransform {
     factor?: number;            // For augment/diminish: multiplier (2=double, 0.5=half)
     semitones?: number;         // For transpose: semitones (+/-)
     octaves?: number;           // For octave: octaves to shift (+/-)
+    steps?: number;             // For rotate: number of positions to rotate
   };
 }
 

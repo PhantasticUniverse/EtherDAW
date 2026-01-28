@@ -53,14 +53,64 @@ const NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>
 const REST_REGEX = /^r:(\d+|[whq])(\.?)$/i;
 
 /**
+ * v0.9.9: Check for common syntax order mistakes and throw helpful errors
+ * Articulation order should be: duration[articulation][@velocity]
+ * Common mistake: @velocity before articulation (e.g., C4:q@pp~ instead of C4:q~@pp)
+ */
+function checkSyntaxOrderHints(noteStr: string): void {
+  // Check for velocity before articulation: @<velocity><articulation>
+  // Correct order is: articulation before velocity
+  const velocityBeforeArticulation = /@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff)([*~>^])/.exec(noteStr);
+  if (velocityBeforeArticulation) {
+    const [, velocity, articulation] = velocityBeforeArticulation;
+    const articulationName =
+      articulation === '~' ? 'legato' :
+      articulation === '*' ? 'staccato' :
+      articulation === '>' ? 'accent' :
+      articulation === '^' ? 'marcato' : 'articulation';
+
+    // Suggest the correct order
+    const corrected = noteStr.replace('@' + velocity + articulation, articulation + '@' + velocity);
+    throw new Error(
+      'Syntax order error in "' + noteStr + '": ' + articulationName + ' (' + articulation + ') must come BEFORE velocity (@' + velocity + ').\n' +
+      'Try: ' + corrected
+    );
+  }
+
+  // Check for missing colon between pitch and duration
+  const missingColon = /^([A-Ga-g][#b]?\d?)([whq]|\d+)/.exec(noteStr);
+  if (missingColon && !noteStr.includes(':')) {
+    const [, pitch, duration] = missingColon;
+    throw new Error(
+      'Missing colon in "' + noteStr + '": Note format requires a colon between pitch and duration.\n' +
+      'Try: ' + pitch + ':' + duration
+    );
+  }
+
+  // Check for portamento (~>) after velocity (should be before)
+  const portamentoAfterVelocity = /@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff)(~>)/.exec(noteStr);
+  if (portamentoAfterVelocity) {
+    const [, velocity] = portamentoAfterVelocity;
+    const corrected = noteStr.replace('@' + velocity + '~>', '~>@' + velocity);
+    throw new Error(
+      'Syntax order error in "' + noteStr + '": Portamento (~>) should come BEFORE velocity (@' + velocity + ').\n' +
+      'Try: ' + corrected
+    );
+  }
+}
+
+/**
  * Parse a note string in the format "pitch:duration[tN][articulation][~>][.jazzArt][.ornament][@velocity][+/-ms][?probability]"
  * @param noteStr - Note string (e.g., "C4:q", "Eb3:8", "F#5:h.", "C4:q*", "D4:8>", "C4:q@0.8", "D4:8?0.7", "C4:8t3", "C4:q.fall", "D4:h.tr")
  * @returns Parsed note object
  */
 export function parseNote(noteStr: string): ParsedNote {
-  const match = noteStr.trim().match(NOTE_REGEX);
+  const trimmed = noteStr.trim();
+  const match = trimmed.match(NOTE_REGEX);
 
   if (!match) {
+    // v0.9.9: Check for common syntax order mistakes before giving generic error
+    checkSyntaxOrderHints(trimmed);
     throw createError(errors.invalidNoteSyntax(noteStr));
   }
 

@@ -350,6 +350,54 @@ The validators only check structure, not semantics. The actual parsing/rendering
 
 ## Changelog
 
+### v0.9.10 (2026-01-28) - Mix Analysis ("Understanding Your Creation")
+
+**Vision:** LLMs compose by structure, not sound. Mix analysis bridges this gap by providing text-based feedback on what compositions actually sound like.
+
+**New CLI Command:**
+
+| Command | Description |
+|---------|-------------|
+| `mix-analysis <file>` | Analyze mix balance and frequency distribution |
+| `mix-analysis <file> --section <name>` | Analyze specific section |
+| `mix-analysis <file> --quick` | Quick one-line summary |
+
+**New REPL Command:**
+
+| Command | Description |
+|---------|-------------|
+| `mix [section]` | Mix analysis in interactive mode |
+| `mix --quick` | Quick summary |
+
+**Mix Report Includes:**
+- **Frequency Balance**: Low/mid/high percentages with ASCII visualization
+- **Section Energy**: RMS and peak levels per section with category labels
+- **Energy Arc**: Building, decaying, arc, steady, or dynamic
+- **Levels**: Peak, average RMS, headroom
+- **Suggestions**: LLM-friendly actionable feedback
+
+**Example Suggestions:**
+- "Mix is bass-heavy - consider reducing bass instrument volumes"
+- "Dynamic range is narrow - consider more contrast between sections"
+- "Opening is louder than ending - may feel anticlimactic"
+
+**New Files:**
+| File | Purpose |
+|------|---------|
+| `src/analysis/mix-analyzer.ts` | Mix analysis module |
+
+**Modified Files:**
+- `src/analysis/index.ts` - Export mix analyzer functions
+- `src/cli.ts` - Added `mix-analysis` command
+- `src/cli/repl/commands.ts` - Added `mix` REPL command
+- `src/schema/types.ts` - Fixed TransformOperation type (added 'rotate')
+
+**Documentation:**
+- `docs/AUDIO_ANALYSIS.md` - Mix Analysis section added
+- `CLAUDE.md` - Updated CLI and REPL command tables
+
+---
+
 ### v0.9.7 (2026-01-27) - Music Theory Engine
 
 **Vision:** Give LLMs music theory understanding to write better compositions from the start.

@@ -1,10 +1,23 @@
 /**
- * EtherScore Linter (v0.9.3)
+ * EtherScore Linter (v0.9.9)
  * Catches potential issues beyond basic validation
  */
 
 import type { EtherScore, Pattern, Section, Track } from '../schema/types.js';
 import { expandPattern, type PatternContext } from '../parser/pattern-expander.js';
+
+/**
+ * Parse time signature string to beats per bar
+ * Handles common time signatures like "4/4", "3/4", "6/8", etc.
+ */
+function parseTimeSignatureBeats(sig: string | undefined): number {
+  if (!sig) return 4; // Default 4/4
+  const match = sig.match(/^(\d+)\/(\d+)$/);
+  if (!match) return 4;
+  const [, numerator, denominator] = match;
+  // Convert to beats: numerator × (4/denominator) for quarter-note beats
+  return parseInt(numerator) * (4 / parseInt(denominator));
+}
 
 export interface LintResult {
   rule: string;
@@ -102,45 +115,52 @@ export function lint(score: EtherScore, options: LintOptions = {}): LintResult[]
     }
   }
 
-  // L004: Pattern length doesn't fit evenly into section bars
+  // L004: Track content doesn't fit evenly into section (v0.9.9: improved with time sig support)
+  const beatsPerBar = parseTimeSignatureBeats(score.settings?.timeSignature);
+  const reportedL004Tracks = new Set<string>(); // Avoid duplicate reports per track
+
   for (const [sectionName, section] of Object.entries(score.sections || {})) {
     const sec = section as Section;
-    const sectionBeats = sec.bars * 4; // Assuming 4/4
+    const sectionBeats = sec.bars * beatsPerBar;
 
     for (const [trackName, track] of Object.entries(sec.tracks || {})) {
       const t = track as Track;
       const patterns = getTrackPatterns(t);
+      const repeatCount = t.repeat || 1;
+      const trackKey = `${sectionName}/${trackName}`;
 
-      for (const patternName of patterns) {
-        const pattern = score.patterns?.[patternName];
-        if (!pattern) continue;
+      // Calculate total beats for sequential patterns
+      let seqBeats = 0;
+      for (const pn of patterns.filter(p => !t.parallel?.includes(p))) {
+        const p = score.patterns?.[pn];
+        if (p) seqBeats += getPatternLength(p, score.settings);
+      }
 
-        const patternBeats = getPatternLength(pattern, score.settings);
-        const repeatCount = t.repeat || 1;
+      // For parallel patterns, use the longest
+      let parBeats = 0;
+      for (const pn of (t.parallel || [])) {
+        const p = score.patterns?.[pn];
+        if (p) parBeats = Math.max(parBeats, getPatternLength(p, score.settings));
+      }
 
-        // Calculate total beats for all patterns × repeat
-        let totalTrackBeats = 0;
-        for (const pn of patterns) {
-          const p = score.patterns?.[pn];
-          if (p) {
-            totalTrackBeats += getPatternLength(p, score.settings);
-          }
-        }
-        totalTrackBeats *= repeatCount;
+      const totalTrackBeats = (seqBeats + parBeats) * repeatCount;
 
-        // Check if track fills section evenly
-        if (totalTrackBeats > 0 && sectionBeats % totalTrackBeats !== 0 && totalTrackBeats % sectionBeats !== 0) {
+      // Check if track fills section evenly
+      if (totalTrackBeats > 0 && !reportedL004Tracks.has(trackKey)) {
+        const fitsExactly = sectionBeats === totalTrackBeats;
+        const dividesEvenly = sectionBeats % totalTrackBeats === 0;
+        const multiplesEvenly = totalTrackBeats % sectionBeats === 0;
+
+        if (!fitsExactly && !dividesEvenly && !multiplesEvenly) {
           const ratio = sectionBeats / totalTrackBeats;
-          if (ratio !== Math.floor(ratio) && ratio > 1) {
-            results.push({
-              rule: 'L004',
-              severity: 'warning',
-              message: `Track content (${totalTrackBeats} beats) doesn't fit evenly into section (${sectionBeats} beats)`,
-              location: { section: sectionName, track: trackName },
-              suggestion: `Section needs ${ratio.toFixed(2)}x track content. Consider adjusting repeat count or pattern length.`,
-            });
-            break; // Only report once per track
-          }
+          results.push({
+            rule: 'L004',
+            severity: 'warning',
+            message: `Track content (${totalTrackBeats} beats) doesn't fit evenly into section (${sectionBeats} beats)`,
+            location: { section: sectionName, track: trackName },
+            suggestion: `Section needs ${ratio.toFixed(2)}× track content. Adjust repeat count or pattern length.`,
+          });
+          reportedL004Tracks.add(trackKey);
         }
       }
     }
@@ -290,6 +310,35 @@ export function lint(score: EtherScore, options: LintOptions = {}): LintResult[]
         });
         break; // Only report once per track name
       }
+    }
+  }
+
+  // L017: Pattern not aligned to bar boundaries (v0.9.9)
+  // This catches patterns that are fractional bars (e.g., 1.5 bars = 6 beats in 4/4)
+  const checkedPatterns = new Set<string>();
+  for (const [patternName, pattern] of Object.entries(score.patterns || {})) {
+    // Skip comment patterns
+    if (patternName.startsWith('//')) continue;
+    if (checkedPatterns.has(patternName)) continue;
+    checkedPatterns.add(patternName);
+
+    try {
+      const patternBeats = getPatternLength(pattern, score.settings);
+      if (patternBeats > 0) {
+        const remainder = patternBeats % beatsPerBar;
+        if (remainder !== 0) {
+          const bars = patternBeats / beatsPerBar;
+          results.push({
+            rule: 'L017',
+            severity: 'info',  // Info because sub-bar patterns are often intentional
+            message: `Pattern '${patternName}' is ${patternBeats} beats (${bars.toFixed(2)} bars)`,
+            location: { pattern: patternName },
+            suggestion: `Pattern is ${remainder} beat${remainder !== 1 ? 's' : ''} over a bar boundary. This is fine if intentional (e.g., for fast repeating patterns).`,
+          });
+        }
+      }
+    } catch {
+      // Skip patterns that can't be expanded
     }
   }
 

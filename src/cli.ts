@@ -16,7 +16,7 @@ const program = new Command();
 program
   .name('etherdaw')
   .description('A DAW designed for LLMs to compose music')
-  .version('0.9.6');
+  .version('0.9.10');
 
 /**
  * REPL command - start interactive environment (v0.82)
@@ -338,6 +338,170 @@ program
       console.log('Arrangement:');
       for (const section of info.sections) {
         console.log(`  - ${section.name} (${section.bars} bars)`);
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Check-patterns command - analyze pattern timing and alignment (v0.9.9)
+ */
+program
+  .command('check-patterns <file>')
+  .description('Analyze pattern timing and bar alignment')
+  .option('-s, --strict', 'Exit with error if any pattern is misaligned')
+  .action(async (file: string, options: { strict?: boolean }) => {
+    try {
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const { expandPattern } = await import('./parser/pattern-expander.js');
+      const { parseTimeSignature } = await import('./utils/time.js');
+
+      const content = await readFile(resolve(file), 'utf-8');
+      const score = validateOrThrow(JSON.parse(content));
+
+      // Parse time signature (default 4/4)
+      const timeSig = score.settings.timeSignature || '4/4';
+      const { beatsPerBar } = parseTimeSignature(timeSig);
+
+      console.log(`\nPattern Timing Analysis: ${basename(file)}`);
+      console.log('='.repeat(60));
+      console.log(`Time Signature: ${timeSig} (${beatsPerBar} beats/bar)\n`);
+
+      // Analyze each pattern
+      interface PatternInfo {
+        name: string;
+        beats: number;
+        bars: number;
+        aligned: boolean;
+        remainder: number;
+      }
+      const patternInfos: PatternInfo[] = [];
+      let hasErrors = false;
+
+      const ctx = {
+        key: score.settings.key,
+        tempo: score.settings.tempo,
+      };
+
+      console.log('Pattern              Beats    Bars     Status');
+      console.log('-'.repeat(60));
+
+      for (const [name, pattern] of Object.entries(score.patterns || {})) {
+        // Skip comment patterns
+        if (name.startsWith('//')) continue;
+
+        try {
+          const expanded = expandPattern(pattern, ctx);
+          const beats = expanded.totalBeats;
+          const bars = beats / beatsPerBar;
+          const remainder = beats % beatsPerBar;
+          const aligned = remainder === 0;
+
+          if (!aligned) hasErrors = true;
+
+          patternInfos.push({ name, beats, bars, aligned, remainder });
+
+          const status = aligned
+            ? '✓ aligned'
+            : `✗ not bar-aligned (${remainder.toFixed(1)} extra)`;
+
+          const nameCol = name.padEnd(20).slice(0, 20);
+          const beatsCol = beats.toString().padStart(5);
+          const barsCol = (aligned ? bars.toString() : bars.toFixed(2)).padStart(8);
+
+          console.log(`${nameCol} ${beatsCol}    ${barsCol}     ${status}`);
+        } catch (err) {
+          console.log(`${name.padEnd(20).slice(0, 20)}   ERROR: ${(err as Error).message}`);
+          hasErrors = true;
+        }
+      }
+
+      // Section analysis
+      console.log('\n' + '='.repeat(60));
+      console.log('Section Analysis');
+      console.log('-'.repeat(60));
+
+      for (const [sectionName, section] of Object.entries(score.sections || {})) {
+        const sec = section as { bars: number; tracks?: Record<string, { pattern?: string; patterns?: string[]; repeat?: number }> };
+        const sectionBeats = sec.bars * beatsPerBar;
+        console.log(`\n${sectionName} (${sec.bars} bars = ${sectionBeats} beats):`);
+
+        for (const [trackName, track] of Object.entries(sec.tracks || {})) {
+          const t = track as { pattern?: string; patterns?: string[]; parallel?: string[]; repeat?: number };
+
+          // Get sequential patterns
+          const seqPatterns: string[] = [];
+          if (t.pattern) seqPatterns.push(t.pattern);
+          if (t.patterns) seqPatterns.push(...t.patterns);
+
+          // Get parallel patterns (play simultaneously)
+          const parPatterns: string[] = t.parallel || [];
+
+          // Calculate beats: sequential patterns sum, parallel patterns use longest
+          let trackBeats = 0;
+          const patternDetails: string[] = [];
+
+          // Sequential patterns add up
+          for (const pName of seqPatterns) {
+            const pInfo = patternInfos.find(p => p.name === pName);
+            if (pInfo) {
+              trackBeats += pInfo.beats;
+              patternDetails.push(`${pName}(${pInfo.bars}b)`);
+            }
+          }
+
+          // Parallel patterns: use longest (they play simultaneously)
+          if (parPatterns.length > 0) {
+            let maxParBeats = 0;
+            const parDetails: string[] = [];
+            for (const pName of parPatterns) {
+              const pInfo = patternInfos.find(p => p.name === pName);
+              if (pInfo) {
+                maxParBeats = Math.max(maxParBeats, pInfo.beats);
+                parDetails.push(`${pName}(${pInfo.bars}b)`);
+              }
+            }
+            trackBeats += maxParBeats;
+            if (parDetails.length > 0) {
+              patternDetails.push(`[${parDetails.join(' || ')}]`);
+            }
+          }
+
+          const repeat = t.repeat || 1;
+          const totalBeats = trackBeats * repeat;
+          const fitsSection = sectionBeats === totalBeats || (totalBeats > 0 && sectionBeats % totalBeats === 0);
+
+          const status = fitsSection ? '✓' : '✗';
+          let details = repeat > 1
+            ? `${patternDetails.join(' + ')} × ${repeat} = ${totalBeats} beats`
+            : `${patternDetails.join(' + ')} = ${totalBeats} beats`;
+
+          // Add note if auto-repeating
+          if (fitsSection && totalBeats > 0 && totalBeats < sectionBeats) {
+            const autoRepeats = sectionBeats / totalBeats;
+            details += ` (repeats ${autoRepeats}×)`;
+          }
+
+          console.log(`  ${status} ${trackName}: ${details}`);
+        }
+      }
+
+      // Summary
+      const misaligned = patternInfos.filter(p => !p.aligned);
+      console.log('\n' + '='.repeat(60));
+      if (misaligned.length === 0) {
+        console.log('✓ All patterns are correctly aligned to bar boundaries');
+      } else {
+        console.log(`✗ ${misaligned.length} pattern${misaligned.length !== 1 ? 's' : ''} not aligned:`);
+        for (const p of misaligned) {
+          console.log(`  - ${p.name}: ${p.beats} beats (${p.remainder.toFixed(1)} beats over)`);
+        }
+      }
+
+      if (options.strict && hasErrors) {
+        process.exit(1);
       }
     } catch (error) {
       console.error('Error:', (error as Error).message);
@@ -861,6 +1025,74 @@ async function getTemplate(name: string): Promise<object> {
 
   return templates[name];
 }
+
+/**
+ * Mix Analysis command - analyze mix balance (v0.9.10)
+ */
+program
+  .command('mix-analysis <file>')
+  .description('Analyze mix balance, frequency distribution, and section energy')
+  .option('-s, --section <name>', 'Analyze specific section only')
+  .option('-q, --quick', 'Show quick summary only')
+  .action(async (file: string, options: { section?: string; quick?: boolean }) => {
+    try {
+      const { validateOrThrow } = await import('./schema/validator.js');
+      const { compile } = await import('./engine/compiler.js');
+      const { renderTimeline } = await import('./node/player.js');
+      const { analyzeMix, formatMixReportASCII, getMixSummary } = await import('./analysis/mix-analyzer.js');
+
+      const content = await readFile(resolve(file), 'utf-8');
+      const score = validateOrThrow(JSON.parse(content));
+
+      console.log(`Analyzing mix: ${file}\n`);
+
+      // Render each section to samples
+      const sectionSamples = new Map<string, Float32Array>();
+      const sampleRate = 44100;
+
+      if (options.section) {
+        // Single section analysis
+        if (!score.sections[options.section]) {
+          console.error(`Section '${options.section}' not found`);
+          console.log(`Available sections: ${Object.keys(score.sections).join(', ')}`);
+          process.exit(1);
+        }
+
+        const sectionScore = {
+          ...score,
+          arrangement: [options.section],
+        };
+        const { timeline } = compile(sectionScore);
+        const samples = renderTimeline(timeline, { sampleRate });
+        sectionSamples.set(options.section, samples);
+      } else {
+        // Full composition - render each section separately
+        for (const sectionName of score.arrangement) {
+          const sectionScore = {
+            ...score,
+            arrangement: [sectionName],
+          };
+          const { timeline } = compile(sectionScore);
+          const samples = renderTimeline(timeline, { sampleRate });
+          sectionSamples.set(sectionName, samples);
+        }
+      }
+
+      // Run mix analysis
+      const report = analyzeMix(sectionSamples, sampleRate);
+
+      // Output
+      if (options.quick) {
+        console.log(getMixSummary(report));
+      } else {
+        const title = score.meta?.title || basename(file);
+        console.log(formatMixReportASCII(report, title));
+      }
+    } catch (error) {
+      console.error('Error:', (error as Error).message);
+      process.exit(1);
+    }
+  });
 
 /**
  * Spectrogram command - analyze audio visually
