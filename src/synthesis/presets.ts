@@ -52,6 +52,9 @@ export interface PresetDefinition {
     noise?: { type: 'white' | 'pink' | 'brown' };
     // Default pitch for membrane synths
     pitch?: string;
+    // Sampler-specific (v0.9.11)
+    instrument?: string;      // tonejs-instruments name (e.g., 'piano', 'violin')
+    baseUrl?: string;         // CDN or local path for samples
   };
 
   // Default semantic values for this preset

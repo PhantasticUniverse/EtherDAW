@@ -294,6 +294,8 @@ describe('Preset Registry', () => {
         'brass',
         'woodwinds',
         'orchestral',
+        // v0.9.11: Sample-based instruments
+        'samples',
       ];
 
       for (const preset of Object.values(PRESET_REGISTRY)) {
@@ -302,7 +304,8 @@ describe('Preset Registry', () => {
     });
 
     it('should have consistent synth types', () => {
-      const validTypes = ['polysynth', 'monosynth', 'fmsynth', 'membrane', 'noise', 'metal'];
+      // v0.9.11: Added 'sampler' for sample-based instruments
+      const validTypes = ['polysynth', 'monosynth', 'fmsynth', 'membrane', 'noise', 'metal', 'sampler'];
 
       for (const preset of Object.values(PRESET_REGISTRY)) {
         expect(validTypes).toContain(preset.type);

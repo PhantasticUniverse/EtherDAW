@@ -62,8 +62,9 @@ export interface ToneJsOverrides {
 
 /**
  * Synth types supported by the instrument factory
+ * v0.9.11: Added 'sampler' for sample-based instruments
  */
-export type SynthType = 'synth' | 'monosynth' | 'fmsynth' | 'polysynth' | 'membrane' | 'noise';
+export type SynthType = 'synth' | 'monosynth' | 'fmsynth' | 'polysynth' | 'membrane' | 'noise' | 'sampler';
 
 /**
  * Mapping ranges for semantic to Tone.js conversion

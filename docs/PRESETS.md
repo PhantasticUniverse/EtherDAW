@@ -1,6 +1,6 @@
 # Instrument Presets Reference
 
-EtherDAW includes 107 synthesizer presets organized across 18 categories. This document describes each preset's character and recommended use cases.
+EtherDAW includes 127 presets organized across 19 categories (including 20 sample-based instruments in v0.9.11). This document describes each preset's character and recommended use cases.
 
 ## Preset Overview
 
@@ -24,6 +24,7 @@ EtherDAW includes 107 synthesizer presets organized across 18 categories. This d
 | **Brass** *(v0.9.4)* | trumpet, french_horn, trombone, tuba, brass_ensemble, muted_trumpet |
 | **Woodwinds** *(v0.9.4)* | flute, clarinet, oboe, bassoon, piccolo, english_horn |
 | **Orchestral** *(v0.9.4.1)* | choir_aah, choir_ooh, choir_mmm, mixed_choir, timpani, glockenspiel, xylophone, vibraphone, marimba, tubular_bells, celesta |
+| **Samples** *(v0.9.11)* | sample_piano, sample_violin, sample_cello, sample_contrabass, sample_flute, sample_clarinet, sample_bassoon, sample_french_horn, sample_trumpet, sample_trombone, sample_tuba, sample_saxophone, sample_guitar_acoustic, sample_guitar_electric, sample_guitar_nylon, sample_bass_electric, sample_harp, sample_xylophone, sample_organ, sample_harmonium |
 
 See `src/presets/` for full definitions. Use `findPresets({ category: 'bass' })` to query programmatically.
 
@@ -648,6 +649,125 @@ These presets are designed for authentic Afrobeat and West African music.
 - Character: Magical, ethereal, delicate
 - Bell-piano hybrid FM character
 - Best for: Nutcracker, magical scenes, sparkle
+
+---
+
+## Sample-Based Instruments (v0.9.11)
+
+Realistic acoustic instruments using recorded samples from tonejs-instruments CDN. Browser playback uses actual samples; Node.js player uses FM synthesis fallback.
+
+### `sample_piano`
+**Sampled Steinway Grand Piano**
+- Character: Natural dynamics, resonant, realistic
+- Best for: Classical, jazz, ballads, any piano-centric music
+- Note: Samples load from CDN on first use
+
+### `sample_violin`
+**Sampled Solo Violin**
+- Character: Expressive, legato, realistic string tone
+- Best for: Solo melodies, chamber music, film scores
+- Range: G3-E7
+
+### `sample_cello`
+**Sampled Solo Cello**
+- Character: Rich, deep, expressive
+- Best for: Emotional passages, bass melodies, orchestral
+- Range: C2-G5
+
+### `sample_contrabass`
+**Sampled Double Bass**
+- Character: Deep, resonant, orchestral foundation
+- Best for: Jazz walking bass, orchestral foundation
+- Range: E1-G4
+
+### `sample_trumpet`
+**Sampled Trumpet**
+- Character: Bright, heroic, expressive
+- Best for: Jazz, orchestral, fanfares, film noir
+- Range: E3-Bb5
+
+### `sample_french_horn`
+**Sampled French Horn**
+- Character: Noble, warm, majestic
+- Best for: Romantic music, film scores, sustained passages
+
+### `sample_trombone`
+**Sampled Trombone**
+- Character: Bold, powerful, versatile
+- Best for: Jazz, brass sections, powerful phrases
+
+### `sample_tuba`
+**Sampled Tuba**
+- Character: Deep, massive, foundational
+- Best for: Brass foundation, marches, orchestral bass
+
+### `sample_flute`
+**Sampled Concert Flute**
+- Character: Airy, lyrical, pure
+- Best for: Melodies, pastoral passages, light textures
+- Range: C4-C7
+
+### `sample_clarinet`
+**Sampled Clarinet**
+- Character: Warm, woody, versatile
+- Best for: Jazz, classical, folk, klezmer
+- Range: D3-Bb6
+
+### `sample_bassoon`
+**Sampled Bassoon**
+- Character: Dark, reedy, characterful
+- Best for: Bass woodwind, comic passages, orchestral
+- Range: Bb1-Eb5
+
+### `sample_saxophone`
+**Sampled Saxophone**
+- Character: Expressive, soulful, versatile
+- Best for: Jazz, R&B, soul, film noir
+
+### `sample_guitar_acoustic`
+**Sampled Acoustic Guitar**
+- Character: Warm, intimate, natural
+- Best for: Folk, classical, acoustic arrangements
+
+### `sample_guitar_electric`
+**Sampled Electric Guitar**
+- Character: Clean, versatile electric tone
+- Best for: Rock, pop, jazz, clean passages
+
+### `sample_guitar_nylon`
+**Sampled Classical Guitar**
+- Character: Warm, mellow, classical character
+- Best for: Spanish music, classical, fingerstyle
+
+### `sample_bass_electric`
+**Sampled Electric Bass**
+- Character: Punchy, defined, modern
+- Best for: Funk, rock, pop, R&B bass lines
+
+### `sample_harp`
+**Sampled Concert Harp**
+- Character: Ethereal, resonant, magical
+- Best for: Orchestral, film scores, fantasy music
+
+### `sample_xylophone`
+**Sampled Xylophone**
+- Character: Bright, percussive, cheerful
+- Best for: Melodic percussion, orchestral accents
+
+### `sample_organ`
+**Sampled Pipe Organ**
+- Character: Rich, sustained, ceremonial
+- Best for: Church music, classical, dramatic passages
+
+### `sample_harmonium`
+**Sampled Indian Harmonium**
+- Character: Warm, reedy, meditative
+- Best for: World music, Indian classical, ambient
+
+> **Technical Note:** Sample presets use the tonejs-instruments CDN for browser playback.
+> Samples are loaded on-demand and cached for subsequent playback. In Node.js context
+> (CLI, REPL), FM synthesis fallback provides approximation of each instrument's character.
+> For production use with samples, export and play in browser via player.html.
 
 ---
 

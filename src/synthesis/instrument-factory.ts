@@ -3,6 +3,8 @@
  *
  * Creates Tone.js synths from preset definitions + semantic parameters.
  * Supports preset-based creation, semantic modifications, and direct overrides.
+ *
+ * v0.9.11: Added sampler support for realistic acoustic instruments
  */
 
 import * as Tone from 'tone';
@@ -17,6 +19,7 @@ import {
   richnessToDetune,
   mergeWithOverrides,
 } from './semantic-params.js';
+import { TONEJS_SAMPLES_CDN } from '../presets/samples.js';
 
 /**
  * Options for creating an instrument
@@ -30,6 +33,7 @@ export interface InstrumentOptions {
 
 /**
  * The result of creating an instrument
+ * v0.9.11: Added Tone.Sampler for sample-based instruments
  */
 export type CreatedInstrument =
   | Tone.PolySynth
@@ -37,7 +41,8 @@ export type CreatedInstrument =
   | Tone.MonoSynth
   | Tone.FMSynth
   | Tone.MembraneSynth
-  | Tone.NoiseSynth;
+  | Tone.NoiseSynth
+  | Tone.Sampler;
 
 /**
  * Linear interpolation
@@ -244,6 +249,177 @@ function createNoiseSynth(options: PresetDefinition['base']): Tone.NoiseSynth {
 }
 
 /**
+ * v0.9.11: Sample URL mapping for tonejs-instruments
+ * Maps instrument names to their actual sample filenames from the CDN
+ * Note: Sharps use 's' suffix in filenames (Fs = F#, Cs = C#, etc.)
+ */
+const SAMPLE_NOTE_MAPPING: Record<string, string[]> = {
+  // Piano - comprehensive chromatic sampling
+  piano: ['A1', 'C2', 'E2', 'A2', 'C3', 'E3', 'A3', 'C4', 'E4', 'A4', 'C5', 'E5', 'A5', 'C6', 'E6', 'A6', 'C7'],
+  // Violin - starts at A3 (actual available samples)
+  violin: ['A3', 'A4', 'A5', 'A6', 'C4', 'C5', 'C6', 'C7', 'E4', 'E5', 'E6', 'G4', 'G5', 'G6'],
+  // Cello - C2 to C5 (available samples)
+  cello: ['C2', 'E2', 'A2', 'C3', 'E3', 'A3', 'C4', 'E4', 'A4', 'C5'],
+  // Contrabass - bass range (actual available: C2, Cs3, D2, E2, E3, Fs1, Fs2, G1, Gs2, Gs3, A2, As1, B3)
+  contrabass: ['C2', 'D2', 'E2', 'A2', 'E3'],
+  // Trumpet (actual: C4, C6, D5, Ds4, F3, F4, F5, G4, A3, A5, As4)
+  trumpet: ['A3', 'C4', 'F3', 'F4', 'G4', 'D5', 'F5', 'A5', 'C6'],
+  // Trombone
+  trombone: ['As2', 'C3', 'F3', 'As3', 'C4', 'F4', 'As4'],
+  // French horn
+  'french-horn': ['A1', 'D2', 'D3', 'A3', 'D4', 'F4', 'A4', 'C5', 'D5'],
+  // Tuba - low brass
+  tuba: ['As0', 'D1', 'As1', 'D2', 'F2', 'As2', 'D3'],
+  // Flute
+  flute: ['A4', 'C4', 'C5', 'C6', 'E4', 'E5', 'A5', 'E6'],
+  // Clarinet
+  clarinet: ['As3', 'D3', 'D4', 'D5', 'F3', 'F4', 'F5', 'As4', 'As5'],
+  // Bassoon
+  bassoon: ['A1', 'A2', 'A3', 'C2', 'C3', 'C4', 'E2', 'E3', 'G2', 'G3', 'G4'],
+  // Saxophone
+  saxophone: ['As3', 'Cs3', 'Cs4', 'Cs5', 'E3', 'E4', 'E5', 'G3', 'G4', 'G5'],
+  // Acoustic guitar
+  'guitar-acoustic': ['A2', 'A3', 'A4', 'C3', 'C4', 'C5', 'E2', 'E3', 'E4', 'F3', 'F4'],
+  // Electric guitar
+  'guitar-electric': ['A2', 'A3', 'A4', 'C3', 'C4', 'C5', 'E2', 'E3', 'E4', 'G3', 'G4'],
+  // Nylon guitar
+  'guitar-nylon': ['A2', 'A3', 'A4', 'C3', 'C4', 'C5', 'E2', 'E3', 'E4', 'F3', 'F4'],
+  // Electric bass
+  'bass-electric': ['As1', 'As2', 'Cs2', 'Cs3', 'E1', 'E2', 'G1', 'G2', 'Gs2'],
+  // Harp
+  harp: ['A2', 'A4', 'A6', 'B1', 'B3', 'B5', 'C3', 'C5', 'D2', 'D4', 'D6', 'E3', 'E5', 'F2', 'F4', 'F6', 'G3', 'G5'],
+  // Xylophone - upper register
+  xylophone: ['C5', 'C6', 'C7', 'C8', 'E5', 'E6', 'E7', 'G4', 'G5', 'G6', 'G7'],
+  // Organ
+  organ: ['A2', 'A3', 'A4', 'A5', 'C2', 'C3', 'C4', 'C5', 'C6', 'E2', 'E3', 'E4', 'E5', 'G2', 'G3', 'G4', 'G5'],
+  // Harmonium
+  harmonium: ['A3', 'A4', 'A5', 'C3', 'C4', 'C5', 'C6', 'E3', 'E4', 'E5', 'G3', 'G4', 'G5'],
+};
+
+/**
+ * v0.9.11: Get sample URLs for an instrument
+ * Converts between Tone.js note names (A#3) and CDN filenames (As3.mp3)
+ */
+function getSampleUrls(instrument: string): Record<string, string> {
+  const notes = SAMPLE_NOTE_MAPPING[instrument] || SAMPLE_NOTE_MAPPING.piano;
+  const urls: Record<string, string> = {};
+
+  for (const note of notes) {
+    // CDN uses 's' for sharps (As3.mp3), Tone.js uses '#' (A#3)
+    // The key should be Tone.js format, the filename should be CDN format
+    const toneNote = note.replace(/([A-G])s(\d)/, '$1#$2');
+    urls[toneNote] = `${note}.mp3`;
+  }
+
+  return urls;
+}
+
+/**
+ * v0.9.11: Create a Sampler from preset options
+ * Uses tonejs-instruments CDN for realistic acoustic instrument samples
+ */
+function createSampler(options: PresetDefinition['base']): Tone.Sampler {
+  const instrument = options.instrument || 'piano';
+  const baseUrl = options.baseUrl || TONEJS_SAMPLES_CDN;
+
+  // Build sample URLs
+  const urls = getSampleUrls(instrument);
+
+  // Create sampler with samples from CDN
+  const sampler = new Tone.Sampler({
+    urls,
+    baseUrl: `${baseUrl}${instrument}/`,
+    release: 1.0,
+    onload: () => {
+      // Samples loaded successfully
+      console.log(`Sampler loaded: ${instrument}`);
+    },
+    onerror: (error: Error) => {
+      console.warn(`Failed to load samples for ${instrument}:`, error.message);
+    },
+  });
+
+  return sampler;
+}
+
+/**
+ * v0.9.11: Create a Sampler and wait for it to load
+ * Returns a Promise that resolves when all samples are loaded
+ */
+export function createSamplerAsync(options: PresetDefinition['base']): Promise<Tone.Sampler> {
+  const instrument = options.instrument || 'piano';
+  const baseUrl = options.baseUrl || TONEJS_SAMPLES_CDN;
+
+  // Build sample URLs
+  const urls = getSampleUrls(instrument);
+
+  return new Promise((resolve, reject) => {
+    const sampler = new Tone.Sampler({
+      urls,
+      baseUrl: `${baseUrl}${instrument}/`,
+      release: 1.0,
+      onload: () => {
+        console.log(`Sampler loaded: ${instrument}`);
+        resolve(sampler);
+      },
+      onerror: (error: Error) => {
+        console.warn(`Failed to load samples for ${instrument}:`, error.message);
+        reject(error);
+      },
+    });
+  });
+}
+
+/**
+ * Check if a preset is a sampler type
+ */
+export function isSamplerPreset(presetName: string): boolean {
+  const def = getPresetDefinition(presetName);
+  return def?.type === 'sampler';
+}
+
+/**
+ * v0.9.11: Create FM fallback for sampler presets (used in Node.js context)
+ * This provides a reasonable approximation when samples aren't available
+ */
+export function createFMFallbackForSampler(instrument: string): Tone.PolySynth<Tone.FMSynth> {
+  // Map instruments to FM synthesis parameters that approximate their character
+  const fallbackParams: Record<string, { harmonicity: number; modulationIndex: number; envelope: object }> = {
+    piano: { harmonicity: 1, modulationIndex: 3.5, envelope: { attack: 0.002, decay: 2, sustain: 0.1, release: 1.5 } },
+    violin: { harmonicity: 2, modulationIndex: 3, envelope: { attack: 0.1, decay: 0.5, sustain: 0.8, release: 0.5 } },
+    cello: { harmonicity: 1.5, modulationIndex: 2.5, envelope: { attack: 0.15, decay: 0.5, sustain: 0.8, release: 0.6 } },
+    contrabass: { harmonicity: 1, modulationIndex: 2, envelope: { attack: 0.2, decay: 0.5, sustain: 0.7, release: 0.8 } },
+    flute: { harmonicity: 3, modulationIndex: 1.5, envelope: { attack: 0.05, decay: 0.3, sustain: 0.7, release: 0.3 } },
+    clarinet: { harmonicity: 2, modulationIndex: 2, envelope: { attack: 0.05, decay: 0.3, sustain: 0.7, release: 0.4 } },
+    bassoon: { harmonicity: 1.5, modulationIndex: 2.5, envelope: { attack: 0.08, decay: 0.4, sustain: 0.6, release: 0.5 } },
+    'french-horn': { harmonicity: 1, modulationIndex: 4, envelope: { attack: 0.1, decay: 0.3, sustain: 0.7, release: 0.4 } },
+    trumpet: { harmonicity: 1, modulationIndex: 6, envelope: { attack: 0.02, decay: 0.2, sustain: 0.7, release: 0.3 } },
+    trombone: { harmonicity: 1, modulationIndex: 5, envelope: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 } },
+    tuba: { harmonicity: 1, modulationIndex: 3, envelope: { attack: 0.1, decay: 0.3, sustain: 0.6, release: 0.5 } },
+    saxophone: { harmonicity: 2, modulationIndex: 4, envelope: { attack: 0.03, decay: 0.3, sustain: 0.7, release: 0.4 } },
+    'guitar-acoustic': { harmonicity: 2, modulationIndex: 2, envelope: { attack: 0.001, decay: 1.5, sustain: 0.1, release: 1 } },
+    'guitar-electric': { harmonicity: 2, modulationIndex: 3, envelope: { attack: 0.001, decay: 1, sustain: 0.2, release: 0.8 } },
+    'guitar-nylon': { harmonicity: 2, modulationIndex: 2, envelope: { attack: 0.001, decay: 1.5, sustain: 0.1, release: 1 } },
+    'bass-electric': { harmonicity: 2, modulationIndex: 4, envelope: { attack: 0.001, decay: 0.5, sustain: 0.4, release: 0.3 } },
+    harp: { harmonicity: 3, modulationIndex: 2, envelope: { attack: 0.001, decay: 2, sustain: 0.1, release: 1.5 } },
+    xylophone: { harmonicity: 5, modulationIndex: 4, envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.3 } },
+    organ: { harmonicity: 1, modulationIndex: 2, envelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.1 } },
+    harmonium: { harmonicity: 1, modulationIndex: 2.5, envelope: { attack: 0.05, decay: 0.1, sustain: 0.9, release: 0.3 } },
+  };
+
+  const params = fallbackParams[instrument] || fallbackParams.piano;
+
+  return new Tone.PolySynth(Tone.FMSynth, {
+    harmonicity: params.harmonicity,
+    modulationIndex: params.modulationIndex,
+    oscillator: { type: 'sine' },
+    envelope: params.envelope as Tone.EnvelopeOptions,
+    modulation: { type: 'sine' },
+    modulationEnvelope: { attack: 0.01, decay: 0.3, sustain: 0.3, release: 0.3 },
+  });
+}
+
+/**
  * Create an instrument from options
  *
  * Usage examples:
@@ -304,6 +480,9 @@ export function createInstrumentFromOptions(options: InstrumentOptions): Created
       return createMembraneSynth(synthOptions);
     case 'noise':
       return createNoiseSynth(synthOptions);
+    case 'sampler':
+      // v0.9.11: Sample-based instruments
+      return createSampler(synthOptions);
     case 'synth':
     case 'polysynth':
     default:

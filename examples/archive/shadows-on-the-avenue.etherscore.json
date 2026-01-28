@@ -1,0 +1,476 @@
+{
+  "$schema": "../etherscore.schema.json",
+  "meta": {
+    "title": "Shadows on the Avenue",
+    "composer": "Claude (EtherDAW LLM)",
+    "created": "2026-01-28",
+    "description": "A noir-inspired composition featuring sample-based instruments. Muted trumpet carries the lonely melody while strings respond with dark harmonies. Sparse piano comping and walking contrabass lay the foundation.",
+    "genre": "Jazz Noir",
+    "tags": ["jazz", "noir", "orchestral", "samples", "film"]
+  },
+
+  "settings": {
+    "tempo": 72,
+    "timeSignature": "4/4",
+    "key": "D minor",
+    "swing": 0.22,
+    "masterVolume": -9
+  },
+
+  "instruments": {
+    "trumpet": {
+      "preset": "sample_trumpet",
+      "volume": -6,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.25, "options": { "decay": 1.8 } }
+      ]
+    },
+    "violin": {
+      "preset": "sample_violin",
+      "volume": -9,
+      "pan": -0.3,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2 } }
+      ]
+    },
+    "cello": {
+      "preset": "sample_cello",
+      "volume": -12,
+      "pan": 0.3,
+      "eq": {
+        "lowShelf": { "freq": 150, "gain": -2 }
+      },
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2 } }
+      ]
+    },
+    "piano": {
+      "preset": "sample_piano",
+      "volume": -9,
+      "pan": 0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.2, "options": { "decay": 1.5 } }
+      ]
+    },
+    "bass": {
+      "preset": "sample_contrabass",
+      "volume": -15,
+      "pan": 0,
+      "eq": {
+        "lowCut": 40,
+        "lowShelf": { "freq": 100, "gain": -3 }
+      },
+      "effects": [
+        { "type": "reverb", "wet": 0.1, "options": { "decay": 0.8 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "//": "=== INTRO PATTERNS (4 bars each) ===",
+    "intro_strings_swell": {
+      "notes": [
+        "r:w",
+        "D3:w@0.2",
+        "A3:w@0.3",
+        "F3:w@0.35"
+      ],
+      "dynamics": { "start": "pp", "end": "mp", "type": "crescendo" }
+    },
+    "intro_bass_drone": {
+      "notes": ["D2:w@0.35", "D2:w@0.4", "D2:w@0.45", "D2:w@0.5"]
+    },
+
+    "//": "=== THEME A: Trumpet melody (8 bars) ===",
+    "theme_a_melody": {
+      "notes": [
+        "D5:q>@0.6", "r:8", "F5:8@0.5", "E5:q@0.55", "D5:q@0.45",
+        "A4:h@0.5", "r:h",
+        "G4:q>@0.55", "A4:8@0.5", "Bb4:8>@0.6", "A4:q@0.5", "G4:q@0.45",
+        "E4:h@0.55", "r:h",
+        "A4:q>@0.6", "r:8", "C5:8@0.55", "D5:q@0.6", "E5:q@0.55",
+        "F5:h@0.65", "E5:h@0.5",
+        "D5:q@0.55", "C5:q@0.5", "Bb4:q@0.45", "A4:q@0.4",
+        "A4:w@0.5"
+      ]
+    },
+    "theme_a_violin": {
+      "chords": [
+        "Dm7:w", "Em7b5:w",
+        "Dm7:w", "Gm7:w",
+        "C7:w", "Fmaj7:w",
+        "Bbmaj7:w", "A7:w"
+      ]
+    },
+    "theme_a_cello": {
+      "notes": [
+        "D3:w@0.5", "A2:w@0.5",
+        "D3:w@0.5", "G2:w@0.5",
+        "C3:w@0.5", "F2:w@0.5",
+        "Bb2:w@0.5", "A2:w@0.55"
+      ]
+    },
+    "theme_a_walking_bass": {
+      "notes": [
+        "D2:q*@0.7", "F2:q*@0.6", "A2:q*@0.65", "D3:q*@0.6",
+        "E2:q*@0.7", "G2:q*@0.6", "A2:q*@0.65", "C#3:q*@0.6",
+        "D2:q*@0.7", "E2:q*@0.6", "F2:q*@0.65", "G2:q*@0.6",
+        "G2:q*@0.7", "A2:q*@0.6", "Bb2:q*@0.65", "B2:q*@0.6",
+        "C2:q*@0.7", "E2:q*@0.6", "G2:q*@0.65", "C3:q*@0.6",
+        "F2:q*@0.7", "A2:q*@0.6", "C3:q*@0.65", "A2:q*@0.6",
+        "Bb2:q*@0.7", "D3:q*@0.6", "F3:q*@0.65", "D3:q*@0.6",
+        "A2:q*@0.7", "C#3:q*@0.6", "E3:q*@0.65", "A2:q*@0.6"
+      ]
+    },
+    "theme_a_piano_sparse": {
+      "chords": [
+        "r:h", "Dm9:h", "r:w",
+        "r:h", "Em7b5:h", "r:w",
+        "Gm9:h", "r:h", "Fmaj9:h", "r:h",
+        "Bbmaj9:h", "r:h", "A7#9:w"
+      ]
+    },
+
+    "//": "=== THEME B: Strings respond (6 bars) ===",
+    "theme_b_violin_melody": {
+      "notes": [
+        "A5:q@0.55", "G5:q@0.5", "F5:q@0.45", "E5:q@0.5",
+        "D5:h@0.5", "r:h",
+        "D5:q@0.55", "E5:q@0.5", "F5:q@0.5", "G5:q@0.55",
+        "Bb5:h@0.6", "A5:h@0.5",
+        "F5:q@0.55", "E5:q@0.5", "D5:q@0.45", "C5:q@0.4",
+        "D5:w@0.5"
+      ]
+    },
+    "theme_b_cello_counter": {
+      "notes": [
+        "D3:h@0.5", "E3:h@0.5",
+        "F3:h@0.5", "E3:h@0.5",
+        "D3:h@0.5", "G3:h@0.55",
+        "F3:h@0.5", "E3:h@0.5",
+        "D3:h@0.5", "C3:h@0.5",
+        "Bb2:h@0.5", "A2:h@0.5"
+      ]
+    },
+    "theme_b_trumpet_fills": {
+      "notes": [
+        "r:w", "r:w",
+        "r:h", "A4:q>@0.45", "C5:q@0.5",
+        "r:w",
+        "r:h", "D5:q>@0.45", "E5:q@0.5",
+        "F5:h@0.5", "r:h"
+      ]
+    },
+    "theme_b_bass": {
+      "notes": [
+        "D2:q*@0.7", "A2:q*@0.6", "F2:q*@0.65", "A2:q*@0.6",
+        "F2:q*@0.7", "C3:q*@0.6", "A2:q*@0.65", "F2:q*@0.6",
+        "D2:q*@0.7", "G2:q*@0.6", "Bb2:q*@0.65", "D3:q*@0.6",
+        "F2:q*@0.7", "A2:q*@0.6", "C3:q*@0.65", "A2:q*@0.6",
+        "D2:q*@0.7", "E2:q*@0.6", "F2:q*@0.65", "G2:q*@0.6",
+        "Bb2:q*@0.7", "A2:q*@0.6", "G2:q*@0.65", "A2:q*@0.6"
+      ]
+    },
+    "theme_b_piano": {
+      "chords": [
+        "Dm9:w", "Fmaj9:w",
+        "r:h", "Gm9:h", "Fmaj7:w",
+        "Dm7:w", "Bbmaj9:h", "A7#9:h"
+      ]
+    },
+
+    "//": "=== DEVELOPMENT: Tension builds (8 bars) ===",
+    "dev_violin_tension": {
+      "notes": [
+        "E5:q@0.6", "F5:q@0.55", "E5:q@0.5", "D5:q@0.55",
+        "C#5:h@0.6", "D5:h@0.55",
+        "F5:q@0.65", "G5:q@0.6", "F5:q@0.55", "E5:q@0.6",
+        "D5:h@0.65", "C#5:h@0.6",
+        "D5:q@0.65", "E5:q@0.6", "F5:q@0.65", "G5:q@0.7",
+        "A5:h@0.75", "Bb5:h@0.8",
+        "A5:q@0.75", "G5:q@0.7", "F5:q@0.65", "E5:q@0.6",
+        "D5:w@0.7"
+      ],
+      "dynamics": { "start": "mf", "end": "f", "type": "crescendo" }
+    },
+    "dev_cello_drive": {
+      "notes": [
+        "A2:q@0.65", "E3:q@0.6", "A2:q@0.65", "E3:q@0.6",
+        "D2:q@0.65", "A2:q@0.6", "D2:q@0.65", "A2:q@0.6",
+        "Bb2:q@0.7", "F3:q@0.65", "Bb2:q@0.7", "F3:q@0.65",
+        "A2:q@0.75", "E3:q@0.7", "A2:q@0.75", "E3:q@0.7",
+        "D2:q@0.75", "F2:q@0.7", "A2:q@0.75", "D3:q@0.7",
+        "Bb2:q@0.8", "D3:q@0.75", "F3:q@0.8", "D3:q@0.75",
+        "A2:q@0.8", "C#3:q@0.75", "E3:q@0.8", "A2:q@0.75",
+        "D2:w@0.85"
+      ],
+      "dynamics": { "start": "mf", "end": "f", "type": "crescendo" }
+    },
+    "dev_trumpet_soar": {
+      "notes": [
+        "r:w", "r:w",
+        "A4:h>@0.5", "D5:h@0.6",
+        "E5:q@0.6", "F5:q@0.65", "G5:h@0.7",
+        "A5:q>@0.75", "G5:q@0.7", "F5:q@0.65", "E5:q@0.6",
+        "D5:h@0.7", "C#5:h@0.65",
+        "D5:q>@0.7", "E5:q@0.65", "F5:q@0.7", "G5:q@0.75",
+        "A5:w@0.8"
+      ],
+      "dynamics": { "start": "mp", "end": "ff", "type": "crescendo" }
+    },
+    "dev_bass_tension": {
+      "notes": [
+        "A2:q@0.7", "E2:q@0.65", "A2:q@0.7", "G2:q@0.65",
+        "D2:q@0.7", "A2:q@0.65", "D2:q@0.7", "F2:q@0.65",
+        "Bb2:q@0.75", "F2:q@0.7", "Bb2:q@0.75", "A2:q@0.7",
+        "A2:h@0.75", "G2:h@0.75",
+        "D2:q@0.8", "E2:q@0.75", "F2:q@0.8", "G2:q@0.75",
+        "Bb2:q@0.85", "A2:q@0.8", "G2:q@0.85", "F2:q@0.8",
+        "A2:h@0.85", "A2:h@0.85",
+        "D2:w@0.9"
+      ]
+    },
+
+    "//": "=== CLIMAX: Full orchestration (8 bars) ===",
+    "climax_trumpet": {
+      "notes": [
+        "D5:q>@0.85", "F5:q@0.8", "A5:q>@0.85", "D6:q@0.9",
+        "D6:h@0.9", "C6:h@0.85",
+        "Bb5:q@0.85", "A5:q@0.8", "G5:q@0.85", "F5:q@0.8",
+        "E5:h@0.85", "F5:h@0.8",
+        "G5:q>@0.9", "A5:q@0.85", "Bb5:q>@0.9", "A5:q@0.85",
+        "G5:h@0.85", "F5:h@0.8",
+        "E5:q@0.8", "F5:q@0.75", "G5:q@0.8", "A5:q@0.85",
+        "D5:w@0.9"
+      ],
+      "dynamics": { "start": "f", "end": "ff", "type": "crescendo" }
+    },
+    "climax_violin": {
+      "chords": [
+        "Dm:h", "Dm:h", "F:h", "F:h",
+        "Gm:h", "Gm:h", "A7:h", "A7:h",
+        "Dm:h", "Dm:h", "Bb:h", "Bb:h",
+        "Gm:h", "Gm:h", "A7:h", "A7:h"
+      ]
+    },
+    "climax_cello": {
+      "notes": [
+        "D3:h@0.8", "F3:h@0.8",
+        "G3:h@0.85", "A3:h@0.85",
+        "D3:h@0.85", "Bb2:h@0.8",
+        "G2:h@0.85", "A2:h@0.85",
+        "D3:h@0.9", "F3:h@0.85",
+        "G3:h@0.9", "A3:h@0.9",
+        "D3:h@0.9", "Bb2:h@0.85",
+        "A2:w@0.9"
+      ]
+    },
+    "climax_bass": {
+      "notes": [
+        "D2:q@0.85", "F2:q@0.8", "A2:q@0.85", "D3:q@0.8",
+        "G2:q@0.85", "Bb2:q@0.8", "A2:h@0.85",
+        "D2:q@0.9", "F2:q@0.85", "A2:q@0.9", "D3:q@0.85",
+        "G2:h@0.9", "A2:h@0.9"
+      ]
+    },
+    "climax_piano": {
+      "chords": [
+        "Dm:h", "Dm:h", "F:h", "F:h",
+        "Gm:h", "Gm:h", "A7:h", "A7:h",
+        "Dm:h", "Dm:h", "Bb:h", "Bb:h",
+        "Gm:h", "A7:h", "Dm:w"
+      ]
+    },
+
+    "//": "=== RESOLUTION: Sparse, unresolved (8 bars) ===",
+    "resolution_trumpet": {
+      "notes": [
+        "A4:h@0.5", "r:h",
+        "D5:q@0.45", "C5:q@0.4", "Bb4:h@0.4",
+        "r:w",
+        "A4:h@0.35", "r:h",
+        "r:w",
+        "D5:q@0.35", "C5:q@0.3", "Bb4:h@0.3",
+        "r:w",
+        "A4:w@0.25"
+      ],
+      "dynamics": { "start": "mp", "end": "pp", "type": "diminuendo" }
+    },
+    "resolution_violin": {
+      "notes": [
+        "D5:w@0.4", "F5:w@0.35",
+        "E5:w@0.35", "D5:w@0.3",
+        "C5:w@0.3", "Bb4:w@0.25",
+        "A4:w@0.25", "A4:w@0.2"
+      ],
+      "dynamics": { "start": "mp", "end": "pp", "type": "diminuendo" }
+    },
+    "resolution_cello": {
+      "notes": [
+        "D3:w@0.4", "A2:w@0.35",
+        "D3:w@0.35", "Bb2:w@0.3",
+        "F2:w@0.3", "G2:w@0.25",
+        "A2:w@0.25", "D2:w@0.2"
+      ],
+      "dynamics": { "start": "mp", "end": "pp", "type": "diminuendo" }
+    },
+    "resolution_bass": {
+      "notes": [
+        "D2:w@0.45", "A1:w@0.4",
+        "D2:w@0.4", "Bb1:w@0.35",
+        "F2:w@0.35", "G2:w@0.3",
+        "A1:w@0.3", "D2:w@0.25"
+      ],
+      "dynamics": { "start": "mp", "end": "pp", "type": "diminuendo" }
+    },
+
+    "//": "=== OUTRO: Fade to silence (8 bars) ===",
+    "outro_strings_fade": {
+      "notes": [
+        "D4:w@0.25", "A3:w@0.2",
+        "F3:w@0.18", "D3:w@0.15",
+        "A3:w@0.12", "D3:w@0.1",
+        "r:w", "r:w"
+      ],
+      "dynamics": { "start": "pp", "end": "ppp", "type": "diminuendo" }
+    },
+    "outro_bass_final": {
+      "notes": [
+        "D2:w@0.3", "r:w",
+        "D2:w@0.2", "r:w",
+        "D1:w@0.15", "r:w",
+        "r:w", "r:w"
+      ],
+      "dynamics": { "start": "pp", "end": "ppp", "type": "diminuendo" }
+    }
+  },
+
+  "sections": {
+    "intro": {
+      "bars": 8,
+      "tracks": {
+        "violin": { "pattern": "intro_strings_swell", "repeat": 2, "expression": "romantic", "velocity": 0.25 },
+        "cello": { "pattern": "intro_strings_swell", "repeat": 2, "expression": "romantic", "velocity": 0.3 },
+        "bass": { "pattern": "intro_bass_drone", "repeat": 2, "expression": "natural", "velocity": 0.3 }
+      }
+    },
+
+    "theme_a": {
+      "bars": 16,
+      "tracks": {
+        "trumpet": { "pattern": "theme_a_melody", "repeat": 2, "expression": "jazzy", "groove": "laid_back", "velocity": 0.65 },
+        "violin": { "pattern": "theme_a_violin", "repeat": 2, "expression": "romantic", "velocity": 0.5 },
+        "cello": { "pattern": "theme_a_cello", "repeat": 2, "expression": "romantic", "velocity": 0.5 },
+        "bass": { "pattern": "theme_a_walking_bass", "repeat": 2, "groove": "laid_back", "humanize": 0.025, "velocity": 0.55 },
+        "piano": { "pattern": "theme_a_piano_sparse", "repeat": 2, "expression": "jazzy", "groove": "laid_back", "velocity": 0.5 }
+      }
+    },
+
+    "theme_b": {
+      "bars": 12,
+      "tracks": {
+        "violin": { "pattern": "theme_b_violin_melody", "repeat": 2, "expression": "romantic", "groove": "laid_back", "velocity": 0.7 },
+        "cello": { "pattern": "theme_b_cello_counter", "repeat": 2, "expression": "romantic", "velocity": 0.6 },
+        "trumpet": { "pattern": "theme_b_trumpet_fills", "repeat": 2, "expression": "jazzy", "groove": "laid_back", "velocity": 0.6 },
+        "bass": { "pattern": "theme_b_bass", "repeat": 2, "groove": "laid_back", "humanize": 0.025, "velocity": 0.6 },
+        "piano": { "pattern": "theme_b_piano", "repeat": 2, "expression": "jazzy", "groove": "laid_back", "velocity": 0.6 }
+      }
+    },
+
+    "development": {
+      "bars": 16,
+      "tracks": {
+        "violin": {
+          "pattern": "dev_violin_tension",
+          "repeat": 2,
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.35, "end": 0.55, "curve": "linear" }
+        },
+        "cello": {
+          "pattern": "dev_cello_drive",
+          "repeat": 2,
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.35, "end": 0.55, "curve": "linear" }
+        },
+        "trumpet": {
+          "pattern": "dev_trumpet_soar",
+          "repeat": 2,
+          "expression": "jazzy",
+          "groove": "pushed",
+          "velocityAutomation": { "start": 0.4, "end": 0.6, "curve": "linear" }
+        },
+        "bass": {
+          "pattern": "dev_bass_tension",
+          "repeat": 2,
+          "groove": "pushed",
+          "humanize": 0.02,
+          "velocityAutomation": { "start": 0.35, "end": 0.55, "curve": "linear" }
+        }
+      }
+    },
+
+    "climax": {
+      "bars": 8,
+      "tracks": {
+        "trumpet": {
+          "pattern": "climax_trumpet",
+          "expression": "aggressive",
+          "groove": "pushed",
+          "velocityAutomation": { "start": 0.8, "end": 1.0, "curve": "exponential" }
+        },
+        "violin": {
+          "pattern": "climax_violin",
+          "expression": "aggressive",
+          "velocityAutomation": { "start": 0.85, "end": 1.0, "curve": "exponential" }
+        },
+        "cello": {
+          "pattern": "climax_cello",
+          "expression": "aggressive",
+          "velocityAutomation": { "start": 0.85, "end": 1.0, "curve": "exponential" }
+        },
+        "piano": {
+          "pattern": "climax_piano",
+          "expression": "aggressive",
+          "velocityAutomation": { "start": 0.8, "end": 1.0, "curve": "exponential" }
+        },
+        "bass": {
+          "pattern": "climax_bass",
+          "repeat": 2,
+          "groove": "pushed",
+          "humanize": 0.02,
+          "velocityAutomation": { "start": 0.8, "end": 1.0, "curve": "exponential" }
+        }
+      }
+    },
+
+    "resolution": {
+      "bars": 8,
+      "tracks": {
+        "trumpet": { "pattern": "resolution_trumpet", "expression": "romantic", "groove": "laid_back", "velocity": 0.45 },
+        "violin": { "pattern": "resolution_violin", "expression": "romantic", "velocity": 0.4 },
+        "cello": { "pattern": "resolution_cello", "expression": "romantic", "velocity": 0.4 },
+        "bass": { "pattern": "resolution_bass", "expression": "natural", "groove": "laid_back", "velocity": 0.4 }
+      }
+    },
+
+    "outro": {
+      "bars": 8,
+      "tracks": {
+        "violin": { "pattern": "outro_strings_fade", "expression": "romantic", "velocity": 0.25 },
+        "cello": { "pattern": "outro_strings_fade", "expression": "romantic", "velocity": 0.25 },
+        "bass": { "pattern": "outro_bass_final", "expression": "natural", "groove": "laid_back", "velocity": 0.3 }
+      }
+    }
+  },
+
+  "arrangement": [
+    "intro",
+    "theme_a",
+    "theme_b",
+    "development",
+    "climax",
+    "resolution",
+    "outro"
+  ]
+}

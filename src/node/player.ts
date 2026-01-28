@@ -27,7 +27,7 @@ import {
 } from './audio-context.js';
 import { writeWavFile, midiToFreq, applyFades } from '../analysis/test-signals.js';
 import { DRUM_KITS, normalizeDrumName, type DrumType, type KitName, type DrumSynthParams } from '../synthesis/drum-kits.js';
-import { getPreset } from '../presets/index.js';
+import { getPreset, isSamplePreset, getSampleInstrumentName } from '../presets/index.js';
 
 /**
  * Player state
@@ -302,6 +302,100 @@ function synthesizeGuitarChord(
 }
 
 /**
+ * v0.9.11: FM synthesis parameters for sampler fallback
+ * Maps tonejs-instruments names to FM synthesis approximations
+ */
+const SAMPLER_FM_PARAMS: Record<string, { harmonicity: number; modulationIndex: number; modDecay: number; envelope: ADSREnvelope }> = {
+  piano: { harmonicity: 1, modulationIndex: 3.5, modDecay: 0.25, envelope: { attack: 0.002, decay: 2, sustain: 0.1, release: 1.5 } },
+  violin: { harmonicity: 2, modulationIndex: 3, modDecay: 0.8, envelope: { attack: 0.1, decay: 0.5, sustain: 0.8, release: 0.5 } },
+  cello: { harmonicity: 1.5, modulationIndex: 2.5, modDecay: 0.8, envelope: { attack: 0.15, decay: 0.5, sustain: 0.8, release: 0.6 } },
+  contrabass: { harmonicity: 1, modulationIndex: 2, modDecay: 0.8, envelope: { attack: 0.2, decay: 0.5, sustain: 0.7, release: 0.8 } },
+  flute: { harmonicity: 3, modulationIndex: 1.5, modDecay: 0.5, envelope: { attack: 0.05, decay: 0.3, sustain: 0.7, release: 0.3 } },
+  clarinet: { harmonicity: 2, modulationIndex: 2, modDecay: 0.6, envelope: { attack: 0.05, decay: 0.3, sustain: 0.7, release: 0.4 } },
+  bassoon: { harmonicity: 1.5, modulationIndex: 2.5, modDecay: 0.6, envelope: { attack: 0.08, decay: 0.4, sustain: 0.6, release: 0.5 } },
+  'french-horn': { harmonicity: 1, modulationIndex: 4, modDecay: 0.7, envelope: { attack: 0.1, decay: 0.3, sustain: 0.7, release: 0.4 } },
+  trumpet: { harmonicity: 1, modulationIndex: 6, modDecay: 0.5, envelope: { attack: 0.02, decay: 0.2, sustain: 0.7, release: 0.3 } },
+  trombone: { harmonicity: 1, modulationIndex: 5, modDecay: 0.5, envelope: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 } },
+  tuba: { harmonicity: 1, modulationIndex: 3, modDecay: 0.6, envelope: { attack: 0.1, decay: 0.3, sustain: 0.6, release: 0.5 } },
+  saxophone: { harmonicity: 2, modulationIndex: 4, modDecay: 0.6, envelope: { attack: 0.03, decay: 0.3, sustain: 0.7, release: 0.4 } },
+  'guitar-acoustic': { harmonicity: 2, modulationIndex: 2, modDecay: 0.3, envelope: { attack: 0.001, decay: 1.5, sustain: 0.1, release: 1 } },
+  'guitar-electric': { harmonicity: 2, modulationIndex: 3, modDecay: 0.3, envelope: { attack: 0.001, decay: 1, sustain: 0.2, release: 0.8 } },
+  'guitar-nylon': { harmonicity: 2, modulationIndex: 2, modDecay: 0.3, envelope: { attack: 0.001, decay: 1.5, sustain: 0.1, release: 1 } },
+  'bass-electric': { harmonicity: 2, modulationIndex: 4, modDecay: 0.15, envelope: { attack: 0.001, decay: 0.5, sustain: 0.4, release: 0.3 } },
+  harp: { harmonicity: 3, modulationIndex: 2, modDecay: 0.4, envelope: { attack: 0.001, decay: 2, sustain: 0.1, release: 1.5 } },
+  xylophone: { harmonicity: 5, modulationIndex: 4, modDecay: 0.15, envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.3 } },
+  organ: { harmonicity: 1, modulationIndex: 2, modDecay: 1, envelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.1 } },
+  harmonium: { harmonicity: 1, modulationIndex: 2.5, modDecay: 0.9, envelope: { attack: 0.05, decay: 0.1, sustain: 0.9, release: 0.3 } },
+};
+
+/**
+ * v0.9.11: FM synthesis fallback for sampler presets in Node.js
+ * Approximates the character of each instrument without actual samples
+ */
+function synthesizeSamplerFallback(
+  frequency: number,
+  durationSeconds: number,
+  velocity: number,
+  sampleRate: number,
+  instrument: string
+): Float32Array {
+  const params = SAMPLER_FM_PARAMS[instrument] || SAMPLER_FM_PARAMS.piano;
+  const envelope = params.envelope;
+
+  const totalDuration = durationSeconds + envelope.release;
+  const numSamples = Math.floor(totalDuration * sampleRate);
+  const samples = new Float32Array(numSamples);
+
+  const attackSamples = Math.floor(envelope.attack * sampleRate);
+  const decaySamples = Math.floor(envelope.decay * sampleRate);
+  const releaseSamples = Math.floor(envelope.release * sampleRate);
+  const sustainSamples = Math.max(0, numSamples - attackSamples - decaySamples - releaseSamples);
+
+  // FM synthesis parameters
+  const harmonicity = params.harmonicity;
+  const modulationIndex = params.modulationIndex;
+  const modDecay = params.modDecay;
+
+  // Phase accumulators
+  let carrierPhase = 0;
+  let modulatorPhase = 0;
+
+  const modulatorFreq = frequency * harmonicity;
+
+  for (let i = 0; i < numSamples; i++) {
+    const t = i / sampleRate;
+
+    // Modulation envelope - decays faster than amplitude for natural timbre
+    const modEnv = Math.exp(-t / (modDecay * durationSeconds));
+    const currentModIndex = modulationIndex * modEnv;
+
+    // FM synthesis: carrier modulated by modulator
+    modulatorPhase += (2 * Math.PI * modulatorFreq) / sampleRate;
+    const modulator = Math.sin(modulatorPhase);
+    carrierPhase += (2 * Math.PI * frequency) / sampleRate + currentModIndex * modulator;
+    const carrier = Math.sin(carrierPhase);
+
+    // Amplitude envelope
+    let env: number;
+    if (i < attackSamples) {
+      env = i / attackSamples;
+    } else if (i < attackSamples + decaySamples) {
+      const decayProgress = (i - attackSamples) / decaySamples;
+      env = 1 - (1 - envelope.sustain) * decayProgress;
+    } else if (i < attackSamples + decaySamples + sustainSamples) {
+      env = envelope.sustain;
+    } else {
+      const releaseProgress = (i - attackSamples - decaySamples - sustainSamples) / releaseSamples;
+      env = envelope.sustain * (1 - releaseProgress);
+    }
+
+    samples[i] = carrier * env * velocity;
+  }
+
+  return samples;
+}
+
+/**
  * Synthesize a note using preset-aware synthesis
  * Bass instruments get sub-octave for fatness
  * FM instruments use FM synthesis for characteristic timbre
@@ -342,6 +436,10 @@ function synthesizeNote(
   const isPlucky = presetName.includes('pluck');
   const isGuitar = presetName.includes('guitar');
 
+  // v0.9.11: Handle sample presets with FM fallback
+  const isSampler = preset?.type === 'sampler';
+  const sampleInstrument = isSampler ? preset?.base?.instrument : undefined;
+
   // Use Karplus-Strong for guitar - it handles its own envelope
   if (isGuitar) {
     const isRhythm = presetName.includes('rhythm') || presetName.includes('muted');
@@ -353,6 +451,11 @@ function synthesizeNote(
       pluckPosition: isRhythm ? 0.2 : 0.3,  // Near bridge for brightness
       bodyResonance: isRhythm ? 0.15 : 0.25, // Less body for cleaner electric tone
     });
+  }
+
+  // v0.9.11: FM synthesis fallback for sampler presets
+  if (isSampler && sampleInstrument) {
+    return synthesizeSamplerFallback(frequency, totalDuration, velocity, sampleRate, sampleInstrument);
   }
 
   for (let i = 0; i < numSamples; i++) {

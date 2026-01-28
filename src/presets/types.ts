@@ -30,7 +30,8 @@ export type PresetCategory =
   | 'strings'     // Orchestral strings (v0.9.4)
   | 'brass'       // Orchestral brass (v0.9.4)
   | 'woodwinds'   // Orchestral woodwinds (v0.9.4)
-  | 'orchestral'; // Choir and orchestral percussion (v0.9.4)
+  | 'orchestral'  // Choir and orchestral percussion (v0.9.4)
+  | 'samples';    // Sample-based instruments (v0.9.11)
 
 /**
  * Synth engine type - determines how the preset is synthesized
@@ -41,7 +42,8 @@ export type SynthType =
   | 'fmsynth'    // FM synthesis
   | 'membrane'   // Membrane synth (kicks, toms)
   | 'metal'      // Metal synth (hi-hats)
-  | 'noise';     // Noise synth
+  | 'noise'      // Noise synth
+  | 'sampler';   // Sample-based (v0.9.11 - tonejs-instruments)
 
 /**
  * Oscillator waveform types
@@ -101,6 +103,10 @@ export interface SynthBaseParams {
   // Metal synth parameters (hi-hats, cymbals, bells)
   frequency?: number;
   resonance?: number;
+
+  // Sampler parameters (v0.9.11)
+  instrument?: string;     // tonejs-instruments name (e.g., 'piano', 'violin')
+  baseUrl?: string;        // CDN or local path for samples
 }
 
 /**
@@ -224,6 +230,8 @@ export const PRESET_CATEGORIES: PresetCategory[] = [
   'brass',
   'woodwinds',
   'orchestral',
+  // v0.9.11: Sample-based instruments
+  'samples',
 ];
 
 /**
@@ -249,4 +257,6 @@ export const CATEGORY_INFO: Record<PresetCategory, { label: string; description:
   brass: { label: 'Brass', description: 'Orchestral brass instruments' },
   woodwinds: { label: 'Woodwinds', description: 'Orchestral woodwind instruments' },
   orchestral: { label: 'Orchestral', description: 'Choir and orchestral percussion' },
+  // v0.9.11: Sample-based instruments
+  samples: { label: 'Samples', description: 'Realistic acoustic instruments from recordings' },
 };

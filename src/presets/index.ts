@@ -42,6 +42,8 @@ import { STRINGS_PRESETS } from './strings.js';
 import { BRASS_PRESETS } from './brass.js';
 import { WOODWINDS_PRESETS } from './woodwinds.js';
 import { ORCHESTRAL_PRESETS } from './orchestral.js';
+// v0.9.11: Sample-based presets
+import { SAMPLES_PRESETS } from './samples.js';
 
 import type {
   PresetDefinition,
@@ -78,6 +80,8 @@ export const PRESET_REGISTRY: Record<string, PresetDefinition> = {
   ...BRASS_PRESETS,
   ...WOODWINDS_PRESETS,
   ...ORCHESTRAL_PRESETS,
+  // v0.9.11: Sample-based presets
+  ...SAMPLES_PRESETS,
 };
 
 /**
@@ -136,6 +140,20 @@ const PRESET_ALIASES: Record<string, string> = {
   chimes: 'tubular_bells',
   glock: 'glockenspiel',
   vibes: 'vibraphone',
+
+  // v0.9.11: Sample preset aliases
+  sampled_piano: 'sample_piano',
+  sampled_violin: 'sample_violin',
+  sampled_cello: 'sample_cello',
+  sampled_trumpet: 'sample_trumpet',
+  sampled_flute: 'sample_flute',
+  sampled_saxophone: 'sample_saxophone',
+  sampled_harp: 'sample_harp',
+  sampled_guitar: 'sample_guitar_acoustic',
+  real_piano: 'sample_piano',
+  real_violin: 'sample_violin',
+  real_cello: 'sample_cello',
+  real_trumpet: 'sample_trumpet',
 };
 
 // =============================================================================
@@ -529,3 +547,5 @@ export { STRINGS_PRESETS } from './strings.js';
 export { BRASS_PRESETS } from './brass.js';
 export { WOODWINDS_PRESETS } from './woodwinds.js';
 export { ORCHESTRAL_PRESETS } from './orchestral.js';
+// v0.9.11: Sample-based presets
+export { SAMPLES_PRESETS, TONEJS_SAMPLES_CDN, isSamplePreset, getSampleInstrumentName } from './samples.js';

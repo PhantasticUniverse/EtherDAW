@@ -11,7 +11,7 @@ import { compile } from '../engine/compiler.js';
 import { getAllNotes } from '../engine/timeline.js';
 import { DRUM_KITS, type DrumType, type KitName, type DrumSynthParams, normalizeDrumName } from '../synthesis/drum-kits.js';
 import { EFFECT_DEFAULTS } from '../config/constants.js';
-import { createInstrumentFromOptions, type CreatedInstrument } from '../synthesis/instrument-factory.js';
+import { createInstrumentFromOptions, createSamplerAsync, isSamplerPreset, type CreatedInstrument } from '../synthesis/instrument-factory.js';
 import { getPresetDefinition } from '../synthesis/presets.js';
 import { stripComments } from '../parser/json-preprocessor.js';
 
@@ -47,7 +47,7 @@ interface ActiveInstrument {
   synth: CreatedInstrument;
   effects: Tone.ToneAudioNode[];
   channel: Tone.Channel;
-  synthType: 'polysynth' | 'monosynth' | 'fmsynth' | 'membrane' | 'noise';
+  synthType: 'polysynth' | 'monosynth' | 'fmsynth' | 'membrane' | 'noise' | 'sampler';
   defaultPitch?: string; // For membrane synths
 }
 
@@ -941,22 +941,39 @@ export class Player {
       const offlineInstruments = new Map<string, { synth: CreatedInstrument; synthType: string; defaultPitch?: string }>();
       const offlineDrumPools = new Map<string, DrumSynthPool>();
 
-      // Create offline instruments
+      // Create offline instruments - handle samplers specially to wait for loading
+      const samplerPromises: Promise<void>[] = [];
+
       for (const name of this.timeline!.instruments) {
         const def = this.score?.instruments?.[name];
         const presetName = def?.preset || 'synth';
         if (presetName.startsWith('drums:')) continue;
-
-        // Use full definition for semantic params support
-        const synth = createInstrument(def);
-        synth.toDestination();
 
         // Get preset definition to determine synth type
         const presetDef = getPresetDefinition(presetName);
         const synthType = presetDef?.type || 'polysynth';
         const defaultPitch = presetDef?.base?.pitch;
 
-        offlineInstruments.set(name, { synth, synthType, defaultPitch });
+        // For samplers, use async creation and wait for loading
+        if (synthType === 'sampler' && presetDef?.base) {
+          const promise = createSamplerAsync(presetDef.base).then((sampler) => {
+            sampler.toDestination();
+            offlineInstruments.set(name, { synth: sampler, synthType, defaultPitch });
+          });
+          samplerPromises.push(promise);
+        } else {
+          // Use full definition for semantic params support
+          const synth = createInstrument(def);
+          synth.toDestination();
+          offlineInstruments.set(name, { synth, synthType, defaultPitch });
+        }
+      }
+
+      // Wait for all samplers to load before scheduling notes
+      if (samplerPromises.length > 0) {
+        console.log(`Waiting for ${samplerPromises.length} sampler(s) to load...`);
+        await Promise.all(samplerPromises);
+        console.log('All samplers loaded for offline rendering');
       }
 
       // Helper to get/create drum pool for offline rendering
