@@ -1,6 +1,6 @@
 {
   "name": "etherdaw",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "description": "A DAW designed for LLMs to compose music using the EtherScore JSON format",
   "type": "module",
   "main": "dist/index.js",
