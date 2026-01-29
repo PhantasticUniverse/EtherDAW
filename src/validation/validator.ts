@@ -6,6 +6,7 @@
 import type { EtherScore, Pattern, Section, Track, Instrument, MarkovConfig } from '../schema/types.js';
 import { DURATION_MAP } from '../schema/types.js';
 import { isValidPreset, suggestPreset, getAllPresetNames } from '../presets/index.js';
+import { DRUM_KITS } from '../synthesis/drum-kits.js';
 
 export interface ValidationError {
   path: string;           // JSON path to the error (e.g., "patterns.melody.notes[3]")
@@ -23,8 +24,8 @@ export interface ValidationResult {
 // Valid duration codes
 const VALID_DURATIONS = Object.keys(DURATION_MAP);
 
-// Valid drum kit presets (kits are separate from synth presets)
-const VALID_DRUM_PRESETS = ['basic', '808', '909', 'acoustic', 'lofi'];
+// Valid drum kit presets - derived from DRUM_KITS (single source of truth)
+const VALID_DRUM_PRESETS = Object.keys(DRUM_KITS);
 
 // Valid effect types
 const VALID_EFFECTS = ['reverb', 'delay', 'chorus', 'distortion', 'filter', 'compressor', 'eq', 'phaser', 'vibrato', 'bitcrusher'];
@@ -994,7 +995,7 @@ function validateInstrument(name: string, instrument: Record<string, unknown>, e
         warnings.push({
           path: `${path}.preset`,
           message: `Unknown drum preset: "${preset}"`,
-          suggestion: `Valid drum presets: drums:basic, drums:808, drums:909, drums:acoustic, drums:lofi`,
+          suggestion: `Valid drum presets: ${VALID_DRUM_PRESETS.map(k => `drums:${k}`).join(', ')}`,
           severity: 'warning'
         });
       }

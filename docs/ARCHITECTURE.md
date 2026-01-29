@@ -481,7 +481,7 @@ Drum Kit (808, 909, acoustic, lofi)
             - Modulation index
 ```
 
-### 67 Instrument Presets (v0.9.1)
+### 127 Instrument Presets + 20 Sample Instruments (v0.9.11)
 
 Presets are organized in `src/presets/` with a unified registry.
 
@@ -497,6 +497,72 @@ Presets are organized in `src/presets/` with a unified registry.
 | Cinematic | cinematic_pad, tension_drone, impact_hit |
 
 Use `findPresets({ category: 'bass' })` to query presets programmatically.
+
+### Mix Analysis (v0.9.10)
+
+Provides text-based feedback on how compositions sound - critical for LLM composers who can't "hear" audio.
+
+```
+┌────────────────────────────────────┐
+│        Audio Buffer                │
+│                                    │
+├────────────────────────────────────┤
+│  Frequency Analysis                │
+│  ├── Low (20-200 Hz)  → 35%       │
+│  ├── Mid (200-4k Hz)  → 45%       │
+│  └── High (4k-20k Hz) → 20%       │
+├────────────────────────────────────┤
+│  Section Energy                    │
+│  ├── intro    → -22 dB (quiet)    │
+│  ├── verse    → -18 dB (moderate) │
+│  └── chorus   → -12 dB (loud)     │
+├────────────────────────────────────┤
+│  Suggestions                       │
+│  "Mix is bass-heavy..."           │
+│  "Dynamic range is narrow..."      │
+└────────────────────────────────────┘
+```
+
+**Files:** `src/analysis/mix-analyzer.ts`
+
+**CLI:** `npx tsx src/cli.ts mix-analysis <file> [--section <name>] [--quick]`
+
+**REPL:** `mix [section]`
+
+### Debug Mode
+
+Three levels for tracing compilation:
+
+| Level | Output |
+|-------|--------|
+| 1 | Pattern expansion and scheduling |
+| 2 | Individual note placement |
+| 3 | Effects processing and detailed timing |
+
+```bash
+# Via CLI flag
+npx tsx src/cli.ts compile <file> --debug 1|2|3
+
+# Via environment variable
+DEBUG_LEVEL=1 npx tsx src/cli.ts compile <file>
+```
+
+### Pattern Caching (v0.9.6)
+
+LRU cache for rendered audio samples:
+
+```
+Pattern Content → SHA256 Hash → Cache Lookup
+        │                              │
+        ▼                              ▼
+┌──────────────┐              ┌──────────────┐
+│ If cache miss│              │ If cache hit │
+│ → Render     │              │ → Return     │
+│ → Store hash │              │   cached     │
+└──────────────┘              └──────────────┘
+```
+
+**File:** `src/node/pattern-cache.ts`
 
 ---
 
@@ -694,7 +760,7 @@ await player.exportWav('output.wav');
 | v0.82 | EtherREPL, Node.js audio playback |
 | v0.83 | Pattern algebra, transforms, visualizations |
 | v0.9 | Perceptual analysis (chromagram, centroid, flux), 80+ chord types |
-| v0.9.1 | Unified preset registry (67 presets), DrumEngine, utilities consolidation |
+| v0.9.1 | Unified preset registry (127 presets), DrumEngine, utilities consolidation |
 | v0.9.4 | Orchestral presets (strings, brass, woodwinds, choir) |
 | v0.9.10 | Mix analysis, perceptual analysis improvements |
 | v0.9.11 | Sample-based instruments (20 presets via tonejs-instruments CDN) |

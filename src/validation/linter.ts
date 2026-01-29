@@ -5,6 +5,7 @@
 
 import type { EtherScore, Pattern, Section, Track } from '../schema/types.js';
 import { expandPattern, type PatternContext } from '../parser/pattern-expander.js';
+import { levenshteinDistance } from '../utils/string-distance.js';
 
 /**
  * Parse time signature string to beats per bar
@@ -381,41 +382,11 @@ function getPatternLength(pattern: Pattern, settings: EtherScore['settings']): n
  */
 function findSimilar(input: string, candidates: string[], maxDistance = 3): string[] {
   return candidates
-    .map(c => ({ c, d: levenshtein(input.toLowerCase(), c.toLowerCase()) }))
+    .map(c => ({ c, d: levenshteinDistance(input.toLowerCase(), c.toLowerCase()) }))
     .filter(({ d }) => d <= maxDistance)
     .sort((a, b) => a.d - b.d)
     .slice(0, 3)
     .map(({ c }) => c);
-}
-
-/**
- * Levenshtein distance
- */
-function levenshtein(a: string, b: string): number {
-  const matrix: number[][] = [];
-
-  for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i];
-  }
-  for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j;
-  }
-
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
-      }
-    }
-  }
-
-  return matrix[b.length][a.length];
 }
 
 /**

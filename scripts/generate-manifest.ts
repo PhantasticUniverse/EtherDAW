@@ -15,6 +15,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 
+/**
+ * Whitelist of compositions to include in manifest.
+ * Only these compositions will appear in the player dropdown.
+ * All other files remain in the repository for reference/testing but are not shown.
+ */
+const MANIFEST_WHITELIST = [
+  'llm-composition.etherscore.json',               // "Reflections in Binary" - user specified
+  'archive/morning-light.etherscore.json',         // Sample-based showcase (v0.9.11)
+];
+
 interface CompositionMeta {
   path: string;
   title: string;
@@ -73,27 +83,15 @@ async function main() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // Find all .etherscore.json files (including archive subdirectory)
-  const files: string[] = [];
+  // Use whitelist to control which compositions appear in the player
+  // All files remain in the repo for reference/testing, but only whitelisted ones
+  // appear in the dropdown
+  const files = MANIFEST_WHITELIST.filter(file => {
+    const filePath = path.join(examplesDir, file);
+    return fs.existsSync(filePath);
+  });
 
-  // Get files from examples/
-  const topLevelFiles = fs.readdirSync(examplesDir)
-    .filter(f => f.endsWith('.etherscore.json'))
-    .map(f => f);
-  files.push(...topLevelFiles);
-
-  // Get files from examples/archive/ if it exists
-  const archiveDir = path.join(examplesDir, 'archive');
-  if (fs.existsSync(archiveDir)) {
-    const archiveFiles = fs.readdirSync(archiveDir)
-      .filter(f => f.endsWith('.etherscore.json'))
-      .map(f => `archive/${f}`);
-    files.push(...archiveFiles);
-  }
-
-  files.sort();
-
-  console.log(`Found ${files.length} compositions in examples/`);
+  console.log(`Including ${files.length} whitelisted compositions in manifest`);
 
   const compositions: CompositionMeta[] = [];
 

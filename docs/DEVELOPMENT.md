@@ -362,7 +362,7 @@ The validators only check structure, not semantics. The actual parsing/rendering
 | `src/parser/chord-parser.ts` | Parses chord syntax |
 | `src/parser/pattern-expander.ts` | Expands patterns to note arrays |
 | `src/engine/pattern-resolver.ts` | Resolves tracks to timelines |
-| `src/presets/` | Preset registry (single source of truth for 67 presets) |
+| `src/presets/` | Preset registry (single source of truth for 127 presets + 20 sample instruments) |
 | `src/presets/index.ts` | Preset query API (getPreset, findPresets, suggestPreset) |
 | `src/synthesis/instruments.ts` | Instrument factory (createInstrument) |
 | `src/synthesis/presets.ts` | [DEPRECATED] Legacy preset definitions |
@@ -654,7 +654,7 @@ Added features while recreating Brahms Intermezzo Op. 116 No. 2:
 **Vision:** A preset system that's joyful for LLMs to discover and use.
 
 **Core Changes:**
-- **Unified Preset Registry**: Single source of truth in `src/presets/` (67 presets across 14 categories)
+- **Unified Preset Registry**: Single source of truth in `src/presets/` (127 presets + 20 sample instruments across 16 categories)
 - **Query API**: `getPreset()`, `findPresets()`, `suggestPreset()`, `isValidPreset()`
 - **Typo Suggestions**: `suggestPreset('fm_epino')` → `['fm_epiano']`
 - **Backward-Compatible Aliases**: Old names like `rhodes`, `bass_sub` still work

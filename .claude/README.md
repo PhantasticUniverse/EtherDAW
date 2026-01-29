@@ -22,7 +22,7 @@ This directory contains Claude Code configuration for AI-assisted composition an
 │   ├── verification-patterns/
 │   │   └── SKILL.md      # Validation workflow, evidence requirements
 │   └── preset-discovery/
-│       └── SKILL.md      # 62+ synth presets organized by category
+│       └── SKILL.md      # 127 synth presets + 20 sample instruments
 ├── agents/               # Specialized reviewers
 │   ├── composition-reviewer.md   # Reviews for musicality and issues
 │   └── benchmark-analyzer.md     # Analyzes benchmarks and audio quality
@@ -82,7 +82,7 @@ Provides:
 **Triggers**: preset, instrument, synth, sound
 
 Provides:
-- All 62 presets organized by category
+- All 127+ presets organized by category
 - Drum kits and aliases
 - Usage examples
 - Semantic parameters reference

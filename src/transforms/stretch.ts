@@ -5,19 +5,11 @@
  */
 
 import type { Pattern } from '../schema/types.js';
+import { DURATIONS } from '../config/constants.js';
 
-/**
- * Duration mapping for stretch
- */
-const DURATIONS = ['w', 'h', 'q', '8', '16', '32'];
-const DURATION_VALUES: Record<string, number> = {
-  'w': 4,    // whole
-  'h': 2,    // half
-  'q': 1,    // quarter
-  '8': 0.5,  // eighth
-  '16': 0.25,
-  '32': 0.125,
-};
+// Use DURATIONS from constants as the single source of truth
+// Cast to Record for string indexing since we're parsing arbitrary duration strings
+const DURATION_VALUES: Record<string, number> = DURATIONS;
 
 /**
  * Stretch a pattern's timing by a factor

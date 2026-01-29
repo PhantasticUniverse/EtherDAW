@@ -14,7 +14,7 @@ auto_trigger:
 
 # Preset Discovery Skill
 
-Complete reference for EtherDAW's 62+ synth presets organized by category.
+Complete reference for EtherDAW's 127 synth presets + 20 sample instruments organized by category.
 
 ## Preset Categories
 
