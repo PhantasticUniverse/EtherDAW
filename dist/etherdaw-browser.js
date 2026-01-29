@@ -1095,9 +1095,37 @@ function createError(info) {
 // src/parser/note-parser.ts
 var NOTE_REGEX = /^([A-Ga-g])([#b]?)(-?\d)?:(\d+|[whq])(\.?)(?:t(\d+))?(?:([*>^])|(~>)|(~))?(?:\.(fall|doit|scoop|bend)(?:\+(\d+))?)?(?:\.(tr|mord|turn))?(?:@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff))?(?:([+-]\d+)ms)?(?:\?((?:0|1)?\.?\d+))?(~>)?(:ped)?$/;
 var REST_REGEX = /^r:(\d+|[whq])(\.?)$/i;
+function checkSyntaxOrderHints(noteStr) {
+  const velocityBeforeArticulation = /@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff)([*~>^])/.exec(noteStr);
+  if (velocityBeforeArticulation) {
+    const [, velocity, articulation] = velocityBeforeArticulation;
+    const articulationName = articulation === "~" ? "legato" : articulation === "*" ? "staccato" : articulation === ">" ? "accent" : articulation === "^" ? "marcato" : "articulation";
+    const corrected = noteStr.replace("@" + velocity + articulation, articulation + "@" + velocity);
+    throw new Error(
+      'Syntax order error in "' + noteStr + '": ' + articulationName + " (" + articulation + ") must come BEFORE velocity (@" + velocity + ").\nTry: " + corrected
+    );
+  }
+  const missingColon = /^([A-Ga-g][#b]?\d?)([whq]|\d+)/.exec(noteStr);
+  if (missingColon && !noteStr.includes(":")) {
+    const [, pitch, duration] = missingColon;
+    throw new Error(
+      'Missing colon in "' + noteStr + '": Note format requires a colon between pitch and duration.\nTry: ' + pitch + ":" + duration
+    );
+  }
+  const portamentoAfterVelocity = /@((?:0|1)?\.?\d+|ppp|pp|p|mp|mf|f|ff|fff)(~>)/.exec(noteStr);
+  if (portamentoAfterVelocity) {
+    const [, velocity] = portamentoAfterVelocity;
+    const corrected = noteStr.replace("@" + velocity + "~>", "~>@" + velocity);
+    throw new Error(
+      'Syntax order error in "' + noteStr + '": Portamento (~>) should come BEFORE velocity (@' + velocity + ").\nTry: " + corrected
+    );
+  }
+}
 function parseNote(noteStr) {
-  const match = noteStr.trim().match(NOTE_REGEX);
+  const trimmed = noteStr.trim();
+  const match = trimmed.match(NOTE_REGEX);
   if (!match) {
+    checkSyntaxOrderHints(trimmed);
     throw createError(errors.invalidNoteSyntax(noteStr));
   }
   const [
@@ -3699,9 +3727,26 @@ function generateArpPattern(chordNotes, mode, octaves, steps) {
       break;
   }
   if (steps && mode !== "random") {
+    const patternLen = pattern.length;
+    if ((mode === "updown" || mode === "downup") && steps > patternLen) {
+      const result2 = [];
+      const extraSteps = steps - patternLen;
+      const peakIndex = mode === "updown" ? totalNotes - 1 : 0;
+      const peakNote = indices[peakIndex];
+      const insertPoint = totalNotes;
+      for (let i = 0; i < patternLen; i++) {
+        result2.push(pattern[i]);
+        if (i === insertPoint - 1) {
+          for (let j = 0; j < extraSteps; j++) {
+            result2.push(peakNote);
+          }
+        }
+      }
+      return result2.slice(0, steps);
+    }
     const result = [];
     for (let i = 0; i < steps; i++) {
-      result.push(pattern[i % pattern.length]);
+      result.push(pattern[i % patternLen]);
     }
     return result;
   }
@@ -28901,6 +28946,291 @@ var ORCHESTRAL_PRESETS = {
   }
 };
 
+// src/presets/samples.ts
+var TONEJS_SAMPLES_CDN = "https://nbrosowsky.github.io/tonejs-instruments/samples/";
+var SAMPLES_PRESETS = {
+  /**
+   * Sampled Piano - Full Steinway grand piano recordings
+   */
+  sample_piano: {
+    name: "Sampled Piano",
+    category: "samples",
+    description: "Recorded Steinway grand piano with natural dynamics and resonance",
+    type: "sampler",
+    base: {
+      instrument: "piano",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["piano", "acoustic", "realistic", "samples", "grand", "classical"]
+  },
+  /**
+   * Sampled Violin - Solo violin recordings
+   */
+  sample_violin: {
+    name: "Sampled Violin",
+    category: "samples",
+    description: "Recorded solo violin with expressive legato character",
+    type: "sampler",
+    base: {
+      instrument: "violin",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["violin", "strings", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Cello - Solo cello recordings
+   */
+  sample_cello: {
+    name: "Sampled Cello",
+    category: "samples",
+    description: "Recorded solo cello with rich, deep tone",
+    type: "sampler",
+    base: {
+      instrument: "cello",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["cello", "strings", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Contrabass - Double bass recordings
+   */
+  sample_contrabass: {
+    name: "Sampled Contrabass",
+    category: "samples",
+    description: "Recorded double bass for orchestral foundation or jazz walking bass",
+    type: "sampler",
+    base: {
+      instrument: "contrabass",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["contrabass", "bass", "strings", "acoustic", "realistic", "samples", "jazz", "orchestral"]
+  },
+  /**
+   * Sampled Flute - Concert flute recordings
+   */
+  sample_flute: {
+    name: "Sampled Flute",
+    category: "samples",
+    description: "Recorded concert flute with airy, lyrical tone",
+    type: "sampler",
+    base: {
+      instrument: "flute",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["flute", "woodwinds", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Clarinet - B-flat clarinet recordings
+   */
+  sample_clarinet: {
+    name: "Sampled Clarinet",
+    category: "samples",
+    description: "Recorded clarinet with warm, woody tone",
+    type: "sampler",
+    base: {
+      instrument: "clarinet",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["clarinet", "woodwinds", "acoustic", "realistic", "samples", "jazz", "orchestral"]
+  },
+  /**
+   * Sampled Bassoon - Bassoon recordings
+   */
+  sample_bassoon: {
+    name: "Sampled Bassoon",
+    category: "samples",
+    description: "Recorded bassoon with dark, reedy character",
+    type: "sampler",
+    base: {
+      instrument: "bassoon",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["bassoon", "woodwinds", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled French Horn - French horn recordings
+   */
+  sample_french_horn: {
+    name: "Sampled French Horn",
+    category: "samples",
+    description: "Recorded French horn with noble, warm tone",
+    type: "sampler",
+    base: {
+      instrument: "french-horn",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["french horn", "brass", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Trumpet - Solo trumpet recordings
+   */
+  sample_trumpet: {
+    name: "Sampled Trumpet",
+    category: "samples",
+    description: "Recorded trumpet with bright, heroic tone. Great for jazz or orchestral",
+    type: "sampler",
+    base: {
+      instrument: "trumpet",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["trumpet", "brass", "acoustic", "realistic", "samples", "jazz", "orchestral"]
+  },
+  /**
+   * Sampled Trombone - Trombone recordings
+   */
+  sample_trombone: {
+    name: "Sampled Trombone",
+    category: "samples",
+    description: "Recorded trombone with bold, powerful tone",
+    type: "sampler",
+    base: {
+      instrument: "trombone",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["trombone", "brass", "acoustic", "realistic", "samples", "jazz", "orchestral"]
+  },
+  /**
+   * Sampled Tuba - Tuba recordings
+   */
+  sample_tuba: {
+    name: "Sampled Tuba",
+    category: "samples",
+    description: "Recorded tuba with deep, massive foundation",
+    type: "sampler",
+    base: {
+      instrument: "tuba",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["tuba", "brass", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Saxophone - Alto/Tenor saxophone recordings
+   */
+  sample_saxophone: {
+    name: "Sampled Saxophone",
+    category: "samples",
+    description: "Recorded saxophone with expressive, soulful tone",
+    type: "sampler",
+    base: {
+      instrument: "saxophone",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["saxophone", "woodwinds", "acoustic", "realistic", "samples", "jazz", "soul"]
+  },
+  /**
+   * Sampled Acoustic Guitar - Nylon string guitar
+   */
+  sample_guitar_acoustic: {
+    name: "Sampled Acoustic Guitar",
+    category: "samples",
+    description: "Recorded nylon string acoustic guitar with warm, intimate tone",
+    type: "sampler",
+    base: {
+      instrument: "guitar-acoustic",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["guitar", "acoustic", "realistic", "samples", "nylon", "classical"]
+  },
+  /**
+   * Sampled Electric Guitar - Clean electric guitar
+   */
+  sample_guitar_electric: {
+    name: "Sampled Electric Guitar",
+    category: "samples",
+    description: "Recorded clean electric guitar tone",
+    type: "sampler",
+    base: {
+      instrument: "guitar-electric",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["guitar", "electric", "realistic", "samples", "clean"]
+  },
+  /**
+   * Sampled Nylon Guitar - Classical guitar
+   */
+  sample_guitar_nylon: {
+    name: "Sampled Nylon Guitar",
+    category: "samples",
+    description: "Recorded classical nylon string guitar",
+    type: "sampler",
+    base: {
+      instrument: "guitar-nylon",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["guitar", "acoustic", "realistic", "samples", "nylon", "classical"]
+  },
+  /**
+   * Sampled Electric Bass - Fretted bass guitar
+   */
+  sample_bass_electric: {
+    name: "Sampled Electric Bass",
+    category: "samples",
+    description: "Recorded electric bass guitar with punchy, defined tone",
+    type: "sampler",
+    base: {
+      instrument: "bass-electric",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["bass", "electric", "realistic", "samples", "funk", "rock"]
+  },
+  /**
+   * Sampled Harp - Concert harp recordings
+   */
+  sample_harp: {
+    name: "Sampled Harp",
+    category: "samples",
+    description: "Recorded concert harp with ethereal, resonant tone",
+    type: "sampler",
+    base: {
+      instrument: "harp",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["harp", "strings", "acoustic", "realistic", "samples", "orchestral", "ethereal"]
+  },
+  /**
+   * Sampled Xylophone - Orchestra xylophone
+   */
+  sample_xylophone: {
+    name: "Sampled Xylophone",
+    category: "samples",
+    description: "Recorded xylophone with bright, percussive attack",
+    type: "sampler",
+    base: {
+      instrument: "xylophone",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["xylophone", "percussion", "acoustic", "realistic", "samples", "orchestral"]
+  },
+  /**
+   * Sampled Organ - Pipe organ recordings
+   */
+  sample_organ: {
+    name: "Sampled Organ",
+    category: "samples",
+    description: "Recorded pipe organ with rich, sustained tone",
+    type: "sampler",
+    base: {
+      instrument: "organ",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["organ", "keys", "acoustic", "realistic", "samples", "church", "classical"]
+  },
+  /**
+   * Sampled Harmonium - Indian harmonium recordings
+   */
+  sample_harmonium: {
+    name: "Sampled Harmonium",
+    category: "samples",
+    description: "Recorded Indian harmonium with warm, reedy character",
+    type: "sampler",
+    base: {
+      instrument: "harmonium",
+      baseUrl: TONEJS_SAMPLES_CDN
+    },
+    tags: ["harmonium", "keys", "acoustic", "realistic", "samples", "world", "indian"]
+  }
+};
+
 // src/presets/index.ts
 var PRESET_REGISTRY = {
   ...SYNTH_PRESETS,
@@ -28921,7 +29251,9 @@ var PRESET_REGISTRY = {
   ...STRINGS_PRESETS,
   ...BRASS_PRESETS,
   ...WOODWINDS_PRESETS,
-  ...ORCHESTRAL_PRESETS
+  ...ORCHESTRAL_PRESETS,
+  // v0.9.11: Sample-based presets
+  ...SAMPLES_PRESETS
 };
 
 // src/synthesis/presets.ts
@@ -30035,6 +30367,94 @@ function createNoiseSynth(options) {
     envelope: options.envelope ?? { attack: 1e-3, decay: 0.1, sustain: 0, release: 0.05 }
   });
 }
+var SAMPLE_NOTE_MAPPING = {
+  // Piano - comprehensive chromatic sampling
+  piano: ["A1", "C2", "E2", "A2", "C3", "E3", "A3", "C4", "E4", "A4", "C5", "E5", "A5", "C6", "E6", "A6", "C7"],
+  // Violin - starts at A3 (actual available samples)
+  violin: ["A3", "A4", "A5", "A6", "C4", "C5", "C6", "C7", "E4", "E5", "E6", "G4", "G5", "G6"],
+  // Cello - C2 to C5 (available samples)
+  cello: ["C2", "E2", "A2", "C3", "E3", "A3", "C4", "E4", "A4", "C5"],
+  // Contrabass - bass range (actual available: C2, Cs3, D2, E2, E3, Fs1, Fs2, G1, Gs2, Gs3, A2, As1, B3)
+  contrabass: ["C2", "D2", "E2", "A2", "E3"],
+  // Trumpet (actual: C4, C6, D5, Ds4, F3, F4, F5, G4, A3, A5, As4)
+  trumpet: ["A3", "C4", "F3", "F4", "G4", "D5", "F5", "A5", "C6"],
+  // Trombone
+  trombone: ["As2", "C3", "F3", "As3", "C4", "F4", "As4"],
+  // French horn
+  "french-horn": ["A1", "D2", "D3", "A3", "D4", "F4", "A4", "C5", "D5"],
+  // Tuba - low brass
+  tuba: ["As0", "D1", "As1", "D2", "F2", "As2", "D3"],
+  // Flute
+  flute: ["A4", "C4", "C5", "C6", "E4", "E5", "A5", "E6"],
+  // Clarinet
+  clarinet: ["As3", "D3", "D4", "D5", "F3", "F4", "F5", "As4", "As5"],
+  // Bassoon
+  bassoon: ["A1", "A2", "A3", "C2", "C3", "C4", "E2", "E3", "G2", "G3", "G4"],
+  // Saxophone
+  saxophone: ["As3", "Cs3", "Cs4", "Cs5", "E3", "E4", "E5", "G3", "G4", "G5"],
+  // Acoustic guitar
+  "guitar-acoustic": ["A2", "A3", "A4", "C3", "C4", "C5", "E2", "E3", "E4", "F3", "F4"],
+  // Electric guitar
+  "guitar-electric": ["A2", "A3", "A4", "C3", "C4", "C5", "E2", "E3", "E4", "G3", "G4"],
+  // Nylon guitar
+  "guitar-nylon": ["A2", "A3", "A4", "C3", "C4", "C5", "E2", "E3", "E4", "F3", "F4"],
+  // Electric bass
+  "bass-electric": ["As1", "As2", "Cs2", "Cs3", "E1", "E2", "G1", "G2", "Gs2"],
+  // Harp
+  harp: ["A2", "A4", "A6", "B1", "B3", "B5", "C3", "C5", "D2", "D4", "D6", "E3", "E5", "F2", "F4", "F6", "G3", "G5"],
+  // Xylophone - upper register
+  xylophone: ["C5", "C6", "C7", "C8", "E5", "E6", "E7", "G4", "G5", "G6", "G7"],
+  // Organ
+  organ: ["A2", "A3", "A4", "A5", "C2", "C3", "C4", "C5", "C6", "E2", "E3", "E4", "E5", "G2", "G3", "G4", "G5"],
+  // Harmonium
+  harmonium: ["A3", "A4", "A5", "C3", "C4", "C5", "C6", "E3", "E4", "E5", "G3", "G4", "G5"]
+};
+function getSampleUrls(instrument) {
+  const notes = SAMPLE_NOTE_MAPPING[instrument] || SAMPLE_NOTE_MAPPING.piano;
+  const urls = {};
+  for (const note of notes) {
+    const toneNote = note.replace(/([A-G])s(\d)/, "$1#$2");
+    urls[toneNote] = `${note}.mp3`;
+  }
+  return urls;
+}
+function createSampler(options) {
+  const instrument = options.instrument || "piano";
+  const baseUrl = options.baseUrl || TONEJS_SAMPLES_CDN;
+  const urls = getSampleUrls(instrument);
+  const sampler = new Sampler({
+    urls,
+    baseUrl: `${baseUrl}${instrument}/`,
+    release: 1,
+    onload: () => {
+      console.log(`Sampler loaded: ${instrument}`);
+    },
+    onerror: (error) => {
+      console.warn(`Failed to load samples for ${instrument}:`, error.message);
+    }
+  });
+  return sampler;
+}
+function createSamplerAsync(options) {
+  const instrument = options.instrument || "piano";
+  const baseUrl = options.baseUrl || TONEJS_SAMPLES_CDN;
+  const urls = getSampleUrls(instrument);
+  return new Promise((resolve, reject) => {
+    const sampler = new Sampler({
+      urls,
+      baseUrl: `${baseUrl}${instrument}/`,
+      release: 1,
+      onload: () => {
+        console.log(`Sampler loaded: ${instrument}`);
+        resolve(sampler);
+      },
+      onerror: (error) => {
+        console.warn(`Failed to load samples for ${instrument}:`, error.message);
+        reject(error);
+      }
+    });
+  });
+}
 function createInstrumentFromOptions(options) {
   let synthOptions;
   let synthType;
@@ -30073,6 +30493,8 @@ function createInstrumentFromOptions(options) {
       return createMembraneSynth(synthOptions);
     case "noise":
       return createNoiseSynth(synthOptions);
+    case "sampler":
+      return createSampler(synthOptions);
     case "synth":
     case "polysynth":
     default:
@@ -30746,16 +31168,30 @@ var Player2 = class {
     const buffer = await Offline(async ({ transport }) => {
       const offlineInstruments = /* @__PURE__ */ new Map();
       const offlineDrumPools = /* @__PURE__ */ new Map();
+      const samplerPromises = [];
       for (const name of this.timeline.instruments) {
         const def = this.score?.instruments?.[name];
         const presetName = def?.preset || "synth";
         if (presetName.startsWith("drums:")) continue;
-        const synth = createInstrument(def);
-        synth.toDestination();
         const presetDef = getPresetDefinition(presetName);
         const synthType = presetDef?.type || "polysynth";
         const defaultPitch = presetDef?.base?.pitch;
-        offlineInstruments.set(name, { synth, synthType, defaultPitch });
+        if (synthType === "sampler" && presetDef?.base) {
+          const promise = createSamplerAsync(presetDef.base).then((sampler) => {
+            sampler.toDestination();
+            offlineInstruments.set(name, { synth: sampler, synthType, defaultPitch });
+          });
+          samplerPromises.push(promise);
+        } else {
+          const synth = createInstrument(def);
+          synth.toDestination();
+          offlineInstruments.set(name, { synth, synthType, defaultPitch });
+        }
+      }
+      if (samplerPromises.length > 0) {
+        console.log(`Waiting for ${samplerPromises.length} sampler(s) to load...`);
+        await Promise.all(samplerPromises);
+        console.log("All samplers loaded for offline rendering");
       }
       const getOfflineDrumPool = (drumName, kitName) => {
         const normalizedDrumName = normalizeDrumName(drumName);

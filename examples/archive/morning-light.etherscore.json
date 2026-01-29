@@ -1,0 +1,1020 @@
+{
+  "$schema": "../../etherscore.schema.json",
+  "meta": {
+    "title": "Morning Light",
+    "composer": "Claude (EtherDAW LLM)",
+    "created": "2026-01-29",
+    "description": "A pastoral chamber piece in impressionistic style. Harp arpeggios open to flute bird-like motifs, building through lyrical string passages. The piece evokes early morning tranquility with modal harmonies and gentle, unhurried phrasing.",
+    "genre": "Chamber / Impressionistic",
+    "tags": ["chamber", "classical", "impressionistic", "pastoral", "samples", "flute", "strings", "harp"]
+  },
+
+  "settings": {
+    "tempo": 84,
+    "timeSignature": "4/4",
+    "key": "G major",
+    "swing": 0
+  },
+
+  "instruments": {
+    "flute": {
+      "preset": "sample_flute",
+      "volume": -6,
+      "pan": -0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.5 } }
+      ]
+    },
+    "clarinet": {
+      "preset": "sample_clarinet",
+      "volume": -9,
+      "pan": 0.2,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2.2 } }
+      ]
+    },
+    "violin": {
+      "preset": "sample_violin",
+      "volume": -9,
+      "pan": -0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.5 } }
+      ]
+    },
+    "cello": {
+      "preset": "sample_cello",
+      "volume": -9,
+      "pan": 0.15,
+      "effects": [
+        { "type": "reverb", "wet": 0.3, "options": { "decay": 2.2 } }
+      ]
+    },
+    "harp": {
+      "preset": "sample_harp",
+      "volume": -6,
+      "pan": 0,
+      "effects": [
+        { "type": "reverb", "wet": 0.4, "options": { "decay": 3 } }
+      ]
+    },
+    "piano": {
+      "preset": "sample_piano",
+      "volume": -12,
+      "pan": 0.1,
+      "effects": [
+        { "type": "reverb", "wet": 0.35, "options": { "decay": 2.5 } }
+      ]
+    }
+  },
+
+  "patterns": {
+    "// === DAWN: Harp alone (8 bars) ===": "---",
+
+    "dawn_harp_arp_1": {
+      "arpeggio": {
+        "chord": "Gmaj7",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.9
+      }
+    },
+    "dawn_harp_arp_2": {
+      "arpeggio": {
+        "chord": "Em9",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.9
+      }
+    },
+    "dawn_harp_arp_3": {
+      "arpeggio": {
+        "chord": "Am7",
+        "duration": "16",
+        "mode": "updown",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.9
+      }
+    },
+    "dawn_harp_arp_4": {
+      "arpeggio": {
+        "chord": "D7sus4",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.9
+      }
+    },
+
+    "// === AWAKENING: Flute enters (12 bars) ===": "---",
+
+    "awakening_flute_bird_1": {
+      "notes": [
+        "r:h",
+        "D5:16@0.4", "G5:16@0.5", "B5:8@0.6",
+        "A5:q@0.55"
+      ]
+    },
+    "awakening_flute_bird_2": {
+      "notes": [
+        "G5:8@0.5", "A5:8@0.55",
+        "B5:h@0.6",
+        "G5:q@0.55"
+      ]
+    },
+    "awakening_flute_bird_3": {
+      "notes": [
+        "A5:8.tr@0.5", "G5:8@0.45",
+        "E5:h@0.5",
+        "r:8", "D5:8@0.45"
+      ]
+    },
+    "awakening_flute_bird_4": {
+      "notes": [
+        "E5:8@0.5", "G5:q@0.55",
+        "A5:q@0.6", "B5:8@0.55", "A5:q@0.5"
+      ]
+    },
+    "awakening_flute_bird_5": {
+      "notes": [
+        "G5:q@0.55", "E5:q@0.5",
+        "D5:h@0.55"
+      ]
+    },
+    "awakening_flute_rest": {
+      "notes": ["r:w"]
+    },
+
+    "awakening_harp_arp_gmaj": {
+      "arpeggio": {
+        "chord": "Gmaj7",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.85
+      }
+    },
+    "awakening_harp_arp_em": {
+      "arpeggio": {
+        "chord": "Em7",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.85
+      }
+    },
+    "awakening_harp_arp_am": {
+      "arpeggio": {
+        "chord": "Am9",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.85
+      }
+    },
+    "awakening_harp_arp_d": {
+      "arpeggio": {
+        "chord": "D7",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.85
+      }
+    },
+
+    "awakening_violin_swell": {
+      "notes": [
+        "r:w",
+        "G4:w@0.25",
+        "B4:w@0.3",
+        "D5:w@0.35"
+      ]
+    },
+    "awakening_cello_foundation": {
+      "notes": [
+        "G2:w@0.35",
+        "E2:w@0.35",
+        "A2:w@0.4",
+        "D2:w@0.4"
+      ]
+    },
+
+    "// === THEME: Full melody (16 bars) ===": "---",
+
+    "theme_flute_melody_a": {
+      "notes": [
+        "D5:q@0.6", "E5:8@0.55", "G5:8@0.6", "A5:q@0.65", "B5:q@0.6",
+        "D6:h@0.7", "B5:h@0.6",
+        "A5:q@0.6", "G5:8@0.55", "E5:8@0.5", "G5:q@0.55", "A5:q@0.6",
+        "G5:w@0.55"
+      ]
+    },
+    "theme_flute_melody_b": {
+      "notes": [
+        "B5:q@0.6", "A5:8@0.55", "G5:8@0.5", "E5:q@0.55", "D5:q@0.5",
+        "E5:h@0.6", "G5:h@0.55",
+        "A5:q@0.6", "B5:q@0.65", "A5:q@0.6", "G5:q@0.55",
+        "A5:w@0.6"
+      ]
+    },
+    "theme_flute_melody_c": {
+      "notes": [
+        "D6:q@0.7", "C6:8@0.6", "B5:8@0.55", "A5:q@0.6", "G5:q@0.55",
+        "F#5:h@0.5", "G5:h@0.55",
+        "A5:q@0.6", "B5:q@0.65", "D6:q@0.7", "B5:q@0.6",
+        "A5:w@0.6"
+      ]
+    },
+    "theme_flute_melody_d": {
+      "notes": [
+        "G5:q@0.6", "E5:q@0.55", "D5:q@0.5", "E5:q@0.55",
+        "G5:h@0.6", "A5:h@0.55",
+        "B5:q@0.6", "A5:8@0.55", "G5:8@0.5", "E5:q@0.55", "D5:q@0.5",
+        "G5:w@0.55"
+      ]
+    },
+
+    "theme_clarinet_counter_a": {
+      "notes": [
+        "B4:h~@0.5", "A4:h~@0.5",
+        "G4:h~@0.45", "F#4:h~@0.45",
+        "E4:h~@0.5", "D4:h~@0.5",
+        "E4:w~@0.5"
+      ]
+    },
+    "theme_clarinet_counter_b": {
+      "notes": [
+        "G4:h~@0.5", "E4:h~@0.5",
+        "D4:h~@0.45", "E4:h~@0.45",
+        "F#4:h~@0.5", "G4:h~@0.5",
+        "F#4:w~@0.5"
+      ]
+    },
+    "theme_clarinet_counter_c": {
+      "notes": [
+        "A4:h~@0.55", "B4:h~@0.55",
+        "A4:h~@0.5", "G4:h~@0.5",
+        "F#4:h~@0.5", "G4:h~@0.5",
+        "F#4:w~@0.5"
+      ]
+    },
+    "theme_clarinet_counter_d": {
+      "notes": [
+        "E4:h~@0.5", "D4:h~@0.5",
+        "E4:h~@0.5", "F#4:h~@0.5",
+        "G4:h~@0.5", "F#4:h~@0.5",
+        "G4:w~@0.5"
+      ]
+    },
+
+    "theme_violin_harmony_a": {
+      "chords": [
+        "Gmaj7:w", "Em7:w",
+        "Am7:w", "D7:w"
+      ]
+    },
+    "theme_violin_harmony_b": {
+      "chords": [
+        "Gmaj7:w", "Cmaj7:w",
+        "Bm7:w", "Em7:w"
+      ]
+    },
+
+    "theme_cello_bass_a": {
+      "notes": [
+        "G2:h@0.5", "B2:h@0.45",
+        "E2:h@0.5", "G2:h@0.45",
+        "A2:h@0.5", "C3:h@0.45",
+        "D2:w@0.5"
+      ]
+    },
+    "theme_cello_bass_b": {
+      "notes": [
+        "G2:h@0.5", "D3:h@0.45",
+        "C3:h@0.5", "E2:h@0.45",
+        "B2:h@0.5", "G2:h@0.45",
+        "E2:w@0.5"
+      ]
+    },
+
+    "theme_harp_gentle": {
+      "arpeggio": {
+        "chord": "Gmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "theme_harp_em": {
+      "arpeggio": {
+        "chord": "Em9",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "theme_harp_am": {
+      "arpeggio": {
+        "chord": "Am7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "theme_harp_d": {
+      "arpeggio": {
+        "chord": "D7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "theme_harp_cmaj": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "theme_harp_bm": {
+      "arpeggio": {
+        "chord": "Bm7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+
+    "// === DEVELOPMENT: Cello takes melody (16 bars) ===": "---",
+
+    "dev_cello_melody_a": {
+      "notes": [
+        "G3:q@0.6", "A3:8@0.55", "B3:8@0.6", "C4:q@0.65", "D4:q@0.65",
+        "E4:h@0.7", "D4:h@0.6",
+        "C4:q@0.6", "B3:8@0.55", "A3:8@0.5", "B3:q@0.55", "C4:q@0.6",
+        "B3:w@0.55"
+      ]
+    },
+    "dev_cello_melody_b": {
+      "notes": [
+        "D4:q@0.65", "C4:8@0.6", "B3:8@0.55", "A3:q@0.55", "G3:q@0.5",
+        "A3:h@0.6", "B3:h@0.55",
+        "C4:q@0.6", "D4:q@0.65", "C4:q@0.6", "B3:q@0.55",
+        "C4:w@0.6"
+      ]
+    },
+    "dev_cello_melody_c": {
+      "notes": [
+        "E4:q@0.7", "D4:8@0.65", "C4:8@0.6", "B3:q@0.6", "A3:q@0.55",
+        "G3:h@0.5", "A3:h@0.55",
+        "B3:q@0.6", "C4:q@0.65", "D4:q@0.65", "B3:q@0.6",
+        "C4:w@0.6"
+      ]
+    },
+    "dev_cello_melody_d": {
+      "notes": [
+        "A3:q@0.6", "G3:q@0.55", "F#3:q@0.5", "G3:q@0.55",
+        "A3:h@0.6", "B3:h@0.55",
+        "C4:q@0.6", "B3:8@0.55", "A3:8@0.5", "G3:q@0.55", "F#3:q@0.5",
+        "G3:w@0.55"
+      ]
+    },
+
+    "dev_flute_ornament_a": {
+      "notes": [
+        "r:h",
+        "D6:16.tr@0.5", "E6:16@0.55", "D6:8@0.5",
+        "B5:q@0.55"
+      ]
+    },
+    "dev_flute_ornament_b": {
+      "notes": [
+        "r:q",
+        "G5:8@0.5", "A5:8@0.55", "B5:q@0.55",
+        "A5:q@0.5"
+      ]
+    },
+    "dev_flute_ornament_c": {
+      "notes": [
+        "r:w"
+      ]
+    },
+    "dev_flute_ornament_d": {
+      "notes": [
+        "r:h",
+        "B5:8.mord@0.55", "A5:8@0.5", "G5:q@0.5"
+      ]
+    },
+    "dev_flute_ornament_e": {
+      "notes": [
+        "r:q",
+        "A5:8@0.5", "G5:8@0.45", "E5:q@0.45",
+        "D5:q@0.5"
+      ]
+    },
+    "dev_flute_ornament_f": {
+      "notes": [
+        "G5:q@0.55", "A5:8@0.5", "B5:8@0.55",
+        "D6:q.tr@0.6", "B5:8@0.55", "A5:8@0.5"
+      ]
+    },
+    "dev_flute_ornament_g": {
+      "notes": [
+        "r:h",
+        "E5:8@0.5", "G5:8@0.55", "A5:q@0.55"
+      ]
+    },
+    "dev_flute_ornament_h": {
+      "notes": [
+        "B5:h@0.55",
+        "A5:q@0.5", "G5:q@0.5"
+      ]
+    },
+
+    "dev_clarinet_warm_a": {
+      "notes": [
+        "D4:w~@0.5",
+        "E4:w~@0.5",
+        "F#4:h~@0.5", "G4:h~@0.5",
+        "A4:w~@0.55"
+      ]
+    },
+    "dev_clarinet_warm_b": {
+      "notes": [
+        "G4:w~@0.55",
+        "F#4:w~@0.5",
+        "E4:h~@0.5", "D4:h~@0.5",
+        "E4:w~@0.5"
+      ]
+    },
+
+    "dev_violin_response_a": {
+      "notes": [
+        "D5:w@0.45",
+        "E5:h@0.5", "D5:h@0.45",
+        "B4:w@0.5",
+        "A4:w@0.45"
+      ]
+    },
+    "dev_violin_response_b": {
+      "notes": [
+        "B4:w@0.45",
+        "C5:h@0.5", "B4:h@0.45",
+        "A4:w@0.5",
+        "G4:w@0.45"
+      ]
+    },
+
+    "dev_harp_cmaj": {
+      "arpeggio": {
+        "chord": "Cmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "dev_harp_bm": {
+      "arpeggio": {
+        "chord": "Bm7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+    "dev_harp_am": {
+      "arpeggio": {
+        "chord": "Am9",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.8
+      }
+    },
+
+    "// === INTERLUDE: Piano impressionistic (8 bars) ===": "---",
+
+    "interlude_piano_a": {
+      "chords": [
+        "Gmaj9:w",
+        "r:h", "Em9:h",
+        "r:w",
+        "Am9:w"
+      ]
+    },
+    "interlude_piano_b": {
+      "chords": [
+        "r:h", "Ebmaj7:h",
+        "Gmaj7:w",
+        "r:w",
+        "D9sus4:w"
+      ]
+    },
+
+    "interlude_harp_sparse": {
+      "arpeggio": {
+        "chord": "Gmaj9",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.9
+      }
+    },
+    "interlude_harp_eb": {
+      "arpeggio": {
+        "chord": "Ebmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.9
+      }
+    },
+
+    "interlude_flute_whisper": {
+      "notes": [
+        "r:w",
+        "D6:h@0.35",
+        "B5:h@0.3",
+        "r:w",
+        "r:w"
+      ]
+    },
+    "interlude_flute_echo": {
+      "notes": [
+        "G5:h@0.3",
+        "r:h",
+        "r:w",
+        "A5:w@0.3",
+        "r:w"
+      ]
+    },
+
+    "interlude_violin_sustain": {
+      "notes": [
+        "G5:w@0.3",
+        "E5:w@0.3",
+        "Eb5:w@0.3",
+        "D5:w@0.35"
+      ]
+    },
+
+    "interlude_cello_pedal": {
+      "notes": [
+        "G2:w@0.35",
+        "G2:w@0.35",
+        "Eb2:w@0.35",
+        "D2:w@0.35"
+      ]
+    },
+
+    "// === RECAPITULATION: Theme in violin (12 bars) ===": "---",
+
+    "recap_violin_melody_a": {
+      "notes": [
+        "D5:q@0.65", "E5:8@0.6", "G5:8@0.65", "A5:q@0.7", "B5:q@0.65",
+        "D6:h@0.75", "B5:h@0.65",
+        "A5:q@0.65", "G5:8@0.6", "E5:8@0.55", "G5:q@0.6", "A5:q@0.65",
+        "G5:w@0.6"
+      ]
+    },
+    "recap_violin_melody_b": {
+      "notes": [
+        "B5:q@0.65", "A5:8@0.6", "G5:8@0.55", "E5:q@0.6", "D5:q@0.55",
+        "E5:h@0.65", "G5:h@0.6",
+        "A5:q@0.65", "B5:q@0.7", "A5:q@0.65", "G5:q@0.6",
+        "A5:w@0.65"
+      ]
+    },
+    "recap_violin_melody_c": {
+      "notes": [
+        "G5:q@0.65", "E5:q@0.6", "D5:q@0.55", "E5:q@0.6",
+        "G5:h@0.65", "A5:h@0.6",
+        "B5:q@0.65", "A5:8@0.6", "G5:8@0.55", "E5:q@0.6", "D5:q@0.55",
+        "G5:w@0.6"
+      ]
+    },
+
+    "recap_flute_harmony_a": {
+      "notes": [
+        "B5:h~@0.55", "A5:h~@0.55",
+        "G5:h~@0.5", "F#5:h~@0.5",
+        "E5:h~@0.55", "D5:h~@0.55",
+        "E5:w~@0.55"
+      ]
+    },
+    "recap_flute_harmony_b": {
+      "notes": [
+        "G5:h~@0.55", "E5:h~@0.55",
+        "D5:h~@0.5", "E5:h~@0.5",
+        "F#5:h~@0.55", "G5:h~@0.55",
+        "F#5:w~@0.55"
+      ]
+    },
+    "recap_flute_harmony_c": {
+      "notes": [
+        "E5:h~@0.5", "D5:h~@0.5",
+        "E5:h~@0.55", "F#5:h~@0.55",
+        "G5:h~@0.55", "F#5:h~@0.55",
+        "G5:w~@0.55"
+      ]
+    },
+
+    "recap_clarinet_support": {
+      "notes": [
+        "D4:w~@0.5",
+        "E4:w~@0.5",
+        "F#4:w~@0.5",
+        "G4:w~@0.5"
+      ]
+    },
+
+    "recap_cello_rich_a": {
+      "notes": [
+        "G2:h@0.55", "B2:h@0.5",
+        "E2:h@0.55", "G2:h@0.5",
+        "A2:h@0.55", "C3:h@0.5",
+        "D2:w@0.55"
+      ]
+    },
+    "recap_cello_rich_b": {
+      "notes": [
+        "G2:h@0.55", "D3:h@0.5",
+        "C3:h@0.55", "E2:h@0.5",
+        "B2:h@0.55", "G2:h@0.5",
+        "E2:w@0.55"
+      ]
+    },
+    "recap_cello_rich_c": {
+      "notes": [
+        "A2:h@0.55", "D2:h@0.5",
+        "G2:h@0.55", "B2:h@0.5",
+        "C3:h@0.5", "D2:h@0.5",
+        "G2:w@0.55"
+      ]
+    },
+
+    "recap_harp_full": {
+      "arpeggio": {
+        "chord": "Gmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.85
+      }
+    },
+    "recap_harp_em": {
+      "arpeggio": {
+        "chord": "Em9",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.85
+      }
+    },
+    "recap_harp_am": {
+      "arpeggio": {
+        "chord": "Am7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.85
+      }
+    },
+    "recap_harp_d": {
+      "arpeggio": {
+        "chord": "D7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.85
+      }
+    },
+
+    "// === CODA: Gradual thinning (8 bars) ===": "---",
+
+    "coda_flute_farewell": {
+      "notes": [
+        "D5:q@0.5", "G5:q@0.45", "B5:h@0.5",
+        "A5:w@0.45",
+        "G5:h@0.4", "r:h",
+        "r:w"
+      ]
+    },
+    "coda_flute_final": {
+      "notes": [
+        "D5:h@0.35", "E5:h@0.3",
+        "G5:w@0.3",
+        "r:w",
+        "r:w"
+      ]
+    },
+
+    "coda_clarinet_fade": {
+      "notes": [
+        "B4:w~@0.4",
+        "A4:w~@0.35",
+        "G4:w~@0.3",
+        "r:w"
+      ]
+    },
+    "coda_clarinet_gone": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "coda_violin_fade": {
+      "notes": [
+        "D5:w@0.4",
+        "B4:w@0.35",
+        "G4:w@0.3",
+        "r:w"
+      ]
+    },
+    "coda_violin_gone": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "coda_cello_fade": {
+      "notes": [
+        "G2:w@0.4",
+        "D2:w@0.35",
+        "G2:w@0.3",
+        "r:w"
+      ]
+    },
+    "coda_cello_gone": {
+      "notes": ["r:w", "r:w", "r:w", "r:w"]
+    },
+
+    "coda_harp_final_a": {
+      "arpeggio": {
+        "chord": "Gmaj7",
+        "duration": "8",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 8,
+        "gate": 0.9
+      }
+    },
+    "coda_harp_final_b": {
+      "arpeggio": {
+        "chord": "Gmaj9",
+        "duration": "16",
+        "mode": "up",
+        "octaves": 2,
+        "steps": 16,
+        "gate": 0.95
+      }
+    },
+    "coda_harp_final_c": {
+      "notes": [
+        "G3:q@0.3", "B3:q@0.25", "D4:q@0.2", "G4:q@0.15",
+        "B4:h@0.1", "G4:h@0.08"
+      ]
+    },
+    "coda_harp_silence": {
+      "notes": ["r:w"]
+    }
+  },
+
+  "sections": {
+    "dawn": {
+      "bars": 8,
+      "tracks": {
+        "harp": {
+          "patterns": ["dawn_harp_arp_1", "dawn_harp_arp_1", "dawn_harp_arp_2", "dawn_harp_arp_2", "dawn_harp_arp_3", "dawn_harp_arp_3", "dawn_harp_arp_4", "dawn_harp_arp_4"],
+          "expression": "romantic",
+          "velocity": 0.4
+        }
+      }
+    },
+
+    "awakening": {
+      "bars": 12,
+      "tracks": {
+        "flute": {
+          "patterns": ["awakening_flute_rest", "awakening_flute_rest", "awakening_flute_rest", "awakening_flute_rest", "awakening_flute_bird_1", "awakening_flute_bird_2", "awakening_flute_bird_3", "awakening_flute_bird_4", "awakening_flute_bird_5", "awakening_flute_rest", "awakening_flute_rest", "awakening_flute_rest"],
+          "expression": "natural",
+          "velocity": 0.55
+        },
+        "harp": {
+          "patterns": ["awakening_harp_arp_gmaj", "awakening_harp_arp_gmaj", "awakening_harp_arp_em", "awakening_harp_arp_em", "awakening_harp_arp_am", "awakening_harp_arp_am", "awakening_harp_arp_d", "awakening_harp_arp_d", "awakening_harp_arp_gmaj", "awakening_harp_arp_gmaj", "awakening_harp_arp_em", "awakening_harp_arp_d"],
+          "expression": "romantic",
+          "velocity": 0.45
+        },
+        "violin": {
+          "patterns": ["awakening_violin_swell", "awakening_violin_swell", "awakening_violin_swell"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.2, "end": 0.45, "curve": "sine" }
+        },
+        "cello": {
+          "patterns": ["awakening_cello_foundation", "awakening_cello_foundation", "awakening_cello_foundation"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.25, "end": 0.45, "curve": "sine" }
+        }
+      }
+    },
+
+    "theme": {
+      "bars": 16,
+      "tracks": {
+        "flute": {
+          "patterns": ["theme_flute_melody_a", "theme_flute_melody_b", "theme_flute_melody_c", "theme_flute_melody_d"],
+          "expression": "natural",
+          "humanize": 0.015,
+          "velocity": 0.65
+        },
+        "clarinet": {
+          "patterns": ["theme_clarinet_counter_a", "theme_clarinet_counter_b", "theme_clarinet_counter_c", "theme_clarinet_counter_d"],
+          "expression": "natural",
+          "humanize": 0.015,
+          "velocity": 0.5
+        },
+        "violin": {
+          "patterns": ["theme_violin_harmony_a", "theme_violin_harmony_b", "theme_violin_harmony_a", "theme_violin_harmony_b"],
+          "expression": "romantic",
+          "velocity": 0.5
+        },
+        "cello": {
+          "patterns": ["theme_cello_bass_a", "theme_cello_bass_b", "theme_cello_bass_a", "theme_cello_bass_b"],
+          "expression": "romantic",
+          "velocity": 0.5
+        },
+        "harp": {
+          "patterns": ["theme_harp_gentle", "theme_harp_em", "theme_harp_am", "theme_harp_d", "theme_harp_gentle", "theme_harp_cmaj", "theme_harp_bm", "theme_harp_em", "theme_harp_gentle", "theme_harp_em", "theme_harp_am", "theme_harp_d", "theme_harp_gentle", "theme_harp_cmaj", "theme_harp_bm", "theme_harp_em"],
+          "expression": "romantic",
+          "velocity": 0.4
+        }
+      }
+    },
+
+    "development": {
+      "bars": 16,
+      "tracks": {
+        "cello": {
+          "patterns": ["dev_cello_melody_a", "dev_cello_melody_b", "dev_cello_melody_c", "dev_cello_melody_d"],
+          "expression": "romantic",
+          "humanize": 0.015,
+          "velocity": 0.6
+        },
+        "flute": {
+          "patterns": ["dev_flute_ornament_a", "dev_flute_ornament_b", "dev_flute_ornament_c", "dev_flute_ornament_d", "dev_flute_ornament_e", "dev_flute_ornament_c", "dev_flute_ornament_f", "dev_flute_ornament_g", "dev_flute_ornament_h", "dev_flute_ornament_c", "dev_flute_ornament_a", "dev_flute_ornament_b", "dev_flute_ornament_c", "dev_flute_ornament_f", "dev_flute_ornament_g", "dev_flute_ornament_h"],
+          "expression": "natural",
+          "humanize": 0.01,
+          "velocity": 0.5
+        },
+        "clarinet": {
+          "patterns": ["dev_clarinet_warm_a", "dev_clarinet_warm_b", "dev_clarinet_warm_a", "dev_clarinet_warm_b"],
+          "expression": "natural",
+          "velocity": 0.5
+        },
+        "violin": {
+          "patterns": ["dev_violin_response_a", "dev_violin_response_b", "dev_violin_response_a", "dev_violin_response_b"],
+          "expression": "romantic",
+          "velocity": 0.45
+        },
+        "harp": {
+          "patterns": ["dev_harp_cmaj", "dev_harp_bm", "dev_harp_am", "theme_harp_d", "dev_harp_cmaj", "dev_harp_bm", "dev_harp_am", "theme_harp_d", "dev_harp_cmaj", "dev_harp_bm", "dev_harp_am", "theme_harp_d", "dev_harp_cmaj", "dev_harp_bm", "dev_harp_am", "theme_harp_d"],
+          "expression": "romantic",
+          "velocity": 0.4
+        }
+      }
+    },
+
+    "interlude": {
+      "bars": 8,
+      "tracks": {
+        "piano": {
+          "patterns": ["interlude_piano_a", "interlude_piano_b"],
+          "expression": "romantic",
+          "velocity": 0.4
+        },
+        "harp": {
+          "patterns": ["interlude_harp_sparse", "interlude_harp_sparse", "interlude_harp_eb", "interlude_harp_eb", "interlude_harp_sparse", "interlude_harp_sparse", "interlude_harp_sparse", "interlude_harp_sparse"],
+          "expression": "romantic",
+          "velocity": 0.35
+        },
+        "flute": {
+          "patterns": ["interlude_flute_whisper", "interlude_flute_echo"],
+          "expression": "natural",
+          "velocity": 0.35
+        },
+        "violin": {
+          "patterns": ["interlude_violin_sustain", "interlude_violin_sustain"],
+          "expression": "romantic",
+          "velocity": 0.3
+        },
+        "cello": {
+          "patterns": ["interlude_cello_pedal", "interlude_cello_pedal"],
+          "expression": "romantic",
+          "velocity": 0.35
+        }
+      }
+    },
+
+    "recapitulation": {
+      "bars": 12,
+      "tracks": {
+        "violin": {
+          "patterns": ["recap_violin_melody_a", "recap_violin_melody_b", "recap_violin_melody_c"],
+          "expression": "romantic",
+          "humanize": 0.015,
+          "velocity": 0.7
+        },
+        "flute": {
+          "patterns": ["recap_flute_harmony_a", "recap_flute_harmony_b", "recap_flute_harmony_c"],
+          "expression": "natural",
+          "humanize": 0.01,
+          "velocity": 0.55
+        },
+        "clarinet": {
+          "patterns": ["recap_clarinet_support", "recap_clarinet_support", "recap_clarinet_support"],
+          "expression": "natural",
+          "velocity": 0.5
+        },
+        "cello": {
+          "patterns": ["recap_cello_rich_a", "recap_cello_rich_b", "recap_cello_rich_c"],
+          "expression": "romantic",
+          "velocity": 0.55
+        },
+        "harp": {
+          "patterns": ["recap_harp_full", "recap_harp_em", "recap_harp_am", "recap_harp_d", "recap_harp_full", "recap_harp_em", "recap_harp_am", "recap_harp_d", "recap_harp_full", "recap_harp_em", "recap_harp_am", "recap_harp_d"],
+          "expression": "romantic",
+          "velocity": 0.5
+        }
+      }
+    },
+
+    "coda": {
+      "bars": 8,
+      "tracks": {
+        "flute": {
+          "patterns": ["coda_flute_farewell", "coda_flute_final"],
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.5, "end": 0.25, "curve": "sine" }
+        },
+        "clarinet": {
+          "patterns": ["coda_clarinet_fade", "coda_clarinet_gone"],
+          "expression": "natural",
+          "velocityAutomation": { "start": 0.4, "end": 0.15, "curve": "sine" }
+        },
+        "violin": {
+          "patterns": ["coda_violin_fade", "coda_violin_gone"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.4, "end": 0.15, "curve": "sine" }
+        },
+        "cello": {
+          "patterns": ["coda_cello_fade", "coda_cello_gone"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.4, "end": 0.15, "curve": "sine" }
+        },
+        "harp": {
+          "patterns": ["coda_harp_final_a", "coda_harp_final_a", "coda_harp_final_b", "coda_harp_final_b", "coda_harp_final_c", "coda_harp_silence", "coda_harp_silence"],
+          "expression": "romantic",
+          "velocityAutomation": { "start": 0.45, "end": 0.1, "curve": "exponential" }
+        }
+      }
+    }
+  },
+
+  "arrangement": [
+    "dawn",
+    "awakening",
+    "theme",
+    "development",
+    "interlude",
+    "recapitulation",
+    "coda"
+  ]
+}

@@ -494,6 +494,61 @@ The patterns array expects **pattern names**, not inline notes:
 
 **Every track's patterns must sum to the section's bar count.** This is the most common timing bug.
 
+### 8. Arpeggio Missing `steps` Parameter
+
+Arpeggios without explicit `steps` generate unpredictable note counts:
+
+```json
+// WRONG - undefined timing
+"my_arp": {
+  "arpeggio": {
+    "chord": "Cmaj7",
+    "duration": "16",
+    "mode": "updown",
+    "octaves": 2
+  }
+}
+
+// RIGHT - explicit 16 steps = 4 beats
+"my_arp": {
+  "arpeggio": {
+    "chord": "Cmaj7",
+    "duration": "16",
+    "mode": "updown",
+    "octaves": 2,
+    "steps": 16
+  }
+}
+```
+
+**Always specify `steps`** to control exactly how many notes are generated.
+
+### 9. Inconsistent Groove Settings
+
+The `groove` setting shifts note timing. If applied inconsistently, instruments desynchronize:
+
+```json
+// PROBLEMATIC - flute is 21ms behind harp
+"tracks": {
+  "flute": { "pattern": "melody", "groove": "laid_back" },
+  "harp": { "pattern": "arp" }  // No groove = on-beat
+}
+
+// BETTER - use expression (doesn't shift timing)
+"tracks": {
+  "flute": { "pattern": "melody", "expression": "romantic" },
+  "harp": { "pattern": "arp", "expression": "romantic" }
+}
+
+// ALSO OK - same groove on all tracks
+"tracks": {
+  "flute": { "pattern": "melody", "groove": "laid_back" },
+  "harp": { "pattern": "arp", "groove": "laid_back" }
+}
+```
+
+**Rule:** Either apply the same groove to ALL tracks, or use `expression` presets instead (which add character without timing shifts).
+
 ```json
 // Section has 8 bars - EVERY track must total 8 bars
 

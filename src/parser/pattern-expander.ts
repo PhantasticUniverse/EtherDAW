@@ -948,9 +948,37 @@ function generateArpPattern(
 
   // If steps specified, repeat or truncate to match
   if (steps && mode !== 'random') {
+    const patternLen = pattern.length;
+
+    // For updown/downup modes, extend pattern musically if steps > patternLen
+    // by repeating the peak note(s) to fill the gap
+    if ((mode === 'updown' || mode === 'downup') && steps > patternLen) {
+      const result: number[] = [];
+      const extraSteps = steps - patternLen;
+      const peakIndex = mode === 'updown' ? totalNotes - 1 : 0;
+      const peakNote = indices[peakIndex];
+
+      // For updown: insert extra peak notes after ascending, before descending
+      // For downup: insert extra trough notes after descending, before ascending
+      const insertPoint = totalNotes; // After the first direction
+
+      for (let i = 0; i < patternLen; i++) {
+        result.push(pattern[i]);
+        // Insert extra peak notes at the turning point
+        if (i === insertPoint - 1) {
+          for (let j = 0; j < extraSteps; j++) {
+            result.push(peakNote);
+          }
+        }
+      }
+
+      return result.slice(0, steps);
+    }
+
+    // For all modes, simple repeat/truncate
     const result: number[] = [];
     for (let i = 0; i < steps; i++) {
-      result.push(pattern[i % pattern.length]);
+      result.push(pattern[i % patternLen]);
     }
     return result;
   }

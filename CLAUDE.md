@@ -27,6 +27,56 @@ open player.html                     # Listen in browser
 
 **Player shortcuts:** Space=play/pause, ←→=seek, 1-9=sections, M=mute
 
+## After Creating a New Composition
+
+**IMPORTANT:** After creating any new `.etherscore.json` file, run these commands:
+
+```bash
+npx tsx src/cli.ts validate <file>              # 1. Validate the file
+npx tsx scripts/check-pattern-timing.ts <file>  # 2. Check pattern timing
+npx tsx src/cli.ts compile <file>               # 3. Verify it compiles
+npm run build:manifest                          # 4. Update player dropdown
+```
+
+The player loads compositions from `dist/manifest.json`. Without step 4, new compositions won't appear in the browser player dropdown.
+
+## Pattern Timing Rules
+
+**Critical:** Timing issues are the most common composition bugs. Follow these rules:
+
+1. **Note patterns**: Total beats must match usage context
+   - If using `patterns: ["p1", "p2", ...]` array, each pattern = 1 bar (4 beats in 4/4)
+   - If using `pattern: "p" + repeat: N`, pattern beats × N = section beats
+
+2. **Arpeggio patterns**: Always specify `steps` explicitly
+   ```json
+   "arpeggio": {
+     "chord": "Cmaj7",
+     "duration": "16",
+     "mode": "up",
+     "steps": 16,      // REQUIRED: 16 sixteenth notes = 4 beats
+     "octaves": 2
+   }
+   ```
+   - For 16th notes: `steps: 16` = 4 beats (1 bar)
+   - For 8th notes: `steps: 8` = 4 beats (1 bar)
+
+3. **Chord patterns**: Count rest durations too
+   ```json
+   "chords": ["Cmaj7:w", "r:h", "Dm7:h"]  // 4 + 2 + 2 = 8 beats
+   ```
+
+4. **Groove consistency**: Apply groove settings uniformly or not at all
+   - `groove: "laid_back"` adds ~21ms delay to notes
+   - If some tracks have groove and others don't, they'll be desynchronized
+   - **Safe approach**: Use `expression` presets instead (they don't shift timing)
+   - **Alternative**: Apply the same groove to ALL tracks in a section
+
+5. **Run the timing checker** before publishing:
+   ```bash
+   npx tsx scripts/check-pattern-timing.ts <file>
+   ```
+
 ## CLI Commands (v0.9.11)
 
 | Command | Description |

@@ -460,9 +460,13 @@ Use `r` for rests: `"r:q"` (quarter rest), `"r:h"` (half rest)
 | `mode` | string | "up" | Arpeggio direction |
 | `octaves` | number | 1 | Octave span |
 | `gate` | number | 0.8 | Note length ratio (0.1-1.0) |
-| `steps` | number | auto | Total steps to generate |
+| `steps` | number | auto | Total steps to generate (**strongly recommended**) |
 
 **Modes:** `up`, `down`, `updown`, `downup`, `random`
+
+> ⚠️ **Always specify `steps`**: Without explicit `steps`, the arpeggiator generates based on chord+octaves, which can vary unexpectedly (especially with `updown`/`downup` modes). Always set `steps` to control timing:
+> - 16th notes, 4 beats: `"duration": "16", "steps": 16`
+> - 8th notes, 4 beats: `"duration": "8", "steps": 8`
 
 ### Drum Patterns
 
@@ -1059,6 +1063,8 @@ Example:
   }
 }
 ```
+
+> ⚠️ **Groove timing warning**: Groove templates shift note timing by ~10-50ms. If some tracks have groove and others don't, they will sound desynchronized. Apply the same groove to ALL tracks in a section, or use `expression` presets instead (which add character without timing shifts).
 
 #### Expression Presets (v0.9.8)
 

@@ -22,6 +22,8 @@ applies_to:
 - [ ] No empty patterns (patterns with no content)
 - [ ] Pattern lengths are consistent (same number of beats)
 - [ ] Rests used appropriately (not excessive silence)
+- [ ] Arpeggios have explicit `steps` parameter (required for timing)
+- [ ] Pattern timing validated: `npx tsx scripts/check-pattern-timing.ts file.json`
 
 ### Instruments
 - [ ] All instruments use valid presets
@@ -41,7 +43,8 @@ applies_to:
 ### Expression
 - [ ] Humanize applied to mechanical patterns (0.01-0.03)
 - [ ] Velocity variation for musical interest
-- [ ] Groove applied where appropriate
+- [ ] Groove applied consistently (same groove on ALL tracks, or none)
+- [ ] Expression presets preferred over groove for timing safety
 - [ ] Dynamics used (crescendo, diminuendo where fitting)
 
 ## Audio Quality Requirements
@@ -101,8 +104,10 @@ Benchmarks stay in `examples/`:
 ## Final Checklist Before Commit
 
 - [ ] Validation passes: `npx tsx src/cli.ts validate file.json`
+- [ ] Pattern timing passes: `npx tsx scripts/check-pattern-timing.ts file.json`
 - [ ] Audio tested in player.html
 - [ ] No console errors in browser
 - [ ] Filename follows conventions
 - [ ] File in correct directory
+- [ ] Manifest updated: `npm run build:manifest`
 - [ ] DEVELOPMENT.md updated if new feature
