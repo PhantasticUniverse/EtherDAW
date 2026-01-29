@@ -277,6 +277,30 @@ export const BASS_PRESETS: Record<string, PresetDefinition> = {
 
 4. If adding aliases for backward compatibility, update `PRESET_ALIASES` in `src/presets/index.ts`
 
+### Sample-Based Presets (v0.9.11)
+
+Sample-based presets use real instrument recordings from the tonejs-instruments CDN:
+
+```typescript
+// In src/presets/samples.ts
+export const SAMPLES_PRESETS: Record<string, PresetDefinition> = {
+  sample_new_instrument: {
+    name: 'Sampled New Instrument',
+    category: 'samples',
+    description: 'Description of the instrument',
+    type: 'sampler',  // Key: must be 'sampler'
+    base: {
+      instrument: 'instrument-name',  // tonejs-instruments name
+    },
+    tags: ['acoustic', 'samples', 'realistic'],
+  },
+};
+```
+
+Available CDN instruments: piano, violin, cello, contrabass, trumpet, trombone, french-horn, tuba, flute, clarinet, bassoon, saxophone, guitar-acoustic, guitar-electric, guitar-nylon, bass-electric, harp, organ, xylophone, harmonium.
+
+Note: In Node.js context, samplers fall back to FM synthesis approximations (see `createFMFallbackForSampler` in `src/synthesis/instrument-factory.ts`).
+
 ### Drum Kit Presets
 
 1. Add to `src/synthesis/drum-kits.ts`

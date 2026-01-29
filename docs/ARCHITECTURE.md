@@ -98,7 +98,8 @@ src/
 ├── presets/               # Preset registry (v0.9.1)
 │   ├── index.ts           # Query API (getPreset, findPresets)
 │   ├── types.ts           # PresetDefinition interface
-│   ├── bass.ts, pad.ts... # Category files (67 presets total)
+│   ├── bass.ts, pad.ts... # Category files (127+ presets)
+│   ├── samples.ts         # Sample-based presets (v0.9.11)
 │
 ├── synthesis/             # Audio synthesis
 │   ├── instruments.ts     # Instrument factory
@@ -432,6 +433,28 @@ Instrument Definition
         Tone.js Instrument
 ```
 
+### Sample-Based Instruments (v0.9.11)
+
+For realistic acoustic sounds, EtherDAW supports sample-based instruments:
+
+```
+Sample Preset (sample_piano, sample_violin, etc.)
+        │
+        ▼
+┌─────────────────────────────┐
+│   Tone.Sampler              │
+│   Loads samples from CDN    │
+│   (tonejs-instruments)      │
+└─────────────────────────────┘
+        │
+        ├── Browser: Full sample playback
+        │
+        └── Node.js: FM synthesis fallback
+            (createFMFallbackForSampler)
+```
+
+For WAV export, samplers are loaded asynchronously before offline rendering.
+
 ### Drum Synthesis
 
 EtherDAW uses synth pools for simultaneous hits:
@@ -672,6 +695,9 @@ await player.exportWav('output.wav');
 | v0.83 | Pattern algebra, transforms, visualizations |
 | v0.9 | Perceptual analysis (chromagram, centroid, flux), 80+ chord types |
 | v0.9.1 | Unified preset registry (67 presets), DrumEngine, utilities consolidation |
+| v0.9.4 | Orchestral presets (strings, brass, woodwinds, choir) |
+| v0.9.10 | Mix analysis, perceptual analysis improvements |
+| v0.9.11 | Sample-based instruments (20 presets via tonejs-instruments CDN) |
 
 ---
 

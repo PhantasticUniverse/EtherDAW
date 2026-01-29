@@ -78,6 +78,12 @@ r:q           Quarter rest
 }
 ```
 
+**Sample-based instruments** (v0.9.11): For realistic acoustic sounds, use `sample_` presets:
+- `sample_piano`, `sample_violin`, `sample_cello`, `sample_contrabass`
+- `sample_trumpet`, `sample_french_horn`, `sample_trombone`, `sample_tuba`
+- `sample_flute`, `sample_clarinet`, `sample_bassoon`, `sample_saxophone`
+- `sample_guitar_acoustic`, `sample_guitar_electric`, `sample_harp`, `sample_organ`
+
 ### Step 3: Write Patterns
 
 ```json

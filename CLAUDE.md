@@ -9,7 +9,7 @@ A DAW built for LLMs to compose music. EtherScore is the native JSON notation.
 | **Format Spec** | [docs/ETHERSCORE_FORMAT.md](docs/ETHERSCORE_FORMAT.md) - Complete EtherScore syntax |
 | **Composer Guide** | [docs/LLM_COMPOSER_GUIDE.md](docs/LLM_COMPOSER_GUIDE.md) - Practical composition guide |
 | **Theory Engine** | [docs/THEORY.md](docs/THEORY.md) - Scales, chords, intervals, validation |
-| **Presets** | [docs/PRESETS.md](docs/PRESETS.md) - All 67 presets with usage tips |
+| **Presets** | [docs/PRESETS.md](docs/PRESETS.md) - 127 presets + 20 sample instruments |
 | **Audio Analysis** | [docs/AUDIO_ANALYSIS.md](docs/AUDIO_ANALYSIS.md) - Perceptual analysis system |
 | **Development** | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Adding features, validation |
 | **Architecture** | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System design |
@@ -27,7 +27,7 @@ open player.html                     # Listen in browser
 
 **Player shortcuts:** Space=play/pause, ←→=seek, 1-9=sections, M=mute
 
-## CLI Commands (v0.9.10)
+## CLI Commands (v0.9.11)
 
 | Command | Description |
 |---------|-------------|
@@ -43,7 +43,7 @@ open player.html                     # Listen in browser
 | `watch <file> --browser` | With browser auto-refresh |
 | `watch <file> --export midi` | Auto-export on change |
 
-## REPL Commands (v0.9.10)
+## REPL Commands (v0.9.11)
 
 | Command | Description |
 |---------|-------------|
